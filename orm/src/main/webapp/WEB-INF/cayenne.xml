@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<domains project-version="3.0.0.1">
+<domain name="SharedDomain">
+	<property name="cayenne.DataDomain.dataContextFactory" value="com.aipo.orm.access.IsolatedDataContextFactory"/>
+	<property name="cayenne.DataRowStore.snapshot.size" value="50000"/>
+
+	<map name="AccountSharedDomainMap" location="conf/postgres/AccountSharedDomainMap.map.xml"/>
+	<map name="SecuritySharedDomainMap" location="conf/postgres/SecuritySharedDomainMap.map.xml"/>
+	<map name="SharedDomainMap" location="conf/postgres/SharedDomainMap.map.xml"/>
+</domain>
+</domains>

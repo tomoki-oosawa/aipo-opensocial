@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map project-version="2.0">
+	<property name="defaultPackage" value="com.aipo.orm.model.account"/>
+	<db-entity name="aipo_license">
+		<db-attribute name="LICENSE" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="LICENSE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="LIMIT_USERS" type="INTEGER"/>
+	</db-entity>
+	<db-entity name="eip_m_company">
+		<db-attribute name="ADDRESS" type="VARCHAR" length="64"/>
+		<db-attribute name="COMPANY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="COMPANY_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="COMPANY_NAME_KANA" type="VARCHAR" length="64"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="FAX_NUMBER" type="VARCHAR" length="15"/>
+		<db-attribute name="IPADDRESS" type="VARCHAR" length="99"/>
+		<db-attribute name="IPADDRESS_INTERNAL" type="VARCHAR" length="99"/>
+		<db-attribute name="PORT" type="INTEGER"/>
+		<db-attribute name="PORT_INTERNAL" type="INTEGER"/>
+		<db-attribute name="TELEPHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="URL" type="VARCHAR" length="99"/>
+		<db-attribute name="ZIPCODE" type="VARCHAR" length="8"/>
+	</db-entity>
+	<db-entity name="eip_m_position">
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="POSITION_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="POSITION_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+	</db-entity>
+	<db-entity name="eip_m_post">
+		<db-attribute name="ADDRESS" type="VARCHAR" length="64"/>
+		<db-attribute name="COMPANY_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="FAX_NUMBER" type="VARCHAR" length="15"/>
+		<db-attribute name="GROUP_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="IN_TELEPHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="OUT_TELEPHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="POST_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="POST_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="ZIPCODE" type="VARCHAR" length="8"/>
+	</db-entity>
+	<db-entity name="eip_m_user_position">
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="POSITION" type="INTEGER"/>
+		<db-attribute name="USER_ID" type="INTEGER"/>
+	</db-entity>
+	<db-entity name="eip_t_acl_portlet_feature">
+		<db-attribute name="ACL_TYPE" type="INTEGER"/>
+		<db-attribute name="FEATURE_ALIAS_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="FEATURE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="FEATURE_NAME" type="VARCHAR" length="99"/>
+	</db-entity>
+	<db-entity name="eip_t_acl_role">
+		<db-attribute name="ACL_TYPE" type="INTEGER"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="FEATURE_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="ROLE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="ROLE_NAME" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+	</db-entity>
+	<db-entity name="eip_t_acl_user_role_map">
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="ROLE_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true"/>
+	</db-entity>
+	<obj-entity name="AipoLicense" className="com.aipo.orm.model.account.AipoLicense" dbEntityName="aipo_license">
+		<obj-attribute name="license" type="java.lang.String" db-attribute-path="LICENSE"/>
+		<obj-attribute name="limitUsers" type="java.lang.Integer" db-attribute-path="LIMIT_USERS"/>
+	</obj-entity>
+	<obj-entity name="EipMCompany" className="com.aipo.orm.model.account.EipMCompany" dbEntityName="eip_m_company">
+		<obj-attribute name="address" type="java.lang.String" db-attribute-path="ADDRESS"/>
+		<obj-attribute name="companyName" type="java.lang.String" db-attribute-path="COMPANY_NAME"/>
+		<obj-attribute name="companyNameKana" type="java.lang.String" db-attribute-path="COMPANY_NAME_KANA"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="faxNumber" type="java.lang.String" db-attribute-path="FAX_NUMBER"/>
+		<obj-attribute name="ipaddress" type="java.lang.String" db-attribute-path="IPADDRESS"/>
+		<obj-attribute name="ipaddressInternal" type="java.lang.String" db-attribute-path="IPADDRESS_INTERNAL"/>
+		<obj-attribute name="port" type="java.lang.Integer" db-attribute-path="PORT"/>
+		<obj-attribute name="portInternal" type="java.lang.Integer" db-attribute-path="PORT_INTERNAL"/>
+		<obj-attribute name="telephone" type="java.lang.String" db-attribute-path="TELEPHONE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="url" type="java.lang.String" db-attribute-path="URL"/>
+		<obj-attribute name="zipcode" type="java.lang.String" db-attribute-path="ZIPCODE"/>
+	</obj-entity>
+	<obj-entity name="EipMPosition" className="com.aipo.orm.model.account.EipMPosition" dbEntityName="eip_m_position">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="positionName" type="java.lang.String" db-attribute-path="POSITION_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipMPost" className="com.aipo.orm.model.account.EipMPost" dbEntityName="eip_m_post">
+		<obj-attribute name="address" type="java.lang.String" db-attribute-path="ADDRESS"/>
+		<obj-attribute name="companyId" type="java.lang.Integer" db-attribute-path="COMPANY_ID"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="faxNumber" type="java.lang.String" db-attribute-path="FAX_NUMBER"/>
+		<obj-attribute name="groupName" type="java.lang.String" db-attribute-path="GROUP_NAME"/>
+		<obj-attribute name="inTelephone" type="java.lang.String" db-attribute-path="IN_TELEPHONE"/>
+		<obj-attribute name="outTelephone" type="java.lang.String" db-attribute-path="OUT_TELEPHONE"/>
+		<obj-attribute name="postName" type="java.lang.String" db-attribute-path="POST_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="zipcode" type="java.lang.String" db-attribute-path="ZIPCODE"/>
+	</obj-entity>
+	<obj-entity name="EipMUserPosition" className="com.aipo.orm.model.account.EipMUserPosition" dbEntityName="eip_m_user_position">
+		<obj-attribute name="position" type="java.lang.Integer" db-attribute-path="POSITION"/>
+	</obj-entity>
+	<obj-entity name="EipTAclPortletFeature" className="com.aipo.orm.model.account.EipTAclPortletFeature" dbEntityName="eip_t_acl_portlet_feature">
+		<obj-attribute name="aclType" type="java.lang.Integer" db-attribute-path="ACL_TYPE"/>
+		<obj-attribute name="featureAliasName" type="java.lang.String" db-attribute-path="FEATURE_ALIAS_NAME"/>
+		<obj-attribute name="featureName" type="java.lang.String" db-attribute-path="FEATURE_NAME"/>
+	</obj-entity>
+	<obj-entity name="EipTAclRole" className="com.aipo.orm.model.account.EipTAclRole" dbEntityName="eip_t_acl_role">
+		<obj-attribute name="aclType" type="java.lang.Integer" db-attribute-path="ACL_TYPE"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="featureId" type="java.lang.Integer" db-attribute-path="FEATURE_ID"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="roleName" type="java.lang.String" db-attribute-path="ROLE_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTAclUserRoleMap" className="com.aipo.orm.model.account.EipTAclUserRoleMap" dbEntityName="eip_t_acl_user_role_map">
+		<obj-attribute name="roleId" type="java.lang.Integer" db-attribute-path="ROLE_ID"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<db-relationship name="eipMMybox" source="eip_m_company" target="eip_m_mybox" toMany="true">
+		<db-attribute-pair source="COMPANY_ID" target="COMPANY_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineGroup" source="eip_m_post" target="turbine_group" toMany="true">
+		<db-attribute-pair source="GROUP_NAME" target="GROUP_NAME"/>
+	</db-relationship>
+	<db-relationship name="turbineUser" source="eip_m_user_position" target="turbine_user" toMany="false">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTAclRole" source="eip_t_acl_portlet_feature" target="eip_t_acl_role" toMany="true">
+		<db-attribute-pair source="FEATURE_ID" target="FEATURE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTAclPortletFeature" source="eip_t_acl_role" target="eip_t_acl_portlet_feature" toMany="false">
+		<db-attribute-pair source="FEATURE_ID" target="FEATURE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTAclUserRoleMaps" source="eip_t_acl_role" target="eip_t_acl_user_role_map" toMany="true">
+		<db-attribute-pair source="ROLE_ID" target="ROLE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTAclRole" source="eip_t_acl_user_role_map" target="eip_t_acl_role" toMany="false">
+		<db-attribute-pair source="ROLE_ID" target="ROLE_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineUser" source="eip_t_acl_user_role_map" target="turbine_user" toMany="false">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<obj-relationship name="eipMMybox" source="EipMCompany" target="EipMMybox" db-relationship-path="eipMMybox"/>
+	<obj-relationship name="turbineGroup" source="EipMPost" target="TurbineGroup" db-relationship-path="turbineGroup"/>
+	<obj-relationship name="turbineUser" source="EipMUserPosition" target="TurbineUser" db-relationship-path="turbineUser"/>
+	<obj-relationship name="eipTAclRole" source="EipTAclPortletFeature" target="EipTAclRole" db-relationship-path="eipTAclRole"/>
+	<obj-relationship name="eipTAclPortletFeature" source="EipTAclRole" target="EipTAclPortletFeature" db-relationship-path="eipTAclPortletFeature"/>
+	<obj-relationship name="eipTAclUserRoleMaps" source="EipTAclRole" target="EipTAclUserRoleMap" db-relationship-path="eipTAclUserRoleMaps"/>
+	<obj-relationship name="eipTAclRole" source="EipTAclUserRoleMap" target="EipTAclRole" db-relationship-path="eipTAclRole"/>
+	<obj-relationship name="turbineUser" source="EipTAclUserRoleMap" target="TurbineUser" db-relationship-path="turbineUser"/>
+</data-map>

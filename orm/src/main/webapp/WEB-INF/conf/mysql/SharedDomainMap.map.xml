@@ -1,0 +1,1147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map project-version="2.0">
+	<property name="defaultPackage" value="com.aipo.orm.model.portlet"/>
+	<db-entity name="eip_facility_group">
+		<db-attribute name="FACILITY_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="GROUP_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="eip_m_address_group">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="GROUP_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="GROUP_NAME" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="PUBLIC_FLAG" type="VARCHAR" length="1"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_m_addressbook">
+		<db-attribute name="ADDRESS_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="CELLULAR_MAIL" type="VARCHAR" length="99"/>
+		<db-attribute name="CELLULAR_PHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="COMPANY_ID" type="INTEGER" length="4"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="EMAIL" type="VARCHAR" length="99"/>
+		<db-attribute name="FIRST_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="FIRST_NAME_KANA" type="VARCHAR" length="99"/>
+		<db-attribute name="LAST_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="LAST_NAME_KANA" type="VARCHAR" length="99"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="POSITION_NAME" type="VARCHAR" length="64"/>
+		<db-attribute name="PUBLIC_FLAG" type="VARCHAR" length="1"/>
+		<db-attribute name="TELEPHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_USER_ID" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_m_addressbook_company">
+		<db-attribute name="ADDRESS" type="VARCHAR" length="64"/>
+		<db-attribute name="COMPANY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="COMPANY_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="COMPANY_NAME_KANA" type="VARCHAR" length="64"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="FAX_NUMBER" type="VARCHAR" length="15"/>
+		<db-attribute name="POST_NAME" type="VARCHAR" length="64"/>
+		<db-attribute name="TELEPHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="URL" type="VARCHAR" length="99"/>
+		<db-attribute name="ZIPCODE" type="VARCHAR" length="8"/>
+	</db-entity>
+	<db-entity name="eip_m_facility">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="FACILITY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="FACILITY_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_m_mail_account">
+		<db-attribute name="ACCOUNT_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="ACCOUNT_NAME" type="VARCHAR" isMandatory="true" length="20"/>
+		<db-attribute name="ACCOUNT_TYPE" type="VARCHAR" length="1"/>
+		<db-attribute name="AUTH_RECEIVE_FLG" type="SMALLINT" length="2"/>
+		<db-attribute name="AUTH_SEND_FLG" type="SMALLINT" length="1"/>
+		<db-attribute name="AUTH_SEND_USER_ID" type="VARCHAR" length="64"/>
+		<db-attribute name="AUTH_SEND_USER_PASSWD" type="LONGVARBINARY"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="DEFAULT_FOLDER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="DEL_AT_POP3_BEFORE_DAYS" type="INTEGER" length="4"/>
+		<db-attribute name="DEL_AT_POP3_BEFORE_DAYS_FLG" type="VARCHAR" length="1"/>
+		<db-attribute name="DEL_AT_POP3_FLG" type="VARCHAR" length="1"/>
+		<db-attribute name="LAST_RECEIVED_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="MAIL_ADDRESS" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="MAIL_USER_NAME" type="VARCHAR" length="64"/>
+		<db-attribute name="NON_RECEIVED_FLG" type="VARCHAR" length="1"/>
+		<db-attribute name="POP3PASSWORD" type="LONGVARBINARY" isMandatory="true"/>
+		<db-attribute name="POP3SERVER_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="POP3USER_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="POP3_ENCRYPTION_FLG" type="SMALLINT" length="1"/>
+		<db-attribute name="POP3_PORT" type="VARCHAR" isMandatory="true" length="5"/>
+		<db-attribute name="SIGNATURE" type="CLOB"/>
+		<db-attribute name="SMTPSERVER_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="SMTP_ENCRYPTION_FLG" type="SMALLINT" length="1"/>
+		<db-attribute name="SMTP_PORT" type="VARCHAR" isMandatory="true" length="5"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_m_mail_notify_conf">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="NOTIFY_FLG" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="NOTIFY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="NOTIFY_TIME" type="TIME" length="4"/>
+		<db-attribute name="NOTIFY_TYPE" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_m_mybox">
+		<db-attribute name="AIPO_ID" type="VARCHAR" length="99"/>
+		<db-attribute name="AIPO_PASSWD" type="VARCHAR" length="99"/>
+		<db-attribute name="COMPANY_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="MYBOX_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_addressbook_group_map">
+		<db-attribute name="ADDRESS_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="GROUP_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="eip_t_blog">
+		<db-attribute name="BLOG_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_blog_comment">
+		<db-attribute name="COMMENT" type="CLOB"/>
+		<db-attribute name="COMMENT_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="ENTRY_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_blog_entry">
+		<db-attribute name="ALLOW_COMMENTS" type="VARCHAR" length="1"/>
+		<db-attribute name="BLOG_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="ENTRY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="THEMA_ID" type="INTEGER" length="4"/>
+		<db-attribute name="TITLE" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_blog_file">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="ENTRY_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="FILE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="FILE_PATH" type="CLOB" isMandatory="true"/>
+		<db-attribute name="FILE_THUMBNAIL" type="LONGVARBINARY"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="TITLE" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_blog_footmark_map">
+		<db-attribute name="BLOG_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="CREATE_DATE" type="DATE" isMandatory="true" length="4"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="eip_t_blog_thema">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="DESCRIPTION" type="CLOB"/>
+		<db-attribute name="THEMA_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="THEMA_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_cabinet_file">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="FILE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="FILE_NAME" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="FILE_PATH" type="CLOB" isMandatory="true"/>
+		<db-attribute name="FILE_SIZE" type="BIGINT" length="8"/>
+		<db-attribute name="FILE_TITLE" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="FOLDER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_USER_ID" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_cabinet_folder">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="FOLDER_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="FOLDER_NAME" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="PARENT_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="PUBLIC_FLAG" type="VARCHAR" length="1"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_USER_ID" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_cabinet_folder_map">
+		<db-attribute name="FOLDER_ID" type="INTEGER"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="STATUS" type="VARCHAR" length="1"/>
+		<db-attribute name="USER_ID" type="INTEGER"/>
+	</db-entity>
+	<db-entity name="eip_t_common_category">
+		<db-attribute name="COMMON_CATEGORY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_eventlog">
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="ENTITY_ID" type="INTEGER" length="4"/>
+		<db-attribute name="EVENTLOG_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="EVENT_DATE" type="TIMESTAMP"/>
+		<db-attribute name="EVENT_TYPE" type="INTEGER" length="4"/>
+		<db-attribute name="IP_ADDR" type="CLOB"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="PORTLET_TYPE" type="INTEGER" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="USER_ID" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_ext_timecard">
+		<db-attribute name="CLOCK_IN_TIME" type="TIMESTAMP" length="8"/>
+		<db-attribute name="CLOCK_OUT_TIME" type="TIMESTAMP" length="8"/>
+		<db-attribute name="COMEBACK_TIME1" type="TIMESTAMP" length="8"/>
+		<db-attribute name="COMEBACK_TIME2" type="TIMESTAMP" length="8"/>
+		<db-attribute name="COMEBACK_TIME3" type="TIMESTAMP" length="8"/>
+		<db-attribute name="COMEBACK_TIME4" type="TIMESTAMP" length="8"/>
+		<db-attribute name="COMEBACK_TIME5" type="TIMESTAMP" length="8"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="OUTGOING_TIME1" type="TIMESTAMP" length="8"/>
+		<db-attribute name="OUTGOING_TIME2" type="TIMESTAMP" length="8"/>
+		<db-attribute name="OUTGOING_TIME3" type="TIMESTAMP" length="8"/>
+		<db-attribute name="OUTGOING_TIME4" type="TIMESTAMP" length="8"/>
+		<db-attribute name="OUTGOING_TIME5" type="TIMESTAMP" length="8"/>
+		<db-attribute name="PUNCH_DATE" type="DATE" length="4"/>
+		<db-attribute name="REASON" type="CLOB"/>
+		<db-attribute name="REMARKS" type="CLOB"/>
+		<db-attribute name="TIMECARD_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="TYPE" type="VARCHAR" length="1"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="4"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_ext_timecard_system">
+		<db-attribute name="CHANGE_HOUR" type="INTEGER"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="END_HOUR" type="INTEGER" length="2"/>
+		<db-attribute name="END_MINUTE" type="INTEGER" length="2"/>
+		<db-attribute name="OUTGOING_ADD_FLAG" type="VARCHAR" length="1"/>
+		<db-attribute name="RESTTIME_IN" type="INTEGER" length="4"/>
+		<db-attribute name="RESTTIME_OUT" type="INTEGER" length="4"/>
+		<db-attribute name="START_HOUR" type="INTEGER" length="2"/>
+		<db-attribute name="START_MINUTE" type="INTEGER" length="2"/>
+		<db-attribute name="SYSTEM_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="SYSTEM_NAME" type="VARCHAR" length="64"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="WORKTIME_IN" type="INTEGER" length="4"/>
+		<db-attribute name="WORKTIME_OUT" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_ext_timecard_system_map">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="SYSTEM_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="SYSTEM_MAP_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_mail">
+		<db-attribute name="ACCOUNT_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="EVENT_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="FILE_PATH" type="CLOB"/>
+		<db-attribute name="FILE_VOLUME" type="INTEGER" length="4"/>
+		<db-attribute name="FOLDER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="HAS_FILES" type="CHAR" length="1"/>
+		<db-attribute name="MAIL" type="LONGVARBINARY"/>
+		<db-attribute name="MAIL_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="PERSON" type="CLOB"/>
+		<db-attribute name="READ_FLG" type="CHAR" length="1"/>
+		<db-attribute name="SUBJECT" type="CLOB"/>
+		<db-attribute name="TYPE" type="CHAR" length="1"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_mail_filter">
+		<db-attribute name="ACCOUNT_ID" type="INTEGER" length="4"/>
+		<db-attribute name="DST_FOLDER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="FILTER_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="FILTER_NAME" type="VARCHAR" length="255"/>
+		<db-attribute name="FILTER_STRING" type="VARCHAR" length="255"/>
+		<db-attribute name="FILTER_TYPE" type="CHAR" length="1"/>
+		<db-attribute name="SORT_ORDER" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_mail_folder">
+		<db-attribute name="ACCOUNT_ID" type="INTEGER" length="4"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="FOLDER_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="FOLDER_NAME" type="CLOB" length="128"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_memo">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="MEMO_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="MEMO_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_msgboard_category">
+		<db-attribute name="CATEGORY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="CATEGORY_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="PUBLIC_FLAG" type="VARCHAR" length="1"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_msgboard_category_map">
+		<db-attribute name="CATEGORY_ID" type="INTEGER" length="4"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="STATUS" type="VARCHAR" length="1"/>
+		<db-attribute name="USER_ID" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_msgboard_file">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="FILE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="FILE_NAME" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="FILE_PATH" type="CLOB" isMandatory="true"/>
+		<db-attribute name="FILE_THUMBNAIL" type="LONGVARBINARY"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="TOPIC_ID" type="INTEGER" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_msgboard_topic">
+		<db-attribute name="CATEGORY_ID" type="INTEGER" length="4"/>
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="PARENT_ID" type="INTEGER" length="4"/>
+		<db-attribute name="TOPIC_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="TOPIC_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_USER_ID" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_note">
+		<db-attribute name="ACCEPT_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="ADD_DEST_TYPE" type="VARCHAR" length="1"/>
+		<db-attribute name="CLIENT_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="COMPANY_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="CUSTOM_SUBJECT" type="VARCHAR" length="99"/>
+		<db-attribute name="EMAIL_ADDRESS" type="VARCHAR" length="99"/>
+		<db-attribute name="MESSAGE" type="CLOB"/>
+		<db-attribute name="NOTE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="OWNER_ID" type="VARCHAR" length="99"/>
+		<db-attribute name="SUBJECT_TYPE" type="VARCHAR" length="1"/>
+		<db-attribute name="TELEPHONE" type="VARCHAR" length="24"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_note_map">
+		<db-attribute name="CONFIRM_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="DEL_FLG" type="VARCHAR" length="1"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="NOTE_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="NOTE_STAT" type="VARCHAR" length="1"/>
+		<db-attribute name="USER_ID" type="VARCHAR" isMandatory="true" length="99"/>
+	</db-entity>
+	<db-entity name="eip_t_schedule">
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="EDIT_FLAG" type="VARCHAR" length="1"/>
+		<db-attribute name="END_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="PARENT_ID" type="INTEGER" length="4"/>
+		<db-attribute name="PLACE" type="VARCHAR" length="99"/>
+		<db-attribute name="PUBLIC_FLAG" type="VARCHAR" length="1"/>
+		<db-attribute name="REPEAT_PATTERN" type="VARCHAR" length="10"/>
+		<db-attribute name="SCHEDULE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="START_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="UPDATE_USER_ID" type="INTEGER" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_schedule_map">
+		<db-attribute name="COMMON_CATEGORY_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="SCHEDULE_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="STATUS" type="VARCHAR" length="1"/>
+		<db-attribute name="TYPE" type="VARCHAR" length="1"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_timecard">
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="REASON" type="CLOB"/>
+		<db-attribute name="TIMECARD_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="WORK_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="WORK_FLAG" type="VARCHAR" isMandatory="true" length="1"/>
+	</db-entity>
+	<db-entity name="eip_t_timecard_settings">
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="END_HOUR" type="INTEGER"/>
+		<db-attribute name="END_MINUTE" type="INTEGER"/>
+		<db-attribute name="RESTTIME_IN" type="INTEGER"/>
+		<db-attribute name="RESTTIME_OUT" type="INTEGER"/>
+		<db-attribute name="START_HOUR" type="INTEGER"/>
+		<db-attribute name="START_MINUTE" type="INTEGER"/>
+		<db-attribute name="TIMECARD_SETTINGS_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="WORKTIME_IN" type="INTEGER"/>
+		<db-attribute name="WORKTIME_OUT" type="INTEGER"/>
+	</db-entity>
+	<db-entity name="eip_t_todo">
+		<db-attribute name="ADDON_SCHEDULE_FLG" type="VARCHAR" isMandatory="true" length="1"/>
+		<db-attribute name="CATEGORY_ID" type="INTEGER" length="4"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="END_DATE" type="DATE" length="4"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="PRIORITY" type="SMALLINT" length="2"/>
+		<db-attribute name="PUBLIC_FLAG" type="VARCHAR" isMandatory="true" length="1"/>
+		<db-attribute name="START_DATE" type="DATE" length="4"/>
+		<db-attribute name="STATE" type="SMALLINT" length="2"/>
+		<db-attribute name="TODO_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="TODO_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_todo_category">
+		<db-attribute name="CATEGORY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="CATEGORY_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="CREATE_DATE" type="DATE" length="4"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_whatsnew">
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="ENTITY_ID" type="INTEGER"/>
+		<db-attribute name="PARENT_ID" type="INTEGER"/>
+		<db-attribute name="PORTLET_TYPE" type="INTEGER" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="WHATSNEW_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_workflow_category">
+		<db-attribute name="CATEGORY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="CATEGORY_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="ROUTE_ID" type="INTEGER"/>
+		<db-attribute name="TEMPLATE" type="CLOB"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="eip_t_workflow_file">
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="FILE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="FILE_NAME" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="FILE_PATH" type="CLOB" isMandatory="true"/>
+		<db-attribute name="FILE_THUMBNAIL" type="LONGVARBINARY"/>
+		<db-attribute name="OWNER_ID" type="INTEGER"/>
+		<db-attribute name="REQUEST_ID" type="INTEGER"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+	</db-entity>
+	<db-entity name="eip_t_workflow_request">
+		<db-attribute name="CATEGORY_ID" type="INTEGER"/>
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="PARENT_ID" type="INTEGER"/>
+		<db-attribute name="PRICE" type="BIGINT"/>
+		<db-attribute name="PRIORITY" type="SMALLINT" length="1"/>
+		<db-attribute name="PROGRESS" type="VARCHAR" length="1"/>
+		<db-attribute name="REQUEST_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="REQUEST_NAME" type="VARCHAR" length="64"/>
+		<db-attribute name="ROUTE_ID" type="INTEGER"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_workflow_request_map">
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="ORDER_INDEX" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="REQUEST_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="STATUS" type="VARCHAR" length="1"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="eip_t_workflow_route">
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="NOTE" type="CLOB"/>
+		<db-attribute name="ROUTE" type="CLOB"/>
+		<db-attribute name="ROUTE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="ROUTE_NAME" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+	</db-entity>
+	<obj-entity name="EipFacilityGroup" className="com.aipo.orm.model.portlet.EipFacilityGroup" dbEntityName="eip_facility_group">
+	</obj-entity>
+	<obj-entity name="EipMAddressGroup" className="com.aipo.orm.model.portlet.EipMAddressGroup" dbEntityName="eip_m_address_group">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="groupName" type="java.lang.String" db-attribute-path="GROUP_NAME"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="publicFlag" type="java.lang.String" db-attribute-path="PUBLIC_FLAG"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipMAddressbook" className="com.aipo.orm.model.portlet.EipMAddressbook" dbEntityName="eip_m_addressbook">
+		<obj-attribute name="cellularMail" type="java.lang.String" db-attribute-path="CELLULAR_MAIL"/>
+		<obj-attribute name="cellularPhone" type="java.lang.String" db-attribute-path="CELLULAR_PHONE"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="email" type="java.lang.String" db-attribute-path="EMAIL"/>
+		<obj-attribute name="firstName" type="java.lang.String" db-attribute-path="FIRST_NAME"/>
+		<obj-attribute name="firstNameKana" type="java.lang.String" db-attribute-path="FIRST_NAME_KANA"/>
+		<obj-attribute name="lastName" type="java.lang.String" db-attribute-path="LAST_NAME"/>
+		<obj-attribute name="lastNameKana" type="java.lang.String" db-attribute-path="LAST_NAME_KANA"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="positionName" type="java.lang.String" db-attribute-path="POSITION_NAME"/>
+		<obj-attribute name="publicFlag" type="java.lang.String" db-attribute-path="PUBLIC_FLAG"/>
+		<obj-attribute name="telephone" type="java.lang.String" db-attribute-path="TELEPHONE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="updateUserId" type="java.lang.Integer" db-attribute-path="UPDATE_USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipMAddressbookCompany" className="com.aipo.orm.model.portlet.EipMAddressbookCompany" dbEntityName="eip_m_addressbook_company">
+		<obj-attribute name="address" type="java.lang.String" db-attribute-path="ADDRESS"/>
+		<obj-attribute name="companyName" type="java.lang.String" db-attribute-path="COMPANY_NAME"/>
+		<obj-attribute name="companyNameKana" type="java.lang.String" db-attribute-path="COMPANY_NAME_KANA"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="faxNumber" type="java.lang.String" db-attribute-path="FAX_NUMBER"/>
+		<obj-attribute name="postName" type="java.lang.String" db-attribute-path="POST_NAME"/>
+		<obj-attribute name="telephone" type="java.lang.String" db-attribute-path="TELEPHONE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="updateUserId" type="java.lang.Integer" db-attribute-path="UPDATE_USER_ID"/>
+		<obj-attribute name="url" type="java.lang.String" db-attribute-path="URL"/>
+		<obj-attribute name="zipcode" type="java.lang.String" db-attribute-path="ZIPCODE"/>
+	</obj-entity>
+	<obj-entity name="EipMFacility" className="com.aipo.orm.model.portlet.EipMFacility" dbEntityName="eip_m_facility">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="facilityName" type="java.lang.String" db-attribute-path="FACILITY_NAME"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipMMailAccount" className="com.aipo.orm.model.portlet.EipMMailAccount" dbEntityName="eip_m_mail_account">
+		<obj-attribute name="accountName" type="java.lang.String" db-attribute-path="ACCOUNT_NAME"/>
+		<obj-attribute name="accountType" type="java.lang.String" db-attribute-path="ACCOUNT_TYPE"/>
+		<obj-attribute name="authReceiveFlg" type="java.lang.Short" db-attribute-path="AUTH_RECEIVE_FLG"/>
+		<obj-attribute name="authSendFlg" type="java.lang.Short" db-attribute-path="AUTH_SEND_FLG"/>
+		<obj-attribute name="authSendUserId" type="java.lang.String" db-attribute-path="AUTH_SEND_USER_ID"/>
+		<obj-attribute name="authSendUserPasswd" type="byte[]" db-attribute-path="AUTH_SEND_USER_PASSWD"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="defaultFolderId" type="java.lang.Integer" db-attribute-path="DEFAULT_FOLDER_ID"/>
+		<obj-attribute name="delAtPop3BeforeDays" type="java.lang.Integer" db-attribute-path="DEL_AT_POP3_BEFORE_DAYS"/>
+		<obj-attribute name="delAtPop3BeforeDaysFlg" type="java.lang.String" db-attribute-path="DEL_AT_POP3_BEFORE_DAYS_FLG"/>
+		<obj-attribute name="delAtPop3Flg" type="java.lang.String" db-attribute-path="DEL_AT_POP3_FLG"/>
+		<obj-attribute name="lastReceivedDate" type="java.util.Date" db-attribute-path="LAST_RECEIVED_DATE"/>
+		<obj-attribute name="mailAddress" type="java.lang.String" db-attribute-path="MAIL_ADDRESS"/>
+		<obj-attribute name="mailUserName" type="java.lang.String" db-attribute-path="MAIL_USER_NAME"/>
+		<obj-attribute name="nonReceivedFlg" type="java.lang.String" db-attribute-path="NON_RECEIVED_FLG"/>
+		<obj-attribute name="pop3EncryptionFlg" type="java.lang.Short" db-attribute-path="POP3_ENCRYPTION_FLG"/>
+		<obj-attribute name="pop3Port" type="java.lang.String" db-attribute-path="POP3_PORT"/>
+		<obj-attribute name="pop3password" type="byte[]" db-attribute-path="POP3PASSWORD"/>
+		<obj-attribute name="pop3serverName" type="java.lang.String" db-attribute-path="POP3SERVER_NAME"/>
+		<obj-attribute name="pop3userName" type="java.lang.String" db-attribute-path="POP3USER_NAME"/>
+		<obj-attribute name="signature" type="java.lang.String" db-attribute-path="SIGNATURE"/>
+		<obj-attribute name="smtpEncryptionFlg" type="java.lang.Short" db-attribute-path="SMTP_ENCRYPTION_FLG"/>
+		<obj-attribute name="smtpPort" type="java.lang.String" db-attribute-path="SMTP_PORT"/>
+		<obj-attribute name="smtpserverName" type="java.lang.String" db-attribute-path="SMTPSERVER_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipMMailNotifyConf" className="com.aipo.orm.model.portlet.EipMMailNotifyConf" dbEntityName="eip_m_mail_notify_conf">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="notifyFlg" type="java.lang.Integer" db-attribute-path="NOTIFY_FLG"/>
+		<obj-attribute name="notifyTime" type="java.util.Date" db-attribute-path="NOTIFY_TIME"/>
+		<obj-attribute name="notifyType" type="java.lang.Integer" db-attribute-path="NOTIFY_TYPE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipMMybox" className="com.aipo.orm.model.portlet.EipMMybox" dbEntityName="eip_m_mybox">
+		<obj-attribute name="aipoId" type="java.lang.String" db-attribute-path="AIPO_ID"/>
+		<obj-attribute name="aipoPasswd" type="java.lang.String" db-attribute-path="AIPO_PASSWD"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTAddressbookGroupMap" className="com.aipo.orm.model.portlet.EipTAddressbookGroupMap" dbEntityName="eip_t_addressbook_group_map">
+		<obj-attribute name="addressId" type="java.lang.Integer" db-attribute-path="ADDRESS_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTBlog" className="com.aipo.orm.model.portlet.EipTBlog" dbEntityName="eip_t_blog">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTBlogComment" className="com.aipo.orm.model.portlet.EipTBlogComment" dbEntityName="eip_t_blog_comment">
+		<obj-attribute name="comment" type="java.lang.String" db-attribute-path="COMMENT"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTBlogEntry" className="com.aipo.orm.model.portlet.EipTBlogEntry" dbEntityName="eip_t_blog_entry">
+		<obj-attribute name="allowComments" type="java.lang.String" db-attribute-path="ALLOW_COMMENTS"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="TITLE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTBlogFile" className="com.aipo.orm.model.portlet.EipTBlogFile" dbEntityName="eip_t_blog_file">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="filePath" type="java.lang.String" db-attribute-path="FILE_PATH"/>
+		<obj-attribute name="fileThumbnail" type="byte[]" db-attribute-path="FILE_THUMBNAIL"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="TITLE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTBlogFootmarkMap" className="com.aipo.orm.model.portlet.EipTBlogFootmarkMap" dbEntityName="eip_t_blog_footmark_map">
+		<obj-attribute name="blogId" type="java.lang.Integer" db-attribute-path="BLOG_ID"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTBlogThema" className="com.aipo.orm.model.portlet.EipTBlogThema" dbEntityName="eip_t_blog_thema">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="description" type="java.lang.String" db-attribute-path="DESCRIPTION"/>
+		<obj-attribute name="themaName" type="java.lang.String" db-attribute-path="THEMA_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="updateUserId" type="java.lang.Integer" db-attribute-path="UPDATE_USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTCabinetFile" className="com.aipo.orm.model.portlet.EipTCabinetFile" dbEntityName="eip_t_cabinet_file">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="fileName" type="java.lang.String" db-attribute-path="FILE_NAME"/>
+		<obj-attribute name="filePath" type="java.lang.String" db-attribute-path="FILE_PATH"/>
+		<obj-attribute name="fileSize" type="java.lang.Long" db-attribute-path="FILE_SIZE"/>
+		<obj-attribute name="fileTitle" type="java.lang.String" db-attribute-path="FILE_TITLE"/>
+		<obj-attribute name="folderId" type="java.lang.Integer" db-attribute-path="FOLDER_ID"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="updateUserId" type="java.lang.Integer" db-attribute-path="UPDATE_USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTCabinetFolder" className="com.aipo.orm.model.portlet.EipTCabinetFolder" dbEntityName="eip_t_cabinet_folder">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="folderName" type="java.lang.String" db-attribute-path="FOLDER_NAME"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="parentId" type="java.lang.Integer" db-attribute-path="PARENT_ID"/>
+		<obj-attribute name="publicFlag" type="java.lang.String" db-attribute-path="PUBLIC_FLAG"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="updateUserId" type="java.lang.Integer" db-attribute-path="UPDATE_USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTCabinetFolderMap" className="com.aipo.orm.model.portlet.EipTCabinetFolderMap" dbEntityName="eip_t_cabinet_folder_map">
+		<obj-attribute name="status" type="java.lang.String" db-attribute-path="STATUS"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTCommonCategory" className="com.aipo.orm.model.portlet.EipTCommonCategory" dbEntityName="eip_t_common_category">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="NAME"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="updateUserId" type="java.lang.Integer" db-attribute-path="UPDATE_USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTEventlog" className="com.aipo.orm.model.portlet.EipTEventlog" dbEntityName="eip_t_eventlog">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="entityId" type="java.lang.Integer" db-attribute-path="ENTITY_ID"/>
+		<obj-attribute name="eventDate" type="java.util.Date" db-attribute-path="EVENT_DATE"/>
+		<obj-attribute name="eventType" type="java.lang.Integer" db-attribute-path="EVENT_TYPE"/>
+		<obj-attribute name="ipAddr" type="java.lang.String" db-attribute-path="IP_ADDR"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="portletType" type="java.lang.Integer" db-attribute-path="PORTLET_TYPE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTExtTimecard" className="com.aipo.orm.model.portlet.EipTExtTimecard" dbEntityName="eip_t_ext_timecard">
+		<obj-attribute name="clockInTime" type="java.util.Date" db-attribute-path="CLOCK_IN_TIME"/>
+		<obj-attribute name="clockOutTime" type="java.util.Date" db-attribute-path="CLOCK_OUT_TIME"/>
+		<obj-attribute name="comebackTime1" type="java.util.Date" db-attribute-path="COMEBACK_TIME1"/>
+		<obj-attribute name="comebackTime2" type="java.util.Date" db-attribute-path="COMEBACK_TIME2"/>
+		<obj-attribute name="comebackTime3" type="java.util.Date" db-attribute-path="COMEBACK_TIME3"/>
+		<obj-attribute name="comebackTime4" type="java.util.Date" db-attribute-path="COMEBACK_TIME4"/>
+		<obj-attribute name="comebackTime5" type="java.util.Date" db-attribute-path="COMEBACK_TIME5"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="outgoingTime1" type="java.util.Date" db-attribute-path="OUTGOING_TIME1"/>
+		<obj-attribute name="outgoingTime2" type="java.util.Date" db-attribute-path="OUTGOING_TIME2"/>
+		<obj-attribute name="outgoingTime3" type="java.util.Date" db-attribute-path="OUTGOING_TIME3"/>
+		<obj-attribute name="outgoingTime4" type="java.util.Date" db-attribute-path="OUTGOING_TIME4"/>
+		<obj-attribute name="outgoingTime5" type="java.util.Date" db-attribute-path="OUTGOING_TIME5"/>
+		<obj-attribute name="punchDate" type="java.util.Date" db-attribute-path="PUNCH_DATE"/>
+		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="REASON"/>
+		<obj-attribute name="remarks" type="java.lang.String" db-attribute-path="REMARKS"/>
+		<obj-attribute name="type" type="java.lang.String" db-attribute-path="TYPE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTExtTimecardSystem" className="com.aipo.orm.model.portlet.EipTExtTimecardSystem" dbEntityName="eip_t_ext_timecard_system">
+		<obj-attribute name="changeHour" type="java.lang.Integer" db-attribute-path="CHANGE_HOUR"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="endHour" type="java.lang.Integer" db-attribute-path="END_HOUR"/>
+		<obj-attribute name="endMinute" type="java.lang.Integer" db-attribute-path="END_MINUTE"/>
+		<obj-attribute name="outgoingAddFlag" type="java.lang.String" db-attribute-path="OUTGOING_ADD_FLAG"/>
+		<obj-attribute name="resttimeIn" type="java.lang.Integer" db-attribute-path="RESTTIME_IN"/>
+		<obj-attribute name="resttimeOut" type="java.lang.Integer" db-attribute-path="RESTTIME_OUT"/>
+		<obj-attribute name="startHour" type="java.lang.Integer" db-attribute-path="START_HOUR"/>
+		<obj-attribute name="startMinute" type="java.lang.Integer" db-attribute-path="START_MINUTE"/>
+		<obj-attribute name="systemName" type="java.lang.String" db-attribute-path="SYSTEM_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+		<obj-attribute name="worktimeIn" type="java.lang.Integer" db-attribute-path="WORKTIME_IN"/>
+		<obj-attribute name="worktimeOut" type="java.lang.Integer" db-attribute-path="WORKTIME_OUT"/>
+	</obj-entity>
+	<obj-entity name="EipTExtTimecardSystemMap" className="com.aipo.orm.model.portlet.EipTExtTimecardSystemMap" dbEntityName="eip_t_ext_timecard_system_map">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTMail" className="com.aipo.orm.model.portlet.EipTMail" dbEntityName="eip_t_mail">
+		<obj-attribute name="accountId" type="java.lang.Integer" db-attribute-path="ACCOUNT_ID"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="eventDate" type="java.util.Date" db-attribute-path="EVENT_DATE"/>
+		<obj-attribute name="filePath" type="java.lang.String" db-attribute-path="FILE_PATH"/>
+		<obj-attribute name="fileVolume" type="java.lang.Integer" db-attribute-path="FILE_VOLUME"/>
+		<obj-attribute name="folderId" type="java.lang.Integer" db-attribute-path="FOLDER_ID"/>
+		<obj-attribute name="hasFiles" type="java.lang.String" db-attribute-path="HAS_FILES"/>
+		<obj-attribute name="mail" type="byte[]" db-attribute-path="MAIL"/>
+		<obj-attribute name="person" type="java.lang.String" db-attribute-path="PERSON"/>
+		<obj-attribute name="readFlg" type="java.lang.String" db-attribute-path="READ_FLG"/>
+		<obj-attribute name="subject" type="java.lang.String" db-attribute-path="SUBJECT"/>
+		<obj-attribute name="type" type="java.lang.String" db-attribute-path="TYPE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTMailFilter" className="com.aipo.orm.model.portlet.EipTMailFilter" dbEntityName="eip_t_mail_filter">
+		<obj-attribute name="filterName" type="java.lang.String" db-attribute-path="FILTER_NAME"/>
+		<obj-attribute name="filterString" type="java.lang.String" db-attribute-path="FILTER_STRING"/>
+		<obj-attribute name="filterType" type="java.lang.String" db-attribute-path="FILTER_TYPE"/>
+		<obj-attribute name="sortOrder" type="java.lang.Integer" db-attribute-path="SORT_ORDER"/>
+	</obj-entity>
+	<obj-entity name="EipTMailFolder" className="com.aipo.orm.model.portlet.EipTMailFolder" dbEntityName="eip_t_mail_folder">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="folderName" type="java.lang.String" db-attribute-path="FOLDER_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTMemo" className="com.aipo.orm.model.portlet.EipTMemo" dbEntityName="eip_t_memo">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="memoName" type="java.lang.String" db-attribute-path="MEMO_NAME"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTMsgboardCategory" className="com.aipo.orm.model.portlet.EipTMsgboardCategory" dbEntityName="eip_t_msgboard_category">
+		<obj-attribute name="categoryName" type="java.lang.String" db-attribute-path="CATEGORY_NAME"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="publicFlag" type="java.lang.String" db-attribute-path="PUBLIC_FLAG"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTMsgboardCategoryMap" className="com.aipo.orm.model.portlet.EipTMsgboardCategoryMap" dbEntityName="eip_t_msgboard_category_map">
+		<obj-attribute name="categoryId" type="java.lang.Integer" db-attribute-path="CATEGORY_ID"/>
+		<obj-attribute name="status" type="java.lang.String" db-attribute-path="STATUS"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTMsgboardFile" className="com.aipo.orm.model.portlet.EipTMsgboardFile" dbEntityName="eip_t_msgboard_file">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="fileName" type="java.lang.String" db-attribute-path="FILE_NAME"/>
+		<obj-attribute name="filePath" type="java.lang.String" db-attribute-path="FILE_PATH"/>
+		<obj-attribute name="fileThumbnail" type="byte[]" db-attribute-path="FILE_THUMBNAIL"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTMsgboardTopic" className="com.aipo.orm.model.portlet.EipTMsgboardTopic" dbEntityName="eip_t_msgboard_topic">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="parentId" type="java.lang.Integer" db-attribute-path="PARENT_ID"/>
+		<obj-attribute name="topicName" type="java.lang.String" db-attribute-path="TOPIC_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="updateUserId" type="java.lang.Integer" db-attribute-path="UPDATE_USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTNote" className="com.aipo.orm.model.portlet.EipTNote" dbEntityName="eip_t_note">
+		<obj-attribute name="acceptDate" type="java.util.Date" db-attribute-path="ACCEPT_DATE"/>
+		<obj-attribute name="addDestType" type="java.lang.String" db-attribute-path="ADD_DEST_TYPE"/>
+		<obj-attribute name="clientName" type="java.lang.String" db-attribute-path="CLIENT_NAME"/>
+		<obj-attribute name="companyName" type="java.lang.String" db-attribute-path="COMPANY_NAME"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="customSubject" type="java.lang.String" db-attribute-path="CUSTOM_SUBJECT"/>
+		<obj-attribute name="emailAddress" type="java.lang.String" db-attribute-path="EMAIL_ADDRESS"/>
+		<obj-attribute name="message" type="java.lang.String" db-attribute-path="MESSAGE"/>
+		<obj-attribute name="ownerId" type="java.lang.String" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="subjectType" type="java.lang.String" db-attribute-path="SUBJECT_TYPE"/>
+		<obj-attribute name="telephone" type="java.lang.String" db-attribute-path="TELEPHONE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTNoteMap" className="com.aipo.orm.model.portlet.EipTNoteMap" dbEntityName="eip_t_note_map">
+		<obj-attribute name="confirmDate" type="java.util.Date" db-attribute-path="CONFIRM_DATE"/>
+		<obj-attribute name="delFlg" type="java.lang.String" db-attribute-path="DEL_FLG"/>
+		<obj-attribute name="noteId" type="java.lang.Integer" db-attribute-path="NOTE_ID"/>
+		<obj-attribute name="noteStat" type="java.lang.String" db-attribute-path="NOTE_STAT"/>
+		<obj-attribute name="userId" type="java.lang.String" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTSchedule" className="com.aipo.orm.model.portlet.EipTSchedule" dbEntityName="eip_t_schedule">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="editFlag" type="java.lang.String" db-attribute-path="EDIT_FLAG"/>
+		<obj-attribute name="endDate" type="java.util.Date" db-attribute-path="END_DATE"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="NAME"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="parentId" type="java.lang.Integer" db-attribute-path="PARENT_ID"/>
+		<obj-attribute name="place" type="java.lang.String" db-attribute-path="PLACE"/>
+		<obj-attribute name="publicFlag" type="java.lang.String" db-attribute-path="PUBLIC_FLAG"/>
+		<obj-attribute name="repeatPattern" type="java.lang.String" db-attribute-path="REPEAT_PATTERN"/>
+		<obj-attribute name="startDate" type="java.util.Date" db-attribute-path="START_DATE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="updateUserId" type="java.lang.Integer" db-attribute-path="UPDATE_USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTScheduleMap" className="com.aipo.orm.model.portlet.EipTScheduleMap" dbEntityName="eip_t_schedule_map">
+		<obj-attribute name="commonCategoryId" type="java.lang.Integer" db-attribute-path="COMMON_CATEGORY_ID"/>
+		<obj-attribute name="scheduleId" type="java.lang.Integer" db-attribute-path="SCHEDULE_ID"/>
+		<obj-attribute name="status" type="java.lang.String" db-attribute-path="STATUS"/>
+		<obj-attribute name="type" type="java.lang.String" db-attribute-path="TYPE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTTimecard" className="com.aipo.orm.model.portlet.EipTTimecard" dbEntityName="eip_t_timecard">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="REASON"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+		<obj-attribute name="workDate" type="java.util.Date" db-attribute-path="WORK_DATE"/>
+		<obj-attribute name="workFlag" type="java.lang.String" db-attribute-path="WORK_FLAG"/>
+	</obj-entity>
+	<obj-entity name="EipTTimecardSettings" className="com.aipo.orm.model.portlet.EipTTimecardSettings" dbEntityName="eip_t_timecard_settings">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="endHour" type="java.lang.Integer" db-attribute-path="END_HOUR"/>
+		<obj-attribute name="endMinute" type="java.lang.Integer" db-attribute-path="END_MINUTE"/>
+		<obj-attribute name="resttimeIn" type="java.lang.Integer" db-attribute-path="RESTTIME_IN"/>
+		<obj-attribute name="resttimeOut" type="java.lang.Integer" db-attribute-path="RESTTIME_OUT"/>
+		<obj-attribute name="startHour" type="java.lang.Integer" db-attribute-path="START_HOUR"/>
+		<obj-attribute name="startMinute" type="java.lang.Integer" db-attribute-path="START_MINUTE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+		<obj-attribute name="worktimeIn" type="java.lang.Integer" db-attribute-path="WORKTIME_IN"/>
+		<obj-attribute name="worktimeOut" type="java.lang.Integer" db-attribute-path="WORKTIME_OUT"/>
+	</obj-entity>
+	<obj-entity name="EipTTodo" className="com.aipo.orm.model.portlet.EipTTodo" dbEntityName="eip_t_todo">
+		<obj-attribute name="addonScheduleFlg" type="java.lang.String" db-attribute-path="ADDON_SCHEDULE_FLG"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="endDate" type="java.util.Date" db-attribute-path="END_DATE"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="priority" type="java.lang.Short" db-attribute-path="PRIORITY"/>
+		<obj-attribute name="publicFlag" type="java.lang.String" db-attribute-path="PUBLIC_FLAG"/>
+		<obj-attribute name="startDate" type="java.util.Date" db-attribute-path="START_DATE"/>
+		<obj-attribute name="state" type="java.lang.Short" db-attribute-path="STATE"/>
+		<obj-attribute name="todoName" type="java.lang.String" db-attribute-path="TODO_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTTodoCategory" className="com.aipo.orm.model.portlet.EipTTodoCategory" dbEntityName="eip_t_todo_category">
+		<obj-attribute name="categoryName" type="java.lang.String" db-attribute-path="CATEGORY_NAME"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTWhatsNew" className="com.aipo.orm.model.portlet.EipTWhatsNew" dbEntityName="eip_t_whatsnew">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="entityId" type="java.lang.Integer" db-attribute-path="ENTITY_ID"/>
+		<obj-attribute name="parentId" type="java.lang.Integer" db-attribute-path="PARENT_ID"/>
+		<obj-attribute name="portletType" type="java.lang.Integer" db-attribute-path="PORTLET_TYPE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTWorkflowCategory" className="com.aipo.orm.model.portlet.EipTWorkflowCategory" dbEntityName="eip_t_workflow_category">
+		<obj-attribute name="categoryName" type="java.lang.String" db-attribute-path="CATEGORY_NAME"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="template" type="java.lang.String" db-attribute-path="TEMPLATE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTWorkflowFile" className="com.aipo.orm.model.portlet.EipTWorkflowFile" dbEntityName="eip_t_workflow_file">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="fileName" type="java.lang.String" db-attribute-path="FILE_NAME"/>
+		<obj-attribute name="filePath" type="java.lang.String" db-attribute-path="FILE_PATH"/>
+		<obj-attribute name="fileThumbnail" type="byte[]" db-attribute-path="FILE_THUMBNAIL"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTWorkflowRequest" className="com.aipo.orm.model.portlet.EipTWorkflowRequest" dbEntityName="eip_t_workflow_request">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="parentId" type="java.lang.Integer" db-attribute-path="PARENT_ID"/>
+		<obj-attribute name="price" type="java.lang.Long" db-attribute-path="PRICE"/>
+		<obj-attribute name="priority" type="java.lang.Short" db-attribute-path="PRIORITY"/>
+		<obj-attribute name="progress" type="java.lang.String" db-attribute-path="PROGRESS"/>
+		<obj-attribute name="requestName" type="java.lang.String" db-attribute-path="REQUEST_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTWorkflowRequestMap" className="com.aipo.orm.model.portlet.EipTWorkflowRequestMap" dbEntityName="eip_t_workflow_request_map">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="orderIndex" type="java.lang.Integer" db-attribute-path="ORDER_INDEX"/>
+		<obj-attribute name="status" type="java.lang.String" db-attribute-path="STATUS"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTWorkflowRoute" className="com.aipo.orm.model.portlet.EipTWorkflowRoute" dbEntityName="eip_t_workflow_route">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="note" type="java.lang.String" db-attribute-path="NOTE"/>
+		<obj-attribute name="route" type="java.lang.String" db-attribute-path="ROUTE"/>
+		<obj-attribute name="routeName" type="java.lang.String" db-attribute-path="ROUTE_NAME"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<db-relationship name="eipMFacility" source="eip_facility_group" target="eip_m_facility" toMany="false">
+		<db-attribute-pair source="FACILITY_ID" target="FACILITY_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineGroup" source="eip_facility_group" target="turbine_group" toMany="false">
+		<db-attribute-pair source="GROUP_ID" target="GROUP_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTAddressbookGroupMap" source="eip_m_address_group" target="eip_t_addressbook_group_map" toMany="true">
+		<db-attribute-pair source="GROUP_ID" target="GROUP_ID"/>
+	</db-relationship>
+	<db-relationship name="eipMAddressbookCompany" source="eip_m_addressbook" target="eip_m_addressbook_company" toMany="false">
+		<db-attribute-pair source="COMPANY_ID" target="COMPANY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTAddressbookGroupMap" source="eip_m_addressbook" target="eip_t_addressbook_group_map" toMany="true">
+		<db-attribute-pair source="ADDRESS_ID" target="ADDRESS_ID"/>
+	</db-relationship>
+	<db-relationship name="eipMAddressbook" source="eip_m_addressbook_company" target="eip_m_addressbook" toMany="true">
+		<db-attribute-pair source="COMPANY_ID" target="COMPANY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipFacilityGroupArray" source="eip_m_facility" target="eip_facility_group" toMany="true">
+		<db-attribute-pair source="FACILITY_ID" target="FACILITY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMailFilters" source="eip_m_mail_account" target="eip_t_mail_filter" toMany="true">
+		<db-attribute-pair source="ACCOUNT_ID" target="ACCOUNT_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMailFolders" source="eip_m_mail_account" target="eip_t_mail_folder" toMany="true">
+		<db-attribute-pair source="ACCOUNT_ID" target="ACCOUNT_ID"/>
+	</db-relationship>
+	<db-relationship name="eipMCompany" source="eip_m_mybox" target="eip_m_company" toMany="false">
+		<db-attribute-pair source="COMPANY_ID" target="COMPANY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipMAddressbook" source="eip_t_addressbook_group_map" target="eip_m_addressbook" toMany="false">
+		<db-attribute-pair source="ADDRESS_ID" target="ADDRESS_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTAddressGroup" source="eip_t_addressbook_group_map" target="eip_m_address_group" toMany="false">
+		<db-attribute-pair source="GROUP_ID" target="GROUP_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlogEntrys" source="eip_t_blog" target="eip_t_blog_entry" toMany="true">
+		<db-attribute-pair source="BLOG_ID" target="BLOG_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlogFootmarkMaps" source="eip_t_blog" target="eip_t_blog_footmark_map" toMany="true">
+		<db-attribute-pair source="BLOG_ID" target="BLOG_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlogEntry" source="eip_t_blog_comment" target="eip_t_blog_entry" toMany="false">
+		<db-attribute-pair source="ENTRY_ID" target="ENTRY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlog" source="eip_t_blog_entry" target="eip_t_blog" toMany="false">
+		<db-attribute-pair source="BLOG_ID" target="BLOG_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlogComments" source="eip_t_blog_entry" target="eip_t_blog_comment" toMany="true">
+		<db-attribute-pair source="ENTRY_ID" target="ENTRY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlogFiles" source="eip_t_blog_entry" target="eip_t_blog_file" toMany="true">
+		<db-attribute-pair source="ENTRY_ID" target="ENTRY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlogThema" source="eip_t_blog_entry" target="eip_t_blog_thema" toMany="false">
+		<db-attribute-pair source="THEMA_ID" target="THEMA_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlogEntry" source="eip_t_blog_file" target="eip_t_blog_entry" toMany="false">
+		<db-attribute-pair source="ENTRY_ID" target="ENTRY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlog" source="eip_t_blog_footmark_map" target="eip_t_blog" toMany="false">
+		<db-attribute-pair source="BLOG_ID" target="BLOG_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTBlogEntrys" source="eip_t_blog_thema" target="eip_t_blog_entry" toMany="true">
+		<db-attribute-pair source="THEMA_ID" target="THEMA_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTCabinetFolder" source="eip_t_cabinet_file" target="eip_t_cabinet_folder" toMany="false">
+		<db-attribute-pair source="FOLDER_ID" target="FOLDER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTCabinetFiles" source="eip_t_cabinet_folder" target="eip_t_cabinet_file" toMany="true">
+		<db-attribute-pair source="FOLDER_ID" target="FOLDER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTCabinetFolderMap" source="eip_t_cabinet_folder" target="eip_t_cabinet_folder_map" toMany="true">
+		<db-attribute-pair source="FOLDER_ID" target="FOLDER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTCabinetFolder" source="eip_t_cabinet_folder_map" target="eip_t_cabinet_folder" toMany="false">
+		<db-attribute-pair source="FOLDER_ID" target="FOLDER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTScheduleMaps" source="eip_t_common_category" target="eip_t_schedule_map" toMany="true">
+		<db-attribute-pair source="COMMON_CATEGORY_ID" target="COMMON_CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineUser" source="eip_t_eventlog" target="turbine_user" toMany="false">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTExtTimecardSystemMaps" source="eip_t_ext_timecard_system" target="eip_t_ext_timecard_system_map" toMany="true">
+		<db-attribute-pair source="SYSTEM_ID" target="SYSTEM_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTExtTimecardSystem" source="eip_t_ext_timecard_system_map" target="eip_t_ext_timecard_system" toMany="false">
+		<db-attribute-pair source="SYSTEM_ID" target="SYSTEM_ID"/>
+	</db-relationship>
+	<db-relationship name="eipMMailAccount" source="eip_t_mail_filter" target="eip_m_mail_account" toMany="false">
+		<db-attribute-pair source="ACCOUNT_ID" target="ACCOUNT_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMailFolder" source="eip_t_mail_filter" target="eip_t_mail_folder" toMany="false">
+		<db-attribute-pair source="DST_FOLDER_ID" target="FOLDER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipMMailAccount" source="eip_t_mail_folder" target="eip_m_mail_account" toMany="false">
+		<db-attribute-pair source="ACCOUNT_ID" target="ACCOUNT_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMailFilters" source="eip_t_mail_folder" target="eip_t_mail_filter" toMany="true">
+		<db-attribute-pair source="FOLDER_ID" target="DST_FOLDER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMsgboardCategoryMaps" source="eip_t_msgboard_category" target="eip_t_msgboard_category_map" toMany="true">
+		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMsgboardTopics" source="eip_t_msgboard_category" target="eip_t_msgboard_topic" toMany="true">
+		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineUser" source="eip_t_msgboard_category" target="turbine_user" toMany="false">
+		<db-attribute-pair source="OWNER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMsgboardCategory" source="eip_t_msgboard_category_map" target="eip_t_msgboard_category" toMany="false">
+		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMsgboardTopic" source="eip_t_msgboard_file" target="eip_t_msgboard_topic" toMany="false">
+		<db-attribute-pair source="TOPIC_ID" target="TOPIC_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMsgboardCategory" source="eip_t_msgboard_topic" target="eip_t_msgboard_category" toMany="false">
+		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMsgboardFiles" source="eip_t_msgboard_topic" target="eip_t_msgboard_file" toMany="true">
+		<db-attribute-pair source="TOPIC_ID" target="TOPIC_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTNoteMaps" source="eip_t_note" target="eip_t_note_map" toMany="true">
+		<db-attribute-pair source="NOTE_ID" target="NOTE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTNote" source="eip_t_note_map" target="eip_t_note" toMany="false">
+		<db-attribute-pair source="NOTE_ID" target="NOTE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTScheduleMaps" source="eip_t_schedule" target="eip_t_schedule_map" toMany="true">
+		<db-attribute-pair source="SCHEDULE_ID" target="SCHEDULE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTCommonCategory" source="eip_t_schedule_map" target="eip_t_common_category" toMany="false">
+		<db-attribute-pair source="COMMON_CATEGORY_ID" target="COMMON_CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTSchedule" source="eip_t_schedule_map" target="eip_t_schedule" toMany="false">
+		<db-attribute-pair source="SCHEDULE_ID" target="SCHEDULE_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineUserGroupRole" source="eip_t_schedule_map" target="turbine_user_group_role" toMany="false">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTTodoCategory" source="eip_t_todo" target="eip_t_todo_category" toMany="false">
+		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineUser" source="eip_t_todo" target="turbine_user" toMany="false">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTTodo" source="eip_t_todo_category" target="eip_t_todo" toMany="true">
+		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowRequest" source="eip_t_workflow_category" target="eip_t_workflow_request" toMany="true">
+		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowRoute" source="eip_t_workflow_category" target="eip_t_workflow_route" toMany="false">
+		<db-attribute-pair source="ROUTE_ID" target="ROUTE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowRequest" source="eip_t_workflow_file" target="eip_t_workflow_request" toMany="false">
+		<db-attribute-pair source="REQUEST_ID" target="REQUEST_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowCategory" source="eip_t_workflow_request" target="eip_t_workflow_category" toMany="false">
+		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowFile" source="eip_t_workflow_request" target="eip_t_workflow_file" toMany="true">
+		<db-attribute-pair source="REQUEST_ID" target="REQUEST_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowRequestMap" source="eip_t_workflow_request" target="eip_t_workflow_request_map" toMany="true">
+		<db-attribute-pair source="REQUEST_ID" target="REQUEST_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowRoute" source="eip_t_workflow_request" target="eip_t_workflow_route" toMany="false">
+		<db-attribute-pair source="ROUTE_ID" target="ROUTE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowRequest" source="eip_t_workflow_request_map" target="eip_t_workflow_request" toMany="false">
+		<db-attribute-pair source="REQUEST_ID" target="REQUEST_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowCategory" source="eip_t_workflow_route" target="eip_t_workflow_category" toMany="true">
+		<db-attribute-pair source="ROUTE_ID" target="ROUTE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTWorkflowRequest" source="eip_t_workflow_route" target="eip_t_workflow_request" toMany="true">
+		<db-attribute-pair source="ROUTE_ID" target="ROUTE_ID"/>
+	</db-relationship>
+	<obj-relationship name="eipMFacility" source="EipFacilityGroup" target="EipMFacility" db-relationship-path="eipMFacility"/>
+	<obj-relationship name="turbineGroup" source="EipFacilityGroup" target="TurbineGroup" db-relationship-path="turbineGroup"/>
+	<obj-relationship name="eipTAddressbookGroupMap" source="EipMAddressGroup" target="EipTAddressbookGroupMap" db-relationship-path="eipTAddressbookGroupMap"/>
+	<obj-relationship name="eipMAddressbookCompany" source="EipMAddressbook" target="EipMAddressbookCompany" db-relationship-path="eipMAddressbookCompany"/>
+	<obj-relationship name="eipTAddressbookGroupMap" source="EipMAddressbook" target="EipTAddressbookGroupMap" db-relationship-path="eipTAddressbookGroupMap"/>
+	<obj-relationship name="eipFacilityGroupArray" source="EipMFacility" target="EipFacilityGroup" deleteRule="Cascade" db-relationship-path="eipFacilityGroupArray"/>
+	<obj-relationship name="eipMCompany" source="EipMMybox" target="EipMCompany" db-relationship-path="eipMCompany"/>
+	<obj-relationship name="eipMAddressbook" source="EipTAddressbookGroupMap" target="EipMAddressbook" db-relationship-path="eipMAddressbook"/>
+	<obj-relationship name="eipTAddressGroup" source="EipTAddressbookGroupMap" target="EipMAddressGroup" db-relationship-path="eipTAddressGroup"/>
+	<obj-relationship name="eipTBlogEntrys" source="EipTBlog" target="EipTBlogEntry" db-relationship-path="eipTBlogEntrys"/>
+	<obj-relationship name="eipTBlogFootmarkMaps" source="EipTBlog" target="EipTBlogFootmarkMap" db-relationship-path="eipTBlogFootmarkMaps"/>
+	<obj-relationship name="eipTBlogEntry" source="EipTBlogComment" target="EipTBlogEntry" db-relationship-path="eipTBlogEntry"/>
+	<obj-relationship name="eipTBlog" source="EipTBlogEntry" target="EipTBlog" db-relationship-path="eipTBlog"/>
+	<obj-relationship name="eipTBlogComments" source="EipTBlogEntry" target="EipTBlogComment" db-relationship-path="eipTBlogComments"/>
+	<obj-relationship name="eipTBlogFiles" source="EipTBlogEntry" target="EipTBlogFile" db-relationship-path="eipTBlogFiles"/>
+	<obj-relationship name="eipTBlogThema" source="EipTBlogEntry" target="EipTBlogThema" db-relationship-path="eipTBlogThema"/>
+	<obj-relationship name="eipTBlogEntry" source="EipTBlogFile" target="EipTBlogEntry" db-relationship-path="eipTBlogEntry"/>
+	<obj-relationship name="eipTBlog" source="EipTBlogFootmarkMap" target="EipTBlog" db-relationship-path="eipTBlog"/>
+	<obj-relationship name="eipTBlogEntrys" source="EipTBlogThema" target="EipTBlogEntry" deleteRule="Cascade" db-relationship-path="eipTBlogEntrys"/>
+	<obj-relationship name="eipTCabinetFolder" source="EipTCabinetFile" target="EipTCabinetFolder" db-relationship-path="eipTCabinetFolder"/>
+	<obj-relationship name="eipTCabinetFiles" source="EipTCabinetFolder" target="EipTCabinetFile" db-relationship-path="eipTCabinetFiles"/>
+	<obj-relationship name="eipTCabinetFolderMap" source="EipTCabinetFolder" target="EipTCabinetFolderMap" db-relationship-path="eipTCabinetFolderMap"/>
+	<obj-relationship name="eipTCabinetFolder" source="EipTCabinetFolderMap" target="EipTCabinetFolder" db-relationship-path="eipTCabinetFolder"/>
+	<obj-relationship name="eipTScheduleMaps" source="EipTCommonCategory" target="EipTScheduleMap" db-relationship-path="eipTScheduleMaps"/>
+	<obj-relationship name="turbineUser" source="EipTEventlog" target="TurbineUser" db-relationship-path="turbineUser"/>
+	<obj-relationship name="eipTExtTimecardSystemMaps" source="EipTExtTimecardSystem" target="EipTExtTimecardSystemMap" db-relationship-path="eipTExtTimecardSystemMaps"/>
+	<obj-relationship name="eipTExtTimecardSystem" source="EipTExtTimecardSystemMap" target="EipTExtTimecardSystem" db-relationship-path="eipTExtTimecardSystem"/>
+	<obj-relationship name="eipMMailAccount" source="EipTMailFilter" target="EipMMailAccount" db-relationship-path="eipMMailAccount"/>
+	<obj-relationship name="eipTMailFolder" source="EipTMailFilter" target="EipTMailFolder" db-relationship-path="eipTMailFolder"/>
+	<obj-relationship name="eipMMailAccount" source="EipTMailFolder" target="EipMMailAccount" db-relationship-path="eipMMailAccount"/>
+	<obj-relationship name="eipTMsgboardCategoryMaps" source="EipTMsgboardCategory" target="EipTMsgboardCategoryMap" db-relationship-path="eipTMsgboardCategoryMaps"/>
+	<obj-relationship name="eipTMsgboardTopics" source="EipTMsgboardCategory" target="EipTMsgboardTopic" db-relationship-path="eipTMsgboardTopics"/>
+	<obj-relationship name="turbineUser" source="EipTMsgboardCategory" target="TurbineUser" db-relationship-path="turbineUser"/>
+	<obj-relationship name="eipTMsgboardCategory" source="EipTMsgboardCategoryMap" target="EipTMsgboardCategory" db-relationship-path="eipTMsgboardCategory"/>
+	<obj-relationship name="eipTMsgboardTopic" source="EipTMsgboardFile" target="EipTMsgboardTopic" db-relationship-path="eipTMsgboardTopic"/>
+	<obj-relationship name="eipTMsgboardCategory" source="EipTMsgboardTopic" target="EipTMsgboardCategory" db-relationship-path="eipTMsgboardCategory"/>
+	<obj-relationship name="eipTMsgboardFileArray" source="EipTMsgboardTopic" target="EipTMsgboardFile" db-relationship-path="eipTMsgboardFiles"/>
+	<obj-relationship name="eipTNoteMaps" source="EipTNote" target="EipTNoteMap" db-relationship-path="eipTNoteMaps"/>
+	<obj-relationship name="eipTNote" source="EipTNoteMap" target="EipTNote" db-relationship-path="eipTNote"/>
+	<obj-relationship name="eipTScheduleMaps" source="EipTSchedule" target="EipTScheduleMap" db-relationship-path="eipTScheduleMaps"/>
+	<obj-relationship name="eipTCommonCategory" source="EipTScheduleMap" target="EipTCommonCategory" db-relationship-path="eipTCommonCategory"/>
+	<obj-relationship name="eipTSchedule" source="EipTScheduleMap" target="EipTSchedule" db-relationship-path="eipTSchedule"/>
+	<obj-relationship name="turbineUserGroupRole" source="EipTScheduleMap" target="TurbineUserGroupRole" db-relationship-path="turbineUserGroupRole"/>
+	<obj-relationship name="eipTTodoCategory" source="EipTTodo" target="EipTTodoCategory" db-relationship-path="eipTTodoCategory"/>
+	<obj-relationship name="turbineUser" source="EipTTodo" target="TurbineUser" db-relationship-path="turbineUser"/>
+	<obj-relationship name="eipTTodoArray" source="EipTTodoCategory" target="EipTTodo" db-relationship-path="eipTTodo"/>
+	<obj-relationship name="eipTWorkflowRequest" source="EipTWorkflowCategory" target="EipTWorkflowRequest" db-relationship-path="eipTWorkflowRequest"/>
+	<obj-relationship name="eipTWorkflowRoute" source="EipTWorkflowCategory" target="EipTWorkflowRoute" db-relationship-path="eipTWorkflowRoute"/>
+	<obj-relationship name="eipTWorkflowRequest" source="EipTWorkflowFile" target="EipTWorkflowRequest" db-relationship-path="eipTWorkflowRequest"/>
+	<obj-relationship name="eipTWorkflowCategory" source="EipTWorkflowRequest" target="EipTWorkflowCategory" db-relationship-path="eipTWorkflowCategory"/>
+	<obj-relationship name="eipTWorkflowFile" source="EipTWorkflowRequest" target="EipTWorkflowFile" db-relationship-path="eipTWorkflowFile"/>
+	<obj-relationship name="eipTWorkflowRequestMap" source="EipTWorkflowRequest" target="EipTWorkflowRequestMap" db-relationship-path="eipTWorkflowRequestMap"/>
+	<obj-relationship name="eipTWorkflowRoute" source="EipTWorkflowRequest" target="EipTWorkflowRoute" db-relationship-path="eipTWorkflowRoute"/>
+	<obj-relationship name="eipTWorkflowRequest" source="EipTWorkflowRequestMap" target="EipTWorkflowRequest" db-relationship-path="eipTWorkflowRequest"/>
+	<obj-relationship name="eipTWorkflowCategory" source="EipTWorkflowRoute" target="EipTWorkflowCategory" db-relationship-path="eipTWorkflowCategory"/>
+	<obj-relationship name="eipTWorkflowRequest" source="EipTWorkflowRoute" target="EipTWorkflowRequest" db-relationship-path="eipTWorkflowRequest"/>
+</data-map>

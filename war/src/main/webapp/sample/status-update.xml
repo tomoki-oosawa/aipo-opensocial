@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Status Update">
+<Locale>
+  <msg name="MENU_HOME">Home</msg>
+  <msg name="MENU_MENTIONS">Mentions</msg>
+  <msg name="MENU_CHECKIN">Check-in</msg>
+  <msg name="MENU_MEMBERS">Members</msg>
+  <msg name="MENU_MEMBERS_OF">of ...</msg>
+  <msg name="TITLE_MENTIONING">Statuses mentioning</msg>
+  <msg name="TITLE_FOLLOWING">Who follows</msg>
+  <msg name="TITLE_MEMBERS">Who joins</msg>
+  <msg name="TITLE_SEARCH">Search results for</msg>
+  <msg name="LABEL_SHARE">What are you working on?</msg>
+  <msg name="LABEL_FOLLOWING">Following</msg>
+  <msg name="LABEL_FOLLOWERS">Followers</msg>
+  <msg name="LABEL_LAST_UPDATE">Last update:</msg>
+  <msg name="LABEL_MEMBERS">Members</msg>
+  <msg name="LABEL_OOPS">Oops, there was a problem: </msg>
+  <msg name="LABEL_DELETE">Are you sure you want to delete this status?</msg>
+  <msg name="BUTTON_SHARE">Share</msg>
+  <msg name="BUTTON_FOLLOW">Follow</msg>
+  <msg name="BUTTON_UNFOLLOW">Unfollow</msg>
+  <msg name="BUTTON_REPLY">Reply</msg>
+  <msg name="BUTTON_DELETE">Delete</msg>
+  <msg name="BUTTON_MORE">More</msg>
+</Locale>
+</ModulePrefs>
+  
+<Content view="home,profile,following,followers,mentions,groups,members,search"><![CDATA[
+  
+  <style type="text/css">
+    @import url(http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/ui-lightness/jquery-ui.css);
+    .ui-icon { float: left; }
+    .ui-state-ajax .ui-icon { background-image: url(/icons/ajaxload/facebook.gif); background-position: 0 3px; }
+    
+    body { background-color: #fff; color: #333; font-size: 12px; font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif; margin: 0; padding: 0; }    
+    a:link, a:visited, a:active { text-decoration: none; } a:hover { text-decoration: underline; }
+    img { border: 0; }
+    
+    #wrapper { margin: 0; padding: 0; }
+    
+    #header { margin-bottom: 10px; padding: 0 10px; }
+    #header ul { line-height: 30px; height: 30px; }
+    #header ul li { padding-right: 10px; float: left; }
+    
+    #body { margin: 10px 0; padding: 0 10px; }
+    #body a { color: #1C94C4; }
+    #body h1 { border-bottom: 1px solid #E9E9E9; font-size: 16px; margin: 2px 0; padding: 2px 0; }
+    #body form { margin: 2px 0; }
+    #body form label { font-size: 16px; font-weight: bold; padding: 0 2px; display: block; }
+    #body form textarea { border: 1px solid #bbb; margin: 2px 0; padding: 0; width: 100%; height: 3em; display: block; }
+    #body form button { float: right; }
+    
+    #footer { margin: 10px 0; padding: 0 10px; }
+    #footer a { color: #1C94C4; }
+    #footer ul { float: right; } 
+    #footer ul li { padding-left: 10px; float: left; }
+    
+    #timeline { margin: 2px 0; clear: both; }
+    #timeline h2 { font-size: 16px; margin: 2px 0; }
+    #timeline ul li { font-size: 11px; padding-right: 5px; float: left; }
+    #timeline ul li.statusDate { color: #808080; }
+    #timeline ul.statusMediaBar { margin: 2px 0; }
+    #timeline ul li img { width: 120px; height: 90px; }    
+    #timeline .status, #timeline .userStatus { border-top: 1px solid #E9E9E9; font-size: 13px; padding: 5px; }
+    #timeline > div:nth-child(1), #timeline > div:nth-child(2) { border-top: 0; }
+    
+    #more { margin: 2px 0; }
+
+    #badge { margin: 5px 0; }
+    #badge h2  { font-size: 16px; margin: 2px 0; }
+    #badge ul li { /*font-size: 13px;*/ padding-right: 10px; float: left; }
+    #badge div.status { font-size: 13px; }
+    #badge .statusDate { color: #808080; font-size: 11px; }
+
+    #toolbar { margin: 2px 0; }
+  </style>
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script type="text/javascript">
+    var baseUrl = location.protocol + '//' + location.host + '/';
+    var domainId = location.pathname.split('/')[2];
+
+    function oops(message) {
+      alert('__MSG_LABEL_OOPS__' + message);
+    }
+
+    function parseText(statusText) {
+      return $('<div/>').text(statusText).html().replace(/(https?:\/\/[\x21-\x7e]+|@[\w.-]+|#[^#\s]+)/g, function(s, text) {
+         if (text.indexOf('@') == 0) {
+           var a = $('<a class="id"/>').attr('href', '?view=profile&id=' + text).text(text);
+           var strong = $('<strong/>').append(a);
+           return $('<div/>').append(strong).html();
+         } else if (text.indexOf('#') == 0) {
+           var a = $('<a class="tag"/>').attr('href', '?view=search&q=' + encodeURIComponent(text)).text(text);
+           var strong = $('<strong/>').append(a);
+           return $('<div/>').append(strong).html();
+         } else {
+           var a = $('<a/>').attr('href', text);
+           if (text.indexOf(baseUrl) == 0)
+             a.text(text.substring(baseUrl.length - 1));
+           else
+             a.text(text).attr('target', '_blank');
+           return $('<div/>').append(a).html();
+         }
+       });
+    }
+    
+    function parseDate(postedTime) {
+      var m = postedTime.match(/^(\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)\.(\d+)Z$/);
+      var date = new Date(Date.UTC(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10),
+        parseInt(m[4], 10), parseInt(m[5], 10), parseInt(m[6], 10)));
+      return date.toLocaleString();
+    }
+
+    function createStatus(status) {
+       var clone = $('#timeline div.status:hidden').clone();
+       
+       clone.find('div.statusText a').attr('href', '?view=profile&id=' + status.user.aliasId).text(status.user.aliasId);
+       clone.find('div.statusText span').html(parseText(status.title));
+       clone.find('.statusDate').text(parseDate(status.postedTime));
+
+       var replyButton = clone.find('a.statusReply').click(function() {
+         var replyText = status.user.aliasId + ' ' + clone.find('a.id,a.tag').map(function() { return $(this).text(); }).get().join(' ');
+         var shareText = $('#body form textarea');
+         if (shareText.length > 0) {
+           shareText.val(replyText + ' ');
+           $(document).scrollTop(0);
+         } else {
+           location.href = '?view=home&status=' + encodeURIComponent(replyText + ' ');
+         }
+         return false;
+       });
+      
+       if (status.user.isViewer)
+          replyButton.hide();
+
+       var deleteButton = clone.find('a.statusDelete').click(function() {
+         if (!confirm('Are you sure you want to delete this status?'))
+           return false;
+         deleteButton.addClass('ui-state-ajax');
+         osapi.activities['delete']({ activity : { id: status.id } }).execute(function(r) {
+           deleteButton.removeClass('ui-state-ajax');
+           if (r.error)
+             return oops(r.error.message);
+           clone.fadeOut();
+         });
+         return false;
+       });
+
+       if (!status.user.isViewer)
+         deleteButton.hide();
+      
+       var mediaBar = clone.find('ul.statusMediaBar ');
+      
+       $.each(status.mediaItems, function(i, mediaItem) {
+         var img = $('<img/>').attr('src', mediaItem.thumbnailUrl);
+         var a = $('<a/>').attr({ href: mediaItem.url, target: '_blank' }).append(img);
+         $('<li/>').append(a).appendTo(mediaBar);
+       });
+      
+       return clone.show();
+    }
+
+    function createUserStatus(user) {
+      var clone = $('#timeline div.userStatus:hidden').clone();
+
+      clone.find('h2 a').attr('href', '?view=profile&id=' + user.aliasId).text(user.aliasId);
+      clone.find('h2 span').text(user.nickname);
+      if (user.activity) {
+        clone.find('div.statusText span').html(parseText(user.activity.title));
+        clone.find('.statusDate').text(parseDate(user.activity.postedTime));
+      }
+      
+      if (!user.isViewerFriends)
+        clone.find('li.following').hide();
+      
+      return clone.show();
+    }
+    
+    function showHeader(viewer, groups) {
+      var groupButton = $('#header select');
+      $.each(groups.entry, function(i, group) {
+        $('<option/>').attr('value', group.aliasId).text(group.aliasId).appendTo(groupButton);
+      });
+    }
+
+    function showFooter(viewer) {
+      if (viewer.isAdmin)
+        $('#footer li').show();
+    }
+    
+    function showUserBadge(user, userFriends) {
+      var badge = $('#badge').show();
+      badge.find('h2 a').attr('href', '?view=profile&id=' + user.aliasId).text(user.aliasId);
+      badge.find('h2  span').text(user.nickname);
+      badge.find('li.following a').attr('href', '?view=following&id=' + user.aliasId);
+      badge.find('li.following span').text(userFriends.totalResults);
+      badge.find('li.followers span').text(user.followerIds.length);
+      if (user.activity) {
+        badge.find('div.status  span.statusText').html(parseText(user.activity.title));
+        badge.find('div.status  span.statusDate').text(parseDate(user.activity.postedTime));
+      }
+    }
+
+    function showGroupBadge(group, groupMembers) {
+      var badge = $('#badge').show();
+      if (group) {
+         badge.find('h2 a').attr('href', '?view=groups&id=' + group.aliasId).text(group.aliasId);
+         badge.find('h2 span').text(group.title);
+         badge.find('li.members a').attr('href', '?view=members&id=' + group.aliasId);
+         badge.find('li.members span').text(groupMembers.totalResults);
+      } else {
+        badge.find('h2').text(domainId);
+        badge.find('li.members a').attr('href', '?view=members');
+        badge.find('li.members span').text(groupMembers.totalResults);
+      }
+    }
+    
+    function showToolbar(user) {
+      $('#toolbar button.' + (user.isViewerFriends ? 'unfollow' : 'follow')).show();
+            
+      var followButton = $('#toolbar button.follow').click(function() {
+         followButton.addClass('ui-state-ajax');
+         osapi.people.create({ groupId: '@friends', person: { id: user.id, groupId: '@friends' }}).execute(function(r) {
+           followButton.removeClass('ui-state-ajax');
+           if (r.error)
+             return oops(r.error.message);
+           $([followButton, unfollowButton]).toggle();
+         });
+      });
+
+      var unfollowButton = $('#toolbar button.unfollow').click(function() {
+         unfollowButton.addClass('ui-state-ajax');
+         osapi.people['delete']({ groupId: '@friends', person: { id: user.id }}).execute(function(r) {
+           unfollowButton.removeClass('ui-state-ajax');
+           if (r.error)
+             return oops(r.error.message);
+           $([followButton, unfollowButton]).toggle();
+         });
+      });
+    }
+  </script>
+
+]]></Content>
+  
+<Content view="home"><![CDATA[
+
+  <div id="wrapper">
+    
+    <div id="header" class="ui-widget ui-widget-header">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li><a href="?view=home">__MSG_MENU_HOME__</a></li>
+        <li><a href="?view=mentions">__MSG_MENU_MENTIONS__</a></li>
+        <li><a href="@checkin">__MSG_MENU_CHECKIN__</a></li>
+        <li><a href="?view=groups">__MSG_MENU_MEMBERS__</a></li>
+        <li>
+          <select onchange="location.href='?view=groups&id='+this.value">
+            <option value="">__MSG_MENU_MEMBERS_OF__</option>
+          </select>
+        </li>
+      </ul>
+    </div><!--/header-->
+    
+    <div id="body" class="ui-widget">
+  
+      <form>
+        <label>__MSG_LABEL_SHARE__</label>
+        <textarea class="ui-corner-all"></textarea>
+        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon">
+          <span class="ui-button-icon-primary ui-icon ui-icon-comment"></span>
+          <span class="ui-button-text">__MSG_BUTTON_SHARE__</span>
+        </button>
+      </form>
+      
+      <div id="timeline">
+        <div class="status ui-helper-clearfix" style="display:none;">
+          <div class="statusText"><strong><a href="#profile"></a></strong> <span></span></div>
+          <ul class="statusMediaBar ui-helper-reset ui-helper-clearfix"></ul>
+          <ul class="ui-helper-reset ui-helper-clearfix">
+            <li class="statusDate"></li>
+            <li><a class="statusReply ui-widget" href="#reply">__MSG_BUTTON_REPLY__</a></li>
+            <li><a class="statusDelete ui-widget" href="#delete">__MSG_BUTTON_DELETE__</a></li>
+          </ul>
+        </div>
+      </div>
+    
+      <div id="more">
+        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-circle-triangle-s"></span>
+           <span class="ui-button-text">__MSG_BUTTON_MORE__</span>
+        </button>      
+      </div>
+
+      <div id="badge" style="display:none;">
+        <h2><a href="#profile"></a> <span></span></h2>
+        <ul class="ui-helper-reset ui-helper-clearfix">
+          <li class="following"><a href="#following">__MSG_LABEL_FOLLOWING__ <span></span></a></li>
+          <li class="followers">__MSG_LABEL_FOLLOWERS__ <span></span></li>
+        </ul>
+        <div class="status">
+          <strong>__MSG_LABEL_LAST_UPDATE__</strong> <span class="statusText"></span> <span class="statusDate"></span>
+        </div>
+      </div>
+  
+    </div><!--/body-->
+  
+    <div id="footer" class="ui-widget">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li style="display:none;"><a href="controlpanel">Control Panel</a></li>
+        <li style="display:none;"><a href="controlpanel/gadgets/__MODULE_ID__/edit">Edit this Gadget</a></li>
+      </ul>
+    </div><!--/footer-->
+  
+  </div><!--/wrapper-->
+
+  <script type="text/javascript">
+    var text = gadgets.util.getUrlParameters().status || '';
+    var updatedSince;
+
+    function init() {
+      var batch = osapi.newBatch()
+        .add('viewer', osapi.people.getViewer({ fields: 'activity' }))
+        .add('viewerFriends', osapi.people.getViewerFriends({ count: 1 }))
+        .add('groups', osapi.groups.get({ userId: '@owner' }))
+        .add('statuses', osapi.activities.get({ groupId: '@friends', count: 20, fields: 'person' }));
+      
+      batch.execute(function(r) {
+        var viewer = r.viewer, viewerFriends = r.viewerFriends, groups = r.groups, statuses = r.statuses;
+        
+        showHeader(viewer, groups);
+        showUserBadge(viewer, viewerFriends);
+        showFooter(viewer);
+
+        var shareText = $('#body form textarea').val(text);
+        var shareButton = $('#body form button').click(function() {
+          var title = $.trim(shareText.val());
+          if (title === '')
+            return false;
+          shareButton.addClass('ui-state-ajax');
+          osapi.activities.create({ activity : { title: title } }).execute(function(r) {
+            shareButton.removeClass('ui-state-ajax');
+            if (r.error)
+              return oops(r.error.message);
+            shareText.val('');
+            refresh();
+          });
+          return false;
+        });
+
+        if (statuses.entry[0])
+          updatedSince = statuses.entry[0].postedTime;
+        $.each(statuses.entry, function(i, status) {
+          if (status.user) $('#timeline').append(createStatus(status));
+        });
+
+        setInterval(refresh, 30 * 1000);
+
+        var moreButton = $('#more button').click(function() {
+          moreButton.addClass('ui-state-ajax');
+          var startIndex = $('#timeline div.status:visible').length;
+          osapi.activities.get({ groupId: '@friends', count: 10, startIndex: startIndex, fields: 'person' }).execute(function(statuses) {
+            moreButton.removeClass('ui-state-ajax');
+            if (!(statuses.startIndex + statuses.itemsPerPage < statuses.totalResults))
+              moreButton.hide();
+            $.each(statuses.entry, function(i, status) {
+              if (status.user) $('#timeline').append(createStatus(status));
+            });
+          });
+        });
+
+        if (statuses.startIndex + statuses.itemsPerPage < statuses.totalResults)
+          moreButton.show();
+      });
+    }
+
+    function refresh() {
+      osapi.activities.get({ groupId: '@friends', fields: 'person', updatedSince: updatedSince }).execute(function(statuses) {
+        if (statuses.entry[0])
+          updatedSince = statuses.entry[0].postedTime;
+        $.each(statuses.entry.reverse(), function(i, status) {
+          if (status.user) $('#timeline').prepend(createStatus(status));
+        });
+      });
+    }
+  </script>
+  
+]]></Content>
+
+<Content view="mentions"><![CDATA[
+
+  <div id="wrapper">
+    
+    <div id="header" class="ui-widget ui-widget-header">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li><a href="?view=home">__MSG_MENU_HOME__</a></li>
+        <li><a href="?view=mentions">__MSG_MENU_MENTIONS__</a></li>
+        <li><a href="@checkin">__MSG_MENU_CHECKIN__</a></li>
+        <li><a href="?view=groups">__MSG_MENU_MEMBERS__</a></li>
+        <li>
+          <select onchange="location.href='?view=groups&id='+this.value">
+            <option value="">__MSG_MENU_MEMBERS_OF__</option>
+          </select>
+        </li>
+      </ul>
+    </div><!--/header-->
+    
+    <div id="body" class="ui-widget">
+
+      <h1>__MSG_TITLE_MENTIONING__ <span>...</span></h1>
+      
+      <div id="timeline">
+        <div class="status ui-corner-all ui-helper-clearfix" style="display:none;">
+          <div class="statusText"><strong><a href="#profile"></a></strong> <span></span></div>
+          <ul class="statusMediaBar ui-helper-reset ui-helper-clearfix"></ul>
+          <ul class="ui-helper-reset ui-helper-clearfix">
+            <li class="statusDate"></li>
+            <li><a class="statusReply ui-widget" href="#reply">__MSG_BUTTON_REPLY__</a></li>
+            <li><a class="statusDelete ui-widget" href="#delete">__MSG_BUTTON_DELETE__</a></li>
+          </ul>
+        </div>
+      </div>
+    
+      <div id="more">
+        <button class="unfollow ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-circle-triangle-s"></span>
+           <span class="ui-button-text">__MSG_BUTTON_MORE__</span>
+        </button>      
+      </div>
+
+      <div id="badge" style="display:none;">
+        <h2><a href="#profile"></a> <span></span></h2>
+        <ul class="ui-helper-reset ui-helper-clearfix">
+          <li class="following"><a href="#following">__MSG_LABEL_FOLLOWING__ <span></span></a></li>
+          <li class="followers">__MSG_LABEL_FOLLOWERS__ <span></span></li>
+        </ul>
+        <div class="status">
+          <strong>__MSG_LABEL_LAST_UPDATE__</strong> <span class="statusText"></span> <span class="statusDate"></span>
+        </div>
+      </div>
+      
+    </div><!--/body-->
+    
+    <div id="footer" class="ui-widget">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li style="display:none;"><a href="controlpanel">Control Panel</a></li>
+        <li style="display:none;"><a href="controlpanel/gadgets/__MODULE_ID__/edit">Edit this Gadget</a></li>
+      </ul>
+    </div><!--/footer-->
+  
+  </div><!--/wrapper-->
+
+  <script type="text/javascript">
+
+    function init() {
+      var batch = osapi.newBatch()
+        .add('viewer', osapi.people.getViewer({ fields: 'activity' }))
+        .add('viewerFriends', osapi.people.getViewerFriends({ count: 1 }))
+        .add('groups', osapi.groups.get({ userId: '@owner' }))
+        .add('statuses', osapi.activities.get({ groupId: '@mentions', count: 20, fields: 'person' }));
+
+      batch.execute(function(r) {
+        var viewer = r.viewer, viewerFriends = r.viewerFriends, groups = r.groups, statuses = r.statuses;
+
+        showHeader(viewer, groups);
+        showUserBadge(viewer, viewerFriends);
+        showFooter(viewer);
+        
+        $('#body h1 span').text(viewer.aliasId);
+
+        $.each(statuses.entry, function(i, status) {
+          if (status.user) $('#timeline').append(createStatus(status));
+        });
+        
+        var moreButton = $('#more button').click(function() {
+          moreButton.addClass('ui-state-ajax');
+          var startIndex = $('#timeline .status:visible').length;
+          osapi.activities.get({ groupId: '@mentions', count: 10, startIndex: startIndex, fields: 'person' }).execute(function(statuses) {
+            moreButton.removeClass('ui-state-ajax');
+            if (!(statuses.startIndex + statuses.itemsPerPage < statuses.totalResults))
+              moreButton.hide();
+            $.each(statuses.entry, function(i, status) {
+              if (status.user) $('#timeline').append(createStatus(status));
+            });
+          });
+        });
+
+        if (statuses.startIndex + statuses.itemsPerPage < statuses.totalResults)
+          moreButton.show();
+      });
+    }
+  </script>
+
+]]></Content>
+  
+<Content view="profile"><![CDATA[
+  
+  <div id="wrapper">
+    
+    <div id="header" class="ui-widget ui-widget-header">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li><a href="?view=home">__MSG_MENU_HOME__</a></li>
+        <li><a href="?view=mentions">__MSG_MENU_MENTIONS__</a></li>
+        <li><a href="@checkin">__MSG_MENU_CHECKIN__</a></li>
+        <li><a href="?view=groups">__MSG_MENU_MEMBERS__</a></li>
+        <li>
+          <select onchange="location.href='?view=groups&id='+this.value">
+            <option value="">__MSG_MENU_MEMBERS_OF__</option>
+          </select>
+        </li>
+      </ul>
+    </div><!--/header-->
+    
+    <div id="body" class="ui-widget">
+
+      <div id="badge" style="display:none;">
+        <h2><a href="#profile"></a> <span></span></h2>
+        <ul class="ui-helper-reset ui-helper-clearfix">
+          <li class="following"><a href="#following">__MSG_LABEL_FOLLOWING__ <span></span></a></li>
+          <li class="followers">__MSG_LABEL_FOLLOWERS__ <span></span></li>
+        </ul>
+      </div>
+        
+      <div id="toolbar">
+        <button class="follow ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+          <span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>
+          <span class="ui-button-text">__MSG_BUTTON_FOLLOW__</span>
+        </button>
+        <button class="unfollow ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+           <span class="ui-button-text">__MSG_BUTTON_UNFOLLOW__</span>
+        </button>      
+      </div>
+      
+      <div id="timeline">
+        <div class="status ui-corner-all ui-helper-clearfix" style="display:none;">
+          <div class="statusText"><span></span></div>
+          <ul class="statusMediaBar ui-helper-reset ui-helper-clearfix"></ul>
+          <ul class="ui-helper-reset ui-helper-clearfix">
+            <li class="statusDate"></li>
+            <li><a class="statusReply ui-widget" href="#reply">__MSG_BUTTON_REPLY__</a></li>
+            <li><a class="statusDelete ui-widget" href="#delete">__MSG_BUTTON_DELETE__</a></li>
+          </ul>
+        </div>
+      </div>
+    
+      <div id="more">
+        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-circle-triangle-s"></span>
+           <span class="ui-button-text">__MSG_BUTTON_MORE__</span>
+        </button>      
+      </div>
+      
+    </div><!--/body-->
+    
+    <div id="footer" class="ui-widget">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li style="display:none;"><a href="controlpanel">Control Panel</a></li>
+        <li style="display:none;"><a href="controlpanel/gadgets/__MODULE_ID__/edit">Edit this Gadget</a></li>
+      </ul>
+    </div><!--/footer-->
+  
+  </div><!--/wrapper-->
+
+  <script type="text/javascript">
+    var userId = gadgets.util.getUrlParameters().id || '@viewer';
+
+    function init() {
+      var batch = osapi.newBatch()
+        .add('viewer', osapi.people.getViewer())
+        .add('groups', osapi.groups.get({ userId: '@owner' }))
+        .add('user', osapi.people.get({ userId: userId }))
+        .add('userFriends', osapi.people.get({ userId: userId, groupId: '@friends', count: 1 }))
+        .add('statuses', osapi.activities.get({ userId: userId, count: 20 }));
+      
+      batch.execute(function(r) {
+        var viewer = r.viewer, groups = r.groups, user = r.user, userFriends = r.userFriends, statuses = r.statuses;
+
+        showHeader(viewer, groups);
+        showFooter(viewer);
+        
+        if (user.error)
+          return oops(user.error.message);
+        
+        showUserBadge(user, userFriends);
+        showToolbar(user);
+
+        $.each(statuses.entry, function(i, status) {
+          status.user = user; $('#timeline').append(createStatus(status));
+        });
+        
+        var moreButton = $('#more button').click(function() {
+          moreButton.addClass('ui-state-ajax');
+          var startIndex = $('#timeline .status:visible').length;
+          osapi.activities.get({ userId: userId, count: 10, startIndex: startIndex }).execute(function(statuses) {
+            moreButton.removeClass('ui-state-ajax');
+            if (!(statuses.startIndex + statuses.itemsPerPage < statuses.totalResults))
+              moreButton.hide();
+            $.each(statuses.entry, function(i, status) {
+              status.user = user; $('#timeline').append(createStatus(status));
+            });
+          });
+        });
+
+        if (statuses.startIndex + statuses.itemsPerPage < statuses.totalResults)
+          moreButton.show();
+      });
+    }
+  </script>
+
+]]></Content>
+
+<Content view="following"><![CDATA[  
+
+  <div id="wrapper">
+    
+    <div id="header" class="ui-widget ui-widget-header">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li><a href="?view=home">__MSG_MENU_HOME__</a></li>
+        <li><a href="?view=mentions">__MSG_MENU_MENTIONS__</a></li>
+        <li><a href="@checkin">__MSG_MENU_CHECKIN__</a></li>
+        <li><a href="?view=groups">__MSG_MENU_MEMBERS__</a></li>
+        <li>
+          <select onchange="location.href='?view=groups&id='+this.value">
+            <option value="">__MSG_MENU_MEMBERS_OF__</option>
+          </select>
+        </li>
+      </ul>
+    </div><!--/header-->
+
+    <div id="body" class="ui-widget">
+
+      <div id="badge" style="display:none;">
+        <h2><a href="#profile"></a> <span></span></h2>
+        <ul class="ui-helper-reset ui-helper-clearfix">
+          <li class="following"><a href="#following">__MSG_LABEL_FOLLOWING__ <span></span></a></li>
+          <li class="followers">__MSG_LABEL_FOLLOWERS__ <span></span></li>
+        </ul>
+
+      <div id="toolbar">
+        <button class="follow ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+          <span class="ui-button-icon-primary ui-icon ui-icon-plusthick"></span>
+          <span class="ui-button-text">__MSG_BUTTON_FOLLOW__</span>
+        </button>
+        <button class="unfollow ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+           <span class="ui-button-text">__MSG_BUTTON_UNFOLLOW__</span>
+        </button>      
+      </div>
+
+      </div>
+
+      
+      <h1>__MSG_TITLE_FOLLOWING__ <span>...</span></h1>
+      
+      <div id="timeline">
+        <div class="userStatus ui-corner-all ui-helper-clearfix" style="display:none;">
+          <h2><strong><a href="#profile"></a></strong> <span></span></h2>
+          <div class="statusText"><span></span></div>
+           <ul class="ui-helper-reset ui-helper-clearfix">
+            <li class="statusDate"></li>
+            <li class="following"><span class="ui-widget ui-icon ui-icon-check"></span>__MSG_LABEL_FOLLOWING__</li>
+          </ul>
+        </div>
+      </div>
+    
+      <div id="more">
+        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-circle-triangle-s"></span>
+           <span class="ui-button-text">__MSG_BUTTON_MORE__</span>
+        </button>      
+      </div>
+
+    </div><!--/body-->
+    
+    <div id="footer" class="ui-widget">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li style="display:none;"><a href="controlpanel">Control Panel</a></li>
+        <li style="display:none;"><a href="controlpanel/gadgets/__MODULE_ID__/edit">Edit this Gadget</a></li>
+      </ul>
+    </div><!--/footer-->
+  
+  </div><!--/wrapper-->  
+
+  <script type="text/javascript">
+    var userId = gadgets.util.getUrlParameters().id || '@viewer';
+
+    function init() {
+      var batch = osapi.newBatch()
+        .add('viewer', osapi.people.getViewer())
+        .add('groups', osapi.groups.get({ userId: '@owner' }))
+        .add('user', osapi.people.get({ userId: userId }))
+        .add('userFriends', osapi.people.get({ userId: userId, groupId: '@friends', count: 10, fields: 'activity' }));
+
+      batch.execute(function(r) {
+        var viewer = r.viewer, groups = r.groups, user = r.user, userFriends = r.userFriends;
+
+        showHeader(viewer, groups);
+        showFooter(viewer);
+        
+        if (user.error)
+          return oops(user.error.message);
+        
+        showUserBadge(user, userFriends);
+        showToolbar(user);
+        
+        $('#body h1 span').text(user.aliasId);
+
+        $.each(userFriends.entry, function(i, user) {
+          $('#timeline').append(createUserStatus(user));
+        });
+        
+         var moreButton = $('#more button').click(function() {
+           moreButton.addClass('ui-state-ajax');
+          var startIndex = $('#timeline div.userStatus:visible').length;
+          osapi.people.get({ userId: userId, groupId: '@friends', count: 10, startIndex: startIndex, fields: 'activity' }).execute(function(userFriends) {
+            moreButton.removeClass('ui-state-ajax');
+              if (!(userFriends.startIndex + userFriends.itemsPerPage < userFriends.totalResults))
+                moreButton.hide();
+              $.each(userFriends.entry, function(i, user) {
+                $('#timeline').append(createUserStatus(user));
+             });
+           });
+        });
+        
+        if (userFriends.startIndex + userFriends.itemsPerPage < userFriends.totalResults)
+           moreButton.show();
+      });
+    }
+  </script>
+  
+]]></Content>
+
+<Content view="followers"><![CDATA[  
+]]></Content>
+
+<Content view="groups"><![CDATA[
+  
+  <div id="wrapper">
+    
+    <div id="header" class="ui-widget ui-widget-header">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li><a href="?view=home">__MSG_MENU_HOME__</a></li>
+        <li><a href="?view=mentions">__MSG_MENU_MENTIONS__</a></li>
+        <li><a href="@checkin">__MSG_MENU_CHECKIN__</a></li>
+        <li><a href="?view=groups">__MSG_MENU_MEMBERS__</a></li>
+        <li>
+          <select onchange="location.href='?view=groups&id='+this.value">
+            <option value="">__MSG_MENU_MEMBERS_OF__</option>
+          </select>
+        </li>
+      </ul>
+    </div><!--/header-->
+    
+    <div id="body" class="ui-widget">
+
+      <div id="badge" style="display:none;">
+        <h2><a href="#groups"></a> <span></span></h2>
+        <ul class="ui-helper-reset ui-helper-clearfix">
+          <li class="members"><a href="#members">__MSG_LABEL_MEMBERS__ <span></span></a></li>
+        </ul>
+      </div>
+        
+      <div id="timeline">
+        <div class="status ui-corner-all ui-helper-clearfix" style="display:none;">
+          <div class="statusText"><strong><a href="#profile"></a></strong> <span></span></div>
+          <ul class="statusMediaBar ui-helper-reset ui-helper-clearfix"></ul>
+          <ul class="ui-helper-reset ui-helper-clearfix">
+            <li class="statusDate"></li>
+            <li><a class="statusReply ui-widget" href="#reply">__MSG_BUTTON_REPLY__</a></li>
+            <li><a class="statusDelete ui-widget" href="#delete">__MSG_BUTTON_DELETE__</a></li>
+          </ul>
+        </div>
+      </div>
+    
+      <div id="more">
+        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-circle-triangle-s"></span>
+           <span class="ui-button-text">__MSG_BUTTON_MORE__</span>
+        </button>      
+      </div>
+      
+    </div><!--/body-->
+    
+    <div id="footer" class="ui-widget">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li style="display:none;"><a href="controlpanel">Control Panel</a></li>
+        <li style="display:none;"><a href="controlpanel/gadgets/__MODULE_ID__/edit">Edit this Gadget</a></li>
+      </ul>
+    </div><!--/footer-->
+  
+  </div><!--/wrapper-->
+
+  <script type="text/javascript">
+    var groupId = gadgets.util.getUrlParameters().id || '@friends';
+
+    function init() {
+      var batch = osapi.newBatch()
+        .add('viewer', osapi.people.getViewer())
+        .add('groups', osapi.groups.get({ userId: '@owner' }))
+        .add('groupMembers', osapi.people.get({ userId: '@owner', groupId: groupId, count: 1 }))
+        .add('statuses', osapi.activities.get({ userId: '@owner', groupId: groupId, count: 20, fields: 'person' }));
+
+      if (groupId != '@friends')
+        batch.add('group', osapi.groups.get({ userId: '@owner', groupId: groupId }));
+      
+      batch.execute(function(r) {
+        var viewer = r.viewer, groups = r.groups, group = r.group, groupMembers = r.groupMembers, statuses = r.statuses;
+
+        showHeader(viewer, groups);
+        showFooter(viewer);
+        
+        if (group && group.error)
+          return oops(group.error.message);
+
+        showGroupBadge(group, groupMembers);
+
+        $.each(statuses.entry, function(i, status) {
+          if (status.user) $('#timeline').append(createStatus(status));
+        });
+        
+        var moreButton = $('#more button').click(function() {
+          moreButton.addClass('ui-state-ajax');
+          var startIndex = $('#timeline .status:visible').length;
+          osapi.activities.get({ userId: '@owner', groupId: groupId, count: 10, startIndex: startIndex, fields: 'person' }).execute(function(statuses) {
+            moreButton.removeClass('ui-state-ajax');
+            if (!(statuses.startIndex + statuses.itemsPerPage < statuses.totalResults))
+              moreButton.hide();
+            $.each(statuses.entry, function(i, status) {
+              if (status.user)
+                $('#timeline').append(createStatus(status));
+            });
+          });
+        });
+
+        if (statuses.startIndex + statuses.itemsPerPage < statuses.totalResults)
+          moreButton.show();
+      });
+    }
+                             
+  </script>
+
+]]></Content>
+
+<Content view="members"><![CDATA[  
+
+  <div id="wrapper">
+    
+    <div id="header" class="ui-widget ui-widget-header">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li><a href="?view=home">__MSG_MENU_HOME__</a></li>
+        <li><a href="?view=mentions">__MSG_MENU_MENTIONS__</a></li>
+        <li><a href="@checkin">__MSG_MENU_CHECKIN__</a></li>
+        <li><a href="?view=groups">__MSG_MENU_MEMBERS__</a></li>
+        <li>
+          <select onchange="location.href='?view=groups&id='+this.value">
+            <option value="">__MSG_MENU_MEMBERS_OF__</option>
+          </select>
+        </li>
+      </ul>
+    </div><!--/header-->
+
+    <div id="body" class="ui-widget">
+
+      <div id="badge" style="display:none;">
+        <h2><a href="#groups"></a> <span></span></h2>
+        <ul class="ui-helper-reset ui-helper-clearfix">
+          <li class="members"><a href="#members">__MSG_LABEL_MEMBERS__ <span></span></a></li>
+        </ul>
+      </div>
+      
+      <h1>__MSG_TITLE_MEMBERS__ <span>...</span></h1>
+      
+      <div id="timeline">
+        <div class="userStatus ui-corner-all ui-helper-clearfix" style="display:none;">
+          <h2><strong><a href="#profile"></a></strong> <span></span></h2>
+          <div class="statusText"><span></span></div>
+           <ul class="ui-helper-reset ui-helper-clearfix">
+            <li class="statusDate"></li>
+            <li class="following"><span class="ui-widget ui-icon ui-icon-check"></span>__MSG_LABEL_FOLLOWING__</li>
+          </ul>
+        </div>
+      </div>
+    
+      <div id="more">
+        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-circle-triangle-s"></span>
+           <span class="ui-button-text">__MSG_BUTTON_MORE__</span>
+        </button>      
+      </div>
+      
+    </div><!--/body-->
+    
+    <div id="footer" class="ui-widget">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li style="display:none;"><a href="controlpanel">Control Panel</a></li>
+        <li style="display:none;"><a href="controlpanel/gadgets/__MODULE_ID__/edit">Edit this Gadget</a></li>
+      </ul>
+    </div><!--/footer-->
+  
+  </div><!--/wrapper-->
+
+  <script type="text/javascript">
+    var groupId = gadgets.util.getUrlParameters().id || '@friends';
+
+    function init() {
+      var batch = osapi.newBatch()
+        .add('viewer', osapi.people.getViewer())
+        .add('groups', osapi.groups.get({ userId: '@owner' }))
+        .add('groupMembers', osapi.people.get({ userId: '@owner', groupId: groupId, count: 20, fields: 'activity' }));
+
+      if (groupId != '@friends')
+        batch.add('group', osapi.groups.get({ userId: '@owner', groupId: groupId }));
+      
+      batch.execute(function(r) {
+        var viewer = r.viewer, groups = r.groups, group = r.group, groupMembers = r.groupMembers;
+
+        showHeader(viewer, groups);
+        showFooter(viewer);
+        
+        if (group && group.error)
+          return oops(group.error.message);
+        
+        showGroupBadge(group, groupMembers);
+
+        $('#body h1 span').text(group ? group.aliasId : domainId);
+
+        $.each(groupMembers.entry, function(i, user) {
+          $('#timeline').append(createUserStatus(user));
+        });
+        
+        var moreButton = $('#more button').click(function() {
+           moreButton.addClass('ui-state-ajax');
+          var startIndex = $('#timeline div.userStatus:visible').length;
+          osapi.people.get({ userId: '@owner', groupId: '@friends', count: 10, startIndex: startIndex, fields: 'activity' }).execute(function(groupMembers) {
+             moreButton.removeClass('ui-state-ajax');
+             if (!(groupMembers.startIndex + groupMembers.itemsPerPage < groupMembers.totalResults))
+              moreButton.hide();
+             $.each(groupMembers.entry, function(i, user) {
+               $('#timeline').append(createUserStatus(user));
+             });
+           });
+         });
+
+         if (groupMembers.startIndex + groupMembers.itemsPerPage < groupMembers.totalResults)
+           moreButton.show();
+      });
+    }
+  </script>
+  
+]]></Content>
+
+<Content view="search"><![CDATA[
+
+  <div id="wrapper">
+    
+    <div id="header" class="ui-widget ui-widget-header">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li><a href="?view=home">__MSG_MENU_HOME__</a></li>
+        <li><a href="?view=mentions">__MSG_MENU_MENTIONS__</a></li>
+        <li><a href="@checkin">__MSG_MENU_CHECKIN__</a></li>
+        <li><a href="?view=groups">__MSG_MENU_MEMBERS__</a></li>
+        <li>
+          <select onchange="location.href='?view=groups&id='+this.value">
+            <option value="">__MSG_MENU_MEMBERS_OF__</option>
+          </select>
+        </li>
+      </ul>
+    </div><!--/header-->
+    
+    <div id="body" class="ui-widget">
+
+      <h1>__MSG_TITLE_SEARCH__ <span>...</span></h1>
+        
+      <div id="timeline">
+        <div class="status ui-corner-all ui-helper-clearfix" style="display:none;">
+          <div class="statusText"><strong><a href="#profile"></a></strong> <span></span></div>
+          <ul class="statusMediaBar ui-helper-reset ui-helper-clearfix"></ul>
+          <ul class="ui-helper-reset ui-helper-clearfix">
+            <li class="statusDate"></li>
+            <li><a class="statusReply ui-widget" href="#reply">__MSG_BUTTON_REPLY__</a></li>
+            <li><a class="statusDelete ui-widget" href="#delete">__MSG_BUTTON_DELETE__</a></li>
+          </ul>
+        </div>
+      </div>
+    
+      <div id="more">
+        <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" style="display:none;">
+           <span class="ui-button-icon-primary ui-icon ui-icon-circle-triangle-s"></span>
+           <span class="ui-button-text">__MSG_BUTTON_MORE__</span>
+        </button>      
+      </div>
+      
+    </div><!--/body-->
+    
+    <div id="footer" class="ui-widget">
+      <ul class="ui-helper-reset ui-helper-clearfix">
+        <li style="display:none;"><a href="controlpanel">Control Panel</a></li>
+        <li style="display:none;"><a href="controlpanel/gadgets/__MODULE_ID__/edit">Edit this Gadget</a></li>
+      </ul>
+    </div><!--/footer-->
+  
+  </div><!--/wrapper-->
+
+  <script type="text/javascript">
+    var q = gadgets.util.getUrlParameters().q || '';
+
+    function init() {
+      var batch = osapi.newBatch()
+        .add('viewer', osapi.people.getViewer())
+        .add('groups', osapi.groups.get({ userId: '@owner' }))
+        .add('statuses', osapi.activities.get({ userId: '@owner', groupId: '@friends', count: 10, filterValue: q, fields: 'person' }));
+  
+      batch.execute(function(r) {
+        var viewer = r.viewer, groups = r.groups, statuses = r.statuses;
+
+        showHeader(viewer, groups);
+        showFooter(viewer);
+        
+        $('#body h1 span').text(q);
+        
+        $.each(statuses.entry, function(i, status) {
+          if (status.user) $('#timeline').append(createStatus(status));
+        });
+        
+        var moreButton = $('#more button').click(function() {
+          moreButton.addClass('ui-state-ajax');
+          var startIndex = $('#timeline .status:visible').length;
+          osapi.activities.get({ userId: '@owner', groupId: '@friends', count: 10, startIndex: startIndex, filterValue: q, fields: 'person' }).execute(function(statuses) {
+            moreButton.removeClass('ui-state-ajax');
+            if (!(statuses.startIndex + statuses.itemsPerPage < statuses.totalResults))
+              moreButton.hide();
+            $.each(statuses.entry, function(i, status) {
+              if (status.user)
+                $('#timeline').append(createStatus(status));
+            });
+          });
+        });
+
+        if (statuses.startIndex + statuses.itemsPerPage < statuses.totalResults)
+          moreButton.show();
+      });
+    }
+                             
+  </script>
+  
+]]></Content>
+  
+<Content view="home,profile,following,followers,mentions,groups,members,search"><![CDATA[  
+
+  <script type="text/javascript">
+    gadgets.setLogLevel(gadgets.log.INFO);
+    gadgets.util.registerOnLoadHandler(init);
+  </script>
+  
+]]></Content>
+</Module>

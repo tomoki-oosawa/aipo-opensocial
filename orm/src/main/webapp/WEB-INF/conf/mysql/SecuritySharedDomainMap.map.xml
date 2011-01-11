@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map project-version="2.0">
+	<property name="defaultPackage" value="com.aipo.orm.model.security"/>
+	<db-entity name="turbine_group">
+		<db-attribute name="GROUP_ALIAS_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="GROUP_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="GROUP_NAME" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="OBJECTDATA" type="BINARY"/>
+		<db-attribute name="OWNER_ID" type="INTEGER"/>
+		<db-attribute name="PUBLIC_FLAG" type="CHAR" length="1"/>
+	</db-entity>
+	<db-entity name="turbine_permission">
+		<db-attribute name="OBJECTDATA" type="BINARY"/>
+		<db-attribute name="PERMISSION_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="PERMISSION_NAME" type="VARCHAR" isMandatory="true" length="99"/>
+	</db-entity>
+	<db-entity name="turbine_role">
+		<db-attribute name="OBJECTDATA" type="BINARY"/>
+		<db-attribute name="ROLE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="ROLE_NAME" type="VARCHAR" isMandatory="true" length="99"/>
+	</db-entity>
+	<db-entity name="turbine_role_permission">
+		<db-attribute name="PERMISSION_ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="ROLE_ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="turbine_user">
+		<db-attribute name="CELLULAR_MAIL" type="VARCHAR" length="99"/>
+		<db-attribute name="CELLULAR_PHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="CELLULAR_UID" type="VARCHAR" length="99"/>
+		<db-attribute name="COMPANY_ID" type="INTEGER"/>
+		<db-attribute name="CONFIRM_VALUE" type="VARCHAR" length="99"/>
+		<db-attribute name="CREATED" type="TIMESTAMP"/>
+		<db-attribute name="CREATED_USER_ID" type="INTEGER"/>
+		<db-attribute name="DISABLED" type="CHAR" length="1"/>
+		<db-attribute name="EMAIL" type="VARCHAR" length="99"/>
+		<db-attribute name="FIRST_NAME" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="FIRST_NAME_KANA" type="VARCHAR" length="99"/>
+		<db-attribute name="IN_TELEPHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="LAST_LOGIN" type="TIMESTAMP"/>
+		<db-attribute name="LAST_NAME" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="LAST_NAME_KANA" type="VARCHAR" length="99"/>
+		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
+		<db-attribute name="MODIFIED" type="TIMESTAMP"/>
+		<db-attribute name="OBJECTDATA" type="BINARY"/>
+		<db-attribute name="OUT_TELEPHONE" type="VARCHAR" length="15"/>
+		<db-attribute name="PASSWORD_CHANGED" type="TIMESTAMP"/>
+		<db-attribute name="PASSWORD_VALUE" type="VARCHAR" isMandatory="true" length="200"/>
+		<db-attribute name="PHOTO" type="LONGVARBINARY"/>
+		<db-attribute name="POSITION_ID" type="INTEGER"/>
+		<db-attribute name="UPDATED_USER_ID" type="INTEGER"/>
+		<db-attribute name="USER_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="turbine_user_group_role">
+		<db-attribute name="GROUP_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="ROLE_ID" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true"/>
+	</db-entity>
+	<obj-entity name="TurbineGroup" className="com.aipo.orm.model.security.TurbineGroup" dbEntityName="turbine_group">
+		<obj-attribute name="groupAliasName" type="java.lang.String" db-attribute-path="GROUP_ALIAS_NAME"/>
+		<obj-attribute name="groupName" type="java.lang.String" db-attribute-path="GROUP_NAME"/>
+		<obj-attribute name="objectdata" type="byte[]" db-attribute-path="OBJECTDATA"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="publicFlag" type="java.lang.String" db-attribute-path="PUBLIC_FLAG"/>
+	</obj-entity>
+	<obj-entity name="TurbinePermission" className="com.aipo.orm.model.security.TurbinePermission" dbEntityName="turbine_permission">
+		<obj-attribute name="OBJECTDATA" type="byte[]" db-attribute-path="OBJECTDATA"/>
+		<obj-attribute name="permissionName" type="java.lang.String" db-attribute-path="PERMISSION_NAME"/>
+	</obj-entity>
+	<obj-entity name="TurbineRole" className="com.aipo.orm.model.security.TurbineRole" dbEntityName="turbine_role">
+		<obj-attribute name="objectdata" type="byte[]" db-attribute-path="OBJECTDATA"/>
+		<obj-attribute name="roleName" type="java.lang.String" db-attribute-path="ROLE_NAME"/>
+	</obj-entity>
+	<obj-entity name="TurbineRolePermission" className="com.aipo.orm.model.security.TurbineRolePermission" dbEntityName="turbine_role_permission">
+	</obj-entity>
+	<obj-entity name="TurbineUser" className="com.aipo.orm.model.security.TurbineUser" dbEntityName="turbine_user">
+		<obj-attribute name="cellularMail" type="java.lang.String" db-attribute-path="CELLULAR_MAIL"/>
+		<obj-attribute name="cellularPhone" type="java.lang.String" db-attribute-path="CELLULAR_PHONE"/>
+		<obj-attribute name="cellularUid" type="java.lang.String" db-attribute-path="CELLULAR_UID"/>
+		<obj-attribute name="companyId" type="java.lang.Integer" db-attribute-path="COMPANY_ID"/>
+		<obj-attribute name="confirmValue" type="java.lang.String" db-attribute-path="CONFIRM_VALUE"/>
+		<obj-attribute name="created" type="java.util.Date" db-attribute-path="CREATED"/>
+		<obj-attribute name="createdUserId" type="java.lang.Integer" db-attribute-path="CREATED_USER_ID"/>
+		<obj-attribute name="disabled" type="java.lang.String" db-attribute-path="DISABLED"/>
+		<obj-attribute name="email" type="java.lang.String" db-attribute-path="EMAIL"/>
+		<obj-attribute name="firstName" type="java.lang.String" db-attribute-path="FIRST_NAME"/>
+		<obj-attribute name="firstNameKana" type="java.lang.String" db-attribute-path="FIRST_NAME_KANA"/>
+		<obj-attribute name="inTelephone" type="java.lang.String" db-attribute-path="IN_TELEPHONE"/>
+		<obj-attribute name="lastLogin" type="java.util.Date" db-attribute-path="LAST_LOGIN"/>
+		<obj-attribute name="lastName" type="java.lang.String" db-attribute-path="LAST_NAME"/>
+		<obj-attribute name="lastNameKana" type="java.lang.String" db-attribute-path="LAST_NAME_KANA"/>
+		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
+		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="MODIFIED"/>
+		<obj-attribute name="objectdata" type="byte[]" db-attribute-path="OBJECTDATA"/>
+		<obj-attribute name="outTelephone" type="java.lang.String" db-attribute-path="OUT_TELEPHONE"/>
+		<obj-attribute name="passwordChanged" type="java.util.Date" db-attribute-path="PASSWORD_CHANGED"/>
+		<obj-attribute name="passwordValue" type="java.lang.String" db-attribute-path="PASSWORD_VALUE"/>
+		<obj-attribute name="photo" type="byte[]" db-attribute-path="PHOTO"/>
+		<obj-attribute name="positionId" type="java.lang.Integer" db-attribute-path="POSITION_ID"/>
+		<obj-attribute name="updatedUserId" type="java.lang.Integer" db-attribute-path="UPDATED_USER_ID"/>
+	</obj-entity>
+	<obj-entity name="TurbineUserGroupRole" className="com.aipo.orm.model.security.TurbineUserGroupRole" dbEntityName="turbine_user_group_role">
+	</obj-entity>
+	<db-relationship name="eipFacilityGroup" source="turbine_group" target="eip_facility_group" toMany="true">
+		<db-attribute-pair source="GROUP_ID" target="GROUP_ID"/>
+	</db-relationship>
+	<db-relationship name="eipMPost" source="turbine_group" target="eip_m_post" toMany="false">
+		<db-attribute-pair source="GROUP_NAME" target="GROUP_NAME"/>
+	</db-relationship>
+	<db-relationship name="turbineUserGroupRole" source="turbine_group" target="turbine_user_group_role" toMany="true">
+		<db-attribute-pair source="GROUP_ID" target="GROUP_ID"/>
+	</db-relationship>
+	<db-relationship name="rolePermission" source="turbine_permission" target="turbine_role_permission" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="PERMISSION_ID" target="PERMISSION_ID"/>
+	</db-relationship>
+	<db-relationship name="rolePermission" source="turbine_role" target="turbine_role_permission" toDependentPK="true" toMany="true">
+		<db-attribute-pair source="ROLE_ID" target="ROLE_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineUserGroupRole" source="turbine_role" target="turbine_user_group_role" toMany="true">
+		<db-attribute-pair source="ROLE_ID" target="ROLE_ID"/>
+	</db-relationship>
+	<db-relationship name="turbinePermission" source="turbine_role_permission" target="turbine_permission" toMany="false">
+		<db-attribute-pair source="PERMISSION_ID" target="PERMISSION_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineRole" source="turbine_role_permission" target="turbine_role" toMany="false">
+		<db-attribute-pair source="ROLE_ID" target="ROLE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipMUserPosition" source="turbine_user" target="eip_m_user_position" toMany="false">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTAclUserRoleMaps" source="turbine_user" target="eip_t_acl_user_role_map" toMany="true">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTEventlog" source="turbine_user" target="eip_t_eventlog" toMany="true">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMsgboardCategory" source="turbine_user" target="eip_t_msgboard_category" toMany="true">
+		<db-attribute-pair source="USER_ID" target="OWNER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTTodo" source="turbine_user" target="eip_t_todo" toMany="true">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineUserGroupRole" source="turbine_user" target="turbine_user_group_role" toMany="true">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTScheduleMap" source="turbine_user_group_role" target="eip_t_schedule_map" toMany="true">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineGroup" source="turbine_user_group_role" target="turbine_group" toMany="false">
+		<db-attribute-pair source="GROUP_ID" target="GROUP_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineRole" source="turbine_user_group_role" target="turbine_role" toMany="false">
+		<db-attribute-pair source="ROLE_ID" target="ROLE_ID"/>
+	</db-relationship>
+	<db-relationship name="turbineUser" source="turbine_user_group_role" target="turbine_user" toMany="false">
+		<db-attribute-pair source="USER_ID" target="USER_ID"/>
+	</db-relationship>
+	<obj-relationship name="eipFacilityGroup" source="TurbineGroup" target="EipFacilityGroup" db-relationship-path="eipFacilityGroup"/>
+	<obj-relationship name="eipMPost" source="TurbineGroup" target="EipMPost" db-relationship-path="eipMPost"/>
+	<obj-relationship name="turbineUserGroupRole" source="TurbineGroup" target="TurbineUserGroupRole" db-relationship-path="turbineUserGroupRole"/>
+	<obj-relationship name="turbineRolePermission" source="TurbinePermission" target="TurbineRolePermission" db-relationship-path="rolePermission"/>
+	<obj-relationship name="turbineRolePermission" source="TurbineRole" target="TurbineRolePermission" db-relationship-path="rolePermission"/>
+	<obj-relationship name="turbineUserGroupRole" source="TurbineRole" target="TurbineUserGroupRole" db-relationship-path="turbineUserGroupRole"/>
+	<obj-relationship name="turbinePermission" source="TurbineRolePermission" target="TurbinePermission" db-relationship-path="turbinePermission"/>
+	<obj-relationship name="turbineRole" source="TurbineRolePermission" target="TurbineRole" db-relationship-path="turbineRole"/>
+	<obj-relationship name="eipMUserPosition" source="TurbineUser" target="EipMUserPosition" db-relationship-path="eipMUserPosition"/>
+	<obj-relationship name="eipTAclUserRoleMaps" source="TurbineUser" target="EipTAclUserRoleMap" db-relationship-path="eipTAclUserRoleMaps"/>
+	<obj-relationship name="eipTEventlog" source="TurbineUser" target="EipTEventlog" db-relationship-path="eipTEventlog"/>
+	<obj-relationship name="eipTMsgboardCategory" source="TurbineUser" target="EipTMsgboardCategory" db-relationship-path="eipTMsgboardCategory"/>
+	<obj-relationship name="eipTTodo" source="TurbineUser" target="EipTTodo" db-relationship-path="eipTTodo"/>
+	<obj-relationship name="turbineUserGroupRole" source="TurbineUser" target="TurbineUserGroupRole" db-relationship-path="turbineUserGroupRole"/>
+	<obj-relationship name="eipTScheduleMap" source="TurbineUserGroupRole" target="EipTScheduleMap" db-relationship-path="eipTScheduleMap"/>
+	<obj-relationship name="turbineGroup" source="TurbineUserGroupRole" target="TurbineGroup" db-relationship-path="turbineGroup"/>
+	<obj-relationship name="turbineRole" source="TurbineUserGroupRole" target="TurbineRole" db-relationship-path="turbineRole"/>
+	<obj-relationship name="turbineUser" source="TurbineUserGroupRole" target="TurbineUser" db-relationship-path="turbineUser"/>
+</data-map>
