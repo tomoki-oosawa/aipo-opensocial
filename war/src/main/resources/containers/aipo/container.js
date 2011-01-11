@@ -236,8 +236,8 @@
       "BG_IMAGE": "",
       "BG_POSITION": "",
       "BG_REPEAT": "",
-      "FONT_COLOR": "",
-      "ANCHOR_COLOR": ""
+      "FONT_COLOR": "#666666",
+      "ANCHOR_COLOR": "#666666"
     }
   },
   "opensocial" : {

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+ <Module>
+ <ModulePrefs title="Dynamic Tabs" height="100" >  
+  <Require feature="tabs" /> 
+  </ModulePrefs>
+   <Content type="html">
+ <![CDATA[ 
+ <style type="text/css">
+  @import url(http://www.google.com/ig/tablib.css);
+ </style>
+ <script type="text/javascript">
+  
+ function init() {
+      // Initialize tabs.
+      var tabs = new _IG_Tabs(__MODULE_ID__);
+      
+      // When you use addDynamicTab, the tab's content is
+      // dynamically generated through the callback function.
+      tabs.addDynamicTab("One", callback);
+      tabs.addDynamicTab("Two", callback);     
+      tabs.addDynamicTab("Three", callback);
+ }
+
+ // Callback that displays the current datetime whenever a
+ // tab is clicked.
+ function callback(tabId) {
+      var date = new Date();    
+      _gel(tabId).innerHTML = date.toLocaleString();
+    }
+    // Call init function to initialize and display tabs.
+    _IG_RegisterOnloadHandler(init);
+    </script>
+]]></Content>
+</Module>
