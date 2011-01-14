@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.shindig.auth.AipoBlobCrypterSecurityTokenCodec;
 import org.apache.shindig.auth.BasicSecurityTokenCodec;
+import org.apache.shindig.auth.DefaultSecurityTokenCodec;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.auth.SecurityTokenCodec;
 import org.apache.shindig.auth.SecurityTokenException;
@@ -31,7 +32,7 @@ import org.apache.shindig.config.ContainerConfig;
 import com.google.inject.Inject;
 
 /**
- * 
+ * @see DefaultSecurityTokenCodec
  */
 public class AipoSecurityTokenCodec implements SecurityTokenCodec {
 

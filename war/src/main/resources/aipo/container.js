@@ -56,10 +56,10 @@
 "gadgets.parent" : null,
 
 // Should all gadgets be forced on to a locked domain?
-"gadgets.lockedDomainRequired" : false,
+"gadgets.lockedDomainRequired" : true,
 
 // DNS domain on which gadgets should render.
-"gadgets.lockedDomainSuffix" : "-a.example.com:8080",
+"gadgets.lockedDomainSuffix" : ".example.com:8080",
 	
 // Origins for CORS requests and/or Referer validation
 // Indicate a set of origins or an entry with * to indicate that all origins are allowed
@@ -78,7 +78,7 @@
 "gadgets.jsUriTemplate" : "http://%host%/gadgets/js/%js%",
 
 //New configuration for iframeUri generation:
-"gadgets.uri.iframe.lockedDomainSuffix" :  "-a.example.com:8080",
+"gadgets.uri.iframe.lockedDomainSuffix" :  ".example.com:8080",
 "gadgets.uri.iframe.unlockedDomain" : "www.example.com:8080",
 "gadgets.uri.iframe.basePath" : "/gadgets/ifr",
 
@@ -100,7 +100,7 @@
 // Uncomment these to switch to a secure version
 //
 "gadgets.securityTokenType" : "secure",
-"gadgets.securityTokenKeyFile" : "res://containers/aipo/securityTokenKey.txt",
+"gadgets.securityTokenKeyFile" : "res://aipo/securityTokenKey.txt",
 
 // URI for the default shindig test instance.
 "defaultShindigTestHost": "http://${SERVER_HOST}:${SERVER_PORT}",
@@ -223,7 +223,7 @@
     // parameter if it passes input validation and is not null.
     // This should never be on the same host in a production environment!
     // Only use this for TESTING!
-    "parentRelayUrl" : "/container/rpc_relay.html",
+    "parentRelayUrl" : "/gadgets/files/container/rpc_relay.html",
 
     // If true, this will use the legacy ifpc wire format when making rpc
     // requests.

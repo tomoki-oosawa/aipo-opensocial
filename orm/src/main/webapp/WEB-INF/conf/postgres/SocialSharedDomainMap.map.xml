@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/3.0/modelMap"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://cayenne.apache.org/schema/3.0/modelMap http://cayenne.apache.org/schema/3.0/modelMap.xsd"
+  project-version="3.0.0.1">
+	<property name="defaultPackage" value="com.aipo.orm.model.social"/>
+	<db-entity name="application">
+		<db-attribute name="APP_ID" type="VARCHAR" length="255"/>
+		<db-attribute name="CONSUMER_KEY" type="VARCHAR" length="99"/>
+		<db-attribute name="CONSUMER_SECRET" type="VARCHAR" length="99"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="DESCRIPTION" type="CLOB"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="STATUS" type="INTEGER"/>
+		<db-attribute name="SUMMARY" type="VARCHAR" length="255"/>
+		<db-attribute name="TITLE" type="VARCHAR" length="99"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="URL" type="VARCHAR" length="255"/>
+		<db-key-generator>
+			<db-generator-type>ORACLE</db-generator-type>
+			<db-generator-name>application_id_seq</db-generator-name>
+			<db-key-cache-size>1</db-key-cache-size>
+		</db-key-generator>
+	</db-entity>
+	<db-entity name="container_config">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="key" type="VARCHAR" length="32"/>
+		<db-attribute name="value" type="VARCHAR" length="255"/>
+		<db-key-generator>
+			<db-generator-type>ORACLE</db-generator-type>
+			<db-generator-name>container_config_id_seq</db-generator-name>
+			<db-key-cache-size>1</db-key-cache-size>
+		</db-key-generator>
+	</db-entity>
+	<db-entity name="oauth_service">
+		<db-attribute name="APP_ID" type="INTEGER"/>
+		<db-attribute name="CONSUMER_KEY" type="VARCHAR" length="255"/>
+		<db-attribute name="CONSUMER_SECRET" type="VARCHAR" length="255"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="TYPE" type="VARCHAR" length="99"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-key-generator>
+			<db-generator-type>ORACLE</db-generator-type>
+			<db-generator-name>oauth_service_id_seq</db-generator-name>
+			<db-key-cache-size>1</db-key-cache-size>
+		</db-key-generator>
+	</db-entity>
+	<obj-entity name="Application" className="com.aipo.orm.model.social.Application" dbEntityName="application">
+		<obj-attribute name="appId" type="java.lang.String" db-attribute-path="APP_ID"/>
+		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>
+		<obj-attribute name="consumerSecret" type="java.lang.String" db-attribute-path="CONSUMER_SECRET"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="description" type="java.lang.String" db-attribute-path="DESCRIPTION"/>
+		<obj-attribute name="status" type="java.lang.Integer" db-attribute-path="STATUS"/>
+		<obj-attribute name="summary" type="java.lang.String" db-attribute-path="SUMMARY"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="TITLE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="url" type="java.lang.String" db-attribute-path="URL"/>
+	</obj-entity>
+	<obj-entity name="ContainerConfig" className="com.aipo.orm.model.social.ContainerConfig" dbEntityName="container_config">
+		<obj-attribute name="key" type="java.lang.String" db-attribute-path="key"/>
+		<obj-attribute name="value" type="java.lang.String" db-attribute-path="value"/>
+	</obj-entity>
+	<obj-entity name="OAuthService" className="com.aipo.orm.model.social.OAuthService" dbEntityName="oauth_service">
+		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>
+		<obj-attribute name="consumerSecret" type="java.lang.String" db-attribute-path="CONSUMER_SECRET"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="NAME"/>
+		<obj-attribute name="type" type="java.lang.String" db-attribute-path="TYPE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<db-relationship name="oauthService" source="application" target="oauth_service" toMany="true">
+		<db-attribute-pair source="ID" target="APP_ID"/>
+	</db-relationship>
+	<db-relationship name="application" source="oauth_service" target="application" toMany="false">
+		<db-attribute-pair source="APP_ID" target="ID"/>
+	</db-relationship>
+	<obj-relationship name="oauthService" source="Application" target="OAuthService" db-relationship-path="oauthService"/>
+	<obj-relationship name="application" source="OAuthService" target="Application" db-relationship-path="application"/>
+</data-map>

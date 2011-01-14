@@ -7,5 +7,6 @@
 	<map name="AccountSharedDomainMap" location="conf/postgres/AccountSharedDomainMap.map.xml"/>
 	<map name="SecuritySharedDomainMap" location="conf/postgres/SecuritySharedDomainMap.map.xml"/>
 	<map name="SharedDomainMap" location="conf/postgres/SharedDomainMap.map.xml"/>
+	<map name="SocialSharedDomainMap" location="conf/postgres/SocialSharedDomainMap.map.xml"/>
 </domain>
 </domains>

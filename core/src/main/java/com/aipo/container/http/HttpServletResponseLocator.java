@@ -17,32 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aipo.container;
+package com.aipo.container.http;
 
-import org.apache.shindig.auth.SecurityTokenCodec;
-
-import com.aipo.container.auth.AipoSecurityTokenCodec;
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
-import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 
  */
-public class AipoContainerModule extends AbstractModule {
+public class HttpServletResponseLocator {
+  private static ThreadLocal<HttpServletResponse> httpServletResponses =
+    new ThreadLocal<HttpServletResponse>();
 
-  /**
-   * 
-   */
-  @Override
-  protected void configure() {
-
-    bind(SecurityTokenCodec.class).to(AipoSecurityTokenCodec.class).in(
-      Scopes.SINGLETON);
-
-    Multibinder.newSetBinder(binder(), Object.class, Names
-      .named("org.apache.shindig.handlers"));
+  public static HttpServletResponse get() {
+    return httpServletResponses.get();
   }
 
+  public static void set(HttpServletResponse httpServletResponse) {
+    httpServletResponses.set(httpServletResponse);
+  }
+
+  private HttpServletResponseLocator() {
+  }
 }

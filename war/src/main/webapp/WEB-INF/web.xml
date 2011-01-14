@@ -31,7 +31,7 @@
     <param-name>guice-modules</param-name>
     <param-value>
       org.apache.shindig.common.PropertiesModule:
-      org.apache.shindig.gadgets.DefaultGuiceModule:
+      com.aipo.container.gadgets.AipoGadgetsGuiceModule:
       org.apache.shindig.social.core.config.SocialApiGuiceModule:
       org.apache.shindig.gadgets.oauth.OAuthModule:
       org.apache.shindig.common.cache.ehcache.EhCacheModule:
