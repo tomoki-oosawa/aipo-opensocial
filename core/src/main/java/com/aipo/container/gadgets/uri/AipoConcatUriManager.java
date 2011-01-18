@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aipo.container.gadgets.url;
+package com.aipo.container.gadgets.uri;
 
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +33,7 @@ import org.apache.shindig.gadgets.uri.UriCommon.Param;
 import org.apache.shindig.gadgets.uri.UriStatus;
 
 import com.aipo.container.util.ContainerToolkit;
+import com.aipo.orm.service.ContainerConfigService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -64,15 +65,19 @@ public class AipoConcatUriManager implements ConcatUriManager {
 
   private final ContainerConfig config;
 
+  private final ContainerConfigService containerConfigService;
+
   private final Versioner versioner;
 
   private boolean strictParsing;
 
   @Inject
   public AipoConcatUriManager(ContainerConfig config,
-      @Nullable Versioner versioner) {
+      @Nullable Versioner versioner,
+      ContainerConfigService containerConfigService) {
     this.config = config;
     this.versioner = versioner;
+    this.containerConfigService = containerConfigService;
   }
 
   @Inject(optional = true)
@@ -126,7 +131,7 @@ public class AipoConcatUriManager implements ConcatUriManager {
 
     UriBuilder uriBuilder = ctx.makeQueryParams(null, version);
 
-    String concatHost = ContainerToolkit.getHost();
+    String concatHost = ContainerToolkit.getHost(containerConfigService);
     String concatPath = getReqVal(ctx.getContainer(), CONCAT_PATH_PARAM);
     uriBuilder.setAuthority(concatHost);
     uriBuilder.setPath(concatPath);

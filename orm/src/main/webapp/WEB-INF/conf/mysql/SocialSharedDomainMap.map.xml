@@ -18,11 +18,11 @@
 		<db-attribute name="URL" type="VARCHAR" length="255"/>
 	</db-entity>
 	<db-entity name="container_config">
-		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isGenerated="true"  isMandatory="true"/>
-		<db-attribute name="key" type="VARCHAR" length="32"/>
-		<db-attribute name="value" type="VARCHAR" length="255"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true"  isMandatory="true"/>
+		<db-attribute name="KEY" type="VARCHAR" length="64"/>
+		<db-attribute name="VALUE" type="VARCHAR" length="255"/>
 	</db-entity>
-	<db-entity name="oauth_service">
+	<db-entity name="oauth_consumer">
 		<db-attribute name="APP_ID" type="INTEGER"/>
 		<db-attribute name="CONSUMER_KEY" type="VARCHAR" length="255"/>
 		<db-attribute name="CONSUMER_SECRET" type="VARCHAR" length="255"/>
@@ -31,6 +31,13 @@
 		<db-attribute name="NAME" type="VARCHAR" length="99"/>
 		<db-attribute name="TYPE" type="VARCHAR" length="99"/>
 		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+	</db-entity>
+	<db-entity name="oauth_token">
+		<db-attribute name="ACCESS_TOKEN" type="VARCHAR" length="255"/>
+		<db-attribute name="KEY" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="SESSION_HANDLE" type="VARCHAR" length="255"/>
+		<db-attribute name="TOKEN_EXPIRE_MILIS" type="INTEGER"/>
+		<db-attribute name="TOKEN_SECRET" type="VARCHAR" length="255"/>
 	</db-entity>
 	<obj-entity name="Application" className="com.aipo.orm.model.social.Application" dbEntityName="application">
 		<obj-attribute name="appId" type="java.lang.String" db-attribute-path="APP_ID"/>
@@ -45,10 +52,10 @@
 		<obj-attribute name="url" type="java.lang.String" db-attribute-path="URL"/>
 	</obj-entity>
 	<obj-entity name="ContainerConfig" className="com.aipo.orm.model.social.ContainerConfig" dbEntityName="container_config">
-		<obj-attribute name="key" type="java.lang.String" db-attribute-path="key"/>
-		<obj-attribute name="value" type="java.lang.String" db-attribute-path="value"/>
+		<obj-attribute name="key" type="java.lang.String" db-attribute-path="KEY"/>
+		<obj-attribute name="value" type="java.lang.String" db-attribute-path="VALUE"/>
 	</obj-entity>
-	<obj-entity name="OAuthService" className="com.aipo.orm.model.social.OAuthService" dbEntityName="oauth_service">
+	<obj-entity name="OAuthConsumer" className="com.aipo.orm.model.social.OAuthConsumer" dbEntityName="oauth_consumer">
 		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>
 		<obj-attribute name="consumerSecret" type="java.lang.String" db-attribute-path="CONSUMER_SECRET"/>
 		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
@@ -56,12 +63,19 @@
 		<obj-attribute name="type" type="java.lang.String" db-attribute-path="TYPE"/>
 		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
 	</obj-entity>
-	<db-relationship name="oauthService" source="application" target="oauth_service" toMany="true">
+	<obj-entity name="OAuthToken" className="com.aipo.orm.model.social.OAuthToken" dbEntityName="oauth_token">
+		<obj-attribute name="accessToken" type="java.lang.String" db-attribute-path="ACCESS_TOKEN"/>
+		<obj-attribute name="key" type="java.lang.Integer" db-attribute-path="KEY"/>
+		<obj-attribute name="sessionHandle" type="java.lang.String" db-attribute-path="SESSION_HANDLE"/>
+		<obj-attribute name="tokenExpireMilis" type="java.lang.Integer" db-attribute-path="TOKEN_EXPIRE_MILIS"/>
+		<obj-attribute name="tokenSecret" type="java.lang.String" db-attribute-path="TOKEN_SECRET"/>
+	</obj-entity>
+	<db-relationship name="oauthConsumer" source="application" target="oauth_consumer" toMany="true">
 		<db-attribute-pair source="ID" target="APP_ID"/>
 	</db-relationship>
-	<db-relationship name="application" source="oauth_service" target="application" toMany="false">
+	<db-relationship name="application" source="oauth_consumer" target="application" toMany="false">
 		<db-attribute-pair source="APP_ID" target="ID"/>
 	</db-relationship>
-	<obj-relationship name="oauthService" source="Application" target="OAuthService" db-relationship-path="oauthService"/>
-	<obj-relationship name="application" source="OAuthService" target="Application" db-relationship-path="application"/>
+	<obj-relationship name="oauthConsumer" source="Application" target="OAuthConsumer" db-relationship-path="oauthConsumer"/>
+	<obj-relationship name="application" source="OAuthConsumer" target="Application" db-relationship-path="application"/>
 </data-map>

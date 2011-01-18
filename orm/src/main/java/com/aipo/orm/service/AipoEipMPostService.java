@@ -21,13 +21,30 @@ package com.aipo.orm.service;
 
 import java.util.List;
 
+import com.aipo.orm.Database;
 import com.aipo.orm.model.account.EipMPost;
+import com.google.inject.Singleton;
 
-public interface EipMPostService {
+@Singleton
+public class AipoEipMPostService implements EipMPostService {
 
-  public List<EipMPost> findAll();
+  public List<EipMPost> findAll() {
+    return Database
+      .query(EipMPost.class)
+      .orderAscending("postName")
+      .fetchList();
+  }
 
-  public List<EipMPost> findAll(int limit, int offset);
+  public List<EipMPost> findAll(int limit, int offset) {
+    return Database
+      .query(EipMPost.class)
+      .limit(limit)
+      .offset(offset)
+      .orderAscending("postName")
+      .fetchList();
+  }
 
-  public int getCountAll();
+  public int getCountAll() {
+    return Database.query(EipMPost.class).getCount();
+  }
 }

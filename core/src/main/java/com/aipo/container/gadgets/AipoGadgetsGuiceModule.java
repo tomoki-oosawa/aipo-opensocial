@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.aipo.container.gadgets;
 
 import java.util.List;
@@ -40,10 +41,12 @@ import org.apache.shindig.gadgets.render.RenderModule;
 import org.apache.shindig.gadgets.rewrite.RewriteModule;
 import org.apache.shindig.gadgets.servlet.GadgetsHandler;
 import org.apache.shindig.gadgets.servlet.HttpRequestHandler;
+import org.apache.shindig.gadgets.servlet.JsonRpcHandler;
 import org.apache.shindig.gadgets.templates.TemplateModule;
 import org.apache.shindig.gadgets.variables.SubstituterModule;
 
-import com.aipo.container.gadgets.url.AipoUriModule;
+import com.aipo.container.gadgets.servlet.AipoJsonRpcHandler;
+import com.aipo.container.gadgets.uri.AipoUriModule;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -65,6 +68,7 @@ public class AipoGadgetsGuiceModule extends AbstractModule {
 
     bind(LockedDomainService.class).to(AipoHashLockedDomainService.class).in(
       Scopes.SINGLETON);
+    bind(JsonRpcHandler.class).to(AipoJsonRpcHandler.class);
 
     final ExecutorService service =
       Executors.newCachedThreadPool(DAEMON_THREAD_FACTORY);

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.aipo.social.opensocial.spi;
 
 import java.util.ArrayList;
@@ -41,16 +42,21 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.TurbineUserService;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 /**
  * 
  */
-public class PersonServiceDb extends AbstractService implements PersonService {
+public class AipoPersonService extends AbstractService implements PersonService {
+
+  private final TurbineUserService turbineUserSercice;
 
   /**
    * 
    */
-  public PersonServiceDb() {
+  @Inject
+  public AipoPersonService(TurbineUserService turbineUserSercice) {
+    this.turbineUserSercice = turbineUserSercice;
   }
 
   /**
@@ -69,7 +75,6 @@ public class PersonServiceDb extends AbstractService implements PersonService {
 
     setUp(token);
 
-    TurbineUserService service = new TurbineUserService();
     List<TurbineUser> list = null;
     int totalResults = 0;
     switch (groupId.getType()) {
@@ -80,18 +85,22 @@ public class PersonServiceDb extends AbstractService implements PersonService {
         // {guid} が閲覧できるすべてのユーザーを取得
         // @all = @friends
         list =
-          service.findAll(collectionOptions.getMax(), collectionOptions
-            .getFirst());
-        totalResults = service.getCountAll();
+          turbineUserSercice.findAll(
+            collectionOptions.getMax(),
+            collectionOptions.getFirst());
+        totalResults = turbineUserSercice.getCountAll();
         break;
       case groupId:
         // /people/{guid}/{groupId}
         // /people/{guid}/{groupId}
         // {guid} が閲覧できるすべてのユーザーで {groupId} グループに所属しているものを取得
         list =
-          service.findByGroupname(groupId.getGroupId(), collectionOptions
-            .getMax(), collectionOptions.getFirst());
-        totalResults = service.getCountByGroupname(groupId.getGroupId());
+          turbineUserSercice.findByGroupname(
+            groupId.getGroupId(),
+            collectionOptions.getMax(),
+            collectionOptions.getFirst());
+        totalResults =
+          turbineUserSercice.getCountByGroupname(groupId.getGroupId());
         break;
       case deleted:
         // /people/{guid}/@deleted
@@ -150,8 +159,7 @@ public class PersonServiceDb extends AbstractService implements PersonService {
 
     String userId = getUserId(id, token);
 
-    TurbineUserService service = new TurbineUserService();
-    TurbineUser user = service.findByUsername(userId);
+    TurbineUser user = turbineUserSercice.findByUsername(userId);
 
     Person person = null;
     if (user != null) {

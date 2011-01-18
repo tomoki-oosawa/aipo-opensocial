@@ -16,15 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.aipo.container.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.access.DataContext;
-
 import com.aipo.container.http.HttpServletRequestLocator;
-import com.aipo.orm.Database;
 import com.aipo.orm.service.ContainerConfigService;
 import com.aipo.orm.service.ContainerConfigService.Property;
 
@@ -35,10 +32,9 @@ public class ContainerToolkit {
     return request.getScheme();
   }
 
-  public static String getHost() {
-    selectDefaultDataDomain();
+  public static String getHost(ContainerConfigService service) {
     HttpServletRequest request = HttpServletRequestLocator.get();
-    ContainerConfigService service = new ContainerConfigService();
+
     if ("true".equalsIgnoreCase(service.get(Property.LOCKED_DOMAIN_REQUIRED))) {
       return service.get(Property.UNLOCKED_DOMAIN);
     } else {
@@ -48,23 +44,6 @@ public class ContainerToolkit {
         builder.append(":").append(serverPort);
       }
       return builder.toString();
-    }
-  }
-
-  public static void selectDefaultDataDomain() {
-    ObjectContext dataContext = null;
-    try {
-      dataContext = DataContext.getThreadObjectContext();
-    } catch (IllegalStateException ignore) {
-      // first
-    }
-    if (dataContext == null) {
-      try {
-        dataContext = Database.createDataContext("org001");
-        DataContext.bindThreadObjectContext(dataContext);
-      } catch (Throwable t) {
-        throw new RuntimeException(t);
-      }
     }
   }
 

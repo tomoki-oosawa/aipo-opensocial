@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aipo.container.gadgets.url;
+package com.aipo.container.gadgets.uri;
 
 import org.apache.shindig.gadgets.uri.AllJsIframeVersioner;
 import org.apache.shindig.gadgets.uri.ConcatUriManager;

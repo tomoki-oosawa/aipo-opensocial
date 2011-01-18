@@ -19,15 +19,10 @@
 
 package com.aipo.orm.service;
 
-import java.util.List;
+import com.aipo.orm.service.bean.OAuthConsumer;
 
-import com.aipo.orm.model.account.EipMPost;
+public interface OAuthConsumerService {
 
-public interface EipMPostService {
+  public OAuthConsumer get(String appId, String serviceName);
 
-  public List<EipMPost> findAll();
-
-  public List<EipMPost> findAll(int limit, int offset);
-
-  public int getCountAll();
 }

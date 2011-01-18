@@ -16,20 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.aipo.social.opensocial.spi;
 
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
-import org.apache.shindig.social.opensocial.service.GroupHandler;
-import org.apache.shindig.social.opensocial.spi.ActivityService;
-import org.apache.shindig.social.opensocial.spi.AlbumService;
-import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.GroupService;
-import org.apache.shindig.social.opensocial.spi.MediaItemService;
-import org.apache.shindig.social.opensocial.spi.MessageService;
 import org.apache.shindig.social.opensocial.spi.PersonService;
-import org.apache.shindig.social.sample.oauth.SampleOAuthDataStore;
-import org.apache.shindig.social.sample.spi.JsonDbOpensocialService;
 
+import com.aipo.social.opensocial.oauth.AipoOAuthDataStore;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
@@ -47,22 +41,16 @@ public class AipoSocialModule extends AbstractModule {
    */
   @Override
   protected void configure() {
-    bind(String.class)
-      .annotatedWith(Names.named("shindig.canonical.json.db"))
-      .toInstance("sampledata/canonicaldb.json");
-    bind(ActivityService.class).to(JsonDbOpensocialService.class);
-    bind(AlbumService.class).to(JsonDbOpensocialService.class);
-    bind(MediaItemService.class).to(JsonDbOpensocialService.class);
-    bind(AppDataService.class).to(JsonDbOpensocialService.class);
-    // bind(PersonService.class).to(JsonDbOpensocialService.class);
-    bind(PersonService.class).to(PersonServiceDb.class).in(Scopes.SINGLETON);
-    bind(GroupService.class).to(GroupServiceDb.class).in(Scopes.SINGLETON);
-    bind(MessageService.class).to(JsonDbOpensocialService.class);
-    bind(OAuthDataStore.class).to(SampleOAuthDataStore.class);
+    // bind(ActivityService.class).to(JsonDbOpensocialService.class);
+    // bind(AlbumService.class).to(JsonDbOpensocialService.class);
+    // bind(MediaItemService.class).to(JsonDbOpensocialService.class);
+    // bind(AppDataService.class).to(JsonDbOpensocialService.class);
+    bind(PersonService.class).to(AipoPersonService.class).in(Scopes.SINGLETON);
+    bind(GroupService.class).to(AipoGroupService.class).in(Scopes.SINGLETON);
+    // bind(MessageService.class).to(JsonDbOpensocialService.class);
+    bind(OAuthDataStore.class).to(AipoOAuthDataStore.class);
 
-    Multibinder<Object> handlerBinder =
-      Multibinder.newSetBinder(binder(), Object.class, Names
-        .named("org.apache.shindig.handlers"));
-    handlerBinder.addBinding().toInstance(GroupHandler.class);
+    Multibinder.newSetBinder(binder(), Object.class, Names
+      .named("org.apache.shindig.handlers"));
   }
 }

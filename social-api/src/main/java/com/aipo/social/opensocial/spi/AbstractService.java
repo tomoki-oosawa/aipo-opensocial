@@ -52,7 +52,6 @@ public abstract class AbstractService {
 
       selectDataDomain(orgId);
     } catch (Throwable t) {
-      t.printStackTrace();
       throw new ProtocolException(
         HttpServletResponse.SC_BAD_REQUEST,
         "Org ID not recognized");

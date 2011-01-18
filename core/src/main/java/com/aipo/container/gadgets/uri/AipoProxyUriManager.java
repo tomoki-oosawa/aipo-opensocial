@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aipo.container.gadgets.url;
+package com.aipo.container.gadgets.uri;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -37,6 +37,7 @@ import org.apache.shindig.gadgets.uri.UriCommon.Param;
 import org.apache.shindig.gadgets.uri.UriStatus;
 
 import com.aipo.container.util.ContainerToolkit;
+import com.aipo.orm.service.ContainerConfigService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -56,15 +57,19 @@ public class AipoProxyUriManager implements ProxyUriManager {
 
   private final ContainerConfig config;
 
+  private final ContainerConfigService containerConfigService;
+
   private final Versioner versioner;
 
   private boolean strictParsing = false;
 
   @Inject
   public AipoProxyUriManager(ContainerConfig config,
-      @Nullable Versioner versioner) {
+      @Nullable Versioner versioner,
+      ContainerConfigService containerConfigService) {
     this.config = config;
     this.versioner = versioner;
+    this.containerConfigService = containerConfigService;
   }
 
   @Inject(optional = true)
@@ -116,7 +121,7 @@ public class AipoProxyUriManager implements ProxyUriManager {
     String container = puc.getContainer();
     UriBuilder uri = new UriBuilder();
 
-    uri.setAuthority(ContainerToolkit.getHost());
+    uri.setAuthority(ContainerToolkit.getHost(containerConfigService));
     uri.setScheme(ContainerToolkit.getScheme());
 
     // Chained vs. query-style syntax is determined by the presence of

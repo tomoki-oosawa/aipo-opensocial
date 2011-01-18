@@ -27,7 +27,6 @@ import org.apache.shindig.config.ContainerConfig;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.LockedDomainService;
 
-import com.aipo.container.util.ContainerToolkit;
 import com.aipo.orm.service.ContainerConfigService;
 import com.aipo.orm.service.ContainerConfigService.Property;
 import com.google.inject.Inject;
@@ -52,9 +51,10 @@ public class AipoHashLockedDomainService implements LockedDomainService {
 
   @Inject
   public AipoHashLockedDomainService(ContainerConfig config,
-      @Named("shindig.locked-domain.enabled") boolean enabled) {
+      @Named("shindig.locked-domain.enabled") boolean enabled,
+      ContainerConfigService containerConfigService) {
     this.enabled = enabled;
-    containerConfigService = new ContainerConfigService();
+    this.containerConfigService = containerConfigService;
 
   }
 
@@ -133,13 +133,11 @@ public class AipoHashLockedDomainService implements LockedDomainService {
   }
 
   private boolean isLockedDomainRequired() {
-    ContainerToolkit.selectDefaultDataDomain();
     String value = containerConfigService.get(Property.LOCKED_DOMAIN_REQUIRED);
     return "true".equalsIgnoreCase(value);
   }
 
   private String getLockedDomainSuffix() {
-    ContainerToolkit.selectDefaultDataDomain();
     String value = containerConfigService.get(Property.LOCKED_DOMAIN_SUFFIX);
     return value;
   }

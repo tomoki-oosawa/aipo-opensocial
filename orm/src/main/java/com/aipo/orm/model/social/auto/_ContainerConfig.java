@@ -13,7 +13,7 @@ public abstract class _ContainerConfig extends CayenneDataObject {
     public static final String KEY_PROPERTY = "key";
     public static final String VALUE_PROPERTY = "value";
 
-    public static final String ID_PK_COLUMN = "id";
+    public static final String ID_PK_COLUMN = "ID";
 
     public void setKey(String key) {
         writeProperty("key", key);

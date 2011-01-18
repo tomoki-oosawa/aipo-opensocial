@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aipo.container.gadgets.url;
+package com.aipo.container.gadgets.uri;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +37,7 @@ import org.apache.shindig.gadgets.uri.UriCommon.Param;
 import org.apache.shindig.gadgets.uri.UriStatus;
 
 import com.aipo.container.util.ContainerToolkit;
+import com.aipo.orm.service.ContainerConfigService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -58,12 +59,16 @@ public class AipoJsUriManager implements JsUriManager {
 
   private final ContainerConfig config;
 
+  private final ContainerConfigService containerConfigService;
+
   private final Versioner versioner;
 
   @Inject
-  public AipoJsUriManager(ContainerConfig config, Versioner versioner) {
+  public AipoJsUriManager(ContainerConfig config, Versioner versioner,
+      ContainerConfigService containerConfigService) {
     this.config = config;
     this.versioner = versioner;
+    this.containerConfigService = containerConfigService;
   }
 
   public Uri makeExternJsUri(Gadget gadget, Collection<String> extern) {
@@ -73,7 +78,7 @@ public class AipoJsUriManager implements JsUriManager {
 
     // We somewhat cheat in that jsHost may contain protocol/scheme as well.
     UriBuilder uri = new UriBuilder();
-    uri.setAuthority(ContainerToolkit.getHost());
+    uri.setAuthority(ContainerToolkit.getHost(containerConfigService));
     uri.setScheme(ContainerToolkit.getScheme());
 
     // Add JS info to path and set it in URI.

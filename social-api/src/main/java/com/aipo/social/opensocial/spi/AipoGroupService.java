@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.aipo.social.opensocial.spi;
 
 import java.util.ArrayList;
@@ -36,16 +37,21 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.model.account.EipMPost;
 import com.aipo.orm.service.EipMPostService;
+import com.google.inject.Inject;
 
 /**
  * 
  */
-public class GroupServiceDb extends AbstractService implements GroupService {
+public class AipoGroupService extends AbstractService implements GroupService {
+
+  private final EipMPostService eipMPostService;
 
   /**
    * 
    */
-  public GroupServiceDb() {
+  @Inject
+  public AipoGroupService(EipMPostService eipMPostService) {
+    this.eipMPostService = eipMPostService;
   }
 
   /**
@@ -60,10 +66,10 @@ public class GroupServiceDb extends AbstractService implements GroupService {
       SecurityToken token) {
 
     setUp(token);
-    EipMPostService service = new EipMPostService();
 
     List<EipMPost> list =
-      service.findAll(collectionOptions.getMax(), collectionOptions.getFirst());
+      eipMPostService.findAll(collectionOptions.getMax(), collectionOptions
+        .getFirst());
     List<Group> result = new ArrayList<Group>();
     for (EipMPost post : list) {
       Group group = new GroupImpl();
@@ -72,7 +78,7 @@ public class GroupServiceDb extends AbstractService implements GroupService {
       group.setTitle(post.getPostName());
       result.add(group);
     }
-    int totalResults = service.getCountAll();
+    int totalResults = eipMPostService.getCountAll();
 
     RestfulCollection<Group> restCollection =
       new RestfulCollection<Group>(

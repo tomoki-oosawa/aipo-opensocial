@@ -19,11 +19,7 @@
 
 package com.aipo.orm.service;
 
-import com.aipo.orm.Database;
-import com.aipo.orm.model.social.ContainerConfig;
-import com.aipo.orm.query.Operations;
-
-public class ContainerConfigService {
+public interface ContainerConfigService {
 
   public static enum Property {
 
@@ -62,37 +58,7 @@ public class ContainerConfigService {
     public abstract String defaultValue();
   }
 
-  public String get(Property key) {
+  public String get(Property key);
 
-    ContainerConfig config =
-      Database
-        .query(ContainerConfig.class)
-        .where(Operations.eq(ContainerConfig.KEY_PROPERTY, key.toString()))
-        .fetchSingle();
-
-    if (config == null) {
-      return key.defaultValue();
-    }
-
-    return config.getValue();
-  }
-
-  public void put(Property key, String value) {
-    try {
-      ContainerConfig config =
-        Database
-          .query(ContainerConfig.class)
-          .where(Operations.eq(ContainerConfig.KEY_PROPERTY, key.toString()))
-          .fetchSingle();
-      if (config == null) {
-        config = Database.create(ContainerConfig.class);
-        config.setKey(key.toString());
-      }
-      config.setValue(value);
-      Database.commit();
-    } catch (Throwable t) {
-      Database.rollback();
-      throw new RuntimeException(t);
-    }
-  }
+  public void put(Property key, String value);
 }
