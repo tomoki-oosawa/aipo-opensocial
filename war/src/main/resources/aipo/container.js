@@ -26,7 +26,7 @@
 //  change
 //		{"gadgets.container" : ["default"],
 //  to
-//		�ｿ{"gadgets.container" : ["myContainer"],
+//		{"gadgets.container" : ["myContainer"],
 // And make your changes that you need to myContainer.js.
 // Just make sure on the iframe URL you specify &container=myContainer
 // for it to use that config.
@@ -90,7 +90,7 @@
 "gadgets.uri.oauth.callbackTemplate" : "//%host%/gadgets/oauthcallback",
 
 // Use an insecure security token by default
-"gadgets.securityTokenType" : "insecure",
+// "gadgets.securityTokenType" : "insecure",
 
 // Config param to load Opensocial data for social
 // preloads in data pipelining.  %host% will be
@@ -139,15 +139,15 @@
     "jsonProxyUrl" : "//%host%/gadgets/makeRequest"
   },
   "views" : {
-    "profile" : {
+    "home" : {
       "isOnlyVisible" : false,
-      "urlTemplate" : "http://localhost/gadgets/profile?{var}",
-      "aliases": ["DASHBOARD", "default"]
+      "aliases": ["default"]
+    },
+    "preview" : {
+        "isOnlyVisible" : false
     },
     "canvas" : {
-      "isOnlyVisible" : true,
-      "urlTemplate" : "http://localhost/gadgets/canvas?{var}",
-      "aliases" : ["FULL_PAGE"]
+      "isOnlyVisible" : true
     }
   },
   "tabs": {
