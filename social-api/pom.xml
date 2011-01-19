@@ -16,7 +16,7 @@
   <version>${aipo.version}</version>
   <packaging>jar</packaging>
 
-  <name>social-api</name>
+  <name>Aipo OpenSocial Container Social API</name>
 
   <build>
     <plugins>

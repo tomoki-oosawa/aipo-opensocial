@@ -15,7 +15,7 @@
   <artifactId>aipo-container-core</artifactId>
   <version>${aipo.version}</version>
 
-  <name>core</name>
+  <name>Aipo OpenSocial Container Core Code</name>
 
   <build>
     <plugins>

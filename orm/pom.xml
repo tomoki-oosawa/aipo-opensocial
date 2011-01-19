@@ -15,7 +15,7 @@
   <artifactId>aipo-orm</artifactId>
   <version>${aipo.version}</version>
 
-  <name>orm</name>
+  <name>Aipo OpenSocial Container ORM</name>
 
   <build>
     <plugins>
