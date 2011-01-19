@@ -15,9 +15,10 @@
   <version>6.0</version>
   <packaging>pom</packaging>
 
-  <name>aipo</name>
-  <description>Groupware Aipo</description>
-  <url>http://aipostyle.com</url>
+  <name>Aipo OpenSocial Container Project</name>
+  
+  <description>OpenSocial Container for Groupware Aipo</description>
+  <url>http://www.aipo.com</url>
   <inceptionYear>2004</inceptionYear>
   <organization>
     <name>Aimluck,Inc.</name>
@@ -207,16 +208,13 @@
             <include>**/*.sql</include>
           </includes>
           <excludes>
-            <exclude>**/*.min.js</exclude>
-            <exclude>**/*.ycomp.js</exclude>
-            <exclude>**/*-all.js</exclude>
-            <exclude>**/*.min.css</exclude>
+            <exclude>**/*.opt.js</exclude>
           </excludes>
           <encoding>UTF-8</encoding>
           <strictCheck>true</strictCheck>
           <skipExistingHeaders>false</skipExistingHeaders>
           <properties>
-            <year>2010</year>
+            <year>2011</year>
           </properties>
           <headerDefinitions>
             <headerDefinition>header-definition.xml</headerDefinition>
@@ -230,6 +228,7 @@
     <module>orm</module>
     <module>core</module>
     <module>social-api</module>
+    <module>features</module>
     <module>war</module>
   </modules>
 
