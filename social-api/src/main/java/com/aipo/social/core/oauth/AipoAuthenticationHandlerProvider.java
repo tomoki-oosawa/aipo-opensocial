@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
- * Copyright (C) 2004-2010 Aimluck,Inc.
- * http://aipostyle.com/
+ * Copyright (C) 2004-2011 Aimluck,Inc.
+ * http://www.aipo.com/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,13 +24,14 @@ import java.util.List;
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
+import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 /**
- * Guice provider of an ordered list of Auntentication Providers
+ * @see AuthenticationHandlerProvider
  */
 public class AipoAuthenticationHandlerProvider implements
     Provider<List<AuthenticationHandler>> {

@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
- * Copyright (C) 2004-2010 Aimluck,Inc.
- * http://aipostyle.com/
+ * Copyright (C) 2004-2011 Aimluck,Inc.
+ * http://www.aipo.com/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,7 @@ import org.apache.shindig.common.crypto.Crypto;
 import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.apache.shindig.social.sample.oauth.SampleOAuthDataStore;
 
 import com.aipo.orm.service.ApplicationService;
 import com.google.common.base.Preconditions;
@@ -40,7 +41,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 /**
- * 
+ * @see SampleOAuthDataStore
  */
 public class AipoOAuthDataStore implements OAuthDataStore {
 
