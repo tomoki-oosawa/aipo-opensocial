@@ -37,6 +37,7 @@ import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.DataNode;
 import org.apache.cayenne.access.Transaction;
 import org.apache.cayenne.conf.Configuration;
+import org.apache.cayenne.conf.CustomDBCPDataSourceFactory;
 import org.apache.cayenne.conf.DBCPDataSourceFactory;
 import org.apache.cayenne.dba.AutoAdapter;
 import org.apache.cayenne.exp.Expression;
@@ -372,7 +373,7 @@ public class Database {
         .setTransactionDelegate(dataDomain.getTransactionDelegate());
       DataNode dataNode = new DataNode(orgId + "domainNode");
       dataNode.setDataMaps(dataDomain.getDataMaps());
-      DBCPDataSourceFactory factory = new DBCPDataSourceFactory();
+      DBCPDataSourceFactory factory = new CustomDBCPDataSourceFactory();
       factory.initializeWithParentConfiguration(Configuration
         .getSharedConfiguration());
       DataSource dataSource =
