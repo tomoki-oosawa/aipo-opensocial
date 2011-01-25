@@ -73,6 +73,10 @@ public class AipoPersonService extends AbstractService implements PersonService 
       GroupId groupId, CollectionOptions collectionOptions, Set<String> fields,
       SecurityToken token) throws ProtocolException {
 
+    // TODO: SORT
+    // TODO: FILTER
+    // TODO: FIELDS
+
     setUp(token);
 
     List<TurbineUser> list = null;
@@ -120,18 +124,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
 
     List<Person> result = new ArrayList<Person>(list.size());
     for (TurbineUser user : list) {
-      String displayName = user.getLastName() + " " + user.getFirstName();
-      Name name = new NameImpl();
-      name.setFamilyName(user.getLastName());
-      name.setGivenName(user.getFirstName());
-      name.setFormatted(user.getLastName() + " " + user.getFirstName());
-      Person person =
-        new PersonImpl(getOrgId(token) + ":" + user.getLoginName(), user
-          .getLastName()
-          + " "
-          + user.getFirstName(), name);
-      result.add(person);
-      person.setNickname(displayName);
+      result.add(assignPerson(user, fields, token));
     }
 
     RestfulCollection<Person> restCollection =
@@ -155,27 +148,33 @@ public class AipoPersonService extends AbstractService implements PersonService 
   public Future<Person> getPerson(UserId id, Set<String> fields,
       SecurityToken token) throws ProtocolException {
 
+    // TODO: FIELDS
+
     setUp(token);
 
     String userId = getUserId(id, token);
-
     TurbineUser user = turbineUserSercice.findByUsername(userId);
 
     Person person = null;
     if (user != null) {
-      String displayName = user.getLastName() + " " + user.getFirstName();
-      Name name = new NameImpl();
-      name.setFamilyName(user.getLastName());
-      name.setGivenName(user.getFirstName());
-      name.setFormatted(displayName);
-      person =
-        new PersonImpl(getOrgId(token) + ":" + user.getLoginName(), user
-          .getLastName()
-          + " "
-          + user.getFirstName(), name);
-      person.setNickname(displayName);
+      person = assignPerson(user, fields, token);
     }
 
     return ImmediateFuture.newInstance(person);
   }
+
+  protected Person assignPerson(TurbineUser user, Set<String> fields,
+      SecurityToken token) {
+    String userId =
+      new StringBuilder(getOrgId(token) + ":" + user.getLoginName()).toString();
+    String displayName =
+      new StringBuilder(user.getLastName()).append(" ").append(
+        user.getFirstName()).toString();
+    Name name = new NameImpl();
+    name.setFamilyName(user.getLastName());
+    name.setGivenName(user.getFirstName());
+    Person person = new PersonImpl(userId, displayName, name);
+    return person;
+  }
+
 }

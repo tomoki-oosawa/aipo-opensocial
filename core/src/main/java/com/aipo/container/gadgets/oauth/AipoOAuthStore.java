@@ -63,14 +63,8 @@ public class AipoOAuthStore implements OAuthStore {
   private static final String OAUTH_CALLBACK_URL =
     "shindig.signing.global-callback-url";
 
-  /**
-   * Key to use when no other key is found.
-   */
   private BasicOAuthStoreConsumerKeyAndSecret defaultKey;
 
-  /**
-   * Callback to use when no per-key callback URL is found.
-   */
   private final String defaultCallbackUrl;
 
   private final OAuthConsumerService oAuthConsumerService;

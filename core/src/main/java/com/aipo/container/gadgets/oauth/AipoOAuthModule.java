@@ -19,34 +19,19 @@
 
 package com.aipo.container.gadgets.oauth;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Logger;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.shindig.common.crypto.BasicBlobCrypter;
 import org.apache.shindig.common.crypto.BlobCrypter;
-import org.apache.shindig.common.crypto.Crypto;
-import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.oauth.OAuthFetcherConfig;
+import org.apache.shindig.gadgets.oauth.OAuthModule;
 import org.apache.shindig.gadgets.oauth.OAuthRequest;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Scopes;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 /**
  * @OAuthModule
  */
-public class AipoOAuthModule extends AbstractModule {
-
-  private static final Logger logger = Logger.getLogger(AipoOAuthModule.class
-    .getName());
+public class AipoOAuthModule extends OAuthModule {
 
   @Override
   protected void configure() {
@@ -55,49 +40,6 @@ public class AipoOAuthModule extends AbstractModule {
       OAuthCrypterProvider.class);
     bind(OAuthStore.class).to(AipoOAuthStore.class).in(Scopes.SINGLETON);
     bind(OAuthRequest.class).toProvider(OAuthRequestProvider.class);
-  }
-
-  @Singleton
-  public static class OAuthCrypterProvider implements Provider<BlobCrypter> {
-
-    private final BlobCrypter crypter;
-
-    @Inject
-    public OAuthCrypterProvider(
-        @Named("shindig.signing.state-key") String stateCrypterPath)
-        throws IOException {
-      if (StringUtils.isBlank(stateCrypterPath)) {
-        logger.info("Using random key for OAuth client-side state encryption");
-        crypter =
-          new BasicBlobCrypter(Crypto
-            .getRandomBytes(BasicBlobCrypter.MASTER_KEY_MIN_LEN));
-      } else {
-        logger.info("Using file "
-          + stateCrypterPath
-          + " for OAuth client-side state encryption");
-        crypter = new BasicBlobCrypter(new File(stateCrypterPath));
-      }
-    }
-
-    public BlobCrypter get() {
-      return crypter;
-    }
-  }
-
-  public static class OAuthRequestProvider implements Provider<OAuthRequest> {
-    private final HttpFetcher fetcher;
-
-    private final OAuthFetcherConfig config;
-
-    @Inject
-    public OAuthRequestProvider(HttpFetcher fetcher, OAuthFetcherConfig config) {
-      this.fetcher = fetcher;
-      this.config = config;
-    }
-
-    public OAuthRequest get() {
-      return new OAuthRequest(config, fetcher);
-    }
   }
 
 }

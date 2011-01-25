@@ -25,6 +25,7 @@ import javax.servlet.ServletContext;
  * 
  */
 public class ServletContextLocator {
+
   private static ThreadLocal<ServletContext> servletContexts =
     new ThreadLocal<ServletContext>();
 

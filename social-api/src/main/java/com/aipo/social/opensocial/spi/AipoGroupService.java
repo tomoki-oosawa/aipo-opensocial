@@ -65,6 +65,10 @@ public class AipoGroupService extends AbstractService implements GroupService {
       CollectionOptions collectionOptions, Set<String> fields,
       SecurityToken token) {
 
+    // TODO: SORT
+    // TODO: FILTER
+    // TODO: FIELDS
+
     setUp(token);
 
     List<EipMPost> list =
@@ -72,11 +76,7 @@ public class AipoGroupService extends AbstractService implements GroupService {
         .getFirst());
     List<Group> result = new ArrayList<Group>();
     for (EipMPost post : list) {
-      Group group = new GroupImpl();
-      GroupId groupId = new GroupId(Type.groupId, post.getGroupName());
-      group.setId(groupId);
-      group.setTitle(post.getPostName());
-      result.add(group);
+      result.add(assginGroup(post, fields, token));
     }
     int totalResults = eipMPostService.getCountAll();
 
@@ -87,5 +87,14 @@ public class AipoGroupService extends AbstractService implements GroupService {
         totalResults,
         collectionOptions.getMax());
     return ImmediateFuture.newInstance(restCollection);
+  }
+
+  protected Group assginGroup(EipMPost post, Set<String> fields,
+      SecurityToken token) {
+    Group group = new GroupImpl();
+    GroupId groupId = new GroupId(Type.groupId, post.getGroupName());
+    group.setId(groupId);
+    group.setTitle(post.getPostName());
+    return group;
   }
 }

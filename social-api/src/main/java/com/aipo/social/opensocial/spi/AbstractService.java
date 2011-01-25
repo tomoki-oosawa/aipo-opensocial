@@ -27,11 +27,17 @@ import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.Database;
+import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.service.TurbineUserService;
+import com.google.inject.Inject;
 
 /**
  * 
  */
 public abstract class AbstractService {
+
+  @Inject
+  private TurbineUserService turbineUserSercice;
 
   private String orgId;
 
@@ -40,8 +46,8 @@ public abstract class AbstractService {
   protected void setUp(SecurityToken token) {
 
     try {
-      String viewerId = token.getViewerId();
-      String[] split = viewerId.split(":");
+      String viewer = token.getViewerId();
+      String[] split = viewer.split(":");
 
       if (split.length != 2) {
         throw new RuntimeException();
@@ -56,6 +62,7 @@ public abstract class AbstractService {
         HttpServletResponse.SC_BAD_REQUEST,
         "Org ID not recognized");
     }
+    checkViewerExists(token);
 
   }
 
@@ -104,5 +111,22 @@ public abstract class AbstractService {
       return false;
     }
     return orgId.equals(getOrgId(token));
+  }
+
+  protected void checkViewerExists(SecurityToken token)
+      throws ProtocolException {
+    String viewerId = getViewerId(token);
+    boolean result = false;
+    try {
+      TurbineUser user = turbineUserSercice.findByUsername(viewerId);
+      result = user != null;
+    } catch (Throwable t) {
+      result = false;
+    }
+    if (!result) {
+      throw new ProtocolException(
+        HttpServletResponse.SC_BAD_REQUEST,
+        "Viewer ID not recognized");
+    }
   }
 }

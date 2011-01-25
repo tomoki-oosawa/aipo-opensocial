@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  */
 public class HttpServletResponseLocator {
+
   private static ThreadLocal<HttpServletResponse> httpServletResponses =
     new ThreadLocal<HttpServletResponse>();
 
