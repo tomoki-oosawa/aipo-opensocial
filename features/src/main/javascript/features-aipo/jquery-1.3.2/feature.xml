@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<feature>
+  <name>jquery-1.3.2</name>
+  <gadget>
+    <script inline="true" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"/>
+  </gadget>
+  <container>
+    <script inline="true" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"/>
+  </container>
+</feature>
