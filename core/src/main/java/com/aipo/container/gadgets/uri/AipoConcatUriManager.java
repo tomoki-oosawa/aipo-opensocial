@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import org.apache.shindig.gadgets.uri.UriCommon.Param;
 import org.apache.shindig.gadgets.uri.UriStatus;
 
 import com.aipo.container.util.ContainerToolkit;
-import com.aipo.orm.service.ContainerConfigService;
+import com.aipo.orm.service.ContainerConfigDbService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -65,7 +65,7 @@ public class AipoConcatUriManager implements ConcatUriManager {
 
   private final ContainerConfig config;
 
-  private final ContainerConfigService containerConfigService;
+  private final ContainerConfigDbService containerConfigDbService;
 
   private final Versioner versioner;
 
@@ -74,10 +74,10 @@ public class AipoConcatUriManager implements ConcatUriManager {
   @Inject
   public AipoConcatUriManager(ContainerConfig config,
       @Nullable Versioner versioner,
-      ContainerConfigService containerConfigService) {
+      ContainerConfigDbService containerConfigDbService) {
     this.config = config;
     this.versioner = versioner;
-    this.containerConfigService = containerConfigService;
+    this.containerConfigDbService = containerConfigDbService;
   }
 
   @Inject(optional = true)
@@ -131,7 +131,7 @@ public class AipoConcatUriManager implements ConcatUriManager {
 
     UriBuilder uriBuilder = ctx.makeQueryParams(null, version);
 
-    String concatHost = ContainerToolkit.getHost(containerConfigService);
+    String concatHost = ContainerToolkit.getHost(containerConfigDbService);
     String concatPath = getReqVal(ctx.getContainer(), CONCAT_PATH_PARAM);
     uriBuilder.setAuthority(concatHost);
     uriBuilder.setPath(concatPath);

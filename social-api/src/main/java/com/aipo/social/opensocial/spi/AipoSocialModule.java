@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@
 package com.aipo.social.opensocial.spi;
 
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
+import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.GroupService;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 
@@ -41,10 +42,13 @@ public class AipoSocialModule extends AbstractModule {
    */
   @Override
   protected void configure() {
-    // bind(ActivityService.class).to(JsonDbOpensocialService.class);
+    bind(ActivityService.class).to(AipoActivityService.class).in(
+      Scopes.SINGLETON);
     // bind(AlbumService.class).to(JsonDbOpensocialService.class);
     // bind(MediaItemService.class).to(JsonDbOpensocialService.class);
-    // bind(AppDataService.class).to(JsonDbOpensocialService.class);
+    bind(AppDataService.class)
+      .to(AipoAppDataService.class)
+      .in(Scopes.SINGLETON);
     bind(PersonService.class).to(AipoPersonService.class).in(Scopes.SINGLETON);
     bind(GroupService.class).to(AipoGroupService.class).in(Scopes.SINGLETON);
     // bind(MessageService.class).to(JsonDbOpensocialService.class);

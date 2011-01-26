@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,16 +19,9 @@
 
 package com.aipo.orm.service;
 
-import com.aipo.orm.service.bean.OAuthToken;
-
 /**
  * 
  */
-public interface OAuthTokenService {
+public interface AppDataDbService {
 
-  public OAuthToken get(int hashCode);
-
-  public void remove(int hashCode);
-
-  public void put(OAuthToken oAuthToken);
 }

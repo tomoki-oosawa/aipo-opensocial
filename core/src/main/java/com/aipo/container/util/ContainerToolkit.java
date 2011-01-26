@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +22,8 @@ package com.aipo.container.util;
 import javax.servlet.http.HttpServletRequest;
 
 import com.aipo.container.http.HttpServletRequestLocator;
-import com.aipo.orm.service.ContainerConfigService;
-import com.aipo.orm.service.ContainerConfigService.Property;
+import com.aipo.orm.service.ContainerConfigDbService;
+import com.aipo.orm.service.ContainerConfigDbService.Property;
 
 public class ContainerToolkit {
 
@@ -32,7 +32,7 @@ public class ContainerToolkit {
     return request.getScheme();
   }
 
-  public static String getHost(ContainerConfigService service) {
+  public static String getHost(ContainerConfigDbService service) {
     HttpServletRequest request = HttpServletRequestLocator.get();
 
     if ("true".equalsIgnoreCase(service.get(Property.LOCKED_DOMAIN_REQUIRED))) {

@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,7 +40,7 @@ import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.model.security.TurbineUser;
-import com.aipo.orm.service.TurbineUserService;
+import com.aipo.orm.service.TurbineUserDbService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -49,14 +49,14 @@ import com.google.inject.Inject;
  */
 public class AipoPersonService extends AbstractService implements PersonService {
 
-  private final TurbineUserService turbineUserSercice;
+  private final TurbineUserDbService turbineUserDbSercice;
 
   /**
    * 
    */
   @Inject
-  public AipoPersonService(TurbineUserService turbineUserSercice) {
-    this.turbineUserSercice = turbineUserSercice;
+  public AipoPersonService(TurbineUserDbService turbineUserSercice) {
+    this.turbineUserDbSercice = turbineUserSercice;
   }
 
   /**
@@ -89,22 +89,22 @@ public class AipoPersonService extends AbstractService implements PersonService 
         // {guid} が閲覧できるすべてのユーザーを取得
         // @all = @friends
         list =
-          turbineUserSercice.findAll(
+          turbineUserDbSercice.findAll(
             collectionOptions.getMax(),
             collectionOptions.getFirst());
-        totalResults = turbineUserSercice.getCountAll();
+        totalResults = turbineUserDbSercice.getCountAll();
         break;
       case groupId:
         // /people/{guid}/{groupId}
         // /people/{guid}/{groupId}
         // {guid} が閲覧できるすべてのユーザーで {groupId} グループに所属しているものを取得
         list =
-          turbineUserSercice.findByGroupname(
+          turbineUserDbSercice.findByGroupname(
             groupId.getGroupId(),
             collectionOptions.getMax(),
             collectionOptions.getFirst());
         totalResults =
-          turbineUserSercice.getCountByGroupname(groupId.getGroupId());
+          turbineUserDbSercice.getCountByGroupname(groupId.getGroupId());
         break;
       case deleted:
         // /people/{guid}/@deleted
@@ -153,7 +153,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
     setUp(token);
 
     String userId = getUserId(id, token);
-    TurbineUser user = turbineUserSercice.findByUsername(userId);
+    TurbineUser user = turbineUserDbSercice.findByUsername(userId);
 
     Person person = null;
     if (user != null) {

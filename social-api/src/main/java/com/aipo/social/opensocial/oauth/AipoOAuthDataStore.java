@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.apache.shindig.social.sample.oauth.SampleOAuthDataStore;
 
-import com.aipo.orm.service.ApplicationService;
+import com.aipo.orm.service.ApplicationDbService;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.MapMaker;
 import com.google.inject.Inject;
@@ -51,16 +51,16 @@ public class AipoOAuthDataStore implements OAuthDataStore {
 
   private final OAuthServiceProvider SERVICE_PROVIDER;
 
-  private final ApplicationService applicationService;
+  private final ApplicationDbService applicationDbService;
 
   private final String domain;
 
   @Inject
-  public AipoOAuthDataStore(ApplicationService applicationService,
+  public AipoOAuthDataStore(ApplicationDbService applicationDbService,
       @Named("shindig.oauth.base-url") String baseUrl,
       @Named("shindig.oauth.domain") String domain) {
     this.domain = domain;
-    this.applicationService = applicationService;
+    this.applicationDbService = applicationDbService;
     this.SERVICE_PROVIDER =
       new OAuthServiceProvider(
         baseUrl + "requestToken",
@@ -80,7 +80,8 @@ public class AipoOAuthDataStore implements OAuthDataStore {
 
   public OAuthConsumer getConsumer(String consumerKey) {
     try {
-      String consumerSecret = applicationService.getConsumerSecret(consumerKey);
+      String consumerSecret =
+        applicationDbService.getConsumerSecret(consumerKey);
 
       if (consumerSecret == null) {
         return null;

@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,10 +32,12 @@ import org.apache.shindig.protocol.conversion.BeanXStreamConverter;
 import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
+import org.apache.shindig.social.opensocial.service.AppDataHandler;
 import org.apache.shindig.social.opensocial.service.GroupHandler;
 import org.apache.shindig.social.opensocial.service.PersonHandler;
 
 import com.aipo.social.core.oauth.AipoAuthenticationHandlerProvider;
+import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -83,8 +85,8 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
    */
   protected Set<Class<?>> getHandlers() {
     return ImmutableSet.<Class<?>> of(
-    // ActivityHandler.class,
-    // AppDataHandler.class,
+      AipoActivityHandler.class,
+      AppDataHandler.class,
       PersonHandler.class,
       GroupHandler.class
     // MessageHandler.class,

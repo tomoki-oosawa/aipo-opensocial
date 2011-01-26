@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,46 +19,51 @@
 
 package com.aipo.orm.service;
 
-import java.util.List;
-
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 
 import com.aipo.orm.Database;
-import com.aipo.orm.model.social.Application;
+import com.aipo.orm.model.social.ContainerConfig;
 import com.aipo.orm.query.Operations;
-import com.aipo.orm.service.bean.OAuthConsumer;
 import com.google.inject.Singleton;
 
 @Singleton
-public class AipoOAuthConsumerService implements OAuthConsumerService {
+public class AipoContainerConfigDbService implements ContainerConfigDbService {
 
-  public OAuthConsumer get(String appId, String serviceName) {
+  public String get(Property key) {
 
     selectDefaultDataDomain();
+    ContainerConfig config =
+      Database
+        .query(ContainerConfig.class)
+        .where(Operations.eq(ContainerConfig.KEY_PROPERTY, key.toString()))
+        .fetchSingle();
 
-    Application app =
-      Database.query(Application.class).where(
-        Operations.eq(Application.APP_ID_PROPERTY, appId)).fetchSingle();
-
-    if (app == null) {
-      return null;
+    if (config == null) {
+      return key.defaultValue();
     }
 
-    List<com.aipo.orm.model.social.OAuthConsumer> list = app.getOauthConsumer();
+    return config.getValue();
+  }
 
-    for (com.aipo.orm.model.social.OAuthConsumer service : list) {
-      if (serviceName.equals(service.getName())) {
-        OAuthConsumer consumer = new OAuthConsumer();
-        consumer.setConsumerKey(service.getConsumerKey());
-        consumer.setConsumerSecret(service.getConsumerSecret());
-        consumer.setName(service.getName());
-        consumer.setType(service.getType());
-        return consumer;
+  public void put(Property key, String value) {
+    try {
+      selectDefaultDataDomain();
+      ContainerConfig config =
+        Database
+          .query(ContainerConfig.class)
+          .where(Operations.eq(ContainerConfig.KEY_PROPERTY, key.toString()))
+          .fetchSingle();
+      if (config == null) {
+        config = Database.create(ContainerConfig.class);
+        config.setKey(key.toString());
       }
+      config.setValue(value);
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
     }
-
-    return null;
   }
 
   private void selectDefaultDataDomain() {

@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,18 +19,22 @@
 
 package com.aipo.orm;
 
-import com.aipo.orm.service.AipoApplicationService;
-import com.aipo.orm.service.AipoContainerConfigService;
-import com.aipo.orm.service.AipoEipMPostService;
-import com.aipo.orm.service.AipoOAuthConsumerService;
-import com.aipo.orm.service.AipoOAuthTokenService;
-import com.aipo.orm.service.AipoTurbineUserService;
-import com.aipo.orm.service.ApplicationService;
-import com.aipo.orm.service.ContainerConfigService;
-import com.aipo.orm.service.EipMPostService;
-import com.aipo.orm.service.OAuthConsumerService;
-import com.aipo.orm.service.OAuthTokenService;
-import com.aipo.orm.service.TurbineUserService;
+import com.aipo.orm.service.ActivityDbService;
+import com.aipo.orm.service.AipoActivityDbService;
+import com.aipo.orm.service.AipoAppDataDbService;
+import com.aipo.orm.service.AipoApplicationDbService;
+import com.aipo.orm.service.AipoContainerConfigDbService;
+import com.aipo.orm.service.AipoEipMPostDbService;
+import com.aipo.orm.service.AipoOAuthConsumerDbService;
+import com.aipo.orm.service.AipoOAuthTokenDbService;
+import com.aipo.orm.service.AipoTurbineUserDbService;
+import com.aipo.orm.service.AppDataDbService;
+import com.aipo.orm.service.ApplicationDbService;
+import com.aipo.orm.service.ContainerConfigDbService;
+import com.aipo.orm.service.EipMPostDbService;
+import com.aipo.orm.service.OAuthConsumerDbService;
+import com.aipo.orm.service.OAuthTokenDbService;
+import com.aipo.orm.service.TurbineUserDbService;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 
@@ -45,17 +49,22 @@ public class AipoOrmModule extends AbstractModule {
   @Override
   protected void configure() {
 
-    bind(TurbineUserService.class).to(AipoTurbineUserService.class).in(
+    bind(ActivityDbService.class).to(AipoActivityDbService.class).in(
       Scopes.SINGLETON);
-    bind(EipMPostService.class).to(AipoEipMPostService.class).in(
+    bind(AppDataDbService.class).to(AipoAppDataDbService.class).in(
       Scopes.SINGLETON);
-    bind(ApplicationService.class).to(AipoApplicationService.class).in(
+    bind(TurbineUserDbService.class).to(AipoTurbineUserDbService.class).in(
       Scopes.SINGLETON);
-    bind(ContainerConfigService.class).to(AipoContainerConfigService.class).in(
+    bind(EipMPostDbService.class).to(AipoEipMPostDbService.class).in(
       Scopes.SINGLETON);
-    bind(OAuthConsumerService.class).to(AipoOAuthConsumerService.class).in(
+    bind(ApplicationDbService.class).to(AipoApplicationDbService.class).in(
       Scopes.SINGLETON);
-    bind(OAuthTokenService.class).to(AipoOAuthTokenService.class).in(
+    bind(ContainerConfigDbService.class)
+      .to(AipoContainerConfigDbService.class)
+      .in(Scopes.SINGLETON);
+    bind(OAuthConsumerDbService.class).to(AipoOAuthConsumerDbService.class).in(
+      Scopes.SINGLETON);
+    bind(OAuthTokenDbService.class).to(AipoOAuthTokenDbService.class).in(
       Scopes.SINGLETON);
   }
 

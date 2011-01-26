@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,8 @@ import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyT
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreTokenIndex;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
 
-import com.aipo.orm.service.OAuthConsumerService;
-import com.aipo.orm.service.OAuthTokenService;
+import com.aipo.orm.service.OAuthConsumerDbService;
+import com.aipo.orm.service.OAuthTokenDbService;
 import com.aipo.orm.service.bean.OAuthToken;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -67,18 +67,18 @@ public class AipoOAuthStore implements OAuthStore {
 
   private final String defaultCallbackUrl;
 
-  private final OAuthConsumerService oAuthConsumerService;
+  private final OAuthConsumerDbService oAuthConsumerDbService;
 
-  private final OAuthTokenService oAuthTokenService;
+  private final OAuthTokenDbService oAuthTokenDbService;
 
   @Inject
   public AipoOAuthStore(@Named(OAUTH_SIGNING_KEY_FILE) String signingKeyFile,
       @Named(OAUTH_SIGNING_KEY_NAME) String signingKeyName,
       @Named(OAUTH_CALLBACK_URL) String defaultCallbackUrl,
-      OAuthConsumerService oAuthConsumerService,
-      OAuthTokenService oAuthTokenService) {
-    this.oAuthConsumerService = oAuthConsumerService;
-    this.oAuthTokenService = oAuthTokenService;
+      OAuthConsumerDbService oAuthConsumerDbService,
+      OAuthTokenDbService oAuthTokenDbService) {
+    this.oAuthConsumerDbService = oAuthConsumerDbService;
+    this.oAuthTokenDbService = oAuthTokenDbService;
     this.defaultCallbackUrl = defaultCallbackUrl;
     loadDefaultKey(signingKeyFile, signingKeyName);
   }
@@ -92,7 +92,7 @@ public class AipoOAuthStore implements OAuthStore {
     String appId = securityToken.getAppId();
 
     com.aipo.orm.service.bean.OAuthConsumer oAuthConsumer =
-      oAuthConsumerService.get(appId, serviceName);
+      oAuthConsumerDbService.get(appId, serviceName);
 
     BasicOAuthStoreConsumerKeyAndSecret cks;
     if (oAuthConsumer == null) {
@@ -155,7 +155,7 @@ public class AipoOAuthStore implements OAuthStore {
 
     BasicOAuthStoreTokenIndex tokenKey =
       makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
-    OAuthToken oAuthToken = oAuthTokenService.get(tokenKey.hashCode());
+    OAuthToken oAuthToken = oAuthTokenDbService.get(tokenKey.hashCode());
 
     if (oAuthToken == null) {
       return null;
@@ -179,7 +179,7 @@ public class AipoOAuthStore implements OAuthStore {
     oAuthToken.setSessionHandle(tokenInfo.getSessionHandle());
     oAuthToken.setTokenExpireMilis(tokenInfo.getTokenExpireMillis());
 
-    oAuthTokenService.put(oAuthToken);
+    oAuthTokenDbService.put(oAuthToken);
   }
 
   public void removeToken(SecurityToken securityToken,
@@ -188,7 +188,7 @@ public class AipoOAuthStore implements OAuthStore {
     BasicOAuthStoreTokenIndex tokenKey =
       makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
 
-    oAuthTokenService.remove(tokenKey.hashCode());
+    oAuthTokenDbService.remove(tokenKey.hashCode());
   }
 
   private void loadDefaultKey(String signingKeyFile, String signingKeyName) {

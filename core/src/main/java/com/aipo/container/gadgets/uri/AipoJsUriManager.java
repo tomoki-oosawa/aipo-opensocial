@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ import org.apache.shindig.gadgets.uri.UriCommon.Param;
 import org.apache.shindig.gadgets.uri.UriStatus;
 
 import com.aipo.container.util.ContainerToolkit;
-import com.aipo.orm.service.ContainerConfigService;
+import com.aipo.orm.service.ContainerConfigDbService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -59,16 +59,16 @@ public class AipoJsUriManager implements JsUriManager {
 
   private final ContainerConfig config;
 
-  private final ContainerConfigService containerConfigService;
+  private final ContainerConfigDbService containerConfigDbService;
 
   private final Versioner versioner;
 
   @Inject
   public AipoJsUriManager(ContainerConfig config, Versioner versioner,
-      ContainerConfigService containerConfigService) {
+      ContainerConfigDbService containerConfigDbService) {
     this.config = config;
     this.versioner = versioner;
-    this.containerConfigService = containerConfigService;
+    this.containerConfigDbService = containerConfigDbService;
   }
 
   public Uri makeExternJsUri(Gadget gadget, Collection<String> extern) {
@@ -78,7 +78,7 @@ public class AipoJsUriManager implements JsUriManager {
 
     // We somewhat cheat in that jsHost may contain protocol/scheme as well.
     UriBuilder uri = new UriBuilder();
-    uri.setAuthority(ContainerToolkit.getHost(containerConfigService));
+    uri.setAuthority(ContainerToolkit.getHost(containerConfigDbService));
     uri.setScheme(ContainerToolkit.getScheme());
 
     // Add JS info to path and set it in URI.

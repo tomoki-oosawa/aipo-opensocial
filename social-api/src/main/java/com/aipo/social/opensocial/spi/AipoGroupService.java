@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ import org.apache.shindig.social.opensocial.spi.GroupService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.model.account.EipMPost;
-import com.aipo.orm.service.EipMPostService;
+import com.aipo.orm.service.EipMPostDbService;
 import com.google.inject.Inject;
 
 /**
@@ -44,14 +44,14 @@ import com.google.inject.Inject;
  */
 public class AipoGroupService extends AbstractService implements GroupService {
 
-  private final EipMPostService eipMPostService;
+  private final EipMPostDbService eipMPostDbService;
 
   /**
    * 
    */
   @Inject
-  public AipoGroupService(EipMPostService eipMPostService) {
-    this.eipMPostService = eipMPostService;
+  public AipoGroupService(EipMPostDbService eipMPostDbService) {
+    this.eipMPostDbService = eipMPostDbService;
   }
 
   /**
@@ -72,13 +72,13 @@ public class AipoGroupService extends AbstractService implements GroupService {
     setUp(token);
 
     List<EipMPost> list =
-      eipMPostService.findAll(collectionOptions.getMax(), collectionOptions
+      eipMPostDbService.findAll(collectionOptions.getMax(), collectionOptions
         .getFirst());
     List<Group> result = new ArrayList<Group>();
     for (EipMPost post : list) {
       result.add(assginGroup(post, fields, token));
     }
-    int totalResults = eipMPostService.getCountAll();
+    int totalResults = eipMPostDbService.getCountAll();
 
     RestfulCollection<Group> restCollection =
       new RestfulCollection<Group>(

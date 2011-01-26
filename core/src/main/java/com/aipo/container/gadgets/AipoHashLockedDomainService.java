@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,8 +27,8 @@ import org.apache.shindig.config.ContainerConfig;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.LockedDomainService;
 
-import com.aipo.orm.service.ContainerConfigService;
-import com.aipo.orm.service.ContainerConfigService.Property;
+import com.aipo.orm.service.ContainerConfigDbService;
+import com.aipo.orm.service.ContainerConfigDbService.Property;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
@@ -43,7 +43,7 @@ public class AipoHashLockedDomainService implements LockedDomainService {
   private static final Logger logger = Logger
     .getLogger(AipoHashLockedDomainService.class.getName());
 
-  private final ContainerConfigService containerConfigService;
+  private final ContainerConfigDbService containerConfigDbService;
 
   private final boolean enabled;
 
@@ -52,9 +52,9 @@ public class AipoHashLockedDomainService implements LockedDomainService {
   @Inject
   public AipoHashLockedDomainService(ContainerConfig config,
       @Named("shindig.locked-domain.enabled") boolean enabled,
-      ContainerConfigService containerConfigService) {
+      ContainerConfigDbService containerConfigDbService) {
     this.enabled = enabled;
-    this.containerConfigService = containerConfigService;
+    this.containerConfigDbService = containerConfigDbService;
 
   }
 
@@ -133,12 +133,13 @@ public class AipoHashLockedDomainService implements LockedDomainService {
   }
 
   private boolean isLockedDomainRequired() {
-    String value = containerConfigService.get(Property.LOCKED_DOMAIN_REQUIRED);
+    String value =
+      containerConfigDbService.get(Property.LOCKED_DOMAIN_REQUIRED);
     return "true".equalsIgnoreCase(value);
   }
 
   private String getLockedDomainSuffix() {
-    String value = containerConfigService.get(Property.LOCKED_DOMAIN_SUFFIX);
+    String value = containerConfigDbService.get(Property.LOCKED_DOMAIN_SUFFIX);
     return value;
   }
 

@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,31 +19,10 @@
 
 package com.aipo.orm.service;
 
-import java.util.List;
+import com.aipo.orm.service.bean.OAuthConsumer;
 
-import com.aipo.orm.model.security.TurbineUser;
-import com.aipo.orm.query.SQLTemplate;
+public interface OAuthConsumerDbService {
 
-public interface TurbineUserService {
+  public OAuthConsumer get(String appId, String serviceName);
 
-  public SQLTemplate<TurbineUser> queryByGroupname(String groupname, int limit,
-      int offset, boolean isCount);
-
-  public int getCountByGroupname(String groupname);
-
-  public List<TurbineUser> findByGroupname(String groupname);
-
-  public List<TurbineUser> findByGroupname(String groupname, int limit,
-      int offset);
-
-  public TurbineUser findByUsername(String username);
-
-  public SQLTemplate<TurbineUser> queryAll(String selectColumns, int limit,
-      int offset, boolean isCount);
-
-  public List<TurbineUser> findAll();
-
-  public List<TurbineUser> findAll(int limit, int offset);
-
-  public int getCountAll();
 }

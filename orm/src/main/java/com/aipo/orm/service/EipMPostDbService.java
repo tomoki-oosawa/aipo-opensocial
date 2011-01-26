@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,30 +21,13 @@ package com.aipo.orm.service;
 
 import java.util.List;
 
-import com.aipo.orm.Database;
 import com.aipo.orm.model.account.EipMPost;
-import com.google.inject.Singleton;
 
-@Singleton
-public class AipoEipMPostService implements EipMPostService {
+public interface EipMPostDbService {
 
-  public List<EipMPost> findAll() {
-    return Database
-      .query(EipMPost.class)
-      .orderAscending("postName")
-      .fetchList();
-  }
+  public List<EipMPost> findAll();
 
-  public List<EipMPost> findAll(int limit, int offset) {
-    return Database
-      .query(EipMPost.class)
-      .limit(limit)
-      .offset(offset)
-      .orderAscending("postName")
-      .fetchList();
-  }
+  public List<EipMPost> findAll(int limit, int offset);
 
-  public int getCountAll() {
-    return Database.query(EipMPost.class).getCount();
-  }
+  public int getCountAll();
 }

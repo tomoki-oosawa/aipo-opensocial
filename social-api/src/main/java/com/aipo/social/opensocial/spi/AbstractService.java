@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
-import com.aipo.orm.service.TurbineUserService;
+import com.aipo.orm.service.TurbineUserDbService;
 import com.google.inject.Inject;
 
 /**
@@ -37,7 +37,7 @@ import com.google.inject.Inject;
 public abstract class AbstractService {
 
   @Inject
-  private TurbineUserService turbineUserSercice;
+  private TurbineUserDbService turbineUserDbService;
 
   private String orgId;
 
@@ -118,7 +118,7 @@ public abstract class AbstractService {
     String viewerId = getViewerId(token);
     boolean result = false;
     try {
-      TurbineUser user = turbineUserSercice.findByUsername(viewerId);
+      TurbineUser user = turbineUserDbService.findByUsername(viewerId);
       result = user != null;
     } catch (Throwable t) {
       result = false;

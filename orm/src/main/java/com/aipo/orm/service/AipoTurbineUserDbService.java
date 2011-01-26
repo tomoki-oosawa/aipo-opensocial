@@ -1,7 +1,7 @@
 /*
  * Aipo is a groupware program developed by Aimluck,Inc.
  * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com/
+ * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.aipo.orm.query.SQLTemplate;
 import com.google.inject.Singleton;
 
 @Singleton
-public class AipoTurbineUserService implements TurbineUserService {
+public class AipoTurbineUserDbService implements TurbineUserDbService {
 
   public SQLTemplate<TurbineUser> queryByGroupname(String groupname, int limit,
       int offset, boolean isCount) {
