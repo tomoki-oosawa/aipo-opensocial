@@ -81,11 +81,11 @@ public abstract class _Activity extends CayenneDataObject {
         return (String)readProperty("portletParams");
     }
 
-    public void setPriority(Integer priority) {
+    public void setPriority(Float priority) {
         writeProperty("priority", priority);
     }
-    public Integer getPriority() {
-        return (Integer)readProperty("priority");
+    public Float getPriority() {
+        return (Float)readProperty("priority");
     }
 
     public void setTitle(String title) {

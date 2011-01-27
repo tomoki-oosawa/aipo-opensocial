@@ -32,7 +32,7 @@
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
 		<db-attribute name="PORTLET_PARAMS" type="VARCHAR" length="99"/>
-		<db-attribute name="PRIORITY" type="INTEGER"/>
+		<db-attribute name="PRIORITY" type="FLOAT"/>
 		<db-attribute name="TITLE" type="VARCHAR" isMandatory="true" length="99"/>
 		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
 		<db-key-generator>
@@ -120,7 +120,7 @@
 		<obj-attribute name="externalId" type="java.lang.String" db-attribute-path="EXTERNAL_ID"/>
 		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
 		<obj-attribute name="portletParams" type="java.lang.String" db-attribute-path="PORTLET_PARAMS"/>
-		<obj-attribute name="priority" type="java.lang.Integer" db-attribute-path="PRIORITY"/>
+		<obj-attribute name="priority" type="java.lang.Float" db-attribute-path="PRIORITY"/>
 		<obj-attribute name="title" type="java.lang.String" db-attribute-path="TITLE"/>
 		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
 	</obj-entity>

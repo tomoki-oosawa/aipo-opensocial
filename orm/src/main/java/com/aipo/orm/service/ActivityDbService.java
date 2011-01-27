@@ -19,9 +19,12 @@
 
 package com.aipo.orm.service;
 
+import java.util.Map;
+
 /**
  * 
  */
 public interface ActivityDbService {
 
+  public void create(String username, String appId, Map<String, Object> values);
 }

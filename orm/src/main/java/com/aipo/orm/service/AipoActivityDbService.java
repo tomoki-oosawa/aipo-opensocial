@@ -19,9 +19,68 @@
 
 package com.aipo.orm.service;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.aipo.orm.Database;
+import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.model.social.Activity;
+import com.aipo.orm.model.social.ActivityMap;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AipoActivityDbService implements ActivityDbService {
 
+  private final TurbineUserDbService turbineUserDbService;
+
+  @Inject
+  public AipoActivityDbService(TurbineUserDbService turbineUserDbService) {
+    this.turbineUserDbService = turbineUserDbService;
+  }
+
+  public void create(String username, String appId, Map<String, Object> values) {
+
+    try {
+      Activity activity = Database.create(Activity.class);
+      activity.setAppId(appId);
+      activity.setLoginName(username);
+      activity.setBody((String) values.get("body"));
+      activity.setExternalId((String) values.get("externalId"));
+      // priority は 0 <= 1 の間
+      Float priority = (Float) values.get("priority");
+      if (priority == null) {
+        priority = 0f;
+      }
+      if (priority < 0) {
+        priority = 0f;
+      }
+      if (priority > 1) {
+        priority = 1f;
+      }
+      activity.setPriority(priority);
+      activity.setTitle((String) values.get("title"));
+      activity.setUpdateDate(new Date());
+
+      @SuppressWarnings("unchecked")
+      Set<String> recipients = (Set<String>) values.get("recipients");
+      if (recipients != null && recipients.size() > 0) {
+        List<TurbineUser> list =
+          turbineUserDbService.findByUsername(recipients);
+        for (TurbineUser recipient : list) {
+          ActivityMap activityMap = Database.create(ActivityMap.class);
+          activityMap.setLoginName(recipient.getLoginName());
+          activityMap.setActivity(activity);
+          activityMap.setIsRead((short) 0);
+        }
+      }
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      t.printStackTrace();
+      throw new RuntimeException(t);
+    }
+  }
 }

@@ -93,9 +93,8 @@ public abstract class AbstractService {
       .toString();
   }
 
-  protected String getUserId(UserId userId, SecurityToken token) {
-    String userIdStr = userId.getUserId(token);
-    String[] split = userIdStr.split(":");
+  protected String getUserId(String userId, SecurityToken token) {
+    String[] split = userId.split(":");
 
     if (split.length != 2) {
       throw new RuntimeException();
@@ -108,6 +107,10 @@ public abstract class AbstractService {
 
     return currentUserId;
 
+  }
+
+  protected String getUserId(UserId userId, SecurityToken token) {
+    return getUserId(userId.getUserId(token), token);
   }
 
   /**

@@ -251,12 +251,7 @@
     "supportedFields" : {
        "person" : ["id", {"name" : ["familyName", "givenName"]}, "displayName"],
        "group" : ["id", "title"],
-       "activity" : ["appId", "body", "bodyId", "externalId", "id", "mediaItems", "postedTime", "priority", 
-                     "streamFaviconUrl", "streamSourceUrl", "streamTitle", "streamUrl", "templateParams", "title",
-                     "url", "userId"],
-       "mediaItem" : ["album_id", "created", "description", "duration", "file_size", "id", "language", "last_updated",
-                      "location", "mime_type", "num_comments", "num_views", "num_votes", "rating", "start_time",
-                      "tagged_people", "tags", "thumbnail_url", "title", "type", "url"]
+       "activity" : ["appId", "body", "externalId", "id", "postedTime", "priority", "title", "userId", "recipients"];
     }
   },
   "osapi.services" : {

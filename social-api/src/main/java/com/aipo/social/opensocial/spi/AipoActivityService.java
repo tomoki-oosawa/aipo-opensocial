@@ -19,6 +19,8 @@
 
 package com.aipo.social.opensocial.spi;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -32,6 +34,8 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.service.ActivityDbService;
 import com.aipo.social.opensocial.model.Activity;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
@@ -57,13 +61,13 @@ public class AipoActivityService extends AbstractService implements
    * @param fields
    * @param options
    * @param token
-   * @return
    * @throws ProtocolException
    */
   public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds,
       GroupId groupId, String appId, Set<String> fields,
       CollectionOptions options, SecurityToken token) throws ProtocolException {
-    return null;
+    // NOT SUPPORTED
+    return ImmediateFuture.newInstance(null);
   }
 
   /**
@@ -81,7 +85,7 @@ public class AipoActivityService extends AbstractService implements
       GroupId groupId, String appId, Set<String> fields,
       CollectionOptions options, Set<String> activityIds, SecurityToken token)
       throws ProtocolException {
-    return null;
+    return ImmediateFuture.newInstance(null);
   }
 
   /**
@@ -97,7 +101,7 @@ public class AipoActivityService extends AbstractService implements
   public Future<Activity> getActivity(UserId userId, GroupId groupId,
       String appId, Set<String> fields, String activityId, SecurityToken token)
       throws ProtocolException {
-    return null;
+    return ImmediateFuture.newInstance(null);
   }
 
   /**
@@ -112,6 +116,7 @@ public class AipoActivityService extends AbstractService implements
   public Future<Void> deleteActivities(UserId userId, GroupId groupId,
       String appId, Set<String> activityIds, SecurityToken token)
       throws ProtocolException {
+    // NOT SUPPORTED
     return ImmediateFuture.newInstance(null);
   }
 
@@ -128,7 +133,34 @@ public class AipoActivityService extends AbstractService implements
   public Future<Void> createActivity(UserId userId, GroupId groupId,
       String appId, Set<String> fields, Activity activity, SecurityToken token)
       throws ProtocolException {
+
+    setUp(token);
+    // appId が NULL の場合、SecurityToken から抽出
+    if (appId == null) {
+      appId = token.getAppId();
+    }
+    // 同じアプリのみアクセス可能
+    checkSameAppId(appId, token);
+    // 自分（Viewer）の Activity のみ更新可能
+    checkSameViewer(userId, token);
+
+    String username = getUserId(userId, token);
+    Map<String, Object> values = Maps.newHashMap();
+    values.put("body", activity.getBody());
+    values.put("externalId", activity.getExternalId());
+    values.put("priority", activity.getPriority());
+    values.put("title", activity.getTitle());
+    List<String> recipients = activity.getRecipients();
+    Set<String> users = Sets.newHashSet();
+    if (recipients != null && recipients.size() > 0) {
+      for (String recipient : recipients) {
+        users.add(getUserId(recipient, token));
+      }
+    }
+    values.put("recipients", users);
+    activityDbService.create(username, appId, values);
+
+    // TODO: Generate された Activity ID を返却する
     return ImmediateFuture.newInstance(null);
   }
-
 }
