@@ -20,6 +20,7 @@
 package com.aipo.orm.model.social.auto;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.cayenne.CayenneDataObject;
 
@@ -36,11 +37,11 @@ public abstract class _Activity extends CayenneDataObject {
     public static final String APP_ID_PROPERTY = "appId";
     public static final String BODY_PROPERTY = "body";
     public static final String EXTERNAL_ID_PROPERTY = "externalId";
+    public static final String LOGIN_NAME_PROPERTY = "loginName";
     public static final String PORTLET_PARAMS_PROPERTY = "portletParams";
     public static final String PRIORITY_PROPERTY = "priority";
     public static final String TITLE_PROPERTY = "title";
     public static final String UPDATE_DATE_PROPERTY = "updateDate";
-    public static final String USER_ID_PROPERTY = "userId";
     public static final String ACTIVITY_MAPS_PROPERTY = "activityMaps";
 
     public static final String ID_PK_COLUMN = "ID";
@@ -64,6 +65,13 @@ public abstract class _Activity extends CayenneDataObject {
     }
     public String getExternalId() {
         return (String)readProperty("externalId");
+    }
+
+    public void setLoginName(String loginName) {
+        writeProperty("loginName", loginName);
+    }
+    public String getLoginName() {
+        return (String)readProperty("loginName");
     }
 
     public void setPortletParams(String portletParams) {
@@ -94,19 +102,15 @@ public abstract class _Activity extends CayenneDataObject {
         return (Date)readProperty("updateDate");
     }
 
-    public void setUserId(Integer userId) {
-        writeProperty("userId", userId);
+    public void addToActivityMaps(ActivityMap obj) {
+        addToManyTarget("activityMaps", obj, true);
     }
-    public Integer getUserId() {
-        return (Integer)readProperty("userId");
+    public void removeFromActivityMaps(ActivityMap obj) {
+        removeToManyTarget("activityMaps", obj, true);
     }
-
-    public void setActivityMaps(ActivityMap activityMaps) {
-        setToOneTarget("activityMaps", activityMaps, true);
-    }
-
-    public ActivityMap getActivityMaps() {
-        return (ActivityMap)readProperty("activityMaps");
+    @SuppressWarnings("unchecked")
+    public List<ActivityMap> getActivityMaps() {
+        return (List<ActivityMap>)readProperty("activityMaps");
     }
 
 

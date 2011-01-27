@@ -19,9 +19,111 @@
 
 package com.aipo.orm.service;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import com.aipo.orm.Database;
+import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.model.social.AppData;
+import com.aipo.orm.query.Operations;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AipoAppDataDbService implements AppDataDbService {
 
+  private final TurbineUserDbService turbineUserDbService;
+
+  @Inject
+  public AipoAppDataDbService(TurbineUserDbService turbineUserDbService) {
+    this.turbineUserDbService = turbineUserDbService;
+  }
+
+  /**
+   * 
+   * @param usernames
+   * @param appId
+   * @param fields
+   * @return
+   */
+  public List<AppData> get(Set<String> usernames, String appId,
+      Set<String> fields) {
+    try {
+      return Database.query(AppData.class).where(
+        Operations.eq(AppData.APP_ID_PROPERTY, appId).in(
+          AppData.KEY_PROPERTY,
+          fields).in(AppData.LOGIN_NAME_PROPERTY, usernames)).fetchList();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
+  /**
+   * 
+   * @param username
+   * @param appId
+   * @param values
+   */
+  public void put(String username, String appId, Map<String, String> values) {
+    try {
+      TurbineUser user = turbineUserDbService.findByUsername(username);
+      if (user == null) {
+        return;
+      }
+      Iterator<Entry<String, String>> iterator = values.entrySet().iterator();
+      while (iterator.hasNext()) {
+        Entry<String, String> next = iterator.next();
+        String key = next.getKey();
+        String value = next.getValue();
+        AppData appData =
+          Database.query(AppData.class).where(
+            Operations.eq(AppData.KEY_PROPERTY, key).eq(
+              AppData.APP_ID_PROPERTY,
+              appId)).fetchSingle();
+        if (appData == null) {
+          appData = Database.create(AppData.class);
+          appData.setKey(key);
+        }
+        appData.setValue(value);
+        appData.setAppId(appId);
+        appData.setLoginName(user.getLoginName());
+      }
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
+  /**
+   * @param username
+   * @param appId
+   * @param fields
+   */
+  public void delete(String username, String appId, Set<String> fields) {
+    try {
+      TurbineUser user = turbineUserDbService.findByUsername(username);
+      if (user == null) {
+        return;
+      }
+      List<AppData> fetchList =
+        Database.query(AppData.class).where(
+          Operations.eq(AppData.APP_ID_PROPERTY, appId).in(
+            AppData.KEY_PROPERTY,
+            fields).eq(AppData.LOGIN_NAME_PROPERTY, username)).fetchList();
+      if (fetchList.size() == 0) {
+        Database.rollback();
+        return;
+      }
+      Database.deleteAll(fetchList);
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
 }

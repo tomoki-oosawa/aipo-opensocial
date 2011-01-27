@@ -62,6 +62,7 @@ public abstract class AbstractService {
         HttpServletResponse.SC_BAD_REQUEST,
         "Org ID not recognized");
     }
+
     checkViewerExists(token);
 
   }
@@ -85,6 +86,13 @@ public abstract class AbstractService {
     return viewerId;
   }
 
+  protected String convertUserId(String username, SecurityToken token) {
+    return new StringBuilder(getOrgId(token))
+      .append(":")
+      .append(username)
+      .toString();
+  }
+
   protected String getUserId(UserId userId, SecurityToken token) {
     String userIdStr = userId.getUserId(token);
     String[] split = userIdStr.split(":");
@@ -96,23 +104,35 @@ public abstract class AbstractService {
     String currentOrgId = split[0];
     String currentUserId = split[1];
 
-    if (!checkOrgId(currentOrgId, token)) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "Org ID not recognized");
-    }
+    checkSameOrgId(currentOrgId, token);
 
     return currentUserId;
 
   }
 
-  protected boolean checkOrgId(String orgId, SecurityToken token) {
-    if (orgId == null || orgId == "") {
-      return false;
+  /**
+   * 指定したデータベース名が、現在選択しているデータベース名と一致しているかチェックします。
+   * 
+   * @param orgId
+   * @param token
+   */
+  protected void checkSameOrgId(String orgId, SecurityToken token) {
+    if (orgId != null && orgId != "") {
+      if (orgId.equals(getOrgId(token))) {
+        return;
+      }
     }
-    return orgId.equals(getOrgId(token));
+    throw new ProtocolException(
+      HttpServletResponse.SC_BAD_REQUEST,
+      "Org ID not recognized");
   }
 
+  /**
+   * Viewer が存在するかどうかチェックします。
+   * 
+   * @param token
+   * @throws ProtocolException
+   */
   protected void checkViewerExists(SecurityToken token)
       throws ProtocolException {
     String viewerId = getViewerId(token);
@@ -128,5 +148,38 @@ public abstract class AbstractService {
         HttpServletResponse.SC_BAD_REQUEST,
         "Viewer ID not recognized");
     }
+  }
+
+  /**
+   * 指定されたユーザーが Viewer と一致しているかチェックします。
+   * 
+   * @param userId
+   * @param token
+   * @throws ProtocolException
+   */
+  protected void checkSameViewer(UserId userId, SecurityToken token)
+      throws ProtocolException {
+    if (!getViewerId(token).equals(getUserId(userId, token))) {
+      throw new ProtocolException(
+        HttpServletResponse.SC_BAD_REQUEST,
+        "Access not denneid.");
+    }
+  }
+
+  /**
+   * 指定されたアプリが現在利用しているアプリと一致しているかチェックします。
+   * 
+   * @param appId
+   * @param token
+   */
+  protected void checkSameAppId(String appId, SecurityToken token) {
+    if (appId != null && appId != "") {
+      if (appId.equals(token.getAppId())) {
+        return;
+      }
+    }
+    throw new ProtocolException(
+      HttpServletResponse.SC_BAD_REQUEST,
+      "Access not denneid.");
   }
 }

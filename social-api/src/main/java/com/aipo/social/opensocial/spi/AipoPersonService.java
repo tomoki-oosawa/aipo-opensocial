@@ -49,14 +49,14 @@ import com.google.inject.Inject;
  */
 public class AipoPersonService extends AbstractService implements PersonService {
 
-  private final TurbineUserDbService turbineUserDbSercice;
+  private final TurbineUserDbService turbineUserDbService;
 
   /**
    * 
    */
   @Inject
   public AipoPersonService(TurbineUserDbService turbineUserSercice) {
-    this.turbineUserDbSercice = turbineUserSercice;
+    this.turbineUserDbService = turbineUserSercice;
   }
 
   /**
@@ -76,7 +76,6 @@ public class AipoPersonService extends AbstractService implements PersonService 
     // TODO: SORT
     // TODO: FILTER
     // TODO: FIELDS
-
     setUp(token);
 
     List<TurbineUser> list = null;
@@ -89,22 +88,22 @@ public class AipoPersonService extends AbstractService implements PersonService 
         // {guid} が閲覧できるすべてのユーザーを取得
         // @all = @friends
         list =
-          turbineUserDbSercice.findAll(
+          turbineUserDbService.findAll(
             collectionOptions.getMax(),
             collectionOptions.getFirst());
-        totalResults = turbineUserDbSercice.getCountAll();
+        totalResults = turbineUserDbService.getCountAll();
         break;
       case groupId:
         // /people/{guid}/{groupId}
         // /people/{guid}/{groupId}
         // {guid} が閲覧できるすべてのユーザーで {groupId} グループに所属しているものを取得
         list =
-          turbineUserDbSercice.findByGroupname(
+          turbineUserDbService.findByGroupname(
             groupId.getGroupId(),
             collectionOptions.getMax(),
             collectionOptions.getFirst());
         totalResults =
-          turbineUserDbSercice.getCountByGroupname(groupId.getGroupId());
+          turbineUserDbService.getCountByGroupname(groupId.getGroupId());
         break;
       case deleted:
         // /people/{guid}/@deleted
@@ -153,7 +152,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
     setUp(token);
 
     String userId = getUserId(id, token);
-    TurbineUser user = turbineUserDbSercice.findByUsername(userId);
+    TurbineUser user = turbineUserDbService.findByUsername(userId);
 
     Person person = null;
     if (user != null) {

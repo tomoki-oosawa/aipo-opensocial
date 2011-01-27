@@ -20,6 +20,7 @@
 package com.aipo.orm.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.query.SQLTemplate;
@@ -37,6 +38,8 @@ public interface TurbineUserDbService {
       int offset);
 
   public TurbineUser findByUsername(String username);
+
+  public List<TurbineUser> findByUsername(Set<String> username);
 
   public SQLTemplate<TurbineUser> queryAll(String selectColumns, int limit,
       int offset, boolean isCount);

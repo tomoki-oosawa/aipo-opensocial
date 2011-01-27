@@ -21,6 +21,7 @@ package com.aipo.orm.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.cayenne.DataRow;
 
@@ -119,6 +120,25 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .sql(TurbineUser.class, query)
       .param("username", username)
       .fetchSingle();
+  }
+
+  public List<TurbineUser> findByUsername(Set<String> username) {
+    if (username == null || username.size() == 0) {
+      return null;
+    }
+
+    StringBuilder b = new StringBuilder();
+    b.append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME ");
+    b.append(" FROM turbine_user AS B ");
+    b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
+    b.append(" AND B.LOGIN_NAME IN(#bind($username)) ");
+
+    String query = b.toString();
+
+    return Database
+      .sql(TurbineUser.class, query)
+      .param("username", username)
+      .fetchList();
   }
 
   public SQLTemplate<TurbineUser> queryAll(String selectColumns, int limit,
