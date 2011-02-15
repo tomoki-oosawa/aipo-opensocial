@@ -95,7 +95,7 @@
 		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
 	</obj-entity>
 	<obj-entity name="ActivityMap" className="com.aipo.orm.model.social.ActivityMap" dbEntityName="activity_map">
-		<obj-attribute name="isRead" type="java.lang.Short" db-attribute-path="IS_READ"/>
+		<obj-attribute name="isRead" type="java.lang.Integer" db-attribute-path="IS_READ"/>
 		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
 	</obj-entity>
 	<obj-entity name="AppData" className="com.aipo.orm.model.social.AppData" dbEntityName="app_data">

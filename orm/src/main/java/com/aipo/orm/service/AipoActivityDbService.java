@@ -73,8 +73,13 @@ public class AipoActivityDbService implements ActivityDbService {
           ActivityMap activityMap = Database.create(ActivityMap.class);
           activityMap.setLoginName(recipient.getLoginName());
           activityMap.setActivity(activity);
-          activityMap.setIsRead((short) 0);
+          activityMap.setIsRead(0);
         }
+      } else {
+        ActivityMap activityMap = Database.create(ActivityMap.class);
+        activityMap.setLoginName("-1");
+        activityMap.setActivity(activity);
+        activityMap.setIsRead(1);
       }
       Database.commit();
     } catch (Throwable t) {
