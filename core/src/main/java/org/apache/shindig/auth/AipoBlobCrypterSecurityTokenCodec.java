@@ -132,7 +132,7 @@ public class AipoBlobCrypterSecurityTokenCodec implements SecurityTokenCodec {
     String activeUrl = tokenParameters.get(SecurityTokenCodec.ACTIVE_URL_NAME);
     String crypted = fields[1];
     try {
-      return BlobCrypterSecurityToken.decrypt(
+      return AipoBlobCrypterSecurityToken.decrypt(
         crypter,
         container,
         domain,
@@ -144,12 +144,12 @@ public class AipoBlobCrypterSecurityTokenCodec implements SecurityTokenCodec {
   }
 
   public String encodeToken(SecurityToken token) throws SecurityTokenException {
-    if (!(token instanceof BlobCrypterSecurityToken)) {
+    if (!(token instanceof AipoBlobCrypterSecurityToken)) {
       throw new SecurityTokenException(
-        "Can only encode BlogCrypterSecurityTokens");
+        "Can only encode AipoBlobCrypterSecurityToken");
     }
 
-    BlobCrypterSecurityToken t = (BlobCrypterSecurityToken) token;
+    AipoBlobCrypterSecurityToken t = (AipoBlobCrypterSecurityToken) token;
 
     try {
       return t.encrypt();
