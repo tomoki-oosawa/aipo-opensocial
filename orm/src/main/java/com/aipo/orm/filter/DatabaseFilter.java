@@ -35,6 +35,8 @@ import org.apache.cayenne.access.Transaction;
 import org.apache.cayenne.conf.ServletUtil;
 import org.apache.log4j.Logger;
 
+import com.aipo.orm.Database;
+
 /**
  *
  */
@@ -87,6 +89,7 @@ public class DatabaseFilter implements Filter {
    */
   public void init(FilterConfig filterConfig) throws ServletException {
     ServletUtil.initializeSharedConfiguration(filterConfig.getServletContext());
+    Database.initialize(filterConfig.getServletContext());
   }
 
 }

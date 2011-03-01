@@ -45,7 +45,7 @@
 // Container must be an array; this allows multiple containers
 // to share configuration.
 // TODO: Move out accel container config into a separate accel.js file.
-{"gadgets.container" : ["default", "accel"],
+{"gadgets.container" : ["default"],
 
 // Set of regular expressions to validate the parent parameter. This is
 // necessary to support situations where you want a single container to support
