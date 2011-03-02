@@ -25,9 +25,9 @@
 	<property name="cayenne.DataDomain.dataContextFactory" value="com.aipo.orm.access.IsolatedDataContextFactory"/>
 	<property name="cayenne.DataRowStore.snapshot.size" value="50000"/>
 
-	<map name="AccountSharedDomainMap" location="conf/AccountSharedDomainMap.map.xml"/>
-	<map name="SecuritySharedDomainMap" location="conf/SecuritySharedDomainMap.map.xml"/>
-	<map name="SharedDomainMap" location="conf/SharedDomainMap.map.xml"/>
-	<map name="SocialSharedDomainMap" location="conf/SocialSharedDomainMap.map.xml"/>
+	<map name="AccountSharedDomainMap" location="AccountSharedDomainMap.map.xml"/>
+	<map name="SecuritySharedDomainMap" location="SecuritySharedDomainMap.map.xml"/>
+	<map name="SharedDomainMap" location="SharedDomainMap.map.xml"/>
+	<map name="SocialSharedDomainMap" location="SocialSharedDomainMap.map.xml"/>
 </domain>
 </domains>
