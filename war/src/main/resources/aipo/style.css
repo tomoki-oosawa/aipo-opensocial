@@ -1,0 +1,28 @@
+@charset "utf-8";html,body{margin:0;padding:0;font-size:100%;}
+h1,h2,h3,h4,h5,h6,p,pre,address,cite{margin:.5em auto;line-height:1.4;font-size:100%;}
+blockquote{margin:2em;padding:10px;border:solid 3px #e0e0e0;background:#fff;}
+blockquote h1,blockquote h2,blockquote h3,blockquote h4,blockquote h5,blockquote h6,blockquote p{margin-left:.5em;}
+address{font-style:normal;}
+ul,ol{margin:1em 2em;padding:1px 0;}
+li ul,li ol{margin:0 10px;}
+dd{margin-left:0;}
+form{margin:0;padding:0;}
+fieldset{padding:0 .5em .5em .5em;border:solid 1px #ccc;}
+legend{padding:0 7px;}
+input,textarea{font-size:100%;}
+label{cursor:pointer;}
+a img{border:none;}
+hr{border:1px solid #DCDCDC;}
+*{color:#666;font-family:'メイリオ',Meiryo,Verdana,'ヒラギノ角ゴPro W3','Hiragino Kaku Gothic Pro','ＭＳ Ｐゴシック',sans-serif;}
+body{width:100%;font-family:'メイリオ',Meiryo,Verdana,'ヒラギノ角ゴPro W3','Hiragino Kaku Gothic Pro','ＭＳ Ｐゴシック',sans-serif;padding:0;margin:0;font-size:.75em;background:#FFF;color:#666;line-height:1.4;}
+* html body{font-size:.8em;}
+*+html body{font-size:.75em;}
+a{color:#666;text-decoration:underline;}
+a:hover,a:hover strong,a:hover span{color:#F90;}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,textarea,p,blockquote,th,td{margin:0;padding:0;line-height:1.4;}
+strong{font-weight:bold;}
+input{line-height:1.2;font-family:Arial,Helvetica,Verdana,'ヒラギノ角ゴPro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;}
+textarea{padding:2px;box-sizing:border-box;-moz-box-sizing:border-box;}
+select{line-height:normal;margin:1px;font-family:Arial,Helvetica,Verdana,'ヒラギノ角ゴPro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;}
+img{border:none;}
+a img{border:none;text-decoration:none;}

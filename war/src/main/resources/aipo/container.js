@@ -246,7 +246,7 @@
     "path" : "http://%host%/rpc",
     // Path to issue invalidate calls
     "invalidatePath" : "http://%host%/rpc",
-    "domain" : "free.aipo.com",
+    "domain" : "localhost",
     "enableCaja" : false,
     "supportedFields" : {
        "person" : ["id", {"name" : ["familyName", "givenName"]}, "displayName"],
