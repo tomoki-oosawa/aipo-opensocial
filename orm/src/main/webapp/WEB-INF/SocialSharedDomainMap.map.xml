@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Aipo is a groupware program developed by Aimluck,Inc.
+    Copyright (C) 2004-2011 Aimluck,Inc.
+    http://www.aipo.com
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<data-map xmlns="http://cayenne.apache.org/schema/3.0/modelMap"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://cayenne.apache.org/schema/3.0/modelMap http://cayenne.apache.org/schema/3.0/modelMap.xsd"
+  project-version="3.0.0.1">
+	<property name="defaultPackage" value="com.aipo.orm.model.social"/>
+	<db-entity name="activity">
+		<db-attribute name="APP_ID" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="BODY" type="CLOB"/>
+		<db-attribute name="EXTERNAL_ID" type="VARCHAR" length="99"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
+		<db-attribute name="PORTLET_PARAMS" type="VARCHAR" length="99"/>
+		<db-attribute name="PRIORITY" type="FLOAT"/>
+		<db-attribute name="TITLE" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+	</db-entity>
+	<db-entity name="activity_map">
+		<db-attribute name="ACTIVITY_ID" type="INTEGER"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="IS_READ" type="SMALLINT"/>
+		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
+	</db-entity>
+	<db-entity name="app_data">
+		<db-attribute name="APP_ID" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="KEY" type="VARCHAR" isMandatory="true" length="99"/>
+		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
+		<db-attribute name="VALUE" type="CLOB"/>
+	</db-entity>
+	<db-entity name="application">
+		<db-attribute name="APP_ID" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="CONSUMER_KEY" type="VARCHAR" length="99"/>
+		<db-attribute name="CONSUMER_SECRET" type="VARCHAR" length="99"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="DESCRIPTION" type="CLOB"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="STATUS" type="INTEGER"/>
+		<db-attribute name="SUMMARY" type="VARCHAR" length="255"/>
+		<db-attribute name="TITLE" type="VARCHAR" length="99"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="URL" type="VARCHAR" isMandatory="true" length="255"/>
+	</db-entity>
+	<db-entity name="container_config">
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="KEY" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="VALUE" type="VARCHAR" length="255"/>
+	</db-entity>
+	<db-entity name="oauth_consumer">
+		<db-attribute name="APP_ID" type="INTEGER"/>
+		<db-attribute name="CONSUMER_KEY" type="VARCHAR" length="255"/>
+		<db-attribute name="CONSUMER_SECRET" type="VARCHAR" length="255"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="TYPE" type="VARCHAR" length="99"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+	</db-entity>
+	<db-entity name="oauth_token">
+		<db-attribute name="ACCESS_TOKEN" type="VARCHAR" length="255"/>
+		<db-attribute name="KEY" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="SESSION_HANDLE" type="VARCHAR" length="255"/>
+		<db-attribute name="TOKEN_EXPIRE_MILIS" type="INTEGER"/>
+		<db-attribute name="TOKEN_SECRET" type="VARCHAR" length="255"/>
+	</db-entity>
+	<obj-entity name="Activity" className="com.aipo.orm.model.social.Activity" dbEntityName="activity">
+		<obj-attribute name="appId" type="java.lang.String" db-attribute-path="APP_ID"/>
+		<obj-attribute name="body" type="java.lang.String" db-attribute-path="BODY"/>
+		<obj-attribute name="externalId" type="java.lang.String" db-attribute-path="EXTERNAL_ID"/>
+		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
+		<obj-attribute name="portletParams" type="java.lang.String" db-attribute-path="PORTLET_PARAMS"/>
+		<obj-attribute name="priority" type="java.lang.Float" db-attribute-path="PRIORITY"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="TITLE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="ActivityMap" className="com.aipo.orm.model.social.ActivityMap" dbEntityName="activity_map">
+		<obj-attribute name="isRead" type="java.lang.Integer" db-attribute-path="IS_READ"/>
+		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
+	</obj-entity>
+	<obj-entity name="AppData" className="com.aipo.orm.model.social.AppData" dbEntityName="app_data">
+		<obj-attribute name="appId" type="java.lang.String" db-attribute-path="APP_ID"/>
+		<obj-attribute name="key" type="java.lang.String" db-attribute-path="KEY"/>
+		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
+		<obj-attribute name="value" type="java.lang.String" db-attribute-path="VALUE"/>
+	</obj-entity>
+	<obj-entity name="Application" className="com.aipo.orm.model.social.Application" dbEntityName="application">
+		<obj-attribute name="appId" type="java.lang.String" db-attribute-path="APP_ID"/>
+		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>
+		<obj-attribute name="consumerSecret" type="java.lang.String" db-attribute-path="CONSUMER_SECRET"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="description" type="java.lang.String" db-attribute-path="DESCRIPTION"/>
+		<obj-attribute name="status" type="java.lang.Integer" db-attribute-path="STATUS"/>
+		<obj-attribute name="summary" type="java.lang.String" db-attribute-path="SUMMARY"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="TITLE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="url" type="java.lang.String" db-attribute-path="URL"/>
+	</obj-entity>
+	<obj-entity name="ContainerConfig" className="com.aipo.orm.model.social.ContainerConfig" dbEntityName="container_config">
+		<obj-attribute name="key" type="java.lang.String" db-attribute-path="KEY"/>
+		<obj-attribute name="value" type="java.lang.String" db-attribute-path="VALUE"/>
+	</obj-entity>
+	<obj-entity name="OAuthConsumer" className="com.aipo.orm.model.social.OAuthConsumer" dbEntityName="oauth_consumer">
+		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>
+		<obj-attribute name="consumerSecret" type="java.lang.String" db-attribute-path="CONSUMER_SECRET"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="NAME"/>
+		<obj-attribute name="type" type="java.lang.String" db-attribute-path="TYPE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="OAuthToken" className="com.aipo.orm.model.social.OAuthToken" dbEntityName="oauth_token">
+		<obj-attribute name="accessToken" type="java.lang.String" db-attribute-path="ACCESS_TOKEN"/>
+		<obj-attribute name="key" type="java.lang.Integer" db-attribute-path="KEY"/>
+		<obj-attribute name="sessionHandle" type="java.lang.String" db-attribute-path="SESSION_HANDLE"/>
+		<obj-attribute name="tokenExpireMilis" type="java.lang.Integer" db-attribute-path="TOKEN_EXPIRE_MILIS"/>
+		<obj-attribute name="tokenSecret" type="java.lang.String" db-attribute-path="TOKEN_SECRET"/>
+	</obj-entity>
+	<db-relationship name="activityMaps" source="activity" target="activity_map" toMany="true">
+		<db-attribute-pair source="ID" target="ACTIVITY_ID"/>
+	</db-relationship>
+	<db-relationship name="activity" source="activity_map" target="activity" toMany="false">
+		<db-attribute-pair source="ACTIVITY_ID" target="ID"/>
+	</db-relationship>
+	<db-relationship name="oauthConsumer" source="application" target="oauth_consumer" toMany="true">
+		<db-attribute-pair source="ID" target="APP_ID"/>
+	</db-relationship>
+	<db-relationship name="application" source="oauth_consumer" target="application" toMany="false">
+		<db-attribute-pair source="APP_ID" target="ID"/>
+	</db-relationship>
+	<obj-relationship name="activityMaps" source="Activity" target="ActivityMap" db-relationship-path="activityMaps"/>
+	<obj-relationship name="activity" source="ActivityMap" target="Activity" db-relationship-path="activity"/>
+	<obj-relationship name="oauthConsumer" source="Application" target="OAuthConsumer" db-relationship-path="oauthConsumer"/>
+	<obj-relationship name="application" source="OAuthConsumer" target="Application" db-relationship-path="application"/>
+</data-map>
