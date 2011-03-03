@@ -1,26 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-
-    Aipo is a groupware program developed by Aimluck,Inc.
-    Copyright (C) 2004-2011 Aimluck,Inc.
-    http://www.aipo.com
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
--->
-
-<data-map project-version="2.0">
+<data-map xmlns="http://cayenne.apache.org/schema/3.0/modelMap"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://cayenne.apache.org/schema/3.0/modelMap http://cayenne.apache.org/schema/3.0/modelMap.xsd"
+  project-version="3.0.0.1">
 	<property name="defaultPackage" value="com.aipo.orm.model.account"/>
 	<db-entity name="aipo_license">
 		<db-attribute name="LICENSE" type="VARCHAR" isMandatory="true" length="99"/>
@@ -45,7 +27,7 @@
 	</db-entity>
 	<db-entity name="eip_m_config">
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
-		<db-attribute name="KEY" type="VARCHAR" length="64"/>
+		<db-attribute name="NAME" type="VARCHAR" length="64"/>
 		<db-attribute name="VALUE" type="VARCHAR" length="255"/>
 	</db-entity>
 	<db-entity name="eip_m_position">
@@ -92,6 +74,33 @@
 		<db-attribute name="ROLE_ID" type="INTEGER" isMandatory="true"/>
 		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true"/>
 	</db-entity>
+	<db-entity name="jetspeed_group_profile">
+		<db-attribute name="COUNTRY" type="VARCHAR" length="2"/>
+		<db-attribute name="GROUP_NAME" type="VARCHAR" length="99"/>
+		<db-attribute name="LANGUAGE" type="VARCHAR" length="2"/>
+		<db-attribute name="MEDIA_TYPE" type="VARCHAR" length="99"/>
+		<db-attribute name="PAGE" type="VARCHAR" length="99"/>
+		<db-attribute name="PROFILE" type="LONGVARBINARY" length="2147483647"/>
+		<db-attribute name="PSML_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+	</db-entity>
+	<db-entity name="jetspeed_role_profile">
+		<db-attribute name="COUNTRY" type="VARCHAR" length="2"/>
+		<db-attribute name="LANGUAGE" type="VARCHAR" length="2"/>
+		<db-attribute name="MEDIA_TYPE" type="VARCHAR" length="99"/>
+		<db-attribute name="PAGE" type="VARCHAR" length="99"/>
+		<db-attribute name="PROFILE" type="LONGVARBINARY" length="2147483647"/>
+		<db-attribute name="PSML_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="ROLE_NAME" type="VARCHAR" length="99"/>
+	</db-entity>
+	<db-entity name="jetspeed_user_profile">
+		<db-attribute name="COUNTRY" type="VARCHAR" length="2"/>
+		<db-attribute name="LANGUAGE" type="VARCHAR" length="2"/>
+		<db-attribute name="MEDIA_TYPE" type="VARCHAR" length="99"/>
+		<db-attribute name="PAGE" type="VARCHAR" length="99"/>
+		<db-attribute name="PROFILE" type="LONGVARBINARY" length="2147483647"/>
+		<db-attribute name="PSML_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="10"/>
+		<db-attribute name="USER_NAME" type="VARCHAR" length="32"/>
+	</db-entity>
 	<obj-entity name="AipoLicense" className="com.aipo.orm.model.account.AipoLicense" dbEntityName="aipo_license">
 		<obj-attribute name="license" type="java.lang.String" db-attribute-path="LICENSE"/>
 		<obj-attribute name="limitUsers" type="java.lang.Integer" db-attribute-path="LIMIT_USERS"/>
@@ -112,7 +121,7 @@
 		<obj-attribute name="zipcode" type="java.lang.String" db-attribute-path="ZIPCODE"/>
 	</obj-entity>
 	<obj-entity name="EipMConfig" className="com.aipo.orm.model.account.EipMConfig" dbEntityName="eip_m_config">
-		<obj-attribute name="key" type="java.lang.String" db-attribute-path="KEY"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="NAME"/>
 		<obj-attribute name="value" type="java.lang.String" db-attribute-path="VALUE"/>
 	</obj-entity>
 	<obj-entity name="EipMPosition" className="com.aipo.orm.model.account.EipMPosition" dbEntityName="eip_m_position">
@@ -151,6 +160,30 @@
 	<obj-entity name="EipTAclUserRoleMap" className="com.aipo.orm.model.account.EipTAclUserRoleMap" dbEntityName="eip_t_acl_user_role_map">
 		<obj-attribute name="roleId" type="java.lang.Integer" db-attribute-path="ROLE_ID"/>
 		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="JetspeedGroupProfile" className="com.aipo.orm.model.account.JetspeedGroupProfile" dbEntityName="jetspeed_group_profile">
+		<obj-attribute name="country" type="java.lang.String" db-attribute-path="COUNTRY"/>
+		<obj-attribute name="groupName" type="java.lang.String" db-attribute-path="GROUP_NAME"/>
+		<obj-attribute name="language" type="java.lang.String" db-attribute-path="LANGUAGE"/>
+		<obj-attribute name="mediaType" type="java.lang.String" db-attribute-path="MEDIA_TYPE"/>
+		<obj-attribute name="page" type="java.lang.String" db-attribute-path="PAGE"/>
+		<obj-attribute name="profile" type="byte[]" db-attribute-path="PROFILE"/>
+	</obj-entity>
+	<obj-entity name="JetspeedRoleProfile" className="com.aipo.orm.model.account.JetspeedRoleProfile" dbEntityName="jetspeed_role_profile">
+		<obj-attribute name="country" type="java.lang.String" db-attribute-path="COUNTRY"/>
+		<obj-attribute name="language" type="java.lang.String" db-attribute-path="LANGUAGE"/>
+		<obj-attribute name="mediaType" type="java.lang.String" db-attribute-path="MEDIA_TYPE"/>
+		<obj-attribute name="page" type="java.lang.String" db-attribute-path="PAGE"/>
+		<obj-attribute name="profile" type="byte[]" db-attribute-path="PROFILE"/>
+		<obj-attribute name="roleName" type="java.lang.String" db-attribute-path="ROLE_NAME"/>
+	</obj-entity>
+	<obj-entity name="JetspeedUserProfile" className="com.aipo.orm.model.account.JetspeedUserProfile" dbEntityName="jetspeed_user_profile">
+		<obj-attribute name="country" type="java.lang.String" db-attribute-path="COUNTRY"/>
+		<obj-attribute name="language" type="java.lang.String" db-attribute-path="LANGUAGE"/>
+		<obj-attribute name="mediaType" type="java.lang.String" db-attribute-path="MEDIA_TYPE"/>
+		<obj-attribute name="page" type="java.lang.String" db-attribute-path="PAGE"/>
+		<obj-attribute name="profile" type="byte[]" db-attribute-path="PROFILE"/>
+		<obj-attribute name="userName" type="java.lang.String" db-attribute-path="USER_NAME"/>
 	</obj-entity>
 	<db-relationship name="eipMMybox" source="eip_m_company" target="eip_m_mybox" toMany="true">
 		<db-attribute-pair source="COMPANY_ID" target="COMPANY_ID"/>

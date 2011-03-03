@@ -196,7 +196,7 @@ public class AipoAppDataService extends AbstractService implements
           map = Maps.newHashMap();
         }
         for (String f : fields) {
-          if (f.equals(appData.getKey())) {
+          if (f.equals(appData.getName())) {
             map.put(f, appData.getValue());
             break;
           }

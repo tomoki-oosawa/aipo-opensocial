@@ -23,9 +23,9 @@
 <feature>
   <name>jquery</name>
   <gadget>
-    <script inline="true" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"/>
+    <script inline="true" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"/>
   </gadget>
   <container>
-    <script inline="true" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"/>
+    <script inline="true" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"/>
   </container>
 </feature>

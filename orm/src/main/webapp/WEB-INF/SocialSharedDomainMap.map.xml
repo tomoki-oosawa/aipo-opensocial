@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-
-    Aipo is a groupware program developed by Aimluck,Inc.
-    Copyright (C) 2004-2011 Aimluck,Inc.
-    http://www.aipo.com
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
--->
-
 <data-map xmlns="http://cayenne.apache.org/schema/3.0/modelMap"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://cayenne.apache.org/schema/3.0/modelMap http://cayenne.apache.org/schema/3.0/modelMap.xsd"
@@ -39,14 +18,14 @@
 	<db-entity name="activity_map">
 		<db-attribute name="ACTIVITY_ID" type="INTEGER"/>
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
-		<db-attribute name="IS_READ" type="SMALLINT"/>
+		<db-attribute name="IS_READ" type="INTEGER"/>
 		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
 	</db-entity>
 	<db-entity name="app_data">
 		<db-attribute name="APP_ID" type="VARCHAR" isMandatory="true" length="255"/>
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
-		<db-attribute name="KEY" type="VARCHAR" isMandatory="true" length="99"/>
 		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
+		<db-attribute name="NAME" type="VARCHAR" isMandatory="true" length="99"/>
 		<db-attribute name="VALUE" type="CLOB"/>
 	</db-entity>
 	<db-entity name="application">
@@ -64,8 +43,11 @@
 	</db-entity>
 	<db-entity name="container_config">
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
-		<db-attribute name="KEY" type="VARCHAR" isMandatory="true" length="64"/>
+		<db-attribute name="NAME" type="VARCHAR" isMandatory="true" length="64"/>
 		<db-attribute name="VALUE" type="VARCHAR" length="255"/>
+	</db-entity>
+	<db-entity name="module_id">
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 	</db-entity>
 	<db-entity name="oauth_consumer">
 		<db-attribute name="APP_ID" type="INTEGER"/>
@@ -77,9 +59,27 @@
 		<db-attribute name="TYPE" type="VARCHAR" length="99"/>
 		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
 	</db-entity>
+	<db-entity name="oauth_entry">
+		<db-attribute name="APP_ID" type="VARCHAR" length="255"/>
+		<db-attribute name="AUTHORIZED" type="INTEGER"/>
+		<db-attribute name="CALLBACK_TOKEN" type="VARCHAR" length="255"/>
+		<db-attribute name="CALLBACK_TOKEN_ATTEMPTS" type="INTEGER"/>
+		<db-attribute name="CALLBACK_URL" type="VARCHAR" length="255"/>
+		<db-attribute name="CALLBACK_URL_SIGNED" type="INTEGER"/>
+		<db-attribute name="CONSUMER_KEY" type="VARCHAR" length="255"/>
+		<db-attribute name="CONTAINER" type="VARCHAR" length="32"/>
+		<db-attribute name="DOMAIN" type="VARCHAR" length="255"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="ISSUE_TIME" type="TIMESTAMP"/>
+		<db-attribute name="OAUTH_VERSION" type="VARCHAR" length="16"/>
+		<db-attribute name="TOKEN" type="VARCHAR" length="255"/>
+		<db-attribute name="TOKEN_SECRET" type="VARCHAR" length="255"/>
+		<db-attribute name="TYPE" type="VARCHAR" length="32"/>
+		<db-attribute name="USER_ID" type="VARCHAR" length="64"/>
+	</db-entity>
 	<db-entity name="oauth_token">
 		<db-attribute name="ACCESS_TOKEN" type="VARCHAR" length="255"/>
-		<db-attribute name="KEY" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="SESSION_HANDLE" type="VARCHAR" length="255"/>
 		<db-attribute name="TOKEN_EXPIRE_MILIS" type="INTEGER"/>
 		<db-attribute name="TOKEN_SECRET" type="VARCHAR" length="255"/>
@@ -100,8 +100,8 @@
 	</obj-entity>
 	<obj-entity name="AppData" className="com.aipo.orm.model.social.AppData" dbEntityName="app_data">
 		<obj-attribute name="appId" type="java.lang.String" db-attribute-path="APP_ID"/>
-		<obj-attribute name="key" type="java.lang.String" db-attribute-path="KEY"/>
 		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="NAME"/>
 		<obj-attribute name="value" type="java.lang.String" db-attribute-path="VALUE"/>
 	</obj-entity>
 	<obj-entity name="Application" className="com.aipo.orm.model.social.Application" dbEntityName="application">
@@ -117,8 +117,10 @@
 		<obj-attribute name="url" type="java.lang.String" db-attribute-path="URL"/>
 	</obj-entity>
 	<obj-entity name="ContainerConfig" className="com.aipo.orm.model.social.ContainerConfig" dbEntityName="container_config">
-		<obj-attribute name="key" type="java.lang.String" db-attribute-path="KEY"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="NAME"/>
 		<obj-attribute name="value" type="java.lang.String" db-attribute-path="VALUE"/>
+	</obj-entity>
+	<obj-entity name="ModuleId" className="com.aipo.orm.model.social.ModuleId" dbEntityName="module_id">
 	</obj-entity>
 	<obj-entity name="OAuthConsumer" className="com.aipo.orm.model.social.OAuthConsumer" dbEntityName="oauth_consumer">
 		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>
@@ -128,9 +130,26 @@
 		<obj-attribute name="type" type="java.lang.String" db-attribute-path="TYPE"/>
 		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
 	</obj-entity>
+	<obj-entity name="OAuthEntry" className="com.aipo.orm.model.social.OAuthEntry" dbEntityName="oauth_entry">
+		<obj-attribute name="appId" type="java.lang.String" db-attribute-path="APP_ID"/>
+		<obj-attribute name="authorized" type="java.lang.Integer" db-attribute-path="AUTHORIZED"/>
+		<obj-attribute name="callbackToken" type="java.lang.String" db-attribute-path="CALLBACK_TOKEN"/>
+		<obj-attribute name="callbackTokenAttempts" type="java.lang.Integer" db-attribute-path="CALLBACK_TOKEN_ATTEMPTS"/>
+		<obj-attribute name="callbackUrl" type="java.lang.String" db-attribute-path="CALLBACK_URL"/>
+		<obj-attribute name="callbackUrlSigned" type="java.lang.Integer" db-attribute-path="CALLBACK_URL_SIGNED"/>
+		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>
+		<obj-attribute name="container" type="java.lang.String" db-attribute-path="CONTAINER"/>
+		<obj-attribute name="domain" type="java.lang.String" db-attribute-path="DOMAIN"/>
+		<obj-attribute name="issueTime" type="java.util.Date" db-attribute-path="ISSUE_TIME"/>
+		<obj-attribute name="oauthVersion" type="java.lang.String" db-attribute-path="OAUTH_VERSION"/>
+		<obj-attribute name="token" type="java.lang.String" db-attribute-path="TOKEN"/>
+		<obj-attribute name="tokenSecret" type="java.lang.String" db-attribute-path="TOKEN_SECRET"/>
+		<obj-attribute name="type" type="java.lang.String" db-attribute-path="TYPE"/>
+		<obj-attribute name="userId" type="java.lang.String" db-attribute-path="USER_ID"/>
+	</obj-entity>
 	<obj-entity name="OAuthToken" className="com.aipo.orm.model.social.OAuthToken" dbEntityName="oauth_token">
 		<obj-attribute name="accessToken" type="java.lang.String" db-attribute-path="ACCESS_TOKEN"/>
-		<obj-attribute name="key" type="java.lang.Integer" db-attribute-path="KEY"/>
+		<obj-attribute name="id" type="java.lang.Integer" db-attribute-path="ID"/>
 		<obj-attribute name="sessionHandle" type="java.lang.String" db-attribute-path="SESSION_HANDLE"/>
 		<obj-attribute name="tokenExpireMilis" type="java.lang.Integer" db-attribute-path="TOKEN_EXPIRE_MILIS"/>
 		<obj-attribute name="tokenSecret" type="java.lang.String" db-attribute-path="TOKEN_SECRET"/>

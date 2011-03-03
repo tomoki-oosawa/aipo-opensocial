@@ -57,6 +57,7 @@ features/xhrwrapper/feature.xml
 features/xmlutil/feature.xml
 features/com.google.gadgets.analytics/feature.xml
 features-aipo/jquery/feature.xml
+features-aipo/jquery-1.5.1/feature.xml
 features-aipo/jquery-1.4.4/feature.xml
 features-aipo/jquery-1.3.2/feature.xml
 features-aipo/jquery-1.2.6/feature.xml

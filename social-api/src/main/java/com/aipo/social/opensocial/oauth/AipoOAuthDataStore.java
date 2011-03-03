@@ -21,7 +21,6 @@ package com.aipo.social.opensocial.oauth;
 
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentMap;
 
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthServiceProvider;
@@ -32,11 +31,12 @@ import org.apache.shindig.common.crypto.Crypto;
 import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.apache.shindig.social.opensocial.oauth.OAuthEntry.Type;
 import org.apache.shindig.social.sample.oauth.SampleOAuthDataStore;
 
 import com.aipo.orm.service.ApplicationDbService;
+import com.aipo.orm.service.OAuthEntryDbService;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.MapMaker;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -53,14 +53,18 @@ public class AipoOAuthDataStore implements OAuthDataStore {
 
   private final ApplicationDbService applicationDbService;
 
+  private final OAuthEntryDbService oauthEntryDbService;
+
   private final String domain;
 
   @Inject
   public AipoOAuthDataStore(ApplicationDbService applicationDbService,
+      OAuthEntryDbService oauthEntryDbService,
       @Named("shindig.oauth.base-url") String baseUrl,
       @Named("shindig.oauth.domain") String domain) {
     this.domain = domain;
     this.applicationDbService = applicationDbService;
+    this.oauthEntryDbService = oauthEntryDbService;
     this.SERVICE_PROVIDER =
       new OAuthServiceProvider(
         baseUrl + "requestToken",
@@ -68,14 +72,14 @@ public class AipoOAuthDataStore implements OAuthDataStore {
         baseUrl + "accessToken");
   }
 
-  // All valid OAuth tokens
-  private static ConcurrentMap<String, OAuthEntry> oauthEntries =
-    new MapMaker().makeMap();
-
   // Get the OAuthEntry that corresponds to the oauthToken
   public OAuthEntry getEntry(String oauthToken) {
     Preconditions.checkNotNull(oauthToken);
-    return oauthEntries.get(oauthToken);
+    com.aipo.orm.service.bean.OAuthEntry src =
+      oauthEntryDbService.get(oauthToken);
+    OAuthEntry entry = new OAuthEntry();
+    assign(src, entry);
+    return entry;
   }
 
   public OAuthConsumer getConsumer(String consumerKey) {
@@ -130,7 +134,10 @@ public class AipoOAuthDataStore implements OAuthDataStore {
       entry.setCallbackUrl(signedCallbackUrl);
     }
 
-    oauthEntries.put(entry.getToken(), entry);
+    com.aipo.orm.service.bean.OAuthEntry dest =
+      new com.aipo.orm.service.bean.OAuthEntry();
+    assign(entry, dest);
+    oauthEntryDbService.put(dest);
     return entry;
   }
 
@@ -153,8 +160,12 @@ public class AipoOAuthDataStore implements OAuthDataStore {
     accessEntry.setType(OAuthEntry.Type.ACCESS);
     accessEntry.setIssueTime(new Date());
 
-    oauthEntries.remove(entry.getToken());
-    oauthEntries.put(accessEntry.getToken(), accessEntry);
+    oauthEntryDbService.remove(entry.getToken());
+
+    com.aipo.orm.service.bean.OAuthEntry dest =
+      new com.aipo.orm.service.bean.OAuthEntry();
+    assign(accessEntry, dest);
+    oauthEntryDbService.put(dest);
 
     return accessEntry;
   }
@@ -185,7 +196,10 @@ public class AipoOAuthDataStore implements OAuthDataStore {
       entry.setType(OAuthEntry.Type.DISABLED);
     }
 
-    oauthEntries.put(entry.getToken(), entry);
+    com.aipo.orm.service.bean.OAuthEntry dest =
+      new com.aipo.orm.service.bean.OAuthEntry();
+    assign(entry, dest);
+    oauthEntryDbService.put(dest);
   }
 
   /**
@@ -195,7 +209,7 @@ public class AipoOAuthDataStore implements OAuthDataStore {
   public void removeToken(OAuthEntry entry) {
     Preconditions.checkNotNull(entry);
 
-    oauthEntries.remove(entry.getToken());
+    oauthEntryDbService.remove(entry.getToken());
   }
 
   /**
@@ -217,5 +231,45 @@ public class AipoOAuthDataStore implements OAuthDataStore {
       null,
       AuthenticationMode.OAUTH_CONSUMER_REQUEST.name());
 
+  }
+
+  protected void assign(com.aipo.orm.service.bean.OAuthEntry src,
+      OAuthEntry dest) {
+    dest.setAppId(src.getAppId());
+    dest.setAuthorized(src.isAuthorized());
+    dest.setCallbackToken(src.getCallbackToken());
+    dest.setCallbackTokenAttempts(src.getCallbackTokenAttempts());
+    dest.setCallbackUrl(src.getCallbackUrl());
+    dest.setCallbackUrlSigned(src.isCallbackUrlSigned());
+    dest.setConsumerKey(src.getConsumerKey());
+    dest.setContainer(src.getContainer());
+    dest.setDomain(src.getDomain());
+    dest.setIssueTime(src.getIssueTime());
+    dest.setOauthVersion(src.getOauthVersion());
+    dest.setToken(src.getToken());
+    dest.setTokenSecret(src.getTokenSecret());
+    dest.setType(Type.valueOf(src.getType().toString()));
+    dest.setUserId(src.getUserId());
+  }
+
+  protected void assign(OAuthEntry src,
+      com.aipo.orm.service.bean.OAuthEntry dest) {
+    dest.setAppId(src.getAppId());
+    dest.setAuthorized(src.isAuthorized());
+    dest.setCallbackToken(src.getCallbackToken());
+    dest.setCallbackTokenAttempts(src.getCallbackTokenAttempts());
+    dest.setCallbackUrl(src.getCallbackUrl());
+    dest.setCallbackUrlSigned(src.isCallbackUrlSigned());
+    dest.setConsumerKey(src.getConsumerKey());
+    dest.setContainer(src.getContainer());
+    dest.setDomain(src.getDomain());
+    dest.setIssueTime(src.getIssueTime());
+    dest.setOauthVersion(src.getOauthVersion());
+    dest.setToken(src.getToken());
+    dest.setTokenSecret(src.getTokenSecret());
+    dest.setType(com.aipo.orm.service.bean.OAuthEntry.Type.valueOf(src
+      .getType()
+      .toString()));
+    dest.setUserId(src.getUserId());
   }
 }

@@ -36,7 +36,7 @@ public class AipoContainerConfigDbService implements ContainerConfigDbService {
     ContainerConfig config =
       Database
         .query(ContainerConfig.class)
-        .where(Operations.eq(ContainerConfig.KEY_PROPERTY, key.toString()))
+        .where(Operations.eq(ContainerConfig.NAME_PROPERTY, key.toString()))
         .fetchSingle();
 
     if (config == null) {
@@ -52,11 +52,11 @@ public class AipoContainerConfigDbService implements ContainerConfigDbService {
       ContainerConfig config =
         Database
           .query(ContainerConfig.class)
-          .where(Operations.eq(ContainerConfig.KEY_PROPERTY, key.toString()))
+          .where(Operations.eq(ContainerConfig.NAME_PROPERTY, key.toString()))
           .fetchSingle();
       if (config == null) {
         config = Database.create(ContainerConfig.class);
-        config.setKey(key.toString());
+        config.setName(key.toString());
       }
       config.setValue(value);
       Database.commit();

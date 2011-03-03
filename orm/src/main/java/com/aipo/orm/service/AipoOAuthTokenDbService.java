@@ -39,7 +39,7 @@ public class AipoOAuthTokenDbService implements OAuthTokenDbService {
       Database.get(com.aipo.orm.model.social.OAuthToken.class, hashCode);
     if (model != null) {
       OAuthToken oAuthToken = new OAuthToken();
-      oAuthToken.setKey(model.getKey());
+      oAuthToken.setKey(model.getId());
       oAuthToken.setAccessToken(model.getAccessToken());
       oAuthToken.setSessionHandle(model.getSessionHandle());
       oAuthToken.setTokenSecret(model.getTokenSecret());
@@ -57,7 +57,7 @@ public class AipoOAuthTokenDbService implements OAuthTokenDbService {
           .getKey());
       if (model == null) {
         model = Database.create(com.aipo.orm.model.social.OAuthToken.class);
-        model.setKey(oAuthToken.getKey());
+        model.setId(oAuthToken.getKey());
       }
       model.setAccessToken(oAuthToken.getAccessToken());
       model.setTokenSecret(oAuthToken.getTokenSecret());

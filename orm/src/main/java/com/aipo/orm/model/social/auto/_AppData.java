@@ -1,22 +1,3 @@
-/*
- * Aipo is a groupware program developed by Aimluck,Inc.
- * Copyright (C) 2004-2011 Aimluck,Inc.
- * http://www.aipo.com
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package com.aipo.orm.model.social.auto;
 
 import org.apache.cayenne.CayenneDataObject;
@@ -30,8 +11,8 @@ import org.apache.cayenne.CayenneDataObject;
 public abstract class _AppData extends CayenneDataObject {
 
     public static final String APP_ID_PROPERTY = "appId";
-    public static final String KEY_PROPERTY = "key";
     public static final String LOGIN_NAME_PROPERTY = "loginName";
+    public static final String NAME_PROPERTY = "name";
     public static final String VALUE_PROPERTY = "value";
 
     public static final String ID_PK_COLUMN = "ID";
@@ -43,18 +24,18 @@ public abstract class _AppData extends CayenneDataObject {
         return (String)readProperty("appId");
     }
 
-    public void setKey(String key) {
-        writeProperty("key", key);
-    }
-    public String getKey() {
-        return (String)readProperty("key");
-    }
-
     public void setLoginName(String loginName) {
         writeProperty("loginName", loginName);
     }
     public String getLoginName() {
         return (String)readProperty("loginName");
+    }
+
+    public void setName(String name) {
+        writeProperty("name", name);
+    }
+    public String getName() {
+        return (String)readProperty("name");
     }
 
     public void setValue(String value) {
