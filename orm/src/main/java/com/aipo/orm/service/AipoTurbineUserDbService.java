@@ -79,7 +79,11 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       queryByGroupname(groupname, -1, -1, true).fetchListAsDataRow();
     if (dataRows.size() == 1) {
       DataRow dataRow = dataRows.get(0);
-      return ((Long) dataRow.get("count")).intValue();
+      Object count = dataRow.get("count");
+      if (count == null) {
+        count = dataRow.get("COUNT(*)");
+      }
+      return ((Long) count).intValue();
     }
     return 0;
   }
@@ -191,7 +195,11 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       queryAll(" COUNT(*) ", -1, -1, true).fetchListAsDataRow();
     if (dataRows.size() == 1) {
       DataRow dataRow = dataRows.get(0);
-      return ((Long) dataRow.get("count")).intValue();
+      Object count = dataRow.get("count");
+      if (count == null) {
+        count = dataRow.get("COUNT(*)");
+      }
+      return ((Long) count).intValue();
     }
     return 0;
   }
