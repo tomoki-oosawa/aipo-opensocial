@@ -31,6 +31,7 @@ import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.process.Processor;
 import org.apache.shindig.gadgets.servlet.JsonRpcHandler;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.spec.Icon;
 import org.apache.shindig.gadgets.spec.ModulePrefs;
 import org.apache.shindig.gadgets.spec.OAuthService;
 import org.apache.shindig.gadgets.spec.OAuthSpec;
@@ -81,6 +82,16 @@ public class AipoJsonRpcHandler extends JsonRpcHandler {
         if (withDescription != null) {
           gadgetJson.put("description", modulePrefs.getDescription());
         }
+        List<Icon> icons = modulePrefs.getIcons();
+        String iconUrl = "";
+        for (Icon icon : icons) {
+          String mode = icon.getMode();
+          if (mode == null || mode.isEmpty()) {
+            iconUrl = icon.getContent();
+            break;
+          }
+        }
+        gadgetJson.put("icon", iconUrl);
         String withOAuthService =
           gadgetContext.getParameter("withOAuthService");
         if (withOAuthService != null) {
