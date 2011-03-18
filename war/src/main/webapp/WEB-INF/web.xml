@@ -185,14 +185,14 @@
 		<servlet-class>org.apache.shindig.gadgets.servlet.JsServlet</servlet-class>
 	</servlet>
 
-	<servlet>
+	<!-- servlet>
 		<servlet-name>restapiServlet</servlet-name>
 		<servlet-class>org.apache.shindig.protocol.DataServiceServlet</servlet-class>
 		<init-param>
 			<param-name>handlers</param-name>
 			<param-value>org.apache.shindig.handlers</param-value>
 		</init-param>
-	</servlet>
+	</servlet -->
 
 	<!-- Serve social RPC api -->
 	<servlet>
@@ -231,12 +231,12 @@
 		<url-pattern>/social/rpc/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet-mapping>
+	<!-- servlet-mapping>
 		<servlet-name>restapiServlet</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 		<url-pattern>/gadgets/api/rest/*</url-pattern>
 		<url-pattern>/social/rest/*</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping -->
 
 	<!-- servlet-mapping> <servlet-name>concat</servlet-name> <url-pattern>/gadgets/concat</url-pattern> 
 		</servlet-mapping -->
