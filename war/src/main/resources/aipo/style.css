@@ -1,28 +1,338 @@
-@charset "utf-8";html,body{margin:0;padding:0;font-size:100%;}
-h1,h2,h3,h4,h5,h6,p,pre,address,cite{margin:.5em auto;line-height:1.4;font-size:100%;}
-blockquote{margin:2em;padding:10px;border:solid 3px #e0e0e0;background:#fff;}
-blockquote h1,blockquote h2,blockquote h3,blockquote h4,blockquote h5,blockquote h6,blockquote p{margin-left:.5em;}
-address{font-style:normal;}
-ul,ol{margin:1em 2em;padding:1px 0;}
-li ul,li ol{margin:0 10px;}
-dd{margin-left:0;}
-form{margin:0;padding:0;}
-fieldset{padding:0 .5em .5em .5em;border:solid 1px #ccc;}
-legend{padding:0 7px;}
-input,textarea{font-size:100%;}
-label{cursor:pointer;}
-a img{border:none;}
-hr{border:1px solid #DCDCDC;}
-*{color:#666;font-family:'メイリオ',Meiryo,Verdana,'ヒラギノ角ゴPro W3','Hiragino Kaku Gothic Pro','ＭＳ Ｐゴシック',sans-serif;}
-body{width:100%;font-family:'メイリオ',Meiryo,Verdana,'ヒラギノ角ゴPro W3','Hiragino Kaku Gothic Pro','ＭＳ Ｐゴシック',sans-serif;padding:0;margin:0;font-size:.75em;background:#FFF;color:#666;line-height:1.4;}
-* html body{font-size:.8em;}
-*+html body{font-size:.75em;}
-a{color:#666;text-decoration:underline;}
-a:hover,a:hover strong,a:hover span{color:#F90;}
-div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,textarea,p,blockquote,th,td{margin:0;padding:0;line-height:1.4;}
-strong{font-weight:bold;}
-input{line-height:1.2;font-family:Arial,Helvetica,Verdana,'ヒラギノ角ゴPro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;}
-textarea{padding:2px;box-sizing:border-box;-moz-box-sizing:border-box;}
-select{line-height:normal;margin:1px;font-family:Arial,Helvetica,Verdana,'ヒラギノ角ゴPro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;}
-img{border:none;}
-a img{border:none;text-decoration:none;}
+@charset "utf-8";
+
+html, body, td, th {
+	margin:0;
+	padding:0;
+	font-size:100%;
+}
+h1, h2, h3, h4, h5, h6, p, pre, address, cite {
+	margin:.5em auto;
+	line-height:1.4;
+	font-size:100%;
+}
+blockquote h1, blockquote h2, blockquote h3, blockquote h4, blockquote h5, blockquote h6, blockquote p {
+	margin-left:.5em;
+}
+address {
+	font-style:normal;
+}
+ul, ol {
+	margin:1em 2em;
+	padding:1px 0;
+}
+li ul, li ol {
+	margin:0 10px;
+}
+dd {
+	margin-left:0;
+}
+form {
+	margin:0;
+	padding:0;
+}
+fieldset {
+	padding:0 .5em .5em .5em;
+	border:solid 1px #ccc;
+}
+legend {
+	padding:0 7px;
+}
+input, textarea {
+	font-size:100%;
+}
+label {
+	cursor:pointer;
+}
+a img {
+	border:none;
+}
+hr {
+	border:1px solid #DCDCDC;
+}
+hr.bold {
+	border:1px solid #999;
+}
+* {
+	color:#313131;
+	font-family:'メイリオ', Meiryo, Verdana, 'ヒラギノ角ゴPro W3', 'Hiragino Kaku Gothic Pro', 'ＭＳ Ｐゴシック', sans-serif;
+}
+body {
+	width:100%;
+	font-family:'メイリオ', Meiryo, Verdana, 'ヒラギノ角ゴPro W3', 'Hiragino Kaku Gothic Pro', 'ＭＳ Ｐゴシック', sans-serif;
+	padding:0;
+	margin:0;
+	font-size:.75em;
+	color:#313131;
+	background:#FFF;
+	line-height:1.4;
+}
+td,th {
+	font-size:.75em;
+}
+* html body, * html td, * html th {
+	font-size:.8em;
+}
+*+html body, *+html td, *+html th {
+	font-size:.75em;
+}
+th label {
+	display:block;
+	width:100%;
+}
+a{
+	color:#666;
+	text-decoration:underline;
+}
+th a {
+color:#313131;
+}
+a:hover, a:hover strong, a:hover span {
+	color:#F90;
+	text-decoration:none;
+}
+div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, textarea, p, blockquote, th, td {
+	margin:0;
+	padding:0;
+	line-height:1.4;
+}
+ul li {
+	list-style:none;
+	line-height:150%;
+	text-align:left;
+	display:block;
+	background:url(../images/common/li_icon.gif) 0 .5em no-repeat;
+	padding:0 0 0 1em;
+}
+strong {
+	font-weight:bold;
+}
+input {
+	line-height:1.5;
+}
+
+input[type="button"]{
+cursor:pointer;
+}
+
+textarea {
+	padding:2px;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+}
+select {
+	font-size:1em;
+	line-height:normal;
+	margin:1px;
+}
+img {
+	border:none;
+}
+a img {
+	border:none;
+	text-decoration:none;
+}
+.aipostyle h3 {
+	background:#eee url(../images/common/bg_slash.gif) repeat scroll left bottom;
+	line-height:150%;
+	padding:3px 5px;
+	margin:0 0 10px;
+	border-bottom:1px solid #ddd;
+	border-right:1px solid #ddd;
+}
+.aipostyle h4 {
+	background:transparent url(../images/common/bg_line.gif) repeat-x left bottom;
+	line-height:150%;
+	padding:0 0 3px;
+	margin:0 0 10px;
+}
+.aipostyle blockquote {
+	border:5px solid #ddd;
+	background:#f5f5f5 url(../images/common/bg_slash.gif) repeat scroll left bottom;
+	padding:3px;
+}
+.aipostyle .required {
+	display:block;
+	background:transparent url(../images/common/icon_required.gif) no-repeat right top;
+}
+.aipostyle a.button:link,
+.aipostyle a.button:visited,
+.aipostyle a.button:active {
+	padding:1px;
+	border:1px solid transparent;
+	margin:0;
+	text-decoration:none;
+	display:block;
+	color:#5D6A70;
+	background-position:left 1px;
+	background-repeat:no-repeat;
+}
+.aipostyle a.button:hover {
+	padding:1px;
+	text-decoration:none;
+	color:#5D6A70;
+	display:block;
+	border:1px solid #F90;
+	margin:0;
+	background-color:#FFF5D8;
+	background-repeat:no-repeat;
+}
+* html .aipostyle a.button:link,
+* html .aipostyle a.button:visited,
+* html .aipostyle a.button:active {
+	padding:2px;
+	border:none;
+	background-position:1px 2px;
+	background-repeat:no-repeat;
+}
+* html .aipostyle a.button:hover {
+	padding:1px;
+	background-position:1px 2px;
+	background-repeat:no-repeat;
+	border:1px solid #F90;
+}
+*+html .aipostyle a.button:link,
+*+html .aipostyle a.button:visited,
+*+html .aipostyle a.button:active {
+	padding:2px;
+	border:none;
+	background-position:1px 2px;
+	background-repeat:no-repeat;
+}
+*+html .aipostyle a.button:hover {
+	padding:1px;
+	background-position:1px 2px;
+	background-repeat:no-repeat;
+	border:1px solid #F90;
+}
+.aipostyle table.list {
+	border:1px solid #C9C9C9;
+	margin-bottom:10px;
+	margin-top:5px;
+	border-spacing:0;
+	border-collapse:collapse;
+	padding:0;
+}
+.aipostyle table.list td {
+	border:1px solid #C9C9C9;
+	padding:5px;
+}
+.aipostyle table.list th,
+.aipostyle table.list thead td  {
+	border:1px solid #C9C9C9;
+	padding:5px;
+	background:#DCDCDC url(../images/common/bg_slash.gif) repeat left top;
+	white-space:nowrap;
+	text-align:center;
+	font-weight:normal;
+}
+.aipostyle table.list th a,
+.aipostyle table.list thead td a {
+	padding-right:10px;
+	padding-left:10px;
+	display:block;
+}
+
+.aipostyle .pagination {
+	margin:0;
+	padding:0;
+}
+.aipostyle .pagination li {
+	text-align:center;
+	background:none;
+	background-color:#FFF;
+	float:left;
+	background:none;
+	padding:0;
+}
+.aipostyle .pagination a:link,
+.aipostyle .pagination a:visited {
+	border:1px solid #aaa;
+	cursor:pointer;
+	padding:.2em .5em;
+	margin:0 .5em 0 0;
+	color:#666;
+	text-decoration:none;
+	display:block;
+}
+.aipostyle .pagination a:active {
+	border:1px solid #aaa;
+	cursor:pointer;
+	padding:.2em .5em;
+	margin:0 .5em 0 0;
+	color:#666;
+	text-decoration:none;
+	display:block;
+}
+.aipostyle .pagination a:hover {
+	background-color:#fff5d8;
+	border:1px solid #f90;
+	cursor:pointer;
+	padding:.2em .5em;
+	margin:0 .5em 0 0;
+	color:#f90;
+	text-decoration:none;
+	display:block;
+}
+.aipostyle .pagination li.selected a:link,
+.aipostyle .pagination li.selected a:visited,
+.aipostyle .pagination li.selected a:active,
+.aipostyle .pagination li.selected a:hover {
+	background-color:#fff5d8;
+	border:1px solid #f90;
+	color:#f90;
+	cursor:default;
+}
+.aipostyle .pagination li.prev a:link,
+.aipostyle .pagination li.prev a:visited,
+.aipostyle .pagination li.next a:link,
+.aipostyle .pagination li.next a:visited {
+	border:1px solid #999;
+}
+.aipostyle .pagination li.prev a:active,
+.aipostyle .pagination li.next a:active {
+	border:1px solid #999;
+}
+.aipostyle .pagination li.prev a:hover,
+.aipostyle .pagination li.next a:hover {
+	border:1px solid #f90;
+}
+.aipostyle .pagination li.disabled a:link,
+.aipostyle .pagination li.disabled a:visited,
+.aipostyle .pagination li.disabled a:active,
+.aipostyle .pagination li.disabled a:hover {
+	background-color:#FFF;
+	border:1px solid #E6E6E6;
+	color:#E6E6E6;
+	cursor:default;
+}
+.aipostyle .pagination li.selected,
+.aipostyle .pagination li.disabled,
+.aipostyle .pagination li.prev,
+.aipostyle .pagination li.next {
+	font-weight:bold;
+}
+.aipostyle .pagination li.abbr {
+	display:block;
+	float:left;
+	margin-right:.1em;
+	padding:.2em .4em 0 .2em;
+}
+.clearfix:after {
+	content:".";
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden;
+}
+.clearfix {
+	display:inline-block;
+}
+/* Hides from IE-mac \*/ * html .clearfix {
+	height:1%;
+}
+.clearfix {
+	display:block;
+}
+/* End hides from IE-mac */ .clear {
+	clear:both;
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs
+            title="Aipo Style Sample"
+            description="アイポ風スタイルをガジェットに適用したサンプルです。">
+        <Require feature="aipostyle" />
+    <Require feature="dynamic-height"/>
+    </ModulePrefs>
+    <Content type="html"><![CDATA[
+
+<div class="aipostyle">
+
+<h3>見出しh3</h3>
+
+テキストテキストテキストテキストテキストテキスト
+
+<hr/>
+
+<h4>見出しh4</h4>
+
+テキストテキストテキストテキストテキストテキスト
+
+<hr/>
+
+<ul>
+  <li>行1</li>
+  <li>行2</li>
+  <li>行3</li>
+  <li>行4</li>
+</ul>
+
+<hr/>
+
+<a href="#">テキストアンカー</a>
+
+<hr/>
+
+<blockquote>引用 引用 引用 引用 引用 引用 引用<br />
+引用 引用 引用 引用 引用 引用 引用 引用 </blockquote>
+
+<hr/>
+
+<table class="list">
+  <tr>
+  <th>キャプション</th>
+  <td><input type="text" name="text" /></td>
+  </tr><tr>
+  <th>キャプション</th>
+  <td><textarea col="5" row="10"></textarea></td>
+  </tr><tr>
+  <th>キャプション</th>
+  <td><a href="#" class="button">ボタンリンク</a></td>
+  </tr>
+</table>
+
+<hr/>
+
+<input type="button" name="button" value="保存する"/>
+
+</div>
+
+<script type="text/javascript">
+
+  gadgets.util.registerOnLoadHandler(init);
+
+  function init() {
+    gadgets.window.adjustHeight();
+  }
+
+</script>
+    ]]></Content>
+</Module>
