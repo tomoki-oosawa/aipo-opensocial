@@ -185,4 +185,14 @@ public abstract class AbstractService {
       HttpServletResponse.SC_BAD_REQUEST,
       "Access not denneid.");
   }
+
+  protected void checkInputRange(String input, int min, int max) {
+    if (input == null
+      || (input != null && input.length() < min)
+      || (input != null && input.length() > max)) {
+      throw new ProtocolException(
+        HttpServletResponse.SC_BAD_REQUEST,
+        "Validate error.");
+    }
+  }
 }

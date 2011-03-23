@@ -20,6 +20,8 @@ public abstract class _Application extends CayenneDataObject {
     public static final String CONSUMER_SECRET_PROPERTY = "consumerSecret";
     public static final String CREATE_DATE_PROPERTY = "createDate";
     public static final String DESCRIPTION_PROPERTY = "description";
+    public static final String ICON_PROPERTY = "icon";
+    public static final String ICON64_PROPERTY = "icon64";
     public static final String STATUS_PROPERTY = "status";
     public static final String SUMMARY_PROPERTY = "summary";
     public static final String TITLE_PROPERTY = "title";
@@ -62,6 +64,20 @@ public abstract class _Application extends CayenneDataObject {
     }
     public String getDescription() {
         return (String)readProperty("description");
+    }
+
+    public void setIcon(String icon) {
+        writeProperty("icon", icon);
+    }
+    public String getIcon() {
+        return (String)readProperty("icon");
+    }
+
+    public void setIcon64(String icon64) {
+        writeProperty("icon64", icon64);
+    }
+    public String getIcon64() {
+        return (String)readProperty("icon64");
     }
 
     public void setStatus(Integer status) {

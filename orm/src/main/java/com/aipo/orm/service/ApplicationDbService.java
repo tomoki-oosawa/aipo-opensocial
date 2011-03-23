@@ -19,10 +19,14 @@
 
 package com.aipo.orm.service;
 
+import com.aipo.orm.model.social.Application;
+
 /**
  * 
  */
 public interface ApplicationDbService {
 
   public String getConsumerSecret(String consumerKey);
+
+  public Application get(String appId);
 }

@@ -48,6 +48,20 @@ public class AipoApplicationDbService implements ApplicationDbService {
     return app.getConsumerSecret();
   }
 
+  /**
+   * @param appId
+   * @return
+   */
+  public Application get(String appId) {
+    selectDefaultDataDomain();
+
+    Application app = Database.get(Application.class, appId);
+    if (app == null) {
+      return null;
+    }
+    return app;
+  }
+
   private void selectDefaultDataDomain() {
     ObjectContext dataContext = null;
     try {

@@ -20,8 +20,10 @@
 package com.aipo.social.opensocial.spi;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -59,9 +61,9 @@ public class AipoAppDataService extends AbstractService implements
    */
   @Inject
   public AipoAppDataService(TurbineUserDbService turbineUserDbService,
-      AppDataDbService activityDbService) {
+      AppDataDbService appDataDbService) {
     this.turbineUserDbService = turbineUserDbService;
-    this.appDataDbService = activityDbService;
+    this.appDataDbService = appDataDbService;
   }
 
   /**
@@ -86,6 +88,17 @@ public class AipoAppDataService extends AbstractService implements
     checkSameAppId(appId, token);
     // 自分（Viewer）の AppData のみ更新可能
     checkSameViewer(userId, token);
+
+    Iterator<Entry<String, String>> iterator = values.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Entry<String, String> next = iterator.next();
+      String key = next.getKey();
+      String value = next.getValue();
+      // キー ： 1 ～ 40 文字以内
+      checkInputRange(key, 1, 40);
+      // 値： 10000 文字以内
+      checkInputRange(value, 0, 10000);
+    }
 
     String username = getUserId(userId, token);
     appDataDbService.put(username, appId, values);

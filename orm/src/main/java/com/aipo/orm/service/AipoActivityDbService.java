@@ -64,6 +64,8 @@ public class AipoActivityDbService implements ActivityDbService {
       activity.setTitle((String) values.get("title"));
       activity.setUpdateDate(new Date());
 
+      activity.setIcon((String) values.get("icon"));
+
       @SuppressWarnings("unchecked")
       Set<String> recipients = (Set<String>) values.get("recipients");
       if (recipients != null && recipients.size() > 0) {

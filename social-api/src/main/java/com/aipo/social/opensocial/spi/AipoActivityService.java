@@ -32,7 +32,9 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.orm.model.social.Application;
 import com.aipo.orm.service.ActivityDbService;
+import com.aipo.orm.service.ApplicationDbService;
 import com.aipo.social.opensocial.model.Activity;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -46,12 +48,16 @@ public class AipoActivityService extends AbstractService implements
 
   private final ActivityDbService activityDbService;
 
+  private final ApplicationDbService applicationDbService;
+
   /**
    * 
    */
   @Inject
-  public AipoActivityService(ActivityDbService activityDbService) {
+  public AipoActivityService(ActivityDbService activityDbService,
+      ApplicationDbService applicationDbService) {
     this.activityDbService = activityDbService;
+    this.applicationDbService = applicationDbService;
   }
 
   /**
@@ -85,6 +91,7 @@ public class AipoActivityService extends AbstractService implements
       GroupId groupId, String appId, Set<String> fields,
       CollectionOptions options, Set<String> activityIds, SecurityToken token)
       throws ProtocolException {
+    // NOT SUPPORTED
     return ImmediateFuture.newInstance(null);
   }
 
@@ -101,6 +108,7 @@ public class AipoActivityService extends AbstractService implements
   public Future<Activity> getActivity(UserId userId, GroupId groupId,
       String appId, Set<String> fields, String activityId, SecurityToken token)
       throws ProtocolException {
+    // NOT SUPPORTED
     return ImmediateFuture.newInstance(null);
   }
 
@@ -143,10 +151,13 @@ public class AipoActivityService extends AbstractService implements
     checkSameAppId(appId, token);
     // 自分（Viewer）の Activity のみ更新可能
     checkSameViewer(userId, token);
+    // タイトル 1 ～ 40 文字以内
+    checkInputRange(activity.getTitle(), 1, 40);
 
     String username = getUserId(userId, token);
     Map<String, Object> values = Maps.newHashMap();
-    values.put("body", activity.getBody());
+    // TODO: BODY サポート時にコメントイン
+    // values.put("body", activity.getBody());
     values.put("externalId", activity.getExternalId());
     values.put("priority", activity.getPriority());
     values.put("title", activity.getTitle());
@@ -158,6 +169,10 @@ public class AipoActivityService extends AbstractService implements
       }
     }
     values.put("recipients", users);
+    Application application = applicationDbService.get(appId);
+    if (application != null) {
+      values.put("icon", application.getIcon());
+    }
     activityDbService.create(username, appId, values);
 
     // TODO: Generate された Activity ID を返却する
