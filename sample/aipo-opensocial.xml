@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs
+            title="Aipo OpenSocial Sample"
+            description="アイポ OpenSocial アプリケーションのサンプルガジェットです。">
+        <Require feature="dynamic-height"/>
+        <Require feature="minimessage"/>
+        <Require feature="tabs"/>
+        <Require feature="aipostyle"/>
+        <Require feature="osapi"/>
+    </ModulePrefs>
+    <Content type="html"><![CDATA[
+        <div class="aipostyle">
+
+            <div id="tabContainer">
+                <div id="peopleContent" style="display:none;">
+                    <div class="aipostyle">
+                        <table class="form wide">
+                            <th>グループ</th>
+                            <td><select id="groupSelect" name="group"
+                                        onchange="fetchPeople(this.options[this.selectedIndex].value, 0);">
+
+                            </select></td>
+                        </table>
+                        <div id="peopleResult" style="padding-bottom:10px"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script type="text/javascript">
+
+            var tabs = new gadgets.TabSet(__MODULE_ID__, null, document.getElementById("tabContainer"));
+            tabs.alignTabs("left");
+
+            function fetchGroups(startIndex) {
+                var callback = function(response) {
+                    var groups = response.groups.list;
+                    var html = new Array();
+                    html.push('<option value="@all">（全体）</option>');
+                    for (var i = 0; i < groups.length; i++) {
+                        var group = groups[i];
+                        html.push('<option value="' + group.id.groupId + '">');
+                        html.push(group.title);
+                        html.push('</option>');
+                    }
+                    document.getElementById('groupSelect').innerHTML = html.join('');
+                };
+                var batch = osapi.newBatch()
+                        .add('groups', osapi.groups.get({ userId: '@owner', startIndex: startIndex, count: 10 }));
+                batch.execute(callback);
+            }
+
+            var currentGroupId = '@all';
+            function fetchPeople(groupId, startIndex) {
+                var callback = function(response) {
+                    var people = response.people.list;
+                    var html = new Array();
+                    if (people.length == 0) {
+                        html.push('<div>ユーザーが見つかりませんでした。</div>');
+                    } else {
+                        html.push('<table class="list wide"><tr><th>ID</th><th>氏名</th></tr>');
+                    }
+                    for (var i = 0; i < people.length; i++) {
+                        var person = people[i];
+                        html.push('<tr><td nowrap="nowrap" class="thin">' + person.id + "</td>");
+                        html.push('<td>' + person.displayName + "</td></tr>");
+                    }
+                    if (people.length > 0) {
+                        html.push('</table>');
+                    }
+                    var totalResults = response.people.totalResults;
+                    var startIndex = response.people.startIndex;
+                    var currentPage = Math.ceil(startIndex / 5);
+                    var page = Math.ceil(totalResults / 5);
+                    if (page > 1) {
+                        html.push('<div class="clearfix"><div class="small" style="float:left"><div class="pagination"><ul>');
+
+                        for (var i = 0; i < page; i++) {
+                            var next = i * 5;
+                            if (i == currentPage) {
+                                html.push('<li class="selected">');
+                            } else {
+                                html.push('<li>');
+                            }
+                            html.push('<a class="small" href="javascript:void(0);" onclick="fetchPeople(\'' + currentGroupId + '\',' + next + ');">');
+                            html.push(i + 1);
+                            html.push('</a></li>');
+                        }
+                        html.push('</ul></div></div></div>');
+                    }
+                    document.getElementById('peopleResult').innerHTML = html.join('');
+                    gadgets.window.adjustHeight();
+                };
+                var batch = osapi.newBatch()
+                        .add('people', osapi.people.get({ userId: '@owner', groupId: groupId, startIndex: startIndex, count: 5 }));
+                batch.execute(callback);
+                currentGroupId = groupId;
+            }
+
+            function initTabs() {
+                var callback = function(tabId) {
+                    gadgets.window.adjustHeight();
+                };
+                tabs.addTab("OSAPI", {
+                    contentContainer: document.getElementById("peopleContent"),
+                    callback: callback
+                });
+            }
+
+            function init() {
+                initTabs();
+                fetchGroups(0);
+                fetchPeople(currentGroupId, 0);
+                gadgets.window.adjustHeight();
+            }
+
+            gadgets.util.registerOnLoadHandler(init);
+
+        </script>
+        ]]></Content>
+</Module>
