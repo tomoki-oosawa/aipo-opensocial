@@ -15,14 +15,32 @@
             <div id="tabContainer">
                 <div id="peopleContent" style="display:none;">
                     <div class="aipostyle">
-                        <table class="form wide">
-                            <th>グループ</th>
-                            <td><select id="groupSelect" name="group"
-                                        onchange="fetchPeople(this.options[this.selectedIndex].value, 0);">
+                        <form name="form" action="">
+                            <table class="form wide">
+                                <tr>
+                                    <th>グループ</th>
+                                    <td><select id="groupSelect" name="group"
+                                                onchange="fetchPeople(this.options[this.selectedIndex].value, 0);">
 
-                            </select></td>
-                        </table>
-                        <div id="peopleResult" style="padding-bottom:10px"></div>
+                                    </select></td>
+                                </tr>
+                            </table>
+                            <div id="peopleResult" style="padding-bottom:10px"></div>
+                            <table class="form wide">
+                                <tr>
+                                    <th>タイトル</th>
+                                    <td><input type="text" name="title" style="width:100px"/></td>
+                                </tr>
+                                <tr>
+                                    <th>対象</th>
+                                    <td><select name="priority">
+                                        <option value="0">更新情報</option>
+                                        <option value="1">あなた宛のお知らせ</option>
+                                    </select></td>
+                                </tr>
+                            </table>
+                            <div class="center"><input type="submit" name="submit" value="アクティビティを送信する"/></div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -31,6 +49,7 @@
 
         <script type="text/javascript">
 
+            var msg = new gadgets.MiniMessage();
             var tabs = new gadgets.TabSet(__MODULE_ID__, null, document.getElementById("tabContainer"));
             tabs.alignTabs("left");
 
@@ -60,11 +79,12 @@
                     if (people.length == 0) {
                         html.push('<div>ユーザーが見つかりませんでした。</div>');
                     } else {
-                        html.push('<table class="list wide"><tr><th>ID</th><th>氏名</th></tr>');
+                        html.push('<table class="list wide"><tr><th>&nbsp;</th><th>ID</th><th>氏名</th></tr>');
                     }
                     for (var i = 0; i < people.length; i++) {
                         var person = people[i];
-                        html.push('<tr><td nowrap="nowrap" class="thin">' + person.id + "</td>");
+                        html.push('<tr><td nowrap="nowrap" class="thin center"><input type="checkbox" name="check" value="' + person.id + '"/></td>');
+                        html.push('<td nowrap="nowrap" class="thin">' + person.id + "</td>");
                         html.push('<td>' + person.displayName + "</td></tr>");
                     }
                     if (people.length > 0) {
@@ -109,8 +129,35 @@
                 });
             }
 
+            function initForm() {
+                document.form.onsubmit = function() {
+                    var callback = function(response) {
+                        msg.createTimerMessage("アクティビティを送信しました。", 5);
+                        document.form.title.value = "";
+                        var checks = document.form.check;
+                        for (var i = 0; i < checks.length; i++) {
+                            checks[i].checked = false;
+                        }
+                    };
+                    var title = document.form.title.value;
+                    var priority = document.form.priority.value;
+                    var checks = document.form.check;
+                    var recipients = new Array();
+                    for (var i = 0; i < checks.length; i++) {
+                        if (checks[i].checked) {
+                            recipients.push(checks[i].value);
+                        }
+                    }
+                    osapi.activities.create({
+                        userId: '@viewer', activity: { title: title, priority: priority, recipients: recipients }
+                    }).execute(callback);
+                    return false;
+                }
+            }
+
             function init() {
                 initTabs();
+                initForm();
                 fetchGroups(0);
                 fetchPeople(currentGroupId, 0);
                 gadgets.window.adjustHeight();
