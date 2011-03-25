@@ -52,10 +52,12 @@ public class AipoAppDataDbService implements AppDataDbService {
   public List<AppData> get(Set<String> usernames, String appId,
       Set<String> fields) {
     try {
-      return Database.query(AppData.class).where(
-        Operations.eq(AppData.APP_ID_PROPERTY, appId).in(
-          AppData.NAME_PROPERTY,
-          fields).in(AppData.LOGIN_NAME_PROPERTY, usernames)).fetchList();
+      return Database
+        .query(AppData.class)
+        .where(Operations.eq(AppData.APP_ID_PROPERTY, appId))
+        .where(Operations.in(AppData.NAME_PROPERTY, fields.toArray()))
+        .where(Operations.in(AppData.LOGIN_NAME_PROPERTY, usernames.toArray()))
+        .fetchList();
     } catch (Throwable t) {
       Database.rollback();
       throw new RuntimeException(t);

@@ -3,55 +3,159 @@
     <ModulePrefs
             title="Aipo OpenSocial Sample"
             description="アイポ OpenSocial アプリケーションのサンプルガジェットです。">
+        <Require feature="osapi"/>
         <Require feature="dynamic-height"/>
         <Require feature="minimessage"/>
         <Require feature="tabs"/>
         <Require feature="aipostyle"/>
-        <Require feature="osapi"/>
     </ModulePrefs>
     <Content type="html"><![CDATA[
         <div class="aipostyle">
+            <div id="tab1Container">
+                <div id="ospaiContent">
+                    <form name="form" action="">
+                        <table class="form wide">
+                            <tr>
+                                <th>グループ
+                                </th>
+                                <td><select id="groupSelect" name="group"
+                                            onchange="fetchPeople(this.options[this.selectedIndex].value, 0);">
+                                    <option value="@all">読み込み中
+                                    </option>
+                                </select></td>
+                            </tr>
+                        </table>
+                        <div id="peopleResult" style="padding-bottom:10px"></div>
+                        <div id="tab2Container">
+                            <div id="activityContent" style="display:none;">
+                                <table class="form wide">
+                                    <tr>
+                                        <th>タイトル
+                                        </th>
+                                        <td><input type="text" name="title" style="width:200px"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th>対象</th>
+                                        <td><select name="priority">
+                                            <option value="0">更新情報</option>
+                                            <option value="1">あなた宛のお知らせ</option>
+                                        </select></td>
+                                    </tr>
+                                </table>
+                                <div class="center"><input type="submit" name="submit" value="送信する"/></div>
+                            </div>
+                            <div id="appdataContent" style="display:none;">
+                                <table class="form wide">
+                                    <tr>
+                                        <th>キー</th>
+                                        <td><select name="key">
+                                            <option value="key1">key1</option>
+                                            <option value="key2">key2</option>
+                                            <option value="key3">key3</option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <th>値
+                                        </th>
+                                        <td><input type="text" name="value" style="width:200px"/></td>
+                                    </tr>
+                                </table>
+                                <div class="center"><input type="submit" name="submit" value="保存する"/></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="aipostyleContent" style="display:none;">
 
-            <div id="tabContainer">
-                <div id="peopleContent" style="display:none;">
-                    <div class="aipostyle">
-                        <form name="form" action="">
-                            <table class="form wide">
-                                <tr>
-                                    <th>グループ</th>
-                                    <td><select id="groupSelect" name="group"
-                                                onchange="fetchPeople(this.options[this.selectedIndex].value, 0);">
+                    <hr/>
 
-                                    </select></td>
-                                </tr>
-                            </table>
-                            <div id="peopleResult" style="padding-bottom:10px"></div>
-                            <table class="form wide">
-                                <tr>
-                                    <th>タイトル</th>
-                                    <td><input type="text" name="title" style="width:100px"/></td>
-                                </tr>
-                                <tr>
-                                    <th>対象</th>
-                                    <td><select name="priority">
-                                        <option value="0">更新情報</option>
-                                        <option value="1">あなた宛のお知らせ</option>
-                                    </select></td>
-                                </tr>
-                            </table>
-                            <div class="center"><input type="submit" name="submit" value="アクティビティを送信する"/></div>
-                        </form>
-                    </div>
+                    <h3>見出しh3</h3>
+
+                    テキストテキストテキストテキストテキストテキスト
+
+                    <hr/>
+
+                    <h4>見出しh4</h4>
+
+                    テキストテキストテキストテキストテキストテキスト
+
+                    <hr/>
+
+                    <ul>
+                        <li>行1
+                        </li>
+                        <li>行2</li>
+                        <li>行3</li>
+                        <li>行4</li>
+                    </ul>
+
+                    <hr/>
+
+                    <a href="#">テキストアンカー</a>
+
+                    <hr/>
+
+                    <blockquote>引用 引用 引用 引用 引用 引用 引用<br/>
+                        引用 引用 引用 引用 引用 引用 引用 引用
+                    </blockquote>
+
+                    <hr/>
+
+                    <table class="form wide">
+                        <tr>
+                            <th>項目1</th>
+                            <td><input class="text w75" type="text" name="text"/></td>
+                        </tr>
+                        <tr>
+                            <th>項目2</th>
+                            <td><textarea class="text w75" col="5" row="10"></textarea></td>
+                        </tr>
+                        <tr>
+                            <th>項目3</th>
+                            <td>テキストテキストテキスト
+                            </td>
+                        </tr>
+                    </table>
+
+                    <hr/>
+
+                    <table class="list wide">
+                        <tr>
+                            <th class="thin">&nbsp</th>
+                            <th>項目1</th>
+                            <th>項目2</th>
+                            <th class="thin">項目3</th>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="check"/></td>
+                            <td>テキスト</td>
+                            <td><a href="#">テキストリンク</a></td>
+                            <td nowrap="nowrap"><a href="#" class="button">ボタンリンク</a></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="check"/></td>
+                            <td>テキスト</td>
+                            <td><a href="#">テキストリンク</a></td>
+                            <td nowrap="nowrap"><a href="#" class="button">ボタンリンク</a></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="check"/></td>
+                            <td>テキスト</td>
+                            <td><a href="#">テキストリンク</a></td>
+                            <td nowrap="nowrap"><a href="#" class="button">ボタンリンク</a></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
-
         </div>
 
         <script type="text/javascript">
 
             var msg = new gadgets.MiniMessage();
-            var tabs = new gadgets.TabSet(__MODULE_ID__, null, document.getElementById("tabContainer"));
-            tabs.alignTabs("left");
+            var tabs1 = new gadgets.TabSet(__MODULE_ID__, null, document.getElementById("tab1Container"));
+            tabs1.alignTabs("left");
+            var tabs2 = new gadgets.TabSet(__MODULE_ID__, null, document.getElementById("tab2Container"));
+            tabs2.alignTabs("left");
 
             function fetchGroups(startIndex) {
                 var callback = function(response) {
@@ -72,6 +176,7 @@
             }
 
             var currentGroupId = '@all';
+            var currentStartIndex = 0;
             function fetchPeople(groupId, startIndex) {
                 var callback = function(response) {
                     var people = response.people.list;
@@ -79,19 +184,23 @@
                     if (people.length == 0) {
                         html.push('<div>ユーザーが見つかりませんでした。</div>');
                     } else {
-                        html.push('<table class="list wide"><tr><th>&nbsp;</th><th>ID</th><th>氏名</th></tr>');
+                        html.push('<table class="list wide"><tr><th>&nbsp;</th><th>ID</th><th>氏名</th><th>永続化データ</th></tr>');
                     }
+                    var userIds = new Array();
                     for (var i = 0; i < people.length; i++) {
                         var person = people[i];
+                        userIds.push(person.id);
                         html.push('<tr><td nowrap="nowrap" class="thin center"><input type="checkbox" name="check" value="' + person.id + '"/></td>');
                         html.push('<td nowrap="nowrap" class="thin">' + person.id + "</td>");
-                        html.push('<td>' + person.displayName + "</td></tr>");
+                        html.push('<td>' + person.displayName + "</td>");
+                        html.push('<td><div id="appdata-' + person.id + '"></div></td></tr>');
                     }
                     if (people.length > 0) {
                         html.push('</table>');
                     }
                     var totalResults = response.people.totalResults;
                     var startIndex = response.people.startIndex;
+                    currentStartIndex = startIndex;
                     var currentPage = Math.ceil(startIndex / 5);
                     var page = Math.ceil(totalResults / 5);
                     if (page > 1) {
@@ -111,6 +220,10 @@
                         html.push('</ul></div></div></div>');
                     }
                     document.getElementById('peopleResult').innerHTML = html.join('');
+
+                    if (people.length > 0) {
+                        fetchAppData(userIds);
+                    }
                     gadgets.window.adjustHeight();
                 };
                 var batch = osapi.newBatch()
@@ -119,39 +232,94 @@
                 currentGroupId = groupId;
             }
 
+            function fetchAppData(userIds) {
+                var callback = function(response) {
+                    for (var id in response) {
+                        var data = response[id];
+                        var html = new Array();
+                        html.push('<ul>');
+                        for (var key in data) {
+                            var value = data[key];
+                            html.push('<li>');
+                            html.push(key + "=" + value);
+                            html.push('</li>');
+                        }
+                        html.push('</ul>');
+                        document.getElementById('appdata-' + id).innerHTML = html.join('');
+                       gadgets.window.adjustHeight();
+                    }
+                };
+                osapi.appdata.get({ userId: userIds ,fields: ['key1', 'key2','key3'] }).execute(callback);
+            }
+
             function initTabs() {
                 var callback = function(tabId) {
                     gadgets.window.adjustHeight();
                 };
-                tabs.addTab("OSAPI", {
-                    contentContainer: document.getElementById("peopleContent"),
+                tabs1.addTab("OSAPI", {
+                    contentContainer: document.getElementById("ospaiContent"),
+                    callback: callback
+                });
+                tabs1.addTab("デザイン", {
+                    contentContainer: document.getElementById("aipostyleContent"),
+                    callback: callback
+                });
+                tabs2.addTab("アクティビティ", {
+                    contentContainer: document.getElementById("activityContent"),
+                    callback: callback
+                });
+                tabs2.addTab("永続化データ", {
+                    contentContainer: document.getElementById("appdataContent"),
                     callback: callback
                 });
             }
 
             function initForm() {
                 document.form.onsubmit = function() {
-                    var callback = function(response) {
-                        msg.createTimerMessage("アクティビティを送信しました。", 5);
-                        document.form.title.value = "";
+                    var tab = tabs2.getSelectedTab();
+                    if (tab.getIndex() == 0) {
+                        var callback = function(response) {
+                            msg.createTimerMessage("アクティビティを送信しました。", 5);
+                            gadgets.window.adjustHeight();
+                            document.form.title.value = "";
+                            var checks = document.form.check;
+                            for (var i = 0; i < checks.length; i++) {
+                                checks[i].checked = false;
+                            }
+                        };
+                        var title = document.form.title.value;
+                        if (!title) {
+                            msg.createTimerMessage("タイトルを入力してください。", 5);
+                            gadgets.window.adjustHeight();
+                            return false;
+                        }
+                        var priority = document.form.priority.value;
                         var checks = document.form.check;
+                        var recipients = new Array();
                         for (var i = 0; i < checks.length; i++) {
-                            checks[i].checked = false;
+                            if (checks[i].checked) {
+                                recipients.push(checks[i].value);
+                            }
                         }
-                    };
-                    var title = document.form.title.value;
-                    var priority = document.form.priority.value;
-                    var checks = document.form.check;
-                    var recipients = new Array();
-                    for (var i = 0; i < checks.length; i++) {
-                        if (checks[i].checked) {
-                            recipients.push(checks[i].value);
-                        }
+                        osapi.activities.create({
+                            userId: '@viewer', activity: { title: title, priority: priority, recipients: recipients }
+                        }).execute(callback);
+                        return false;
+                    } else {
+                        var callback = function(response) {
+                            msg.createTimerMessage("永続化データを保存しました。", 5);
+                            document.form.key.value = "";
+                            document.form.value.value = "";
+                            gadgets.window.adjustHeight();
+                            fetchPeople(currentGroupId, currentStartIndex);
+                        };
+                        var key = document.form.key.value;
+                        var value = document.form.value.value;
+                        var data = {};
+                        data[key] = value;
+                        osapi.appdata.update({ userId: '@viewer', data: data, appId: '@app' }).execute(callback);
+                        return false;
                     }
-                    osapi.activities.create({
-                        userId: '@viewer', activity: { title: title, priority: priority, recipients: recipients }
-                    }).execute(callback);
-                    return false;
                 }
             }
 
