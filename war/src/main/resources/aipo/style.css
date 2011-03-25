@@ -39,6 +39,7 @@ legend {
 }
 input, textarea {
 	font-size:100%;
+	margin:0;
 }
 label {
 	cursor:pointer;
@@ -109,15 +110,24 @@ strong {
 input {
 	line-height:1.5;
 }
-
 input[type="button"]{
 cursor:pointer;
 }
-
+input[type="text"],
+input[type="password"],
+.aipostyle input.text {
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	background-color:#FFF;
+	border:1px solid #C9C9C9;
+	padding:2px;
+}
 textarea {
 	padding:2px;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;
+	background-color:#FFF;
+	border:1px solid #C9C9C9;
 }
 select {
 	font-size:1em;
@@ -204,7 +214,8 @@ a img {
 	background-repeat:no-repeat;
 	border:1px solid #F90;
 }
-.aipostyle table.list {
+.aipostyle table.list,
+.aipostyle table.form {
 	border:1px solid #C9C9C9;
 	margin-bottom:10px;
 	margin-top:5px;
@@ -212,24 +223,28 @@ a img {
 	border-collapse:collapse;
 	padding:0;
 }
-.aipostyle table.list td {
+.aipostyle table.list td,
+.aipostyle table.form td  {
 	border:1px solid #C9C9C9;
-	padding:5px;
+	padding:3px;
 }
 .aipostyle table.list th,
-.aipostyle table.list thead td  {
+.aipostyle table.form th,
+.aipostyle table.list thead td
+.aipostyle table.form thead td   {
 	border:1px solid #C9C9C9;
-	padding:5px;
+	padding:3px;
 	background:#DCDCDC url(../images/common/bg_slash.gif) repeat left top;
 	white-space:nowrap;
 	text-align:center;
 	font-weight:normal;
 }
-.aipostyle table.list th a,
-.aipostyle table.list thead td a {
-	padding-right:10px;
-	padding-left:10px;
-	display:block;
+.aipostyle table.form th,
+.aipostyle table.form thead td   {
+	text-align:left;
+	min-width:135px;
+	min-width:-moz-intrinsic;
+	width:135px;
 }
 
 .aipostyle .pagination {
@@ -317,22 +332,59 @@ a img {
 	margin-right:.1em;
 	padding:.2em .4em 0 .2em;
 }
-.clearfix:after {
+.aipostyle .clearfix:after {
 	content:".";
 	display:block;
 	height:0;
 	clear:both;
 	visibility:hidden;
 }
-.clearfix {
+.aipostyle .clearfix {
 	display:inline-block;
 }
-/* Hides from IE-mac \*/ * html .clearfix {
+/* Hides from IE-mac \*/ * html .aipostyle .clearfix {
 	height:1%;
 }
-.clearfix {
+.aipostyle .clearfix {
 	display:block;
 }
-/* End hides from IE-mac */ .clear {
+/* End hides from IE-mac */ .aipostyle .clear {
 	clear:both;
+}
+.aipostyle .left {
+	text-align:left;
+}
+.aipostyle .right {
+	text-align:right;
+}
+.aipostyle .center {
+	text-align:center;
+}
+.aipostyle .top {
+	vertical-align:top;
+}
+.aipostyle .small {
+	font-size:.9em;
+	line-height:1.2;
+}
+.aipostyle .thin {
+	width:2%;
+}
+.aipostyle .wide {
+	width:100%;
+}
+.aipostyle .w90 {
+	width:90%;
+}
+.aipostyle .w75 {
+	width:75%;
+}
+.aipostyle .w50 {
+	width:50%;
+}
+.aipostyle .w25 {
+	width:25%;
+}
+.aipostyle .w33 {
+	width:33.333333%;
 }
