@@ -165,7 +165,7 @@ public abstract class AbstractService {
     if (!getViewerId(token).equals(getUserId(userId, token))) {
       throw new ProtocolException(
         HttpServletResponse.SC_BAD_REQUEST,
-        "Access not denneid.");
+        "Access not dennied.");
     }
   }
 
@@ -183,7 +183,7 @@ public abstract class AbstractService {
     }
     throw new ProtocolException(
       HttpServletResponse.SC_BAD_REQUEST,
-      "Access not denneid.");
+      "Access not dennied.");
   }
 
   protected void checkInputRange(String input, int min, int max) {

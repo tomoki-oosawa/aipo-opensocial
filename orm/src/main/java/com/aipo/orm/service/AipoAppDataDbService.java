@@ -83,9 +83,9 @@ public class AipoAppDataDbService implements AppDataDbService {
         String value = next.getValue();
         AppData appData =
           Database.query(AppData.class).where(
-            Operations.eq(AppData.NAME_PROPERTY, key).eq(
-              AppData.APP_ID_PROPERTY,
-              appId)).fetchSingle();
+            Operations.eq(AppData.NAME_PROPERTY, key)).where(
+            Operations.eq(AppData.APP_ID_PROPERTY, appId)).where(
+            Operations.eq(AppData.LOGIN_NAME_PROPERTY, username)).fetchSingle();
         if (appData == null) {
           appData = Database.create(AppData.class);
           appData.setName(key);
@@ -114,9 +114,9 @@ public class AipoAppDataDbService implements AppDataDbService {
       }
       List<AppData> fetchList =
         Database.query(AppData.class).where(
-          Operations.eq(AppData.APP_ID_PROPERTY, appId).in(
-            AppData.NAME_PROPERTY,
-            fields).eq(AppData.LOGIN_NAME_PROPERTY, username)).fetchList();
+          Operations.eq(AppData.APP_ID_PROPERTY, appId)).where(
+          Operations.in(AppData.NAME_PROPERTY, fields.toArray())).where(
+          Operations.eq(AppData.LOGIN_NAME_PROPERTY, username)).fetchList();
       if (fetchList.size() == 0) {
         Database.rollback();
         return;

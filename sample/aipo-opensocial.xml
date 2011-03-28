@@ -177,9 +177,13 @@
 
             var currentGroupId = '@all';
             var currentStartIndex = 0;
+            var viewerId;
+            var dispayName;
             function fetchPeople(groupId, startIndex) {
                 var callback = function(response) {
                     var people = response.people.list;
+                    viewerId = response.viewer.id;
+                    dispayName = response.viewer.dispayName;
                     var html = new Array();
                     if (people.length == 0) {
                         html.push('<div>ユーザーが見つかりませんでした。</div>');
@@ -227,7 +231,8 @@
                     gadgets.window.adjustHeight();
                 };
                 var batch = osapi.newBatch()
-                        .add('people', osapi.people.get({ userId: '@owner', groupId: groupId, startIndex: startIndex, count: 5 }));
+                        .add('people', osapi.people.get({ userId: '@owner', groupId: groupId, startIndex: startIndex, count: 5 }))
+                        .add('viewer', osapi.people.getViewer());
                 batch.execute(callback);
                 currentGroupId = groupId;
             }
@@ -242,16 +247,28 @@
                             var value = data[key];
                             html.push('<li>');
                             html.push(key + "=" + value);
+                            if (viewerId == id) {
+                                html.push('<a href="javascript:void(0);" onclick="deleteAppData(\'' + key + '\')">[削除]</a>');
+                            }
                             html.push('</li>');
                         }
                         html.push('</ul>');
                         document.getElementById('appdata-' + id).innerHTML = html.join('');
-                       gadgets.window.adjustHeight();
+                        gadgets.window.adjustHeight();
                     }
                 };
                 osapi.appdata.get({ userId: userIds ,fields: ['key1', 'key2','key3'] }).execute(callback);
             }
 
+            function deleteAppData(key) {
+                var callback = function(response) {
+                    msg.createTimerMessage("永続化データを削除しました。", 5);
+                    gadgets.window.adjustHeight();
+                    fetchPeople(currentGroupId, currentStartIndex);
+                };
+                osapi.appdata.
+                delete({ userId: '@viewer' ,fields: [key] }).execute(callback);
+            }
             function initTabs() {
                 var callback = function(tabId) {
                     gadgets.window.adjustHeight();
