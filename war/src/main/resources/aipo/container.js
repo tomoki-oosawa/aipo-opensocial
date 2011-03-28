@@ -148,6 +148,9 @@
     },
     "canvas" : {
       "isOnlyVisible" : true
+    },
+    "popup" : {
+        "isOnlyVisible" : true
     }
   },
   "tabs": {
