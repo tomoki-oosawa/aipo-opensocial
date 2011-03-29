@@ -78,6 +78,8 @@ public class AipoActivityDbService implements ActivityDbService {
           activityMap.setIsRead(0);
         }
       } else {
+        // recipients が指定されなかった場合は、priority は　0 とする。
+        activity.setPriority(0f);
         ActivityMap activityMap = Database.create(ActivityMap.class);
         activityMap.setLoginName("-1");
         activityMap.setActivity(activity);

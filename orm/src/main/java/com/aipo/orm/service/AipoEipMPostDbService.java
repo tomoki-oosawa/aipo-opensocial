@@ -28,6 +28,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class AipoEipMPostDbService implements EipMPostDbService {
 
+  public static int MAX_LIMIT = 1000;
+
   public List<EipMPost> findAll() {
     return Database
       .query(EipMPost.class)
@@ -36,6 +38,9 @@ public class AipoEipMPostDbService implements EipMPostDbService {
   }
 
   public List<EipMPost> findAll(int limit, int offset) {
+    if (limit > MAX_LIMIT) {
+      limit = MAX_LIMIT;
+    }
     return Database
       .query(EipMPost.class)
       .limit(limit)

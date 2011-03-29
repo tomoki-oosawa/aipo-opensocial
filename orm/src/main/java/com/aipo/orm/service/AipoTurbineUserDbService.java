@@ -33,6 +33,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class AipoTurbineUserDbService implements TurbineUserDbService {
 
+  public static int MAX_LIMIT = 1000;
+
   public SQLTemplate<TurbineUser> queryByGroupname(String groupname, int limit,
       int offset, boolean isCount) {
     if (groupname == null) {
@@ -99,6 +101,9 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
 
   public List<TurbineUser> findByGroupname(String groupname, int limit,
       int offset) {
+    if (limit > MAX_LIMIT) {
+      limit = MAX_LIMIT;
+    }
     SQLTemplate<TurbineUser> selectBySql =
       queryByGroupname(groupname, limit, offset, false);
     if (selectBySql == null) {
@@ -183,6 +188,9 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
   }
 
   public List<TurbineUser> findAll(int limit, int offset) {
+    if (limit > MAX_LIMIT) {
+      limit = MAX_LIMIT;
+    }
     return queryAll(
       " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ",
       limit,
