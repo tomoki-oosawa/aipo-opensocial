@@ -118,6 +118,10 @@ public class AipoHashLockedDomainService implements LockedDomainService {
   }
 
   private boolean hostRequiresLockedDomain(String host) {
+    String suffix = getLockedDomainSuffix();
+    if (suffix == null || suffix.isEmpty()) {
+      return false;
+    }
     if (host.endsWith(getLockedDomainSuffix())) {
       return true;
     }
