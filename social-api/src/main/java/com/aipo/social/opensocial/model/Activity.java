@@ -26,6 +26,9 @@ import org.apache.shindig.protocol.model.Exportablebean;
 import com.aipo.social.core.model.ActivityImpl;
 import com.google.inject.ImplementedBy;
 
+/**
+ * @see org.apache.shindig.social.opensocial.model.Activity
+ */
 @ImplementedBy(ActivityImpl.class)
 @Exportablebean
 public interface Activity extends
@@ -69,6 +72,7 @@ public interface Activity extends
     /** the json field for userId. */
     USER_ID("userId"),
 
+    // Ext.
     RECIPIENTS("recipients");
 
     /**

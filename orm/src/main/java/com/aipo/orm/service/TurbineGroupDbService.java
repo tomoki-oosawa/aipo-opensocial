@@ -21,35 +21,12 @@ package com.aipo.orm.service;
 
 import java.util.List;
 
-import com.aipo.orm.Database;
-import com.aipo.orm.model.account.EipMPost;
-import com.google.inject.Singleton;
+import com.aipo.orm.model.security.TurbineGroup;
+import com.aipo.orm.service.request.SearchOptions;
 
-@Singleton
-public class AipoEipMPostDbService implements EipMPostDbService {
+public interface TurbineGroupDbService {
 
-  public static int MAX_LIMIT = 1000;
+  public List<TurbineGroup> find(String username, SearchOptions options);
 
-  public List<EipMPost> findAll() {
-    return Database
-      .query(EipMPost.class)
-      .orderAscending("postName")
-      .fetchList();
-  }
-
-  public List<EipMPost> findAll(int limit, int offset) {
-    if (limit > MAX_LIMIT) {
-      limit = MAX_LIMIT;
-    }
-    return Database
-      .query(EipMPost.class)
-      .limit(limit)
-      .offset(offset)
-      .orderAscending("postName")
-      .fetchList();
-  }
-
-  public int getCountAll() {
-    return Database.query(EipMPost.class).getCount();
-  }
+  public int getCount(String username, SearchOptions options);
 }

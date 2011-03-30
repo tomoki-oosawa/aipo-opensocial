@@ -41,6 +41,9 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.TurbineUserDbService;
+import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.orm.service.request.SearchOptions.FilterOperation;
+import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -73,10 +76,26 @@ public class AipoPersonService extends AbstractService implements PersonService 
       GroupId groupId, CollectionOptions collectionOptions, Set<String> fields,
       SecurityToken token) throws ProtocolException {
 
-    // TODO: SORT
-    // TODO: FILTER
     // TODO: FIELDS
+
     setUp(token);
+
+    // Search
+    SearchOptions options =
+      SearchOptions.build().withRange(
+        collectionOptions.getMax(),
+        collectionOptions.getFirst()).withFilter(
+        collectionOptions.getFilter(),
+        collectionOptions.getFilterOperation() == null
+          ? FilterOperation.equals
+          : FilterOperation.valueOf(collectionOptions
+            .getFilterOperation()
+            .toString()),
+        collectionOptions.getFilterValue()).withSort(
+        collectionOptions.getSortBy(),
+        collectionOptions.getSortOrder() == null
+          ? SortOrder.ascending
+          : SortOrder.valueOf(collectionOptions.getSortOrder().toString()));
 
     List<TurbineUser> list = null;
     int totalResults = 0;
@@ -87,23 +106,19 @@ public class AipoPersonService extends AbstractService implements PersonService 
         // /people/{guid}/@friends
         // {guid} が閲覧できるすべてのユーザーを取得
         // @all = @friends
-        list =
-          turbineUserDbService.findAll(
-            collectionOptions.getMax(),
-            collectionOptions.getFirst());
-        totalResults = turbineUserDbService.getCountAll();
+        list = turbineUserDbService.find(options);
+        totalResults = turbineUserDbService.getCount(options);
         break;
       case groupId:
         // /people/{guid}/{groupId}
         // /people/{guid}/{groupId}
         // {guid} が閲覧できるすべてのユーザーで {groupId} グループに所属しているものを取得
         list =
-          turbineUserDbService.findByGroupname(
-            groupId.getGroupId(),
-            collectionOptions.getMax(),
-            collectionOptions.getFirst());
+          turbineUserDbService.findByGroupname(groupId.getGroupId(), options);
         totalResults =
-          turbineUserDbService.getCountByGroupname(groupId.getGroupId());
+          turbineUserDbService.getCountByGroupname(
+            groupId.getGroupId(),
+            options);
         break;
       case deleted:
         // /people/{guid}/@deleted

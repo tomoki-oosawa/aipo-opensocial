@@ -41,6 +41,7 @@
         </executions>
         <configuration>
           <suffix>.opt</suffix>
+          <encoding>UTF-8</encoding>
           <excludes>
             <exclude>**/*.xml</exclude>
             <exclude>**/*.properties</exclude>
@@ -48,6 +49,7 @@
           </excludes>
           <jswarn>false</jswarn>
           <statistics>false</statistics>
+          <force>true</force>
         </configuration>
       </plugin>
     </plugins>

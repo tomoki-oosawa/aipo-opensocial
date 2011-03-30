@@ -33,11 +33,11 @@ import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.service.AppDataHandler;
-import org.apache.shindig.social.opensocial.service.GroupHandler;
 import org.apache.shindig.social.opensocial.service.PersonHandler;
 
 import com.aipo.social.core.oauth.AipoAuthenticationHandlerProvider;
 import com.aipo.social.opensocial.service.AipoActivityHandler;
+import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -88,7 +88,7 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoActivityHandler.class,
       AppDataHandler.class,
       PersonHandler.class,
-      GroupHandler.class
+      AipoGroupHandler.class
     // MessageHandler.class,
     // AlbumHandler.class,
     // MediaItemHandler.class

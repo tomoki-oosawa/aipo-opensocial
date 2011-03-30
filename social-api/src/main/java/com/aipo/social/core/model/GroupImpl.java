@@ -8,7 +8,7 @@
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This program is distributed i    n the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -19,30 +19,28 @@
 
 package com.aipo.social.core.model;
 
-import java.util.List;
-
-import com.aipo.social.opensocial.model.Activity;
+import com.aipo.social.opensocial.model.Group;
 
 /**
- * @see org.apache.shindig.social.core.model.ActivityImpl
+ * @see org.apache.shindig. social.core.model.GroupImpl
  */
-public class ActivityImpl extends
-    org.apache.shindig.social.core.model.ActivityImpl implements Activity {
+public class GroupImpl extends org.apache.shindig.social.core.model.GroupImpl
+    implements Group {
 
-  private List<String> recipients;
+  private String type;
 
   /**
    * @return
    */
-  public List<String> getRecipients() {
-    return recipients;
+  public String getType() {
+    return type;
   }
 
   /**
-   * @param userIds
+   * @param type
    */
-  public void setRecipients(List<String> userIds) {
-    this.recipients = userIds;
+  public void setType(String type) {
+    this.type = type;
   }
 
 }

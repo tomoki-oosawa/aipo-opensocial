@@ -28,6 +28,9 @@ import org.apache.cayenne.DataRow;
 import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.query.SQLTemplate;
+import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.orm.service.request.SearchOptions.FilterOperation;
+import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -35,50 +38,9 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
 
   public static int MAX_LIMIT = 1000;
 
-  public SQLTemplate<TurbineUser> queryByGroupname(String groupname, int limit,
-      int offset, boolean isCount) {
-    if (groupname == null) {
-      return null;
-    }
-
-    StringBuilder b = new StringBuilder();
-    if (isCount) {
-      b.append(" SELECT COUNT(*) ");
-    } else {
-      b
-        .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ");
-    }
-    b.append(" FROM turbine_user_group_role AS A ");
-    b.append(" LEFT JOIN turbine_user AS B ");
-    b.append(" ON A.USER_ID = B.USER_ID ");
-    b.append(" LEFT JOIN turbine_group AS C ");
-    b.append(" ON A.GROUP_ID = C.GROUP_ID ");
-    b.append(" LEFT JOIN eip_m_user_position AS D ");
-    b.append(" ON A.USER_ID = D.USER_ID ");
-    b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
-    b.append(" AND C.GROUP_NAME = #bind($groupname) ");
-    if (!isCount) {
-      b.append(" ORDER BY D.POSITION ");
-    }
-
-    if (limit > 0) {
-      b.append(" LIMIT ");
-      b.append(limit);
-    }
-
-    if (offset > 0) {
-      b.append(" OFFSET ");
-      b.append(offset);
-    }
-
-    String query = b.toString();
-
-    return Database.sql(TurbineUser.class, query).param("groupname", groupname);
-  }
-
-  public int getCountByGroupname(String groupname) {
+  public int getCountByGroupname(String groupname, SearchOptions options) {
     List<DataRow> dataRows =
-      queryByGroupname(groupname, -1, -1, true).fetchListAsDataRow();
+      queryByGroupname(groupname, options, true).fetchListAsDataRow();
     if (dataRows.size() == 1) {
       DataRow dataRow = dataRows.get(0);
       Object count = dataRow.get("count");
@@ -90,24 +52,12 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     return 0;
   }
 
-  public List<TurbineUser> findByGroupname(String groupname) {
+  public List<TurbineUser> findByGroupname(String groupname,
+      SearchOptions options) {
     SQLTemplate<TurbineUser> selectBySql =
-      queryByGroupname(groupname, -1, -1, false);
+      queryByGroupname(groupname, options, false);
     if (selectBySql == null) {
-      return new ArrayList<TurbineUser>(0);
-    }
-    return selectBySql.fetchList();
-  }
-
-  public List<TurbineUser> findByGroupname(String groupname, int limit,
-      int offset) {
-    if (limit > MAX_LIMIT) {
-      limit = MAX_LIMIT;
-    }
-    SQLTemplate<TurbineUser> selectBySql =
-      queryByGroupname(groupname, limit, offset, false);
-    if (selectBySql == null) {
-      return new ArrayList<TurbineUser>(0);
+      return new ArrayList<TurbineUser>();
     }
     return selectBySql.fetchList();
   }
@@ -150,57 +100,16 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchList();
   }
 
-  public SQLTemplate<TurbineUser> queryAll(String selectColumns, int limit,
-      int offset, boolean isCount) {
-
-    StringBuilder b = new StringBuilder();
-    b.append(" SELECT ");
-    b.append(selectColumns);
-    b.append(" FROM turbine_user AS B ");
-    b.append(" LEFT JOIN eip_m_user_position AS D ");
-    b.append(" ON B.USER_ID = D.USER_ID ");
-    b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
-    if (!isCount) {
-      b.append(" ORDER BY D.POSITION ");
-    }
-
-    if (limit > 0) {
-      b.append(" LIMIT ");
-      b.append(limit);
-    }
-
-    if (offset > 0) {
-      b.append(" OFFSET ");
-      b.append(offset);
-    }
-
-    String query = b.toString();
-
-    return Database.sql(TurbineUser.class, query);
-  }
-
-  public List<TurbineUser> findAll() {
-    return queryAll(
+  public List<TurbineUser> find(SearchOptions options) {
+    return buildQuery(
       " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ",
-      -1,
-      -1,
+      options,
       false).fetchList();
   }
 
-  public List<TurbineUser> findAll(int limit, int offset) {
-    if (limit > MAX_LIMIT) {
-      limit = MAX_LIMIT;
-    }
-    return queryAll(
-      " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ",
-      limit,
-      offset,
-      false).fetchList();
-  }
-
-  public int getCountAll() {
+  public int getCount(SearchOptions options) {
     List<DataRow> dataRows =
-      queryAll(" COUNT(*) ", -1, -1, true).fetchListAsDataRow();
+      buildQuery(" COUNT(*) ", options, true).fetchListAsDataRow();
     if (dataRows.size() == 1) {
       DataRow dataRow = dataRows.get(0);
       Object count = dataRow.get("count");
@@ -210,5 +119,194 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       return ((Long) count).intValue();
     }
     return 0;
+  }
+
+  protected SQLTemplate<TurbineUser> buildQuery(String selectColumns,
+      SearchOptions options, boolean isCount) {
+
+    int limit = options.getLimit();
+    int offset = options.getOffset();
+    if (limit > MAX_LIMIT) {
+      limit = MAX_LIMIT;
+    }
+
+    StringBuilder b = new StringBuilder();
+    b.append(" SELECT ");
+    b.append(selectColumns);
+    b.append(" FROM turbine_user AS B ");
+    b.append(" LEFT JOIN eip_m_user_position AS D ");
+    b.append(" ON B.USER_ID = D.USER_ID ");
+    b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
+
+    // Filter
+    String filter = options.getFilterBy();
+    FilterOperation filterOperation = options.getFilterOperation();
+    String filterValue = options.getFilterValue();
+    boolean isFilter = false;
+    String paramKey = "filter";
+    Object paramValue = null;
+    // 氏名
+    if ("name".equals(filter)) {
+      switch (filterOperation) {
+        case equals:
+          b.append(" AND B.LAST_NAME || B.FIRST_NAME = #bind($filter) ");
+          paramValue = filterValue;
+          isFilter = true;
+          break;
+        case contains:
+          b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          paramValue = "%" + filterValue + "%";
+          isFilter = true;
+          break;
+        case present:
+          // not supported.
+          break;
+        case startsWith:
+          b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          paramValue = filterValue + "%";
+          isFilter = true;
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (!isCount) {
+      // Sort
+      boolean isOrder = false;
+      String sort = options.getSortBy();
+      SortOrder sortOrder = options.getSortOrder();
+      if ("position".equals(sort)) {
+        if (SortOrder.ascending.equals(sortOrder)) {
+          b.append(" ORDER BY D.POSITION ");
+        } else {
+          b.append(" ORDER BY D.POSITION DESC ");
+        }
+        isOrder = true;
+      }
+      if (!isOrder) {
+        b.append(" ORDER BY D.POSITION ");
+      }
+
+      if (limit > 0) {
+        b.append(" LIMIT ");
+        b.append(limit);
+      }
+
+      if (offset > 0) {
+        b.append(" OFFSET ");
+        b.append(offset);
+      }
+    }
+
+    String query = b.toString();
+
+    SQLTemplate<TurbineUser> sqlTemplate =
+      Database.sql(TurbineUser.class, query);
+    if (isFilter) {
+      sqlTemplate.param(paramKey, paramValue);
+    }
+    return sqlTemplate;
+  }
+
+  protected SQLTemplate<TurbineUser> queryByGroupname(String groupname,
+      SearchOptions options, boolean isCount) {
+    if (groupname == null) {
+      return null;
+    }
+
+    int limit = options.getLimit();
+    int offset = options.getOffset();
+    if (limit > MAX_LIMIT) {
+      limit = MAX_LIMIT;
+    }
+
+    StringBuilder b = new StringBuilder();
+    if (isCount) {
+      b.append(" SELECT COUNT(*) ");
+    } else {
+      b
+        .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ");
+    }
+    b.append(" FROM turbine_user_group_role AS A ");
+    b.append(" LEFT JOIN turbine_user AS B ");
+    b.append(" ON A.USER_ID = B.USER_ID ");
+    b.append(" LEFT JOIN turbine_group AS C ");
+    b.append(" ON A.GROUP_ID = C.GROUP_ID ");
+    b.append(" LEFT JOIN eip_m_user_position AS D ");
+    b.append(" ON A.USER_ID = D.USER_ID ");
+    b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
+    b.append(" AND C.GROUP_NAME = #bind($groupname) ");
+
+    // Filter
+    String filter = options.getFilterBy();
+    FilterOperation filterOperation = options.getFilterOperation();
+    String filterValue = options.getFilterValue();
+    boolean isFilter = false;
+    String paramKey = "filter";
+    Object paramValue = null;
+    // 氏名
+    if ("name".equals(filter)) {
+      switch (filterOperation) {
+        case equals:
+          b.append(" AND B.LAST_NAME || B.FIRST_NAME = #bind($filter) ");
+          paramValue = filterValue;
+          isFilter = true;
+          break;
+        case contains:
+          b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          paramValue = "%" + filterValue + "%";
+          isFilter = true;
+          break;
+        case present:
+          // not supported.
+          break;
+        case startsWith:
+          b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          paramValue = filterValue + "%";
+          isFilter = true;
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (!isCount) {
+      // Sort
+      boolean isOrder = false;
+      String sort = options.getSortBy();
+      SortOrder sortOrder = options.getSortOrder();
+      if ("position".equals(sort)) {
+        if (SortOrder.ascending.equals(sortOrder)) {
+          b.append(" ORDER BY D.POSITION ");
+        } else {
+          b.append(" ORDER BY D.POSITION DESC ");
+        }
+        isOrder = true;
+      }
+      if (!isOrder) {
+        b.append(" ORDER BY D.POSITION ");
+      }
+
+      if (limit > 0) {
+        b.append(" LIMIT ");
+        b.append(limit);
+      }
+
+      if (offset > 0) {
+        b.append(" OFFSET ");
+        b.append(offset);
+      }
+    }
+
+    String query = b.toString();
+
+    SQLTemplate<TurbineUser> sqlTemplate =
+      Database.sql(TurbineUser.class, query).param("groupname", groupname);
+    if (isFilter) {
+      sqlTemplate.param(paramKey, paramValue);
+    }
+
+    return sqlTemplate;
   }
 }

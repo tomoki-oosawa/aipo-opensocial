@@ -17,32 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.aipo.social.core.model;
+package com.aipo.social.opensocial.spi;
 
-import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Future;
 
-import com.aipo.social.opensocial.model.Activity;
+import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.social.opensocial.spi.CollectionOptions;
+import org.apache.shindig.social.opensocial.spi.UserId;
 
-/**
- * @see org.apache.shindig.social.core.model.ActivityImpl
- */
-public class ActivityImpl extends
-    org.apache.shindig.social.core.model.ActivityImpl implements Activity {
+import com.aipo.social.opensocial.model.Group;
 
-  private List<String> recipients;
+public interface GroupService {
 
-  /**
-   * @return
-   */
-  public List<String> getRecipients() {
-    return recipients;
-  }
-
-  /**
-   * @param userIds
-   */
-  public void setRecipients(List<String> userIds) {
-    this.recipients = userIds;
-  }
+  public Future<RestfulCollection<Group>> getGroups(UserId userId,
+      CollectionOptions options, Set<String> fields, SecurityToken token);
 
 }

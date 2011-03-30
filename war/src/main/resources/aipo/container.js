@@ -253,8 +253,8 @@
     "enableCaja" : false,
     "supportedFields" : {
        "person" : ["id", {"name" : ["familyName", "givenName"]}, "displayName"],
-       "group" : ["id", "title"],
-       "activity" : ["appId", "body", "externalId", "id", "postedTime", "priority", "title", "userId", "recipients"];
+       "group" : ["id", "title", "type"],
+       "activity" : ["appId", "externalId", "id", "priority", "title", "recipients"];
     }
   },
   "osapi.services" : {

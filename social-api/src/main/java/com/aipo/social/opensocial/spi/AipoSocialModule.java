@@ -21,7 +21,6 @@ package com.aipo.social.opensocial.spi;
 
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
-import org.apache.shindig.social.opensocial.spi.GroupService;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 
 import com.aipo.social.opensocial.oauth.AipoOAuthDataStore;

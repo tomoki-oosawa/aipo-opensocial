@@ -27,16 +27,18 @@ import java.util.concurrent.Future;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.RestfulCollection;
-import org.apache.shindig.social.core.model.GroupImpl;
-import org.apache.shindig.social.opensocial.model.Group;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.GroupId.Type;
-import org.apache.shindig.social.opensocial.spi.GroupService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
-import com.aipo.orm.model.account.EipMPost;
-import com.aipo.orm.service.EipMPostDbService;
+import com.aipo.orm.model.security.TurbineGroup;
+import com.aipo.orm.service.TurbineGroupDbService;
+import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.orm.service.request.SearchOptions.FilterOperation;
+import com.aipo.orm.service.request.SearchOptions.SortOrder;
+import com.aipo.social.core.model.GroupImpl;
+import com.aipo.social.opensocial.model.Group;
 import com.google.inject.Inject;
 
 /**
@@ -44,14 +46,14 @@ import com.google.inject.Inject;
  */
 public class AipoGroupService extends AbstractService implements GroupService {
 
-  private final EipMPostDbService eipMPostDbService;
+  private final TurbineGroupDbService turbineGroupDbService;
 
   /**
    * 
    */
   @Inject
-  public AipoGroupService(EipMPostDbService eipMPostDbService) {
-    this.eipMPostDbService = eipMPostDbService;
+  public AipoGroupService(TurbineGroupDbService eipMPostDbService) {
+    this.turbineGroupDbService = eipMPostDbService;
   }
 
   /**
@@ -65,20 +67,37 @@ public class AipoGroupService extends AbstractService implements GroupService {
       CollectionOptions collectionOptions, Set<String> fields,
       SecurityToken token) {
 
-    // TODO: SORT
-    // TODO: FILTER
     // TODO: FIELDS
 
     setUp(token);
+    // 自分（Viewer）の Group のみ取得可能
+    checkSameViewer(userId, token);
 
-    List<EipMPost> list =
-      eipMPostDbService.findAll(collectionOptions.getMax(), collectionOptions
-        .getFirst());
+    String username = getUserId(userId, token);
+
+    // Search
+    SearchOptions options =
+      SearchOptions.build().withRange(
+        collectionOptions.getMax(),
+        collectionOptions.getFirst()).withFilter(
+        collectionOptions.getFilter(),
+        collectionOptions.getFilterOperation() == null
+          ? FilterOperation.equals
+          : FilterOperation.valueOf(collectionOptions
+            .getFilterOperation()
+            .toString()),
+        collectionOptions.getFilterValue()).withSort(
+        collectionOptions.getSortBy(),
+        collectionOptions.getSortOrder() == null
+          ? SortOrder.ascending
+          : SortOrder.valueOf(collectionOptions.getSortOrder().toString()));
+    List<TurbineGroup> list = turbineGroupDbService.find(username, options);
+
     List<Group> result = new ArrayList<Group>();
-    for (EipMPost post : list) {
+    for (TurbineGroup post : list) {
       result.add(assginGroup(post, fields, token));
     }
-    int totalResults = eipMPostDbService.getCountAll();
+    int totalResults = turbineGroupDbService.getCount(username, options);
 
     RestfulCollection<Group> restCollection =
       new RestfulCollection<Group>(
@@ -89,12 +108,15 @@ public class AipoGroupService extends AbstractService implements GroupService {
     return ImmediateFuture.newInstance(restCollection);
   }
 
-  protected Group assginGroup(EipMPost post, Set<String> fields,
+  protected Group assginGroup(TurbineGroup turbineGroup, Set<String> fields,
       SecurityToken token) {
     Group group = new GroupImpl();
-    GroupId groupId = new GroupId(Type.groupId, post.getGroupName());
+    GroupId groupId = new GroupId(Type.groupId, turbineGroup.getGroupName());
     group.setId(groupId);
-    group.setTitle(post.getPostName());
+    group.setTitle(turbineGroup.getGroupAliasName());
+    group.setType(turbineGroup.getOwnerId().intValue() == 1
+      ? "unit"
+      : "mygroup");
     return group;
   }
 }

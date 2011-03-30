@@ -23,30 +23,20 @@ import java.util.List;
 import java.util.Set;
 
 import com.aipo.orm.model.security.TurbineUser;
-import com.aipo.orm.query.SQLTemplate;
+import com.aipo.orm.service.request.SearchOptions;
 
 public interface TurbineUserDbService {
 
-  public SQLTemplate<TurbineUser> queryByGroupname(String groupname, int limit,
-      int offset, boolean isCount);
+  public int getCountByGroupname(String groupname, SearchOptions options);
 
-  public int getCountByGroupname(String groupname);
-
-  public List<TurbineUser> findByGroupname(String groupname);
-
-  public List<TurbineUser> findByGroupname(String groupname, int limit,
-      int offset);
+  public List<TurbineUser> findByGroupname(String groupname,
+      SearchOptions options);
 
   public TurbineUser findByUsername(String username);
 
   public List<TurbineUser> findByUsername(Set<String> username);
 
-  public SQLTemplate<TurbineUser> queryAll(String selectColumns, int limit,
-      int offset, boolean isCount);
+  public List<TurbineUser> find(SearchOptions options);
 
-  public List<TurbineUser> findAll();
-
-  public List<TurbineUser> findAll(int limit, int offset);
-
-  public int getCountAll();
+  public int getCount(SearchOptions options);
 }

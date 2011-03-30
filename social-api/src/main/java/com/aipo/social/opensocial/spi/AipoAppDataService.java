@@ -41,6 +41,7 @@ import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.model.social.AppData;
 import com.aipo.orm.service.AppDataDbService;
 import com.aipo.orm.service.TurbineUserDbService;
+import com.aipo.orm.service.request.SearchOptions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -162,11 +163,14 @@ public class AipoAppDataService extends AbstractService implements
       case friends:
         // {guid} が閲覧できるすべてのユーザーを取得
         // @all = @friends
-        list = turbineUserDbService.findAll();
+        list = turbineUserDbService.find(SearchOptions.build());
         break;
       case groupId:
         // {guid} が閲覧できるすべてのユーザーで {groupId} グループに所属しているものを取得
-        list = turbineUserDbService.findByGroupname(groupId.getGroupId());
+        list =
+          turbineUserDbService.findByGroupname(
+            groupId.getGroupId(),
+            SearchOptions.build());
         break;
       case deleted:
         // {guid} が閲覧できる無効なユーザーを取得
