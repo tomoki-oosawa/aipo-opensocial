@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
     <ModulePrefs
-            title="Aipo OpenSocial Sample"
-            description="アイポ OpenSocial アプリケーションのサンプルガジェットです。">
-        <Require feature="osapi"/>
-        <Require feature="dynamic-height"/>
-        <Require feature="minimessage"/>
-        <Require feature="tabs"/>
-        <Require feature="views"/>
-        <Require feature="aipostyle"/>
+            title="Aipoアプリサンプル"
+            description="Aipoアプリのサンプルガジェットです。">
+        <Require feature="views" />
+        <Require feature="dynamic-height" />
+        <Require feature="minimessage" />
+        <Require feature="tabs" />
+        <Require feature="aipostyle" />
+        <Require feature="osapi" />
     </ModulePrefs>
-    <UserPref name="p1-homeRows" display_name="表示件数（通常時）" default_value="5" datatype="enum">
-        <EnumValue value="5"/>
-        <EnumValue value="10"/>
-        <EnumValue value="50"/>
+    <UserPref name="p1-homeRows" display_name="表示件数（通常時）" datatype="enum" default_value="5">
+        <EnumValue value="5" />
+        <EnumValue value="10" />
+        <EnumValue value="50" />
     </UserPref>
-    <UserPref name="p2-canvasRows" display_name="表示件数（最大化時）" default_value="10" datatype="enum">
-        <EnumValue value="5"/>
-        <EnumValue value="10"/>
-        <EnumValue value="50"/>
+    <UserPref name="p2-canvasRows" display_name="表示件数（最大化時）" datatype="enum" default_value="10">
+        <EnumValue value="5" />
+        <EnumValue value="10" />
+        <EnumValue value="50" />
     </UserPref>
-    <Content type="html"><![CDATA[
-        <div class="aipostyle">
+    <Content type="html"><![CDATA[<div class="aipostyle">
             <div id="tab1Container">
                 <div id="ospaiContent">
                     <form name="form" action="">
@@ -34,6 +33,25 @@
                                     <option value="@all">読み込み中
                                     </option>
                                 </select></td>
+                            </tr>
+                            <tr>
+                                <th>フィルタ
+                                </th>
+                                <td><input type="text" class="text w25" name="keyword" onkeyup="autoSearch()"/>&nbsp;
+                                    <select name="filterOp" onchange="fetchPeople(currentGroupId, currentStartIndex)">
+                                        <option value="contains">含む</option>
+                                        <option value="equals">完全一致
+                                        </option>
+                                        <option value="startsWith">前方一致</option>
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <th>ソート
+                                </th>
+                                <td><select name="sortOrder" onchange="fetchPeople(currentGroupId, currentStartIndex)">
+                                        <option value="ascending">昇順</option>
+                                        <option value="descending">降順</option>
+                                    </select></td>
                             </tr>
                         </table>
                         <div id="peopleResult" style="padding-bottom:10px"></div>
@@ -152,8 +170,10 @@
 
                     <table class="list wide">
                         <tr>
-                            <th class="thin">&nbsp</th>
-                            <th>項目1</th>
+                            <th class="thin">&nbsp
+                            </th>
+                            <th>項目1
+                            </th>
                             <th>項目2</th>
                             <th class="thin">項目3
                             </th>
@@ -196,22 +216,48 @@
         var viewerId;
         var dispayName;
         var rows = 5;
-        
+
+        var timer;
+        var doSearch = false;
+        function autoSearch() {
+            doSearch = true;
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                doSearch = false;
+                fetchPeople(currentGroupId, currentStartIndex);
+            }, 500);
+        }
+
         function fetchGroups(startIndex) {
             var callback = function(response) {
-                var groups = response.groups.list;
+                var mygroups = response.mygroup.list;
+                var units = response.unit.list;
                 var html = new Array();
                 html.push('<option value="@all">（全体）</option>');
-                for (var i = 0; i < groups.length; i++) {
-                    var group = groups[i];
+                for (var i = 0; i < mygroups.length; i++) {
+                    var group = mygroups[i];
                     html.push('<option value="' + group.id.groupId + '">');
                     html.push(group.title);
                     html.push('</option>');
+                    gadgets.log("mygroup:" + i);
+                    gadgets.log(group);
+                }
+                if (mygroups.length > 0) {
+                    html.push('<option value="@all">----------</option>');
+                }
+                for (var i = 0; i < units.length; i++) {
+                    var group = units[i];
+                    html.push('<option value="' + group.id.groupId + '">');
+                    html.push(group.title);
+                    html.push('</option>');
+                    gadgets.log("unit:" + i);
+                    gadgets.log(group);
                 }
                 document.getElementById('groupSelect').innerHTML = html.join('');
             };
             var batch = osapi.newBatch()
-                    .add('groups', osapi.groups.get({ userId: '@owner', startIndex: startIndex, count: 10 }));
+                    .add('unit', osapi.groups.get({ userId: '@viewer', startIndex: startIndex, count: 50, filterBy: 'type', filterValue: 'unit' }))
+                    .add('mygroup', osapi.groups.get({ userId: '@viewer', startIndex: startIndex, count: 50, filterBy: 'type', filterValue: 'mygroup' }));
             batch.execute(callback);
         }
 
@@ -234,6 +280,8 @@
                     html.push('<td nowrap="nowrap" class="thin">' + person.id + "</td>");
                     html.push('<td>' + person.displayName + "</td>");
                     html.push('<td><div id="appdata-' + person.id + '"></div></td></tr>');
+                    gadgets.log("person:" + i);
+                    gadgets.log(person);
                 }
                 if (people.length > 0) {
                     html.push('</table>');
@@ -266,8 +314,17 @@
                 }
                 gadgets.window.adjustHeight();
             };
+            var filterValue = document.form.keyword.value;
+            var filterOp = document.form.filterOp.value;
+            var sortOrder = document.form.sortOrder.value;
+            var params = { userId: '@viewer', groupId: groupId, startIndex: startIndex, count: rows, sortOrder: sortOrder, sortBy: 'position' };
+            if (filterValue) {
+                params['filterBy'] = 'name';
+                params['filterOp'] = filterOp;
+                params['filterValue'] = filterValue;
+            }
             var batch = osapi.newBatch()
-                    .add('people', osapi.people.get({ userId: '@owner', groupId: groupId, startIndex: startIndex, count: rows }))
+                    .add('people', osapi.people.get(params))
                     .add('viewer', osapi.people.getViewer());
             batch.execute(callback);
             currentGroupId = groupId;
@@ -410,6 +467,5 @@
 
         gadgets.util.registerOnLoadHandler(init);
 
-        </script>
-        ]]></Content>
+        </script>]]></Content>
 </Module>
