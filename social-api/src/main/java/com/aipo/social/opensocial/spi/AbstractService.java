@@ -19,6 +19,8 @@
 
 package com.aipo.social.opensocial.spi;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.cayenne.access.DataContext;
@@ -194,5 +196,30 @@ public abstract class AbstractService {
         HttpServletResponse.SC_BAD_REQUEST,
         "Validate error.");
     }
+  }
+
+  protected void checkInputByte(String input, int min, int max) {
+    if (input == null
+      || (input != null && byteLength(input) < min)
+      || (input != null && byteLength(input) > max)) {
+      throw new ProtocolException(
+        HttpServletResponse.SC_BAD_REQUEST,
+        "Validate error.");
+    }
+  }
+
+  private int byteLength(String value) {
+    int len = 0;
+    if (value == null) {
+      return len;
+    }
+
+    try {
+      len = (value.getBytes("utf-8")).length;
+    } catch (UnsupportedEncodingException ex) {
+      len = 0;
+    }
+
+    return len;
   }
 }

@@ -151,8 +151,8 @@ public class AipoActivityService extends AbstractService implements
     checkSameAppId(appId, token);
     // 自分（Viewer）の Activity のみ更新可能
     checkSameViewer(userId, token);
-    // タイトル 1 ～ 40 文字以内
-    checkInputRange(activity.getTitle(), 1, 40);
+    // タイトル 64 byte 以内
+    checkInputByte(activity.getTitle(), 1, 64);
 
     String username = getUserId(userId, token);
     Map<String, Object> values = Maps.newHashMap();

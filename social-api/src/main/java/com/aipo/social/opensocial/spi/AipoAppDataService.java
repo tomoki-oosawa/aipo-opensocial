@@ -95,10 +95,10 @@ public class AipoAppDataService extends AbstractService implements
       Entry<String, String> next = iterator.next();
       String key = next.getKey();
       String value = next.getValue();
-      // キー ： 1 ～ 40 文字以内
-      checkInputRange(key, 1, 40);
-      // 値： 10000 文字以内
-      checkInputRange(value, 0, 10000);
+      // キー ： 32 byte 以内
+      checkInputByte(key, 1, 32);
+      // 値： 1024 byte 以内
+      checkInputByte(value, 0, 1024);
     }
 
     String username = getUserId(userId, token);
