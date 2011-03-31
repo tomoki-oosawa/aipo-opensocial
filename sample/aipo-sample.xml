@@ -237,7 +237,7 @@
                 for (var i = 0; i < mygroups.length; i++) {
                     var group = mygroups[i];
                     html.push('<option value="' + group.id.groupId + '">');
-                    html.push(group.title);
+                    html.push(gadgets.util.escapeString(group.title));
                     html.push('</option>');
                     gadgets.log("mygroup:" + i);
                     gadgets.log(group);
@@ -248,7 +248,7 @@
                 for (var i = 0; i < units.length; i++) {
                     var group = units[i];
                     html.push('<option value="' + group.id.groupId + '">');
-                    html.push(group.title);
+                    html.push(gadgets.util.escapeString(group.title));
                     html.push('</option>');
                     gadgets.log("unit:" + i);
                     gadgets.log(group);
@@ -278,7 +278,7 @@
                     userIds.push(person.id);
                     html.push('<tr><td nowrap="nowrap" class="thin center"><input type="checkbox" name="check" value="' + person.id + '"/></td>');
                     html.push('<td nowrap="nowrap" class="thin">' + person.id + "</td>");
-                    html.push('<td>' + person.displayName + "</td>");
+                    html.push('<td>' + gadgets.util.escapeString(person.displayName) + "</td>");
                     html.push('<td><div id="appdata-' + person.id + '"></div></td></tr>');
                     gadgets.log("person:" + i);
                     gadgets.log(person);
@@ -339,7 +339,7 @@
                     for (var key in data) {
                         var value = data[key];
                         html.push('<li>');
-                        html.push(key + "=" + value);
+                        html.push(gadgets.util.escapeString(key) + "=" + gadgets.util.escapeString(value));
                         if (viewerId == id) {
                             html.push('<a href="javascript:void(0);" onclick="deleteAppData(\'' + key + '\')">[削除]</a>');
                         }

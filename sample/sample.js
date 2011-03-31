@@ -81,6 +81,10 @@ osapi.groups.get({ userId: '@viewer' }).execute(function(response) {
         // 例）営業部
         var title = groups[i].title;
 
+        // グループ種別（部署、マイグループ）
+        // 例）unit
+        var type = groups[i].type
+
         // ...
     }
 
@@ -111,6 +115,10 @@ osapi.groups.get({ userId: '@viewer', startIndex: 10, count: 50 }).execute(funct
         // グループ名（部署名）
         // 例）営業部
         var title = groups[i].title;
+
+        // グループ種別（部署、マイグループ）
+        // 例）unit
+        var type = groups[i].type
 
         // ...
     }
@@ -179,3 +187,19 @@ osapi.activities.create({
 
 // アクティビティ送信時に受け渡された externalId パラメータ
 var externalId = gadgets.views.getParams()['externalId'];
+
+osapi.people.get({ userId: '@viewer', groupId: '@all', filterBy: 'name', filterOp: 'contains', filterValue: '太郎' }).execute(function(response) {
+    // ...
+});
+
+osapi.people.get({ userId: '@viewer', groupId: '@all', sortBy: 'position', sortOrder: 'descending' }).execute(function(response) {
+    // ...
+});
+
+osapi.groups.get({ userId: '@viewer', filterBy: 'type', filterOp: 'equals', filterValue: 'mygroup' }).execute(function(response) {
+    // ...
+});
+
+osapi.groups.get({ userId: '@viewer', sortBy: 'title', sortOrder: 'descending' }).execute(function(response) {
+    // ...
+});

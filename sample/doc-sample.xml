@@ -2,15 +2,16 @@
 <Module>
     <ModulePrefs
             title="開発ドキュメント用サンプル"
-            description="Aipoアプリの開発ドキュメント用のサンプルガジェットです。">
-        <Require feature="views" />
-        <Require feature="dynamic-height" />
-        <Require feature="minimessage" />
-        <Require feature="tabs" />
-        <Require feature="aipostyle" />
-        <Require feature="osapi" />
+            description="Aipoアプリの開発ドキュメント用のサンプルがジェットです。">
+        <Require feature="views"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="minimessage"/>
+        <Require feature="tabs"/>
+        <Require feature="aipostyle"/>
+        <Require feature="osapi"/>
     </ModulePrefs>
-    <Content type="html" view="popup"><![CDATA[<script type="text/javascript">
+    <Content type="html" view="popup"><![CDATA[
+        <script type="text/javascript">
 
             gadgets.util.registerOnLoadHandler(init);
 
@@ -19,8 +20,10 @@
                 var externalId = gadgets.views.getParams()['externalId'];
             }
 
-        </script>]]></Content>
-    <Content type="html"><![CDATA[<script type="text/javascript">
+        </script>
+        ]]></Content>
+    <Content type="html"><![CDATA[
+        <script type="text/javascript">
 
         gadgets.util.registerOnLoadHandler(init);
 
@@ -105,6 +108,20 @@
             });
         }
 
+        function fetchFilterUsers() {
+
+            osapi.people.get({ userId: '@viewer', groupId: '@all', filterBy: 'name', filterOp: 'contains', filterValue: '太郎' }).execute(function(response) {
+                // ...
+            });
+        }
+
+        function fetchSortUsers() {
+
+            osapi.people.get({ userId: '@viewer', groupId: '@all', sortBy: 'position', sortOrder: 'descending' }).execute(function(response) {
+                // ...
+            });
+        }
+
         function fetchGroups() {
 
             osapi.groups.get({ userId: '@viewer' }).execute(function(response) {
@@ -119,6 +136,10 @@
                     // グループ名（部署名）
                     // 例）営業部
                     var title = groups[i].title;
+
+                    // グループ種別（部署、マイグループ）
+                    // 例）unit
+                    var type = groups[i].type
 
                     // ...
                 }
@@ -194,6 +215,20 @@
 
         }
 
+        function fetchFilterGroups() {
+
+            osapi.groups.get({ userId: '@viewer', filterBy: 'type', filterOp: 'equals', filterValue: 'mygroup' }).execute(function(response) {
+                // ...
+            });
+        }
+
+        function fetchSortGroups() {
+
+            osapi.groups.get({ userId: '@viewer', sortBy: 'title', sortOrder: 'descending' }).execute(function(response) {
+                // ...
+            });
+        }
+
         function createActivityPriorityLow() {
 
             osapi.activities.create({
@@ -239,9 +274,13 @@
             fetchViewer();
             fetchUsers();
             fetchLimitUsers();
+            fetchFilterUsers();
+            fetchSortUsers();
             fetchGroups();
             fetchLimitGroups();
             fetchUsersFromGroup();
+            fetchFilterGroups();
+            fetchSortGroups();
             createActivityPriorityLow();
             createActivityPriorityLowRecipients();
             createActivityPriorityHighRecipients();
@@ -249,5 +288,6 @@
             gadgets.window.adjustHeight();
         }
 
-        </script>]]></Content>
+        </script>
+        ]]></Content>
 </Module>
