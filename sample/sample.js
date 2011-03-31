@@ -203,3 +203,24 @@ osapi.groups.get({ userId: '@viewer', filterBy: 'type', filterOp: 'equals', filt
 osapi.groups.get({ userId: '@viewer', sortBy: 'title', sortOrder: 'descending' }).execute(function(response) {
     // ...
 });
+
+osapi.appdata.update({ userId: '@viewer', data: { key1: "値1", key2: "値2" }  }).execute(function(response) {
+    // ...
+});
+
+osapi.appdata.get({ userId: ['org001:sample1', 'org001:sample2', 'org001:sample3'] ,fields: ['key1', 'key2','key3'] }).execute(function(response) {
+    // ユーザーID、アプリデータの連想配列
+    for (var userId in response) {
+        var data = response[userId];
+        // キー, 値の連想配列
+        for (var key in data) {
+            // 値
+            // 例）値1
+            var value = data[key];
+        }
+    }
+});
+
+osapi.appdata.delete({ userId: '@viewer' ,fields: ['key1', 'key2'] }).execute(function(response) {
+    // ...
+});
