@@ -35,7 +35,6 @@ import org.apache.shindig.gadgets.config.ShindigAuthConfigContributor;
 import org.apache.shindig.gadgets.config.XhrwrapperConfigContributor;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.InvalidationHandler;
-import org.apache.shindig.gadgets.parse.ParseModule;
 import org.apache.shindig.gadgets.preload.PreloadModule;
 import org.apache.shindig.gadgets.render.RenderModule;
 import org.apache.shindig.gadgets.servlet.GadgetsHandler;
@@ -44,6 +43,7 @@ import org.apache.shindig.gadgets.servlet.JsonRpcHandler;
 import org.apache.shindig.gadgets.templates.TemplateModule;
 import org.apache.shindig.gadgets.variables.SubstituterModule;
 
+import com.aipo.container.gadgets.parse.AipoParseModule;
 import com.aipo.container.gadgets.rewrite.AipoRewriteModule;
 import com.aipo.container.gadgets.servlet.AipoJsonRpcHandler;
 import com.aipo.container.gadgets.uri.AipoUriModule;
@@ -83,7 +83,7 @@ public class AipoGadgetsGuiceModule extends AbstractModule {
       }
     });
 
-    install(new ParseModule());
+    install(new AipoParseModule());
     install(new PreloadModule());
     install(new RenderModule());
     install(new AipoRewriteModule());

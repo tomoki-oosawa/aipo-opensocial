@@ -106,22 +106,17 @@ public class AipoRenderingGadgetRewriter extends RenderingGadgetRewriter {
       Node firstHeadChild = head.getFirstChild();
 
       // Only inject default styles if no doctype was specified.
-      if (document.getDoctype() == null) {
-        boolean isAipoStyle =
-          gadget.getAllFeatures().contains("aipostyle")
-            && gadget
-              .getSpec()
-              .getModulePrefs()
-              .getFeatures()
-              .keySet()
-              .contains("aipostyle");
-        Element defaultStyle = document.createElement("style");
-        defaultStyle.setAttribute("type", "text/css");
-        head.insertBefore(defaultStyle, firstHeadChild);
-        defaultStyle.appendChild(defaultStyle
-          .getOwnerDocument()
-          .createTextNode(isAipoStyle ? aipoStyleCss : DEFAULT_CSS));
-      }
+      // if (document.getDoctype() == null) {
+      boolean isAipoStyle =
+        gadget.getAllFeatures().contains("aipostyle")
+          && gadget.getSpec().getModulePrefs().getFeatures().keySet().contains(
+            "aipostyle");
+      Element defaultStyle = document.createElement("style");
+      defaultStyle.setAttribute("type", "text/css");
+      head.insertBefore(defaultStyle, firstHeadChild);
+      defaultStyle.appendChild(defaultStyle.getOwnerDocument().createTextNode(
+        isAipoStyle ? aipoStyleCss : DEFAULT_CSS));
+      // }
 
       injectBaseTag(gadget, head);
       injectGadgetBeacon(gadget, head, firstHeadChild);

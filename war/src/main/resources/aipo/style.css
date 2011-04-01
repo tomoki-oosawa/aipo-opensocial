@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-html, body, td, th {
+html, body {
 	margin:0;
 	padding:0;
 	font-size:100%;
@@ -54,7 +54,7 @@ hr.bold {
 	border:1px solid #999;
 }
 * {
-	color:#313131;
+	color:#1B1B1B;
 	font-family:'メイリオ', Meiryo, Verdana, 'ヒラギノ角ゴPro W3', 'Hiragino Kaku Gothic Pro', 'ＭＳ Ｐゴシック', sans-serif;
 }
 body {
@@ -63,17 +63,14 @@ body {
 	padding:0;
 	margin:0;
 	font-size:.75em;
-	color:#313131;
+	color:#1B1B1B;
 	background:#FFF;
 	line-height:1.4;
 }
-td,th {
-	font-size:.75em;
-}
-* html body, * html td, * html th {
+* html body {
 	font-size:.8em;
 }
-*+html body, *+html td, *+html th {
+*+html body {
 	font-size:.75em;
 }
 th label {
@@ -81,11 +78,11 @@ th label {
 	width:100%;
 }
 a{
-	color:#666;
+	color:#1B1B1B;
 	text-decoration:underline;
 }
 th a {
-color:#313131;
+	color:#1B1B1B;
 }
 a:hover, a:hover strong, a:hover span {
 	color:#F90;
@@ -133,6 +130,7 @@ select {
 	font-size:1em;
 	line-height:normal;
 	margin:1px;
+	z-index:0 !important;
 }
 img {
 	border:none;
@@ -216,7 +214,7 @@ a img {
 }
 .aipostyle table.list,
 .aipostyle table.form {
-	border:1px solid #C9C9C9;
+	border:1px solid #FF9900;
 	margin-bottom:10px;
 	margin-top:5px;
 	border-spacing:0;
@@ -225,19 +223,37 @@ a img {
 }
 .aipostyle table.list td,
 .aipostyle table.form td  {
-	border:1px solid #C9C9C9;
+	border:1px solid #FF9900;
 	padding:3px;
 }
 .aipostyle table.list th,
 .aipostyle table.form th,
 .aipostyle table.list thead td
 .aipostyle table.form thead td   {
-	border:1px solid #C9C9C9;
+	border:1px solid #FF9900;
 	padding:3px;
-	background:#DCDCDC url(../images/common/bg_slash.gif) repeat left top;
+	background:#FFECB4 url(../images/common/bg_slash.gif) repeat left top;
 	white-space:nowrap;
 	text-align:center;
 	font-weight:normal;
+	color:#333333;
+}
+.aipostyle table.listTable th a,
+.aipostyle table.listTable thead td a {
+	padding-right:10px;
+	padding-left:10px;
+	display:block;
+	color:#333333;
+}
+.aipostyle table.listTable th a.headDown,
+.aipostyle table.listTable thead td.headDown a {
+	padding:3px 20px 1px 0;
+	background:transparent url(../images/common/btn_up.gif) no-repeat right 7px;
+}
+.aipostyle table.listTable th a.headUp,
+.aipostyle table.listTable thead td.headUp a {
+	padding:3px 20px 1px 0;
+	background:transparent url(../images/common/btn_down.gif) no-repeat right 8px;
 }
 .aipostyle table.form th,
 .aipostyle table.form thead td   {
