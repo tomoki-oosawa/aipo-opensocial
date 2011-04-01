@@ -3,24 +3,25 @@
     <ModulePrefs
             title="Aipoアプリサンプル"
             description="Aipoアプリのサンプルガジェットです。">
-        <Require feature="views" />
-        <Require feature="dynamic-height" />
-        <Require feature="minimessage" />
-        <Require feature="tabs" />
-        <Require feature="aipostyle" />
-        <Require feature="osapi" />
+        <Require feature="views"/>
+        <Require feature="dynamic-height"/>
+        <Require feature="minimessage"/>
+        <Require feature="tabs"/>
+        <Require feature="aipostyle"/>
+        <Require feature="osapi"/>
     </ModulePrefs>
     <UserPref name="p1-homeRows" display_name="表示件数（通常時）" datatype="enum" default_value="5">
-        <EnumValue value="5" />
-        <EnumValue value="10" />
-        <EnumValue value="50" />
+        <EnumValue value="5"/>
+        <EnumValue value="10"/>
+        <EnumValue value="50"/>
     </UserPref>
     <UserPref name="p2-canvasRows" display_name="表示件数（最大化時）" datatype="enum" default_value="10">
-        <EnumValue value="5" />
-        <EnumValue value="10" />
-        <EnumValue value="50" />
+        <EnumValue value="5"/>
+        <EnumValue value="10"/>
+        <EnumValue value="50"/>
     </UserPref>
-    <Content type="html"><![CDATA[<div class="aipostyle">
+    <Content type="html"><![CDATA[
+        <div class="aipostyle">
             <div id="tab1Container">
                 <div id="ospaiContent">
                     <form name="form" action="">
@@ -49,9 +50,9 @@
                                 <th>ソート
                                 </th>
                                 <td><select name="sortOrder" onchange="fetchPeople(currentGroupId, currentStartIndex)">
-                                        <option value="ascending">昇順</option>
-                                        <option value="descending">降順</option>
-                                    </select></td>
+                                    <option value="ascending">昇順</option>
+                                    <option value="descending">降順</option>
+                                </select></td>
                             </tr>
                         </table>
                         <div id="peopleResult" style="padding-bottom:10px"></div>
@@ -67,7 +68,8 @@
                                         <th>対象</th>
                                         <td><select name="priority">
                                             <option value="0">更新情報</option>
-                                            <option value="1">あなた宛のお知らせ</option>
+                                            <option value="1">あなた宛のお知らせ
+                                            </option>
                                         </select></td>
                                     </tr>
                                 </table>
@@ -79,7 +81,8 @@
                                         <th>キー
                                         </th>
                                         <td><select name="key">
-                                            <option value="key1">key1</option>
+                                            <option value="key1">key1
+                                            </option>
                                             <option value="key2">key2
                                             </option>
                                             <option value="key3">key3</option>
@@ -186,7 +189,8 @@
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="check"/></td>
-                            <td>テキスト</td>
+                            <td>テキスト
+                            </td>
                             <td><a href="#">テキストリンク</a></td>
                             <td nowrap="nowrap"><a href="#" class="button">ボタンリンク</a></td>
                         </tr>
@@ -270,7 +274,7 @@
                 if (people.length == 0) {
                     html.push('<div>ユーザーが見つかりませんでした。</div>');
                 } else {
-                    html.push('<table class="list wide"><tr><th>&nbsp;</th><th>ID</th><th>氏名</th><th>永続化データ</th></tr>');
+                    html.push('<table class="list wide"><tr><th>&nbsp;</th><th>ID</th><th>氏名</th><th>アプリデータ</th></tr>');
                 }
                 var userIds = new Array();
                 for (var i = 0; i < people.length; i++) {
@@ -355,12 +359,11 @@
 
         function deleteAppData(key) {
             var callback = function(response) {
-                msg.createTimerMessage("永続化データを削除しました。", 5);
+                msg.createTimerMessage("アプリデータを削除しました。", 5);
                 gadgets.window.adjustHeight();
                 fetchPeople(currentGroupId, currentStartIndex);
             };
-            osapi.appdata.
-            delete({ userId: '@viewer' ,fields: [key] }).execute(callback);
+            osapi.appdata["delete"]({ userId: '@viewer' ,fields: [key] }).execute(callback);
         }
 
         function changeView(viewName) {
@@ -389,7 +392,7 @@
                 contentContainer: document.getElementById("activityContent"),
                 callback: callback
             });
-            tabs2.addTab("永続化データ", {
+            tabs2.addTab("アプリデータ", {
                 contentContainer: document.getElementById("appdataContent"),
                 callback: callback
             });
@@ -400,12 +403,16 @@
                 var tab = tabs2.getSelectedTab();
                 if (tab.getIndex() == 0) {
                     var callback = function(response) {
-                        msg.createTimerMessage("アクティビティを送信しました。", 5);
-                        gadgets.window.adjustHeight();
-                        document.form.title.value = "";
-                        var checks = document.form.check;
-                        for (var i = 0; i < checks.length; i++) {
-                            checks[i].checked = false;
+                        if (response.error) {
+                            msg.createTimerMessage("アクティビティの保存に失敗しました。", 5);
+                        } else {
+                            msg.createTimerMessage("アクティビティを送信しました。", 5);
+                            gadgets.window.adjustHeight();
+                            document.form.title.value = "";
+                            var checks = document.form.check;
+                            for (var i = 0; i < checks.length; i++) {
+                                checks[i].checked = false;
+                            }
                         }
                     };
                     var title = document.form.title.value;
@@ -428,12 +435,16 @@
                     return false;
                 } else {
                     var callback = function(response) {
-                        msg.createTimerMessage("永続化データを保存しました。", 5);
-                        document.form.key.value = "";
-                        document.form.value.value = "";
-                        gadgets.window.adjustHeight();
-                        fetchPeople(currentGroupId, currentStartIndex);
-                    };
+                        if (response.error) {
+                            msg.createTimerMessage("アプリデータの保存に失敗しました。", 5);
+                        } else {
+                            msg.createTimerMessage("アプリデータを保存しました。", 5);
+                            document.form.key.value = "";
+                            document.form.value.value = "";
+                            gadgets.window.adjustHeight();
+                            fetchPeople(currentGroupId, currentStartIndex);
+                        }
+                    } ;
                     var key = document.form.key.value;
                     var value = document.form.value.value;
                     var data = {};
@@ -467,5 +478,6 @@
 
         gadgets.util.registerOnLoadHandler(init);
 
-        </script>]]></Content>
+        </script>
+        ]]></Content>
 </Module>
