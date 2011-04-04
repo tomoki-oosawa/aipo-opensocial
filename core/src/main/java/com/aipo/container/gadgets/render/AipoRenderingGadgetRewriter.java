@@ -105,6 +105,26 @@ public class AipoRenderingGadgetRewriter extends RenderingGadgetRewriter {
       // element
       Node firstHeadChild = head.getFirstChild();
 
+      Element contentLanguage = document.createElement("meta");
+      contentLanguage.setAttribute("http-equiv", "Content-Language");
+      contentLanguage.setAttribute("content", "ja");
+      head.insertBefore(contentLanguage, firstHeadChild);
+
+      Element contentType = document.createElement("meta");
+      contentType.setAttribute("http-equiv", "Content-Type");
+      contentType.setAttribute("content", "text/html; charset=UTF-8");
+      head.insertBefore(contentType, firstHeadChild);
+
+      Element contentStyleType = document.createElement("meta");
+      contentStyleType.setAttribute("http-equiv", "Content-Style-Type");
+      contentStyleType.setAttribute("content", "text/css");
+      head.insertBefore(contentStyleType, firstHeadChild);
+
+      Element contentScriptType = document.createElement("meta");
+      contentScriptType.setAttribute("http-equiv", "Content-Script-Type");
+      contentScriptType.setAttribute("content", "text/javascript");
+      head.insertBefore(contentScriptType, firstHeadChild);
+
       // Only inject default styles if no doctype was specified.
       // if (document.getDoctype() == null) {
       boolean isAipoStyle =
