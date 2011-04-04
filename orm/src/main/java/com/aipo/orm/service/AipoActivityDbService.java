@@ -19,6 +19,7 @@
 
 package com.aipo.orm.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.model.social.Activity;
 import com.aipo.orm.model.social.ActivityMap;
+import com.aipo.orm.query.Operations;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -44,7 +46,22 @@ public class AipoActivityDbService implements ActivityDbService {
   public void create(String username, String appId, Map<String, Object> values) {
 
     try {
-      Activity activity = Database.create(Activity.class);
+      String externalId = (String) values.get("externalId");
+      Activity activity = null;
+      boolean replace = true;
+      if (externalId != null && externalId.length() > 0) {
+        activity =
+          Database
+            .query(Activity.class)
+            .where(Operations.eq(Activity.APP_ID_PROPERTY, appId))
+            .where(Operations.eq(Activity.EXTERNAL_ID_PROPERTY, externalId))
+            .where(Operations.eq(Activity.LOGIN_NAME_PROPERTY, username))
+            .fetchSingle();
+      }
+      if (activity == null) {
+        activity = Database.create(Activity.class);
+        replace = false;
+      }
       activity.setAppId(appId);
       activity.setLoginName(username);
       activity.setBody((String) values.get("body"));
@@ -68,27 +85,48 @@ public class AipoActivityDbService implements ActivityDbService {
 
       @SuppressWarnings("unchecked")
       Set<String> recipients = (Set<String>) values.get("recipients");
+      List<ActivityMap> activityMaps = null;
+      if (replace) {
+        activityMaps =
+          Database.query(ActivityMap.class).where(
+            Operations.eq(ActivityMap.ACTIVITY_PROPERTY, activity)).fetchList();
+      } else {
+        activityMaps = new ArrayList<ActivityMap>();
+      }
       if (recipients != null && recipients.size() > 0) {
         List<TurbineUser> list =
           turbineUserDbService.findByUsername(recipients);
+
         for (TurbineUser recipient : list) {
-          ActivityMap activityMap = Database.create(ActivityMap.class);
-          activityMap.setLoginName(recipient.getLoginName());
-          activityMap.setActivity(activity);
-          activityMap.setIsRead(0);
+          boolean exists = false;
+          for (ActivityMap m : activityMaps) {
+            String loginName = m.getLoginName();
+            if (loginName.equals(recipient.getLoginName())) {
+              m.setIsRead(0);
+              exists = true;
+              break;
+            }
+          }
+          if (!exists) {
+            ActivityMap activityMap = Database.create(ActivityMap.class);
+            activityMap.setLoginName(recipient.getLoginName());
+            activityMap.setActivity(activity);
+            activityMap.setIsRead(0);
+          }
         }
       } else {
-        // recipients が指定されなかった場合は、priority は　0 とする。
-        activity.setPriority(0f);
-        ActivityMap activityMap = Database.create(ActivityMap.class);
-        activityMap.setLoginName("-1");
-        activityMap.setActivity(activity);
-        activityMap.setIsRead(1);
+        if (activityMaps.size() == 0) {
+          // recipients が指定されなかった場合は、priority は　0 とする。
+          activity.setPriority(0f);
+          ActivityMap activityMap = Database.create(ActivityMap.class);
+          activityMap.setLoginName("-1");
+          activityMap.setActivity(activity);
+          activityMap.setIsRead(1);
+        }
       }
       Database.commit();
     } catch (Throwable t) {
       Database.rollback();
-      t.printStackTrace();
       throw new RuntimeException(t);
     }
   }
