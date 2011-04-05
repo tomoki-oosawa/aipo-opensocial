@@ -266,6 +266,8 @@ a img {
 .aipostyle .pagination {
 	margin:0;
 	padding:0;
+	font-size:.9em;
+	line-height:1.2;
 }
 .aipostyle .pagination li {
 	text-align:center;
@@ -284,6 +286,8 @@ a img {
 	color:#666;
 	text-decoration:none;
 	display:block;
+	font-size:.9em;
+	line-height:1.2;
 }
 .aipostyle .pagination a:active {
 	border:1px solid #aaa;
@@ -293,6 +297,8 @@ a img {
 	color:#666;
 	text-decoration:none;
 	display:block;
+	font-size:.9em;
+	line-height:1.2;
 }
 .aipostyle .pagination a:hover {
 	background-color:#fff5d8;
@@ -303,6 +309,8 @@ a img {
 	color:#f90;
 	text-decoration:none;
 	display:block;
+	font-size:.9em;
+	line-height:1.2;
 }
 .aipostyle .pagination li.selected a:link,
 .aipostyle .pagination li.selected a:visited,
@@ -403,4 +411,9 @@ a img {
 }
 .aipostyle .w33 {
 	width:33.333333%;
+}
+.aipostyle .indicator {
+	background:url(../images/common/indicator.gif) no-repeat left;
+	padding:2px 0 2px 18px;
+	margin-left:2px;
 }

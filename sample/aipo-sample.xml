@@ -301,7 +301,7 @@
                 var currentPage = Math.ceil(startIndex / rows);
                 var page = Math.ceil(totalResults / rows);
                 if (page > 1) {
-                    html.push('<div class="clearfix"><div class="small" style="float:left"><div class="pagination"><ul>');
+                    html.push('<ul class="pagination">');
 
                     for (var i = 0; i < page; i++) {
                         var next = i * rows;
@@ -310,11 +310,11 @@
                         } else {
                             html.push('<li>');
                         }
-                        html.push('<a class="small" href="javascript:void(0);" onclick="fetchPeople(\'' + currentGroupId + '\',' + next + ');">');
+                        html.push('<a href="javascript:void(0);" onclick="fetchPeople(\'' + currentGroupId + '\',' + next + ');">');
                         html.push(i + 1);
                         html.push('</a></li>');
                     }
-                    html.push('</ul></div></div></div>');
+                    html.push('</ul>');
                 }
                 document.getElementById('peopleResult').innerHTML = html.join('');
 
