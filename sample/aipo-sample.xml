@@ -65,6 +65,11 @@
                                         <td><input type="text" name="title" style="width:200px"/></td>
                                     </tr>
                                     <tr>
+                                        <th>externalId
+                                        </th>
+                                        <td><input type="text" name="externalId" style="width:200px"/></td>
+                                    </tr>
+                                    <tr>
                                         <th>対象</th>
                                         <td><select name="priority">
                                             <option value="0">更新情報</option>
@@ -429,8 +434,16 @@
                             recipients.push(checks[i].value);
                         }
                     }
+                    var activity = {};
+                    activity['title'] = title;
+                    activity['priority'] = priority;
+                    activity['recipients'] = recipients;
+                    var externalId = document.form.externalId.value;
+                    if (externalId) {
+                        activity['externalId'] = externalId;
+                    }
                     osapi.activities.create({
-                        userId: '@viewer', activity: { title: title, priority: priority, recipients: recipients }
+                        userId: '@viewer', activity: activity
                     }).execute(callback);
                     return false;
                 } else {
@@ -444,7 +457,7 @@
                             gadgets.window.adjustHeight();
                             fetchPeople(currentGroupId, currentStartIndex);
                         }
-                    } ;
+                    };
                     var key = document.form.key.value;
                     var value = document.form.value.value;
                     var data = {};
