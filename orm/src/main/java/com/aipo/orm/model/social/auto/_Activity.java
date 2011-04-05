@@ -20,6 +20,7 @@ public abstract class _Activity extends CayenneDataObject {
     public static final String EXTERNAL_ID_PROPERTY = "externalId";
     public static final String ICON_PROPERTY = "icon";
     public static final String LOGIN_NAME_PROPERTY = "loginName";
+    public static final String MODULE_ID_PROPERTY = "moduleId";
     public static final String PORTLET_PARAMS_PROPERTY = "portletParams";
     public static final String PRIORITY_PROPERTY = "priority";
     public static final String TITLE_PROPERTY = "title";
@@ -61,6 +62,13 @@ public abstract class _Activity extends CayenneDataObject {
     }
     public String getLoginName() {
         return (String)readProperty("loginName");
+    }
+
+    public void setModuleId(Integer moduleId) {
+        writeProperty("moduleId", moduleId);
+    }
+    public Integer getModuleId() {
+        return (Integer)readProperty("moduleId");
     }
 
     public void setPortletParams(String portletParams) {

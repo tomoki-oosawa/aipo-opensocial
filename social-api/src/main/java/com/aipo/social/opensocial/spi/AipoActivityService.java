@@ -153,7 +153,6 @@ public class AipoActivityService extends AbstractService implements
     checkSameViewer(userId, token);
     // タイトル 64 byte 以内
     checkInputByte(activity.getTitle(), 1, 64);
-
     String username = getUserId(userId, token);
     Map<String, Object> values = Maps.newHashMap();
     // TODO: BODY サポート時にコメントイン
@@ -161,6 +160,8 @@ public class AipoActivityService extends AbstractService implements
     values.put("externalId", activity.getExternalId());
     values.put("priority", activity.getPriority());
     values.put("title", activity.getTitle());
+    values.put("moduleId", token.getModuleId());
+
     List<String> recipients = activity.getRecipients();
     Set<String> users = Sets.newHashSet();
     if (recipients != null && recipients.size() > 0) {

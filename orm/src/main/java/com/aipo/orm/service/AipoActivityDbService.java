@@ -83,6 +83,9 @@ public class AipoActivityDbService implements ActivityDbService {
 
       activity.setIcon((String) values.get("icon"));
 
+      Long moduleId = (Long) values.get("moduleId");
+      activity.setModuleId(moduleId == null ? 0 : moduleId.intValue());
+
       @SuppressWarnings("unchecked")
       Set<String> recipients = (Set<String>) values.get("recipients");
       List<ActivityMap> activityMaps = null;
