@@ -72,9 +72,12 @@ public class AipoAppDataDbService implements AppDataDbService {
    */
   public void put(String username, String appId, Map<String, String> values) {
     try {
-      TurbineUser user = turbineUserDbService.findByUsername(username);
-      if (user == null) {
-        return;
+      TurbineUser user = null;
+      if (!"@admin".equals(username)) {
+        user = turbineUserDbService.findByUsername(username);
+        if (user == null) {
+          return;
+        }
       }
       Iterator<Entry<String, String>> iterator = values.entrySet().iterator();
       while (iterator.hasNext()) {
@@ -92,7 +95,7 @@ public class AipoAppDataDbService implements AppDataDbService {
         }
         appData.setValue(value);
         appData.setAppId(appId);
-        appData.setLoginName(user.getLoginName());
+        appData.setLoginName(user == null ? "@admin" : user.getLoginName());
       }
       Database.commit();
     } catch (Throwable t) {
@@ -108,9 +111,12 @@ public class AipoAppDataDbService implements AppDataDbService {
    */
   public void delete(String username, String appId, Set<String> fields) {
     try {
-      TurbineUser user = turbineUserDbService.findByUsername(username);
-      if (user == null) {
-        return;
+      TurbineUser user = null;
+      if (!"@admin".equals(username)) {
+        user = turbineUserDbService.findByUsername(username);
+        if (user == null) {
+          return;
+        }
       }
       List<AppData> fetchList =
         Database.query(AppData.class).where(

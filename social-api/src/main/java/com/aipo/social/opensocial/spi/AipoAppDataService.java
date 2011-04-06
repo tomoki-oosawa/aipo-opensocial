@@ -41,7 +41,6 @@ import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.model.social.AppData;
 import com.aipo.orm.service.AppDataDbService;
 import com.aipo.orm.service.TurbineUserDbService;
-import com.aipo.orm.service.request.SearchOptions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -88,7 +87,12 @@ public class AipoAppDataService extends AbstractService implements
     // 同じアプリのみアクセス可能
     checkSameAppId(appId, token);
     // 自分（Viewer）の AppData のみ更新可能
-    checkSameViewer(userId, token);
+    boolean isAdmin = false;
+    if ("@admin".equals(userId.getUserId())) {
+      isAdmin = true;
+    } else {
+      checkSameViewer(userId, token);
+    }
 
     Iterator<Entry<String, String>> iterator = values.entrySet().iterator();
     while (iterator.hasNext()) {
@@ -101,7 +105,7 @@ public class AipoAppDataService extends AbstractService implements
       checkInputByte(value, 0, 1024);
     }
 
-    String username = getUserId(userId, token);
+    String username = isAdmin ? "@admin" : getUserId(userId, token);
     appDataDbService.put(username, appId, values);
 
     return ImmediateFuture.newInstance(null);
@@ -128,9 +132,14 @@ public class AipoAppDataService extends AbstractService implements
     // 同じアプリのみアクセス可能
     checkSameAppId(appId, token);
     // 自分（Viewer）の AppData のみ更新可能
-    checkSameViewer(userId, token);
+    boolean isAdmin = false;
+    if ("@admin".equals(userId.getUserId())) {
+      isAdmin = true;
+    } else {
+      checkSameViewer(userId, token);
+    }
 
-    String username = getUserId(userId, token);
+    String username = isAdmin ? "@admin" : getUserId(userId, token);
     appDataDbService.delete(username, appId, fields);
 
     return ImmediateFuture.newInstance(null);
@@ -157,20 +166,27 @@ public class AipoAppDataService extends AbstractService implements
     // 同じアプリのみアクセス可能
     checkSameAppId(appId, token);
 
+    boolean hasAdmin = false;
     List<TurbineUser> list = null;
     switch (groupId.getType()) {
       case all:
       case friends:
         // {guid} が閲覧できるすべてのユーザーを取得
         // @all = @friends
-        list = turbineUserDbService.find(SearchOptions.build());
+        // TODO: 検索件数の制限を設ける
+        // NOT SUPPORTED
+        // list = turbineUserDbService.find(SearchOptions.build());
         break;
       case groupId:
         // {guid} が閲覧できるすべてのユーザーで {groupId} グループに所属しているものを取得
-        list =
+        // TODO: 検索件数の制限を設ける
+        // NOT SUPPORTED
+        /*-
+         list =
           turbineUserDbService.findByGroupname(
             groupId.getGroupId(),
             SearchOptions.build());
+         */
         break;
       case deleted:
         // {guid} が閲覧できる無効なユーザーを取得
@@ -180,7 +196,11 @@ public class AipoAppDataService extends AbstractService implements
         // {guid} 自身のユーザー情報を取得
         Set<String> users = Sets.newHashSet();
         for (UserId userId : userIds) {
-          users.add(getUserId(userId, token));
+          if (!"@admin".equals(userId.getUserId())) {
+            users.add(getUserId(userId, token));
+          } else {
+            hasAdmin = true;
+          }
         }
         list = turbineUserDbService.findByUsername(users);
         break;
@@ -192,6 +212,9 @@ public class AipoAppDataService extends AbstractService implements
     Set<String> usernames = Sets.newHashSet();
     for (TurbineUser user : list) {
       usernames.add(user.getLoginName());
+    }
+    if (hasAdmin) {
+      usernames.add("@admin");
     }
     List<AppData> appDataList = appDataDbService.get(usernames, appId, fields);
 
@@ -207,7 +230,11 @@ public class AipoAppDataService extends AbstractService implements
       }
     } else {
       for (AppData appData : appDataList) {
-        String userId = convertUserId(appData.getLoginName(), token);
+        String loginName = appData.getLoginName();
+        String userId =
+          "@admin".equals(loginName) ? "@admin" : convertUserId(
+            loginName,
+            token);
         Map<String, String> map = results.get(userId);
         if (map == null) {
           map = Maps.newHashMap();
@@ -224,5 +251,4 @@ public class AipoAppDataService extends AbstractService implements
 
     return ImmediateFuture.newInstance(new DataCollection(results));
   }
-
 }

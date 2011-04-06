@@ -98,10 +98,17 @@
                                         </th>
                                         <td><input type="text" name="value" style="width:200px"/></td>
                                     </tr>
+                                    <tr>
+                                        <th>
+                                        </th>
+                                        <td><input type="checkbox" name="admin" value="1" id="adminCheck"/><label for="adminCheck">@admin として保存</label></td>
+                                    </tr>
                                 </table>
                                 <div class="center"><input type="submit" name="submit" value="保存する"/></div>
                             </div>
                         </div>
+                        <h4>@admin のアプリデータ</h4>
+                        <div id="appdata-@admin"></div>
                     </form>
                 </div>
                 <div id="viewsContent" style="display:none">
@@ -301,7 +308,7 @@
                 var currentPage = Math.ceil(startIndex / rows);
                 var page = Math.ceil(totalResults / rows);
                 if (page > 1) {
-                    html.push('<ul class="pagination">');
+                    html.push('<div class="clearfix"><ul class="pagination">');
 
                     for (var i = 0; i < page; i++) {
                         var next = i * rows;
@@ -314,7 +321,7 @@
                         html.push(i + 1);
                         html.push('</a></li>');
                     }
-                    html.push('</ul>');
+                    html.push('</ul></div>');
                 }
                 document.getElementById('peopleResult').innerHTML = html.join('');
 
@@ -340,6 +347,8 @@
         }
 
         function fetchAppData(userIds) {
+            userIds.push("@admin");
+            document.getElementById('appdata-@admin').innerHTML = "";    
             var callback = function(response) {
                 for (var id in response) {
                     var data = response[id];
@@ -350,7 +359,10 @@
                         html.push('<li>');
                         html.push(gadgets.util.escapeString(key) + "=" + gadgets.util.escapeString(value));
                         if (viewerId == id) {
-                            html.push('<a href="javascript:void(0);" onclick="deleteAppData(\'' + key + '\')">[削除]</a>');
+                            html.push('<a href="javascript:void(0);" onclick="deleteAppData(\'@viewer\', \'' + key + '\')">[削除]</a>');
+                        }
+                        if ('@admin' == id) {
+                            html.push('<a href="javascript:void(0);" onclick="deleteAppData(\'@admin\', \'' + key + '\')">[削除]</a>');
                         }
                         html.push('</li>');
                     }
@@ -362,13 +374,13 @@
             osapi.appdata.get({ userId: userIds ,fields: ['key1', 'key2','key3'] }).execute(callback);
         }
 
-        function deleteAppData(key) {
+        function deleteAppData(userId, key) {
             var callback = function(response) {
                 msg.createTimerMessage("アプリデータを削除しました。", 5);
                 gadgets.window.adjustHeight();
                 fetchPeople(currentGroupId, currentStartIndex);
             };
-            osapi.appdata["delete"]({ userId: '@viewer' ,fields: [key] }).execute(callback);
+            osapi.appdata["delete"]({ userId: userId ,fields: [key] }).execute(callback);
         }
 
         function changeView(viewName) {
@@ -462,7 +474,7 @@
                     var value = document.form.value.value;
                     var data = {};
                     data[key] = value;
-                    osapi.appdata.update({ userId: '@viewer', data: data, appId: '@app' }).execute(callback);
+                    osapi.appdata.update({ userId: document.form.admin.checked ? '@admin' : '@viewer', data: data, appId: '@app' }).execute(callback);
                     return false;
                 }
             }
