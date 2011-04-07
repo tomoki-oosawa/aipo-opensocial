@@ -38,6 +38,8 @@ import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyT
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreTokenIndex;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
 
+import com.aipo.container.util.ContainerToolkit;
+import com.aipo.orm.service.ContainerConfigDbService;
 import com.aipo.orm.service.OAuthConsumerDbService;
 import com.aipo.orm.service.OAuthTokenDbService;
 import com.aipo.orm.service.bean.OAuthToken;
@@ -71,15 +73,19 @@ public class AipoOAuthStore implements OAuthStore {
 
   private final OAuthTokenDbService oAuthTokenDbService;
 
+  private final ContainerConfigDbService containerConfigDbService;
+
   @Inject
   public AipoOAuthStore(@Named(OAUTH_SIGNING_KEY_FILE) String signingKeyFile,
       @Named(OAUTH_SIGNING_KEY_NAME) String signingKeyName,
       @Named(OAUTH_CALLBACK_URL) String defaultCallbackUrl,
       OAuthConsumerDbService oAuthConsumerDbService,
-      OAuthTokenDbService oAuthTokenDbService) {
+      OAuthTokenDbService oAuthTokenDbService,
+      ContainerConfigDbService containerConfigDbService) {
     this.oAuthConsumerDbService = oAuthConsumerDbService;
     this.oAuthTokenDbService = oAuthTokenDbService;
     this.defaultCallbackUrl = defaultCallbackUrl;
+    this.containerConfigDbService = containerConfigDbService;
     loadDefaultKey(signingKeyFile, signingKeyName);
   }
 
@@ -134,7 +140,10 @@ public class AipoOAuthStore implements OAuthStore {
       consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
     }
     String callback =
-      (cks.getCallbackUrl() != null ? cks.getCallbackUrl() : defaultCallbackUrl);
+      (cks.getCallbackUrl() != null ? cks.getCallbackUrl() : new StringBuilder(
+        ContainerToolkit.getScheme()).append("://").append(
+        ContainerToolkit.getHost(containerConfigDbService)).append(
+        defaultCallbackUrl).toString());
 
     return new ConsumerInfo(consumer, cks.getKeyName(), callback);
   }
