@@ -40,7 +40,7 @@ public interface ContainerConfigDbService {
     UNLOCKED_DOMAIN("unLockedDomain") {
       @Override
       public String defaultValue() {
-        return "www.example.com";
+        return "";
       }
     };
 
