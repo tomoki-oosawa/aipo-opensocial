@@ -36,15 +36,22 @@ public class ContainerToolkit {
     HttpServletRequest request = HttpServletRequestLocator.get();
 
     if ("true".equalsIgnoreCase(service.get(Property.LOCKED_DOMAIN_REQUIRED))) {
-      return service.get(Property.UNLOCKED_DOMAIN);
+      String unlockedDomain = service.get(Property.UNLOCKED_DOMAIN);
+      return (unlockedDomain != null && unlockedDomain.length() > 0)
+        ? unlockedDomain
+        : getCurrentHost(request);
     } else {
-      StringBuilder builder = new StringBuilder(request.getServerName());
-      int serverPort = request.getServerPort();
-      if (serverPort != 80 || serverPort != 443) {
-        builder.append(":").append(serverPort);
-      }
-      return builder.toString();
+      return getCurrentHost(request);
     }
+  }
+
+  protected static String getCurrentHost(HttpServletRequest request) {
+    StringBuilder builder = new StringBuilder(request.getServerName());
+    int serverPort = request.getServerPort();
+    if (serverPort != 80 || serverPort != 443) {
+      builder.append(":").append(serverPort);
+    }
+    return builder.toString();
   }
 
   private ContainerToolkit() {
