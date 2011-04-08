@@ -56,6 +56,9 @@ public class AipoOAuthStore implements OAuthStore {
   private static final Logger logger = Logger.getLogger(AipoOAuthStore.class
     .getName());
 
+  private static final String OAUTH_CONSUMER_KEY =
+    "shindig.signing.consumerKey";
+
   private static final String OAUTH_SIGNING_KEY_FILE =
     "shindig.signing.key-file";
 
@@ -79,6 +82,7 @@ public class AipoOAuthStore implements OAuthStore {
   public AipoOAuthStore(@Named(OAUTH_SIGNING_KEY_FILE) String signingKeyFile,
       @Named(OAUTH_SIGNING_KEY_NAME) String signingKeyName,
       @Named(OAUTH_CALLBACK_URL) String defaultCallbackUrl,
+      @Named(OAUTH_CONSUMER_KEY) String consumerKey,
       OAuthConsumerDbService oAuthConsumerDbService,
       OAuthTokenDbService oAuthTokenDbService,
       ContainerConfigDbService containerConfigDbService) {
@@ -86,7 +90,7 @@ public class AipoOAuthStore implements OAuthStore {
     this.oAuthTokenDbService = oAuthTokenDbService;
     this.defaultCallbackUrl = defaultCallbackUrl;
     this.containerConfigDbService = containerConfigDbService;
-    loadDefaultKey(signingKeyFile, signingKeyName);
+    loadDefaultKey(consumerKey, signingKeyFile, signingKeyName);
   }
 
   public static String convertFromOpenSsl(String privateKey) {
@@ -200,7 +204,8 @@ public class AipoOAuthStore implements OAuthStore {
     oAuthTokenDbService.remove(tokenKey.hashCode());
   }
 
-  private void loadDefaultKey(String signingKeyFile, String signingKeyName) {
+  private void loadDefaultKey(String consumerKey, String signingKeyFile,
+      String signingKeyName) {
     BasicOAuthStoreConsumerKeyAndSecret key = null;
     if (!StringUtils.isBlank(signingKeyFile)) {
       try {
@@ -210,7 +215,7 @@ public class AipoOAuthStore implements OAuthStore {
         privateKey = BasicOAuthStore.convertFromOpenSsl(privateKey);
         key =
           new BasicOAuthStoreConsumerKeyAndSecret(
-            null,
+            consumerKey,
             privateKey,
             KeyType.RSA_PRIVATE,
             signingKeyName,
