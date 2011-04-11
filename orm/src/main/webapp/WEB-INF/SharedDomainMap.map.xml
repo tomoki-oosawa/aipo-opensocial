@@ -98,14 +98,6 @@
 		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
 		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
 	</db-entity>
-	<db-entity name="eip_m_mybox">
-		<db-attribute name="AIPO_ID" type="VARCHAR" length="99"/>
-		<db-attribute name="AIPO_PASSWD" type="VARCHAR" length="99"/>
-		<db-attribute name="COMPANY_ID" type="INTEGER" isMandatory="true"/>
-		<db-attribute name="CREATE_DATE" type="DATE"/>
-		<db-attribute name="MYBOX_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
-		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
-	</db-entity>
 	<db-entity name="eip_t_addressbook_group_map">
 		<db-attribute name="ADDRESS_ID" type="INTEGER" isMandatory="true" length="4"/>
 		<db-attribute name="GROUP_ID" type="INTEGER" isMandatory="true" length="4"/>
@@ -576,12 +568,6 @@
 		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
 		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
 	</obj-entity>
-	<obj-entity name="EipMMybox" className="com.aipo.orm.model.portlet.EipMMybox" dbEntityName="eip_m_mybox">
-		<obj-attribute name="aipoId" type="java.lang.String" db-attribute-path="AIPO_ID"/>
-		<obj-attribute name="aipoPasswd" type="java.lang.String" db-attribute-path="AIPO_PASSWD"/>
-		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
-		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
-	</obj-entity>
 	<obj-entity name="EipTAddressbookGroupMap" className="com.aipo.orm.model.portlet.EipTAddressbookGroupMap" dbEntityName="eip_t_addressbook_group_map">
 		<obj-attribute name="addressId" type="java.lang.Integer" db-attribute-path="ADDRESS_ID"/>
 	</obj-entity>
@@ -938,9 +924,6 @@
 	<db-relationship name="eipTMailFolders" source="eip_m_mail_account" target="eip_t_mail_folder" toMany="true">
 		<db-attribute-pair source="ACCOUNT_ID" target="ACCOUNT_ID"/>
 	</db-relationship>
-	<db-relationship name="eipMCompany" source="eip_m_mybox" target="eip_m_company" toMany="false">
-		<db-attribute-pair source="COMPANY_ID" target="COMPANY_ID"/>
-	</db-relationship>
 	<db-relationship name="eipMAddressbook" source="eip_t_addressbook_group_map" target="eip_m_addressbook" toMany="false">
 		<db-attribute-pair source="ADDRESS_ID" target="ADDRESS_ID"/>
 	</db-relationship>
@@ -1097,7 +1080,6 @@
 	<obj-relationship name="eipMAddressbookCompany" source="EipMAddressbook" target="EipMAddressbookCompany" db-relationship-path="eipMAddressbookCompany"/>
 	<obj-relationship name="eipTAddressbookGroupMap" source="EipMAddressbook" target="EipTAddressbookGroupMap" db-relationship-path="eipTAddressbookGroupMap"/>
 	<obj-relationship name="eipFacilityGroupArray" source="EipMFacility" target="EipFacilityGroup" deleteRule="Cascade" db-relationship-path="eipFacilityGroupArray"/>
-	<obj-relationship name="eipMCompany" source="EipMMybox" target="EipMCompany" db-relationship-path="eipMCompany"/>
 	<obj-relationship name="eipMAddressbook" source="EipTAddressbookGroupMap" target="EipMAddressbook" db-relationship-path="eipMAddressbook"/>
 	<obj-relationship name="eipTAddressGroup" source="EipTAddressbookGroupMap" target="EipMAddressGroup" db-relationship-path="eipTAddressGroup"/>
 	<obj-relationship name="eipTBlogEntrys" source="EipTBlog" target="EipTBlogEntry" db-relationship-path="eipTBlogEntrys"/>

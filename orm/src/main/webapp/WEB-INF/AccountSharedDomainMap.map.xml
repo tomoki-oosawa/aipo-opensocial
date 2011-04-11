@@ -185,9 +185,6 @@
 		<obj-attribute name="profile" type="byte[]" db-attribute-path="PROFILE"/>
 		<obj-attribute name="userName" type="java.lang.String" db-attribute-path="USER_NAME"/>
 	</obj-entity>
-	<db-relationship name="eipMMybox" source="eip_m_company" target="eip_m_mybox" toMany="true">
-		<db-attribute-pair source="COMPANY_ID" target="COMPANY_ID"/>
-	</db-relationship>
 	<db-relationship name="turbineGroup" source="eip_m_post" target="turbine_group" toMany="true">
 		<db-attribute-pair source="GROUP_NAME" target="GROUP_NAME"/>
 	</db-relationship>
@@ -209,7 +206,6 @@
 	<db-relationship name="turbineUser" source="eip_t_acl_user_role_map" target="turbine_user" toMany="false">
 		<db-attribute-pair source="USER_ID" target="USER_ID"/>
 	</db-relationship>
-	<obj-relationship name="eipMMybox" source="EipMCompany" target="EipMMybox" db-relationship-path="eipMMybox"/>
 	<obj-relationship name="turbineGroup" source="EipMPost" target="TurbineGroup" db-relationship-path="turbineGroup"/>
 	<obj-relationship name="turbineUser" source="EipMUserPosition" target="TurbineUser" db-relationship-path="turbineUser"/>
 	<obj-relationship name="eipTAclRole" source="EipTAclPortletFeature" target="EipTAclRole" db-relationship-path="eipTAclRole"/>
