@@ -210,8 +210,10 @@ public class AipoAppDataService extends AbstractService implements
           "Group ID not recognized");
     }
     Set<String> usernames = Sets.newHashSet();
-    for (TurbineUser user : list) {
-      usernames.add(user.getLoginName());
+    if (list != null) {
+      for (TurbineUser user : list) {
+        usernames.add(user.getLoginName());
+      }
     }
     if (hasAdmin) {
       usernames.add("@admin");
