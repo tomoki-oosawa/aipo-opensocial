@@ -38,6 +38,7 @@ import org.apache.shindig.social.opensocial.service.PersonHandler;
 import com.aipo.social.core.oauth.AipoAuthenticationHandlerProvider;
 import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.aipo.social.opensocial.service.AipoGroupHandler;
+import com.aipo.social.opensocial.service.AipoHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -85,6 +86,7 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
    */
   protected Set<Class<?>> getHandlers() {
     return ImmutableSet.<Class<?>> of(
+      AipoHandler.class,
       AipoActivityHandler.class,
       AppDataHandler.class,
       PersonHandler.class,
