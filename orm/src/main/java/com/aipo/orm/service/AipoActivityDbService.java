@@ -19,7 +19,9 @@
 
 package com.aipo.orm.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.model.social.Activity;
 import com.aipo.orm.model.social.ActivityMap;
 import com.aipo.orm.query.Operations;
+import com.aipo.orm.service.ContainerConfigDbService.Property;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -38,9 +41,13 @@ public class AipoActivityDbService implements ActivityDbService {
 
   private final TurbineUserDbService turbineUserDbService;
 
+  private final ContainerConfigDbService containerConfigDbService;
+
   @Inject
-  public AipoActivityDbService(TurbineUserDbService turbineUserDbService) {
+  public AipoActivityDbService(TurbineUserDbService turbineUserDbService,
+      ContainerConfigDbService containerConfigDbService) {
     this.turbineUserDbService = turbineUserDbService;
+    this.containerConfigDbService = containerConfigDbService;
   }
 
   public void create(String username, String appId, Map<String, Object> values) {
@@ -127,6 +134,32 @@ public class AipoActivityDbService implements ActivityDbService {
           activityMap.setIsRead(1);
         }
       }
+
+      String activitySaveLimit =
+        containerConfigDbService.get(Property.ACTIVITY_SAVE_LIMIT);
+      int limit = 30;
+      try {
+        limit = Integer.valueOf(activitySaveLimit).intValue();
+      } catch (Throwable ignore) {
+
+      }
+      Calendar cal = Calendar.getInstance();
+      cal.add(Calendar.DAY_OF_MONTH, -limit);
+
+      Database.query(ActivityMap.class).where(
+        Operations.lt(ActivityMap.ACTIVITY_PROPERTY
+          + "."
+          + Activity.UPDATE_DATE_PROPERTY, cal.getTime())).deleteAll();
+
+      String sql =
+        "delete from activity where update_date < #bind($updateDate)";
+      Database
+        .sql(Activity.class, sql)
+        .param(
+          "updateDate",
+          new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime()))
+        .execute();
+
       Database.commit();
     } catch (Throwable t) {
       Database.rollback();

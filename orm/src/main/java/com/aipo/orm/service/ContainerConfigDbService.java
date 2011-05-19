@@ -42,6 +42,12 @@ public interface ContainerConfigDbService {
       public String defaultValue() {
         return "";
       }
+    },
+    ACTIVITY_SAVE_LIMIT("activitySaveLimit") {
+      @Override
+      public String defaultValue() {
+        return "30";
+      }
     };
 
     private final String property;
