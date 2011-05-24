@@ -358,36 +358,29 @@ public class Database {
     }
   }
 
-  public synchronized static DataContext createDataContext(String orgId)
-      throws Exception {
+  public static DataContext createDataContext(String orgId) throws Exception {
 
-    DataDomain domain = Configuration.getSharedConfiguration().getDomain(orgId);
-    if (domain == null) {
-      DataDomain dataDomain =
-        Configuration.getSharedConfiguration().getDomain(SHARED_DOMAIN);
+    DataDomain dataDomain =
+      Configuration.getSharedConfiguration().getDomain(SHARED_DOMAIN);
 
-      DataDomain destDataDomain =
-        new DataDomain(orgId, dataDomain.getProperties());
-      destDataDomain.setEntityResolver(dataDomain.getEntityResolver());
-      destDataDomain.setEventManager(dataDomain.getEventManager());
-      destDataDomain
-        .setTransactionDelegate(dataDomain.getTransactionDelegate());
-      DataNode dataNode = new DataNode(orgId + "domainNode");
-      dataNode.setDataMaps(dataDomain.getDataMaps());
-      dataSourceFactory.initializeWithParentConfiguration(Configuration
-        .getSharedConfiguration());
-      DataSource dataSource =
-        dataSourceFactory.getDataSource("datasource/dbcp-"
-          + orgId
-          + ".properties");
+    DataDomain destDataDomain =
+      new DataDomain(orgId, dataDomain.getProperties());
+    destDataDomain.setEntityResolver(dataDomain.getEntityResolver());
+    destDataDomain.setEventManager(dataDomain.getEventManager());
+    destDataDomain.setTransactionDelegate(dataDomain.getTransactionDelegate());
+    DataNode dataNode = new DataNode(orgId + "domainNode");
+    dataNode.setDataMaps(dataDomain.getDataMaps());
+    dataSourceFactory.initializeWithParentConfiguration(Configuration
+      .getSharedConfiguration());
+    DataSource dataSource =
+      dataSourceFactory.getDataSource("datasource/dbcp-"
+        + orgId
+        + ".properties");
 
-      dataNode.setDataSource(dataSource);
-      dataNode.setAdapter(new AutoAdapter(dataSource));
-      destDataDomain.addNode(dataNode);
-      Configuration.getSharedConfiguration().addDomain(destDataDomain);
-    }
-
-    return DataContext.createDataContext(orgId);
+    dataNode.setDataSource(dataSource);
+    dataNode.setAdapter(new AutoAdapter(dataSource));
+    destDataDomain.addNode(dataNode);
+    return dataDomain.createDataContext();
 
   }
 
