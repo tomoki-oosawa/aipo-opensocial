@@ -380,7 +380,7 @@ public class Database {
     dataNode.setDataSource(dataSource);
     dataNode.setAdapter(new AutoAdapter(dataSource));
     destDataDomain.addNode(dataNode);
-    return dataDomain.createDataContext();
+    return destDataDomain.createDataContext();
 
   }
 
