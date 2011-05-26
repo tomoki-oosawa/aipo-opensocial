@@ -358,6 +358,27 @@ public class Database {
     }
   }
 
+  public static boolean isJdbcPostgreSQL() {
+
+    DataContext dataContext =
+      (DataContext) BaseContext.getThreadObjectContext();
+    String url = null;
+    try {
+      url =
+        dataContext
+          .getParentDataDomain()
+          .getNode(Database.getDomainName() + "domainNode")
+          .getDataSource()
+          .getConnection()
+          .getMetaData()
+          .getURL();
+    } catch (SQLException e) {
+      logger.warn(e.getMessage(), e);
+    }
+
+    return url != null && url.startsWith("jdbc:postgresql");
+  }
+
   public static DataContext createDataContext(String orgId) throws Exception {
 
     DataDomain dataDomain =
