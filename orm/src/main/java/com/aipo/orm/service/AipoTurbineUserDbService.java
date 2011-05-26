@@ -149,12 +149,21 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     if ("name".equals(filter)) {
       switch (filterOperation) {
         case equals:
-          b.append(" AND B.LAST_NAME || B.FIRST_NAME = #bind($filter) ");
+          if (Database.isJdbcPostgreSQL()) {
+            b.append(" AND B.LAST_NAME || B.FIRST_NAME = #bind($filter) ");
+          } else {
+            b.append(" AND CONCAT(B.LAST_NAME,B.FIRST_NAME) = #bind($filter) ");
+          }
           paramValue = filterValue;
           isFilter = true;
           break;
         case contains:
-          b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          if (Database.isJdbcPostgreSQL()) {
+            b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          } else {
+            b
+              .append(" AND CONCAT(B.LAST_NAME,B.FIRST_NAME) like #bind($filter) ");
+          }
           paramValue = "%" + filterValue + "%";
           isFilter = true;
           break;
@@ -162,7 +171,12 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
           // not supported.
           break;
         case startsWith:
-          b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          if (Database.isJdbcPostgreSQL()) {
+            b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          } else {
+            b
+              .append(" AND CONCAT(B.LAST_NAME,B.FIRST_NAME) like #bind($filter) ");
+          }
           paramValue = filterValue + "%";
           isFilter = true;
           break;
@@ -249,12 +263,21 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     if ("name".equals(filter)) {
       switch (filterOperation) {
         case equals:
-          b.append(" AND B.LAST_NAME || B.FIRST_NAME = #bind($filter) ");
+          if (Database.isJdbcPostgreSQL()) {
+            b.append(" AND B.LAST_NAME || B.FIRST_NAME = #bind($filter) ");
+          } else {
+            b.append(" AND CONCAT(B.LAST_NAME,B.FIRST_NAME) = #bind($filter) ");
+          }
           paramValue = filterValue;
           isFilter = true;
           break;
         case contains:
-          b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          if (Database.isJdbcPostgreSQL()) {
+            b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          } else {
+            b
+              .append(" AND CONCAT(B.LAST_NAME,B.FIRST_NAME) like #bind($filter) ");
+          }
           paramValue = "%" + filterValue + "%";
           isFilter = true;
           break;
@@ -262,7 +285,12 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
           // not supported.
           break;
         case startsWith:
-          b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          if (Database.isJdbcPostgreSQL()) {
+            b.append(" AND B.LAST_NAME || B.FIRST_NAME like #bind($filter) ");
+          } else {
+            b
+              .append(" AND CONCAT(B.LAST_NAME,B.FIRST_NAME) like #bind($filter) ");
+          }
           paramValue = filterValue + "%";
           isFilter = true;
           break;
