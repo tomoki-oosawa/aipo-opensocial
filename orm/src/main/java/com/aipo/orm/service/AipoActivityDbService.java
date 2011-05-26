@@ -152,13 +152,10 @@ public class AipoActivityDbService implements ActivityDbService {
           + Activity.UPDATE_DATE_PROPERTY, cal.getTime())).deleteAll();
 
       String sql =
-        "delete from activity where update_date < #bind($updateDate)";
-      Database
-        .sql(Activity.class, sql)
-        .param(
-          "updateDate",
-          new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime()))
-        .execute();
+        "delete from activity where update_date < '"
+          + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime())
+          + "'";
+      Database.sql(Activity.class, sql).execute();
 
       Database.commit();
     } catch (Throwable t) {
