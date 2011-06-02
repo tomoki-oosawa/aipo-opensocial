@@ -30,7 +30,8 @@ import org.apache.cayenne.util.ResourceLocator;
 /**
  * 
  */
-public class CustomDBCPDataSourceFactory extends DBCPDataSourceFactory {
+public class CustomDBCPDataSourceFactory extends DBCPDataSourceFactory
+    implements DataSourceFactoryDelegate {
 
   @Override
   public DataSource getDataSource(String location) throws Exception {
@@ -67,7 +68,14 @@ public class CustomDBCPDataSourceFactory extends DBCPDataSourceFactory {
       }
       properties = new DBCPDataSourceProperties(resourceFinder, location);
     }
-    DBCPDataSourceBuilder builder = new DBCPDataSourceBuilder(properties);
+    CustomDBCPDataSourceBuilder builder =
+      new CustomDBCPDataSourceBuilder(properties);
     return builder.createDataSource();
+  }
+
+  /**
+   * 
+   */
+  public void tearDown() {
   }
 }

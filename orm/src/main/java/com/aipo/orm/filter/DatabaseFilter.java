@@ -20,7 +20,6 @@
 package com.aipo.orm.filter;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -29,9 +28,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.cayenne.BaseContext;
-import org.apache.cayenne.CayenneException;
-import org.apache.cayenne.access.Transaction;
 import org.apache.cayenne.conf.ServletUtil;
 import org.apache.log4j.Logger;
 
@@ -42,6 +38,7 @@ import com.aipo.orm.Database;
  */
 public class DatabaseFilter implements Filter {
 
+  @SuppressWarnings("unused")
   private static final Logger logger = Logger.getLogger(DatabaseFilter.class
     .getName());
 
@@ -63,23 +60,7 @@ public class DatabaseFilter implements Filter {
     try {
       filterChain.doFilter(request, response);
     } finally {
-      BaseContext.bindThreadObjectContext(null);
-      Transaction threadTransaction = Transaction.getThreadTransaction();
-      if (threadTransaction != null) {
-        try {
-          threadTransaction.rollback();
-          logger.info("transaction rollback by filter");
-        } catch (IllegalStateException e) {
-          logger.error(e.getMessage(), e);
-        } catch (SQLException e) {
-          logger.error(e.getMessage(), e);
-        } catch (CayenneException e) {
-          logger.error(e.getMessage(), e);
-        } finally {
-          Transaction.bindThreadTransaction(null);
-        }
-      }
-
+      Database.tearDown();
     }
   }
 

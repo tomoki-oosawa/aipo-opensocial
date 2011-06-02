@@ -40,6 +40,7 @@ import org.apache.cayenne.access.Transaction;
 import org.apache.cayenne.conf.Configuration;
 import org.apache.cayenne.conf.CustomDBCPDataSourceFactory;
 import org.apache.cayenne.conf.DBCPDataSourceFactory;
+import org.apache.cayenne.conf.DataSourceFactoryDelegate;
 import org.apache.cayenne.dba.AutoAdapter;
 import org.apache.cayenne.exp.Expression;
 import org.apache.log4j.Logger;
@@ -403,6 +404,27 @@ public class Database {
     destDataDomain.addNode(dataNode);
     return destDataDomain.createDataContext();
 
+  }
+
+  public static void tearDown() {
+    Transaction threadTransaction = Transaction.getThreadTransaction();
+    if (threadTransaction != null) {
+      try {
+        threadTransaction.rollback();
+      } catch (IllegalStateException e) {
+        logger.error(e.getMessage(), e);
+      } catch (SQLException e) {
+        logger.error(e.getMessage(), e);
+      } catch (CayenneException e) {
+        logger.error(e.getMessage(), e);
+      } finally {
+        Transaction.bindThreadTransaction(null);
+      }
+    }
+    if (dataSourceFactory instanceof DataSourceFactoryDelegate) {
+      ((DataSourceFactoryDelegate) dataSourceFactory).tearDown();
+    }
+    BaseContext.bindThreadObjectContext(null);
   }
 
   protected static DBCPDataSourceFactory createDataSourceFactory() {
