@@ -20,6 +20,8 @@
 package org.apache.cayenne.conf;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -82,6 +84,8 @@ class CustomDBCPDataSourceBuilder {
 
   static final String CATALOG = "defaultCatalog";
 
+  static final String INIT_SQL = "initSql";
+  
   // PreparedStatementPool properties
 
   static final String POOL_PS = "poolPreparedStatements";
@@ -149,6 +153,13 @@ class CustomDBCPDataSourceBuilder {
         Connection.TRANSACTION_SERIALIZABLE);
     String defaultCatalog = config.getString(CATALOG);
 
+    String initSql = config.getString(INIT_SQL);
+    List<String> initSqls = null;
+    if (initSql != null && !initSql.isEmpty()) {
+      initSqls = new ArrayList<String>();
+      initSqls.add(initSql);
+    }
+    
     ObjectPool connectionPool = new GenericObjectPool(null, poolConfig);
 
     // a side effect of PoolableConnectionFactory constructor call is that newly
@@ -162,6 +173,7 @@ class CustomDBCPDataSourceBuilder {
       connectionPool,
       statementPool,
       validationQuery,
+      initSqls,
       defaultReadOnly ? Boolean.TRUE : Boolean.FALSE,
       defaultAutoCommit,
       defaultTransactionIsolation,
