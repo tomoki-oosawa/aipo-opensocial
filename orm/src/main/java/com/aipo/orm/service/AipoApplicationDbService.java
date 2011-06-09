@@ -34,6 +34,7 @@ public class AipoApplicationDbService implements ApplicationDbService {
    * @param consumerKey
    * @return
    */
+  @Override
   public String getConsumerSecret(String consumerKey) {
 
     selectDefaultDataDomain();
@@ -52,10 +53,13 @@ public class AipoApplicationDbService implements ApplicationDbService {
    * @param appId
    * @return
    */
+  @Override
   public Application get(String appId) {
     selectDefaultDataDomain();
 
-    Application app = Database.get(Application.class, appId);
+    Application app =
+      Database.query(Application.class).where(
+        Operations.eq(Application.APP_ID_PROPERTY, appId)).fetchSingle();
     if (app == null) {
       return null;
     }
