@@ -143,11 +143,11 @@
       <artifactId>json</artifactId>
       <version>20070829</version>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>1.2</version>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-web</artifactId>
