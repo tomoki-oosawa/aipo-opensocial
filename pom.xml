@@ -160,8 +160,8 @@
       </releases>
     </pluginRepository>
     <pluginRepository>
-      <id>mc-release</id>
-      <name>Local Maven repository of releases</name>
+      <id>mc-snapshot</id>
+      <name>Local Maven repository of snapshots</name>
       <url>http://mc-repo.googlecode.com/svn/maven2/snapshots</url>
       <snapshots>
         <enabled>true</enabled>
