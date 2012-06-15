@@ -49,9 +49,9 @@ public abstract class AbstractQuery<M> implements Query<M> {
   public AbstractQuery(DataContext dataContext, Class<M> rootClass) {
     this.rootClass = rootClass;
     this.dataContext = dataContext;
-    dataContext = (DataContext) BaseContext.getThreadObjectContext();
   }
 
+  @Override
   public M fetchSingle() {
     List<M> list = fetchList();
     if (list.size() > 0) {
@@ -60,6 +60,7 @@ public abstract class AbstractQuery<M> implements Query<M> {
     return null;
   }
 
+  @Override
   public void deleteAll() {
     List<M> list = fetchList();
     if (list.size() > 0) {
@@ -67,6 +68,7 @@ public abstract class AbstractQuery<M> implements Query<M> {
     }
   }
 
+  @Override
   public DataContext getDataContext() {
     return dataContext;
   }
