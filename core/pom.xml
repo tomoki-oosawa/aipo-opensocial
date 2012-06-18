@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.aipo.container</groupId>
     <artifactId>aipo-container</artifactId>
-    <version>7.0.0</version>
+    <version>7.0.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -172,7 +172,7 @@
     <dependency>
       <groupId>com.aipo</groupId>
       <artifactId>aipo-orm</artifactId>
-      <version>7.0.0</version>
+      <version>7.0.1</version>
     </dependency>
   </dependencies>
 
