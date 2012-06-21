@@ -34,7 +34,7 @@ import com.aipo.orm.service.TurbineUserDbService;
 import com.google.inject.Inject;
 
 /**
- * 
+ *
  */
 public abstract class AbstractService {
 
@@ -122,7 +122,7 @@ public abstract class AbstractService {
    * @param token
    */
   protected void checkSameOrgId(String orgId, SecurityToken token) {
-    if (orgId != null && orgId != "") {
+    if ((orgId != null) && !("".equals(orgId))) {
       if (orgId.equals(getOrgId(token))) {
         return;
       }
