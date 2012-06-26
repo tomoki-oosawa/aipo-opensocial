@@ -178,7 +178,7 @@ public abstract class AbstractService {
    * @param token
    */
   protected void checkSameAppId(String appId, SecurityToken token) {
-    if (appId != null && appId != "") {
+    if (appId != null && !appId.equals("")) {
       if (appId.equals(token.getAppId())) {
         return;
       }
