@@ -24,7 +24,7 @@ import com.aipo.social.opensocial.model.Group;
 /**
  * @see org.apache.shindig. social.core.model.GroupImpl
  */
-public class GroupImpl extends org.apache.shindig.social.core.model.GroupImpl
+public class ALGroupImpl extends org.apache.shindig.social.core.model.GroupImpl
     implements Group {
 
   private String type;
@@ -32,6 +32,7 @@ public class GroupImpl extends org.apache.shindig.social.core.model.GroupImpl
   /**
    * @return
    */
+  @Override
   public String getType() {
     return type;
   }
@@ -39,6 +40,7 @@ public class GroupImpl extends org.apache.shindig.social.core.model.GroupImpl
   /**
    * @param type
    */
+  @Override
   public void setType(String type) {
     this.type = type;
   }

@@ -37,7 +37,7 @@ import com.aipo.orm.service.TurbineGroupDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
-import com.aipo.social.core.model.GroupImpl;
+import com.aipo.social.core.model.ALGroupImpl;
 import com.aipo.social.opensocial.model.Group;
 import com.google.inject.Inject;
 
@@ -63,6 +63,7 @@ public class AipoGroupService extends AbstractService implements GroupService {
    * @param token
    * @return
    */
+  @Override
   public Future<RestfulCollection<Group>> getGroups(UserId userId,
       CollectionOptions collectionOptions, Set<String> fields,
       SecurityToken token) {
@@ -110,7 +111,7 @@ public class AipoGroupService extends AbstractService implements GroupService {
 
   protected Group assginGroup(TurbineGroup turbineGroup, Set<String> fields,
       SecurityToken token) {
-    Group group = new GroupImpl();
+    Group group = new ALGroupImpl();
     GroupId groupId = new GroupId(Type.groupId, turbineGroup.getGroupName());
     group.setId(groupId);
     group.setTitle(turbineGroup.getGroupAliasName());

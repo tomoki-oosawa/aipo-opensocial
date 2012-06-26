@@ -21,13 +21,13 @@ package com.aipo.social.opensocial.model;
 
 import org.apache.shindig.protocol.model.Exportablebean;
 
-import com.aipo.social.core.model.GroupImpl;
+import com.aipo.social.core.model.ALGroupImpl;
 import com.google.inject.ImplementedBy;
 
 /**
  * @see org.apache.shindig.social.opensocial.model.Group
  */
-@ImplementedBy(GroupImpl.class)
+@ImplementedBy(ALGroupImpl.class)
 @Exportablebean
 public interface Group extends org.apache.shindig.social.opensocial.model.Group {
 
