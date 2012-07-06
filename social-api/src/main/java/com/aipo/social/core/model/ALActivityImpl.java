@@ -26,7 +26,7 @@ import com.aipo.social.opensocial.model.Activity;
 /**
  * @see org.apache.shindig.social.core.model.ActivityImpl
  */
-public class ActivityImpl extends
+public class ALActivityImpl extends
     org.apache.shindig.social.core.model.ActivityImpl implements Activity {
 
   private List<String> recipients;
@@ -34,6 +34,7 @@ public class ActivityImpl extends
   /**
    * @return
    */
+  @Override
   public List<String> getRecipients() {
     return recipients;
   }
@@ -41,6 +42,7 @@ public class ActivityImpl extends
   /**
    * @param userIds
    */
+  @Override
   public void setRecipients(List<String> userIds) {
     this.recipients = userIds;
   }

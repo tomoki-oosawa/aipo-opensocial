@@ -23,13 +23,13 @@ import java.util.List;
 
 import org.apache.shindig.protocol.model.Exportablebean;
 
-import com.aipo.social.core.model.ActivityImpl;
+import com.aipo.social.core.model.ALActivityImpl;
 import com.google.inject.ImplementedBy;
 
 /**
  * @see org.apache.shindig.social.opensocial.model.Activity
  */
-@ImplementedBy(ActivityImpl.class)
+@ImplementedBy(ALActivityImpl.class)
 @Exportablebean
 public interface Activity extends
     org.apache.shindig.social.opensocial.model.Activity {
