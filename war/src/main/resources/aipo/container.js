@@ -60,7 +60,7 @@
 
 // DNS domain on which gadgets should render.
 "gadgets.lockedDomainSuffix" : ".example.com:8080",
-	
+
 // Origins for CORS requests and/or Referer validation
 // Indicate a set of origins or an entry with * to indicate that all origins are allowed
 "gadgets.parentOrigins" : ["*"],
@@ -84,8 +84,8 @@
 
 "gadgets.uri.js.host" : "http://www.example.com/",
 "gadgets.uri.js.path" : "/gadgets/js",
-	
-	
+
+
 // Callback URL.  Scheme relative URL for easy switch between https/http.
 "gadgets.uri.oauth.callbackTemplate" : "//%host%/gadgets/oauthcallback",
 
@@ -250,9 +250,9 @@
   "opensocial" : {
     // Path to fetch opensocial data from
     // Must be on the same domain as the gadget rendering server
-    "path" : "http://%host%/rpc",
+    "path" : "//%host%/rpc",
     // Path to issue invalidate calls
-    "invalidatePath" : "http://%host%/rpc",
+    "invalidatePath" : "//%host%/rpc",
     "domain" : "localhost",
     "enableCaja" : false,
     "supportedFields" : {
@@ -273,7 +273,7 @@
   },
   "osapi" : {
     // The endpoints to query for available JSONRPC/REST services
-    "endPoints" : [ "http://%host%/rpc" ]
+    "endPoints" : [ "//%host%/rpc" ]
   },
   "osml": {
     // OSML library resource.  Can be set to null or the empty string to disable OSML
