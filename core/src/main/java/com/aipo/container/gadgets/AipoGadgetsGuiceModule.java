@@ -37,6 +37,7 @@ import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.InvalidationHandler;
 import org.apache.shindig.gadgets.preload.PreloadModule;
 import org.apache.shindig.gadgets.render.RenderModule;
+import org.apache.shindig.gadgets.render.RpcServiceLookup;
 import org.apache.shindig.gadgets.servlet.GadgetsHandler;
 import org.apache.shindig.gadgets.servlet.HttpRequestHandler;
 import org.apache.shindig.gadgets.servlet.JsonRpcHandler;
@@ -44,6 +45,7 @@ import org.apache.shindig.gadgets.templates.TemplateModule;
 import org.apache.shindig.gadgets.variables.SubstituterModule;
 
 import com.aipo.container.gadgets.parse.AipoParseModule;
+import com.aipo.container.gadgets.render.AipoRpcServiceLookup;
 import com.aipo.container.gadgets.rewrite.AipoRewriteModule;
 import com.aipo.container.gadgets.servlet.AipoJsonRpcHandler;
 import com.aipo.container.gadgets.uri.AipoUriModule;
@@ -69,6 +71,7 @@ public class AipoGadgetsGuiceModule extends AbstractModule {
     bind(LockedDomainService.class).to(AipoHashLockedDomainService.class).in(
       Scopes.SINGLETON);
     bind(JsonRpcHandler.class).to(AipoJsonRpcHandler.class);
+    bind(RpcServiceLookup.class).to(AipoRpcServiceLookup.class);
 
     final ExecutorService service =
       Executors.newCachedThreadPool(DAEMON_THREAD_FACTORY);
@@ -159,6 +162,7 @@ public class AipoGadgetsGuiceModule extends AbstractModule {
     new ThreadFactory() {
       private final ThreadFactory factory = Executors.defaultThreadFactory();
 
+      @Override
       public Thread newThread(Runnable r) {
         Thread t = factory.newThread(r);
         t.setDaemon(true);
