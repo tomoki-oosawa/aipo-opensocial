@@ -32,6 +32,12 @@ sass-twitter-bootstrap-master/
 
 
 #################
+## Java
+#################
+
+target/
+
+#################
 ## Visual Studio
 #################
 
