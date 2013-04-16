@@ -108,6 +108,8 @@ public class OAuthEntry implements Serializable {
       case ACCESS:
         expirationTime += ONE_YEAR;
         break;
+      default:
+        break;
     }
 
     return new Date(expirationTime);

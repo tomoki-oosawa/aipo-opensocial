@@ -189,9 +189,7 @@ public abstract class AbstractService {
   }
 
   protected void checkInputRange(String input, int min, int max) {
-    if (input == null
-      || (input != null && input.length() < min)
-      || (input != null && input.length() > max)) {
+    if (input == null || (input.length() < min) || (input.length() > max)) {
       throw new ProtocolException(
         HttpServletResponse.SC_BAD_REQUEST,
         "Validate error.");
@@ -199,9 +197,7 @@ public abstract class AbstractService {
   }
 
   protected void checkInputByte(String input, int min, int max) {
-    if (input == null
-      || (input != null && byteLength(input) < min)
-      || (input != null && byteLength(input) > max)) {
+    if (input == null || (byteLength(input) < min) || (byteLength(input) > max)) {
       throw new ProtocolException(
         HttpServletResponse.SC_BAD_REQUEST,
         "Validate error.");
