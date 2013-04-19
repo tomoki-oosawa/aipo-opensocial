@@ -39,4 +39,7 @@
     <Match>
         <Bug pattern="USM_USELESS_SUBCLASS_METHOD" />
     </Match>
+    <Match>
+        <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED" />
+    </Match>
 </FindBugsFilter>
