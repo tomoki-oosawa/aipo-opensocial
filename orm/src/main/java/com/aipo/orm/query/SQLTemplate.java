@@ -36,8 +36,6 @@ public class SQLTemplate<M> extends AbstractQuery<M> {
 
   protected String primaryKey;
 
-  protected List<String> attrNames = new ArrayList<String>();
-
   protected Map<String, Object> parameters = new HashMap<String, Object>();
 
   public SQLTemplate(Class<M> rootClass, String sql) {
@@ -60,6 +58,7 @@ public class SQLTemplate<M> extends AbstractQuery<M> {
     dataContext.performQuery(delegate);
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public List<M> fetchList() {
     delegate.setParameters(parameters);
