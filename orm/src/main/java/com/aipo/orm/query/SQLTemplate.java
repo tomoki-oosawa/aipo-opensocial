@@ -34,8 +34,6 @@ public class SQLTemplate<M> extends AbstractQuery<M> {
 
   protected org.apache.cayenne.query.SQLTemplate delegate;
 
-  protected String primaryKey;
-
   protected Map<String, Object> parameters = new HashMap<String, Object>();
 
   public SQLTemplate(Class<M> rootClass, String sql) {
