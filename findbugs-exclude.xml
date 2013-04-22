@@ -42,4 +42,7 @@
     <Match>
         <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED" />
     </Match>
+    <Match>
+        <Bug pattern="ODR_OPEN_DATABASE_RESOURCE" />
+    </Match>
 </FindBugsFilter>
