@@ -29,7 +29,8 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(ALGroupImpl.class)
 @Exportablebean
-public interface Group extends org.apache.shindig.social.opensocial.model.Group {
+public interface ALGroup extends
+    org.apache.shindig.social.opensocial.model.Group {
 
   public static enum Field {
     /**

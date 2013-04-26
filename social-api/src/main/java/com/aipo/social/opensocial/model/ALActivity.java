@@ -31,7 +31,7 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(ALActivityImpl.class)
 @Exportablebean
-public interface Activity extends
+public interface ALActivity extends
     org.apache.shindig.social.opensocial.model.Activity {
 
   public static enum Field {

@@ -21,13 +21,13 @@ package com.aipo.social.core.model;
 
 import java.util.List;
 
-import com.aipo.social.opensocial.model.Activity;
+import com.aipo.social.opensocial.model.ALActivity;
 
 /**
  * @see org.apache.shindig.social.core.model.ActivityImpl
  */
 public class ALActivityImpl extends
-    org.apache.shindig.social.core.model.ActivityImpl implements Activity {
+    org.apache.shindig.social.core.model.ActivityImpl implements ALActivity {
 
   private List<String> recipients;
 

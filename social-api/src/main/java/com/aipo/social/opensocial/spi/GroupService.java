@@ -27,11 +27,11 @@ import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
-import com.aipo.social.opensocial.model.Group;
+import com.aipo.social.opensocial.model.ALGroup;
 
 public interface GroupService {
 
-  public Future<RestfulCollection<Group>> getGroups(UserId userId,
+  public Future<RestfulCollection<ALGroup>> getGroups(UserId userId,
       CollectionOptions options, Set<String> fields, SecurityToken token);
 
 }

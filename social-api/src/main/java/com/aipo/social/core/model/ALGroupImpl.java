@@ -19,13 +19,13 @@
 
 package com.aipo.social.core.model;
 
-import com.aipo.social.opensocial.model.Group;
+import com.aipo.social.opensocial.model.ALGroup;
 
 /**
  * @see org.apache.shindig. social.core.model.GroupImpl
  */
 public class ALGroupImpl extends org.apache.shindig.social.core.model.GroupImpl
-    implements Group {
+    implements ALGroup {
 
   private String type;
 

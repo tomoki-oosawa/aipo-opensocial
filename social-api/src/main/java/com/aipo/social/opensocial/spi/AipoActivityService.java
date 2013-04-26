@@ -35,13 +35,13 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.orm.model.social.Application;
 import com.aipo.orm.service.ActivityDbService;
 import com.aipo.orm.service.ApplicationDbService;
-import com.aipo.social.opensocial.model.Activity;
+import com.aipo.social.opensocial.model.ALActivity;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
- * 
+ *
  */
 public class AipoActivityService extends AbstractService implements
     ActivityService {
@@ -51,7 +51,7 @@ public class AipoActivityService extends AbstractService implements
   private final ApplicationDbService applicationDbService;
 
   /**
-   * 
+   *
    */
   @Inject
   public AipoActivityService(ActivityDbService activityDbService,
@@ -69,8 +69,9 @@ public class AipoActivityService extends AbstractService implements
    * @param token
    * @throws ProtocolException
    */
-  public Future<RestfulCollection<Activity>> getActivities(Set<UserId> userIds,
-      GroupId groupId, String appId, Set<String> fields,
+  @Override
+  public Future<RestfulCollection<ALActivity>> getActivities(
+      Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields,
       CollectionOptions options, SecurityToken token) throws ProtocolException {
     // NOT SUPPORTED
     return ImmediateFuture.newInstance(null);
@@ -87,7 +88,8 @@ public class AipoActivityService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
-  public Future<RestfulCollection<Activity>> getActivities(UserId userId,
+  @Override
+  public Future<RestfulCollection<ALActivity>> getActivities(UserId userId,
       GroupId groupId, String appId, Set<String> fields,
       CollectionOptions options, Set<String> activityIds, SecurityToken token)
       throws ProtocolException {
@@ -105,7 +107,8 @@ public class AipoActivityService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
-  public Future<Activity> getActivity(UserId userId, GroupId groupId,
+  @Override
+  public Future<ALActivity> getActivity(UserId userId, GroupId groupId,
       String appId, Set<String> fields, String activityId, SecurityToken token)
       throws ProtocolException {
     // NOT SUPPORTED
@@ -121,6 +124,7 @@ public class AipoActivityService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<Void> deleteActivities(UserId userId, GroupId groupId,
       String appId, Set<String> activityIds, SecurityToken token)
       throws ProtocolException {
@@ -138,8 +142,9 @@ public class AipoActivityService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<Void> createActivity(UserId userId, GroupId groupId,
-      String appId, Set<String> fields, Activity activity, SecurityToken token)
+      String appId, Set<String> fields, ALActivity activity, SecurityToken token)
       throws ProtocolException {
 
     setUp(token);

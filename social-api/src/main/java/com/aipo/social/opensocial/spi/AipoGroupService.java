@@ -38,18 +38,18 @@ import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.aipo.social.core.model.ALGroupImpl;
-import com.aipo.social.opensocial.model.Group;
+import com.aipo.social.opensocial.model.ALGroup;
 import com.google.inject.Inject;
 
 /**
- * 
+ *
  */
 public class AipoGroupService extends AbstractService implements GroupService {
 
   private final TurbineGroupDbService turbineGroupDbService;
 
   /**
-   * 
+   *
    */
   @Inject
   public AipoGroupService(TurbineGroupDbService eipMPostDbService) {
@@ -64,7 +64,7 @@ public class AipoGroupService extends AbstractService implements GroupService {
    * @return
    */
   @Override
-  public Future<RestfulCollection<Group>> getGroups(UserId userId,
+  public Future<RestfulCollection<ALGroup>> getGroups(UserId userId,
       CollectionOptions collectionOptions, Set<String> fields,
       SecurityToken token) {
 
@@ -94,14 +94,14 @@ public class AipoGroupService extends AbstractService implements GroupService {
           : SortOrder.valueOf(collectionOptions.getSortOrder().toString()));
     List<TurbineGroup> list = turbineGroupDbService.find(username, options);
 
-    List<Group> result = new ArrayList<Group>();
+    List<ALGroup> result = new ArrayList<ALGroup>();
     for (TurbineGroup post : list) {
       result.add(assginGroup(post, fields, token));
     }
     int totalResults = turbineGroupDbService.getCount(username, options);
 
-    RestfulCollection<Group> restCollection =
-      new RestfulCollection<Group>(
+    RestfulCollection<ALGroup> restCollection =
+      new RestfulCollection<ALGroup>(
         result,
         collectionOptions.getFirst(),
         totalResults,
@@ -109,9 +109,9 @@ public class AipoGroupService extends AbstractService implements GroupService {
     return ImmediateFuture.newInstance(restCollection);
   }
 
-  protected Group assginGroup(TurbineGroup turbineGroup, Set<String> fields,
+  protected ALGroup assginGroup(TurbineGroup turbineGroup, Set<String> fields,
       SecurityToken token) {
-    Group group = new ALGroupImpl();
+    ALGroup group = new ALGroupImpl();
     GroupId groupId = new GroupId(Type.groupId, turbineGroup.getGroupName());
     group.setId(groupId);
     group.setTitle(turbineGroup.getGroupAliasName());

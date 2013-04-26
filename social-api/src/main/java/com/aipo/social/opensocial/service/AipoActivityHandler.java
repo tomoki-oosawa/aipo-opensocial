@@ -33,7 +33,7 @@ import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
-import com.aipo.social.opensocial.model.Activity;
+import com.aipo.social.opensocial.model.ALActivity;
 import com.aipo.social.opensocial.spi.ActivityService;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
@@ -111,7 +111,7 @@ public class AipoActivityHandler {
 
     return service.createActivity(Iterables.getOnlyElement(userIds), request
       .getGroup(), request.getAppId(), request.getFields(), request
-      .getTypedParameter("activity", Activity.class), request.getToken());
+      .getTypedParameter("activity", ALActivity.class), request.getToken());
   }
 
   /**
