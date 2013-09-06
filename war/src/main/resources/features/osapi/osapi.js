@@ -25,6 +25,7 @@
   osapi._registerMethod = function(method, transport) {
     var has___ = typeof ___ !== 'undefined';
 
+
     // Skip registration of local newBatch implementation.
     if (method == 'newBatch') {
       return;
@@ -62,6 +63,8 @@
       rpc = rpc || {};
       rpc.userId = rpc.userId || '@viewer';
       rpc.groupId = rpc.groupId || '@self';
+
+      rpc.timestamp = (new Date).getTime();
 
       // Decorate the execute method with the information necessary for batching
       boundCall.method = method;
