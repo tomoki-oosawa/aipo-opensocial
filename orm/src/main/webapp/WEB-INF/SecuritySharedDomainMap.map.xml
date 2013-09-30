@@ -43,6 +43,7 @@
 		<db-attribute name="LAST_NAME" type="VARCHAR" isMandatory="true" length="99"/>
 		<db-attribute name="LAST_NAME_KANA" type="VARCHAR" length="99"/>
 		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
+		<db-attribute name="MIGRATE_VERSION" type="INTEGER"/>
 		<db-attribute name="MODIFIED" type="TIMESTAMP"/>
 		<db-attribute name="OBJECTDATA" type="BINARY"/>
 		<db-attribute name="OUT_TELEPHONE" type="VARCHAR" length="15"/>
