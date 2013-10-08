@@ -195,7 +195,7 @@ a img {
 .aipostyle input[type=submit],
 .aipostyle input[type=button],
 .aipostyle input[type=reset],
-.aipostyle a.button:link {
+.aipostyle a.button {
   display: inline-block;
   *display: inline;
   margin-bottom: 0;
@@ -213,7 +213,7 @@ a img {
   background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
-  border: 1px solid #d2d2d2;
+  border: solid 1px #d2d2d2;
   border-color: #d2d2d2 #d2d2d2 silver;
   border-bottom-color: #b3b3b3;
   -webkit-border-radius: 4px;
@@ -243,7 +243,6 @@ a img {
   color: #333333;
   background-color: #e6e6e6;
   background-color: #cccccc \9;
-  text-decoration: none;
   background-position: 0 -15px;
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
@@ -290,7 +289,7 @@ a img {
   display: inline-block;
   *display: inline;
   *zoom: 1;
-  margin: 0;
+  margin: 5px 0;
   padding: 0;
   vertical-align: middle;
 }
@@ -306,7 +305,7 @@ a img {
 .aipostyle .pagination li a:visited {
   display: block;
   min-width: 25px;
-  line-height: 30px;
+  line-height: 28px;
   padding: 0 2px;
   margin: 0;
   color: #333333;
@@ -493,12 +492,6 @@ a img {
   background-position: 1px 2px;
   background-repeat: no-repeat;
 }
-* + html .aipostyle a.button:hover {
-  padding: 1px;
-  background-position: 1px 2px;
-  background-repeat: no-repeat;
-  border: 1px solid #F90;
-}
 
 /* Hides from IE-mac \*/
 * html .aipostyle .clearfix {
@@ -515,4 +508,13 @@ a img {
 }
 *:first-child + html .aipostyle select[multiple] {
   height: auto;
+}
+*:first-child + html .aipostyle input[type=submit],
+*:first-child + html .aipostyle input[type=button],
+*:first-child + html .aipostyle input[type=reset] {
+  line-height: 25px;
+  padding: 0 2px;
+}
+*:first-child + html .aipostyle a.button {
+  border: solid 1px #d2d2d2;
 }
