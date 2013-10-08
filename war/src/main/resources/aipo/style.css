@@ -287,10 +287,12 @@ a img {
   border-bottom: solid 1px #f0f0f0;
 }
 .aipostyle .pagination {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
   margin: 0;
   padding: 0;
-  font-size: .9em;
-  line-height: 1.2;
+  vertical-align: middle;
 }
 .aipostyle .pagination li {
   text-align: center;
@@ -300,22 +302,26 @@ a img {
   background: none;
   padding: 0;
 }
-.aipostyle .pagination a:link,
-.aipostyle .pagination a:visited {
-  border: 1px solid #999999;
-  cursor: pointer;
-  padding: .2em .5em;
-  margin: 0 .5em 0 0;
+.aipostyle .pagination li a:link,
+.aipostyle .pagination li a:visited {
+  display: block;
+  min-width: 25px;
+  line-height: 30px;
+  padding: 0 2px;
+  margin: 0;
   color: #333333;
   text-decoration: none;
-  display: block;
   font-size: .9em;
-  line-height: 1.2;
+  border-top: solid 1px #d2d2d2;
+  border-bottom: solid 1px #d2d2d2;
+  border-right: 1px solid #d2d2d2;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
-.aipostyle .pagination a:active {
+.aipostyle .pagination li a:active {
   border: 1px solid #aaa;
   cursor: pointer;
-  padding: .2em .5em;
   margin: 0 .5em 0 0;
   color: #666;
   text-decoration: none;
@@ -323,61 +329,48 @@ a img {
   font-size: .9em;
   line-height: 1.2;
 }
-.aipostyle .pagination a:hover {
+.aipostyle .pagination li a:hover {
   background-color: #fff5d8;
-  border: 1px solid #f90;
-  cursor: pointer;
-  padding: .2em .5em;
-  margin: 0 .5em 0 0;
   color: #f90;
-  text-decoration: none;
-  display: block;
-  font-size: .9em;
-  line-height: 1.2;
+}
+.aipostyle .pagination li:first-child a {
+  border-left: 1px solid #d2d2d2;
+  border-radius: 4px 0 0 4px;
+}
+.aipostyle .pagination li:last-child a {
+  border-radius: 0 4px 4px 0;
 }
 .aipostyle .pagination li.selected a:link,
 .aipostyle .pagination li.selected a:visited,
 .aipostyle .pagination li.selected a:active,
 .aipostyle .pagination li.selected a:hover {
   background-color: #d2d2d2;
-  border: 1px solid #999999;
   color: black;
   cursor: default;
+  font-weight: bold;
 }
-.aipostyle .pagination li.prev a:link,
-.aipostyle .pagination li.prev a:visited,
-.aipostyle .pagination li.next a:link,
-.aipostyle .pagination li.next a:visited {
-  border: 1px solid #999;
+.aipostyle .pagination li.prev a {
+  margin: 0 4px 0 0;
+  border-right: 1px solid #d2d2d2;
 }
-.aipostyle .pagination li.prev a:active,
-.aipostyle .pagination li.next a:active {
-  border: 1px solid #999;
+.aipostyle .pagination li.prev + li a {
+  border-left: 1px solid #d2d2d2;
 }
-.aipostyle .pagination li.prev a:hover,
-.aipostyle .pagination li.next a:hover {
-  border: 1px solid #f90;
+.aipostyle .pagination li.next a {
+  margin: 0 0 0 4px;
+  border-left: 1px solid #d2d2d2 !important;
+}
+.aipostyle .pagination li.next + li a {
+  border-right: 1px solid #d2d2d2;
 }
 .aipostyle .pagination li.disabled a:link,
 .aipostyle .pagination li.disabled a:visited,
 .aipostyle .pagination li.disabled a:active,
 .aipostyle .pagination li.disabled a:hover {
   background-color: #FFF;
-  border: 1px solid #E6E6E6;
-  color: #E6E6E6;
+  border-color: #d2d2d2;
+  color: #d2d2d2;
   cursor: default;
-}
-.aipostyle .pagination li.selected,
-.aipostyle .pagination li.disabled,
-.aipostyle .pagination li.prev,
-.aipostyle .pagination li.next {
-  font-weight: bold;
-}
-.aipostyle .pagination li.abbr {
-  display: block;
-  float: left;
-  margin-right: .1em;
-  padding: .2em .4em 0 .2em;
 }
 .aipostyle select {
   border: solid 1px silver;
