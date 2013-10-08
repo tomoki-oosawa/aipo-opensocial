@@ -372,6 +372,38 @@ a img {
   color: #d2d2d2;
   cursor: default;
 }
+.aipostyle .alertGray,
+.aipostyle .alertRed,
+.aipostyle .alertYellow,
+.aipostyle .alertGreen,
+.aipostyle .alertBlue {
+  display: block;
+  padding: 3px 5px;
+  margin: 5px 0;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  border-radius: 4px;
+}
+.aipostyle .alertGray {
+  background: #f0f0f0;
+}
+.aipostyle .alertRed {
+  background: #e63439;
+  color: white;
+}
+.aipostyle .alertYellow {
+  background: #f3b700;
+  color: white;
+}
+.aipostyle .alertGreen {
+  background: #46a546;
+  color: white;
+}
+.aipostyle .alertBlue {
+  background: #049cdb;
+  color: white;
+}
 .aipostyle select {
   border: solid 1px silver;
   -webkit-border-radius: 3px;
