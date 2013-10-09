@@ -195,7 +195,7 @@ a img {
 .aipostyle input[type=submit],
 .aipostyle input[type=button],
 .aipostyle input[type=reset],
-.aipostyle a.button:link {
+.aipostyle a.button {
   display: inline-block;
   *display: inline;
   margin-bottom: 0;
@@ -213,7 +213,7 @@ a img {
   background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
-  border: 1px solid #d2d2d2;
+  border: solid 1px #d2d2d2;
   border-color: #d2d2d2 #d2d2d2 silver;
   border-bottom-color: #b3b3b3;
   -webkit-border-radius: 4px;
@@ -243,7 +243,6 @@ a img {
   color: #333333;
   background-color: #e6e6e6;
   background-color: #cccccc \9;
-  text-decoration: none;
   background-position: 0 -15px;
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 }
@@ -287,10 +286,12 @@ a img {
   border-bottom: solid 1px #f0f0f0;
 }
 .aipostyle .pagination {
-  margin: 0;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  margin: 5px 0;
   padding: 0;
-  font-size: .9em;
-  line-height: 1.2;
+  vertical-align: middle;
 }
 .aipostyle .pagination li {
   text-align: center;
@@ -300,84 +301,97 @@ a img {
   background: none;
   padding: 0;
 }
-.aipostyle .pagination a:link,
-.aipostyle .pagination a:visited {
-  border: 1px solid #999999;
-  cursor: pointer;
-  padding: .2em .5em;
-  margin: 0 .5em 0 0;
+.aipostyle .pagination li a:link,
+.aipostyle .pagination li a:visited {
+  display: block;
+  min-width: 25px;
+  line-height: 28px;
+  padding: 0 2px;
+  margin: 0;
   color: #333333;
   text-decoration: none;
-  display: block;
   font-size: .9em;
-  line-height: 1.2;
+  border-top: solid 1px #d2d2d2;
+  border-bottom: solid 1px #d2d2d2;
+  border-right: 1px solid #d2d2d2;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
-.aipostyle .pagination a:active {
-  border: 1px solid #aaa;
-  cursor: pointer;
-  padding: .2em .5em;
-  margin: 0 .5em 0 0;
-  color: #666;
-  text-decoration: none;
-  display: block;
-  font-size: .9em;
-  line-height: 1.2;
-}
-.aipostyle .pagination a:hover {
+.aipostyle .pagination li a:hover {
   background-color: #fff5d8;
-  border: 1px solid #f90;
-  cursor: pointer;
-  padding: .2em .5em;
-  margin: 0 .5em 0 0;
   color: #f90;
-  text-decoration: none;
-  display: block;
-  font-size: .9em;
-  line-height: 1.2;
+}
+.aipostyle .pagination li:first-child a {
+  border-left: 1px solid #d2d2d2;
+  border-radius: 4px 0 0 4px;
+}
+.aipostyle .pagination li:last-child a {
+  border-radius: 0 4px 4px 0;
 }
 .aipostyle .pagination li.selected a:link,
 .aipostyle .pagination li.selected a:visited,
 .aipostyle .pagination li.selected a:active,
 .aipostyle .pagination li.selected a:hover {
   background-color: #d2d2d2;
-  border: 1px solid #999999;
   color: black;
   cursor: default;
+  font-weight: bold;
 }
-.aipostyle .pagination li.prev a:link,
-.aipostyle .pagination li.prev a:visited,
-.aipostyle .pagination li.next a:link,
-.aipostyle .pagination li.next a:visited {
-  border: 1px solid #999;
+.aipostyle .pagination li.prev a {
+  margin: 0 4px 0 0;
+  border-right: 1px solid #d2d2d2;
 }
-.aipostyle .pagination li.prev a:active,
-.aipostyle .pagination li.next a:active {
-  border: 1px solid #999;
+.aipostyle .pagination li.prev + li a {
+  border-left: 1px solid #d2d2d2;
 }
-.aipostyle .pagination li.prev a:hover,
-.aipostyle .pagination li.next a:hover {
-  border: 1px solid #f90;
+.aipostyle .pagination li.next a {
+  margin: 0 0 0 4px;
+  border-left: 1px solid #d2d2d2 !important;
+}
+.aipostyle .pagination li.next + li a {
+  border-right: 1px solid #d2d2d2;
 }
 .aipostyle .pagination li.disabled a:link,
 .aipostyle .pagination li.disabled a:visited,
 .aipostyle .pagination li.disabled a:active,
 .aipostyle .pagination li.disabled a:hover {
   background-color: #FFF;
-  border: 1px solid #E6E6E6;
-  color: #E6E6E6;
+  border-color: #d2d2d2;
+  color: #d2d2d2;
   cursor: default;
 }
-.aipostyle .pagination li.selected,
-.aipostyle .pagination li.disabled,
-.aipostyle .pagination li.prev,
-.aipostyle .pagination li.next {
-  font-weight: bold;
-}
-.aipostyle .pagination li.abbr {
+.aipostyle .alertGray,
+.aipostyle .alertRed,
+.aipostyle .alertYellow,
+.aipostyle .alertGreen,
+.aipostyle .alertBlue {
   display: block;
-  float: left;
-  margin-right: .1em;
-  padding: .2em .4em 0 .2em;
+  padding: 3px 5px;
+  margin: 5px 0;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  border-radius: 4px;
+}
+.aipostyle .alertGray {
+  background: #f0f0f0;
+}
+.aipostyle .alertRed {
+  background: #e63439;
+  color: white;
+}
+.aipostyle .alertYellow {
+  background: #f3b700;
+  color: white;
+}
+.aipostyle .alertGreen {
+  background: #46a546;
+  color: white;
+}
+.aipostyle .alertBlue {
+  background: #049cdb;
+  color: white;
 }
 .aipostyle select {
   border: solid 1px silver;
@@ -468,12 +482,6 @@ a img {
   background-position: 1px 2px;
   background-repeat: no-repeat;
 }
-* + html .aipostyle a.button:hover {
-  padding: 1px;
-  background-position: 1px 2px;
-  background-repeat: no-repeat;
-  border: 1px solid #F90;
-}
 
 /* Hides from IE-mac \*/
 * html .aipostyle .clearfix {
@@ -490,4 +498,13 @@ a img {
 }
 *:first-child + html .aipostyle select[multiple] {
   height: auto;
+}
+*:first-child + html .aipostyle input[type=submit],
+*:first-child + html .aipostyle input[type=button],
+*:first-child + html .aipostyle input[type=reset] {
+  line-height: 25px;
+  padding: 0 2px;
+}
+*:first-child + html .aipostyle a.button {
+  border: solid 1px #d2d2d2;
 }
