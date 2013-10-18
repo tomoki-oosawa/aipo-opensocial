@@ -272,6 +272,7 @@ a img {
   border-spacing: 0;
   border-collapse: collapse;
   margin: 10px 0;
+  border-top: solid 1px #f0f0f0;
 }
 .aipostyle table.list th,
 .aipostyle table.form th {
