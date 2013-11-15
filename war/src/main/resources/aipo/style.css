@@ -409,7 +409,6 @@ a img {
   border-radius: 3px;
   min-height: 32px;
   min-height: 20px\9; /* IE8 and below */
-  max-height: 20px\9; /* IE8 and below */
   padding: 5px;
   max-width: 300px;
 }
