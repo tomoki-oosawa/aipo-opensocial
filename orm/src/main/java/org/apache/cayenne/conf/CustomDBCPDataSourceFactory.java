@@ -25,10 +25,13 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.apache.cayenne.access.CustomDataSourceUtil;
 import org.apache.cayenne.util.ResourceLocator;
+import org.apache.commons.dbcp.ThreadPoolingDataSource;
+import org.apache.commons.pool.ObjectPool;
 
 /**
- * 
+ *
  */
 public class CustomDBCPDataSourceFactory extends DBCPDataSourceFactory
     implements DataSourceFactoryDelegate {
@@ -74,8 +77,27 @@ public class CustomDBCPDataSourceFactory extends DBCPDataSourceFactory
   }
 
   /**
-   * 
+   *
    */
+  @Override
   public void tearDown() {
+    try {
+      DataSource dataSource = CustomDataSourceUtil.getThreadDataSource();
+      if (dataSource instanceof ThreadPoolingDataSource) {
+        ThreadPoolingDataSource poolingDataSource =
+          (ThreadPoolingDataSource) dataSource;
+        if (poolingDataSource != null) {
+          ObjectPool pool = poolingDataSource.getPool();
+          if (pool != null) {
+            try {
+              pool.close();
+            } catch (Throwable t) {
+              //
+            }
+          }
+        }
+      }
+    } catch (Throwable t) {
+    }
   }
 }
