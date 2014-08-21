@@ -232,7 +232,7 @@ gadgets.config.register('minimessage', {}, function(configuration) {
 
 //	gadgets.MiniMessage.addCSS_(configuration.minimessage.css.join(''));
 
-  gadgets.MiniMessage.addLink_('//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css');
+  //gadgets.MiniMessage.addLink_('//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css');
   gadgets.MiniMessage.addLink_('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css');
 });
 
