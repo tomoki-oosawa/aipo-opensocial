@@ -6,7 +6,7 @@
   <properties>
     <aipo.version>7.0.2</aipo.version>
     <shindig.version>2.0.2</shindig.version>
-    <tomcat.version>6.0.29</tomcat.version>
+    <tomcat.version>7.0.57</tomcat.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -177,8 +177,8 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <failOnError>true</failOnError>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -220,6 +220,11 @@
             <headerDefinition>header-definition.xml</headerDefinition>
           </headerDefinitions>
         </configuration>
+      </plugin>
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-war-plugin</artifactId>
+         <version>2.1.1</version>
       </plugin>
     </plugins>
   </build>
