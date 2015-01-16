@@ -69,13 +69,13 @@
 // iframeBaseUri will automatically have the host inserted
 // if locked domain is enabled and the implementation supports it.
 // query parameters will be added.
-"gadgets.iframeBaseUri" : "/gadgets/ifr",
-"gadgets.uri.iframe.basePath" : "/gadgets/ifr",
+"gadgets.iframeBaseUri" : "/container/gadgets/ifr",
+"gadgets.uri.iframe.basePath" : "/container/gadgets/ifr",
 
 // jsUriTemplate will have %host% and %js% substituted.
 // No locked domain special cases, but jsUriTemplate must
 // never conflict with a lockedDomainSuffix.
-"gadgets.jsUriTemplate" : "http://%host%/gadgets/js/%js%",
+"gadgets.jsUriTemplate" : "http://%host%/container/gadgets/js/%js%",
 
 //New configuration for iframeUri generation:
 "gadgets.uri.iframe.lockedDomainSuffix" :  ".example.com:8080",
@@ -83,11 +83,11 @@
 "gadgets.uri.iframe.basePath" : "/gadgets/ifr",
 
 "gadgets.uri.js.host" : "http://www.example.com/",
-"gadgets.uri.js.path" : "/gadgets/js",
+"gadgets.uri.js.path" : "/container/gadgets/js",
 
 
 // Callback URL.  Scheme relative URL for easy switch between https/http.
-"gadgets.uri.oauth.callbackTemplate" : "//%host%/gadgets/oauthcallback",
+"gadgets.uri.oauth.callbackTemplate" : "//%host%/container/gadgets/oauthcallback",
 
 // Use an insecure security token by default
 // "gadgets.securityTokenType" : "insecure",
@@ -95,7 +95,7 @@
 // Config param to load Opensocial data for social
 // preloads in data pipelining.  %host% will be
 // substituted with the current host.
-"gadgets.osDataUri" : "http://%host%/rpc",
+"gadgets.osDataUri" : "http://%host%/container/rpc",
 
 // Uncomment these to switch to a secure version
 //
@@ -114,16 +114,16 @@
 
 // Default Js Uri config: also must be overridden.
 "gadgets.uri.js.host": "${Cur['defaultShindigTestHost']}",
-"gadgets.uri.js.path": "/gadgets/js",
+"gadgets.uri.js.path": "/container/gadgets/js",
 
 // Default concat Uri config; used for testing.
 "gadgets.uri.concat.host" : "${Cur['defaultShindigProxyConcatAuthority']}",
-"gadgets.uri.concat.path" : "/gadgets/concat",
+"gadgets.uri.concat.path" : "/container/gadgets/concat",
 "gadgets.uri.concat.js.splitToken" : "false",
 
 // Default proxy Uri config; used for testing.
 "gadgets.uri.proxy.host" : "${Cur['defaultShindigProxyConcatAuthority']}",
-"gadgets.uri.proxy.path" : "/gadgets/proxy",
+"gadgets.uri.proxy.path" : "/container/gadgets/proxy",
 
 // This config data will be passed down to javascript. Please
 // configure your object using the feature name rather than
@@ -135,8 +135,8 @@
   "core.io" : {
     // Note: /proxy is an open proxy. Be careful how you expose this!
     // Note: Here // is replaced with the current protocol http/https
-    "proxyUrl" : "//%host%/gadgets/proxy?container=default&refresh=%refresh%&url=%url%%rewriteMime%",
-    "jsonProxyUrl" : "//%host%/gadgets/makeRequest"
+    "proxyUrl" : "//%host%/container/gadgets/proxy?container=default&refresh=%refresh%&url=%url%%rewriteMime%",
+    "jsonProxyUrl" : "//%host%/container/gadgets/makeRequest"
   },
   "views" : {
     "home" : {
@@ -232,7 +232,7 @@
     // parameter if it passes input validation and is not null.
     // This should never be on the same host in a production environment!
     // Only use this for TESTING!
-    "parentRelayUrl" : "/gadgets/files/container/rpc_relay.html",
+    "parentRelayUrl" : "/container/gadgets/files/container/rpc_relay.html",
 
     // If true, this will use the legacy ifpc wire format when making rpc
     // requests.
@@ -252,9 +252,9 @@
   "opensocial" : {
     // Path to fetch opensocial data from
     // Must be on the same domain as the gadget rendering server
-    "path" : "//%host%/rpc",
+    "path" : "//%host%/container/rpc",
     // Path to issue invalidate calls
-    "invalidatePath" : "//%host%/rpc",
+    "invalidatePath" : "//%host%/container/rpc",
     "domain" : "localhost",
     "enableCaja" : false,
     "supportedFields" : {
@@ -275,7 +275,7 @@
   },
   "osapi" : {
     // The endpoints to query for available JSONRPC/REST services
-    "endPoints" : [ "//%host%/rpc" ]
+    "endPoints" : [ "//%host%/container/rpc" ]
   },
   "osml": {
     // OSML library resource.  Can be set to null or the empty string to disable OSML

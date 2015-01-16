@@ -29,11 +29,11 @@
             <phase>package</phase>
             <configuration>
               <tasks>
-                <copy todir="../war/target/ROOT" verbose="false"
+                <copy todir="../war/target/container" verbose="false"
                   overwrite="true">
                   <fileset dir="./src/main/webapp" includes="**/*" />
                 </copy>
-                <copy todir="../war/target/ROOT/WEB-INF/lib"
+                <copy todir="../war/target/container/WEB-INF/lib"
                   verbose="false" overwrite="true">
                   <fileset dir="./target" includes="*.jar" />
                 </copy>

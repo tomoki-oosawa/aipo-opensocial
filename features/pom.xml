@@ -67,7 +67,7 @@
             <phase>package</phase>
             <configuration>
               <tasks>
-                <copy todir="../war/target/ROOT/WEB-INF/lib"
+                <copy todir="../war/target/container/WEB-INF/lib"
                   verbose="false" overwrite="true">
                   <fileset dir="./target" includes="*.jar" />
                 </copy>
