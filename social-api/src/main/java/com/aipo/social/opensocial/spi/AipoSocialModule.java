@@ -19,10 +19,14 @@
 
 package com.aipo.social.opensocial.spi;
 
+import org.apache.shindig.social.core.oauth2.OAuth2DataService;
+import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 
+import com.aipo.social.core.oauth2.AipoOAuth2DataService;
+import com.aipo.social.core.oauth2.AipoOAuth2Service;
 import com.aipo.social.opensocial.oauth.AipoOAuthDataStore;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
@@ -30,13 +34,13 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
 /**
- * 
+ *
  */
 public class AipoSocialModule extends AbstractModule {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see com.google.inject.AbstractModule#configure()
    */
   @Override
@@ -52,6 +56,8 @@ public class AipoSocialModule extends AbstractModule {
     bind(GroupService.class).to(AipoGroupService.class).in(Scopes.SINGLETON);
     // bind(MessageService.class).to(JsonDbOpensocialService.class);
     bind(OAuthDataStore.class).to(AipoOAuthDataStore.class);
+    bind(OAuth2Service.class).to(AipoOAuth2Service.class);
+    bind(OAuth2DataService.class).to(AipoOAuth2DataService.class);
 
     Multibinder.newSetBinder(binder(), Object.class, Names
       .named("org.apache.shindig.handlers"));

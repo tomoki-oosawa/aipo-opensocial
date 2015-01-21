@@ -172,6 +172,11 @@
       <artifactId>aipo-orm</artifactId>
       <version>8.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.aipo.container</groupId>
+      <artifactId>aipo-container-core</artifactId>
+      <version>8.0.0</version>
+    </dependency>
 
     <!-- test -->
     <!-- dependency>
