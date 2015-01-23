@@ -25,10 +25,12 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -67,7 +69,7 @@ public class ThreadPoolingDataSource implements DataSource {
 
   /**
    * Returns the value of the accessToUnderlyingConnectionAllowed property.
-   * 
+   *
    * @return true if access to the underlying is allowed, false otherwise.
    */
   public boolean isAccessToUnderlyingConnectionAllowed() {
@@ -78,7 +80,7 @@ public class ThreadPoolingDataSource implements DataSource {
    * Sets the value of the accessToUnderlyingConnectionAllowed property. It
    * controls if the PoolGuard allows access to the underlying connection.
    * (Default: false)
-   * 
+   *
    * @param allow
    *          Access to the underlying connection is granted when true.
    */
@@ -128,7 +130,7 @@ public class ThreadPoolingDataSource implements DataSource {
 
   /**
    * Throws {@link UnsupportedOperationException}
-   * 
+   *
    * @throws UnsupportedOperationException
    */
   @Override
@@ -139,7 +141,7 @@ public class ThreadPoolingDataSource implements DataSource {
 
   /**
    * Returns my log writer.
-   * 
+   *
    * @return my log writer
    * @see DataSource#getLogWriter
    */
@@ -150,7 +152,7 @@ public class ThreadPoolingDataSource implements DataSource {
 
   /**
    * Throws {@link UnsupportedOperationException}.
-   * 
+   *
    * @throws UnsupportedOperationException
    *           As this implementation does not support this feature.
    */
@@ -161,7 +163,7 @@ public class ThreadPoolingDataSource implements DataSource {
 
   /**
    * Throws {@link UnsupportedOperationException}.
-   * 
+   *
    * @throws UnsupportedOperationException
    *           As this implementation does not support this feature.
    */
@@ -172,7 +174,7 @@ public class ThreadPoolingDataSource implements DataSource {
 
   /**
    * Sets my log writer.
-   * 
+   *
    * @see DataSource#setLogWriter
    */
   @Override
@@ -534,5 +536,14 @@ public class ThreadPoolingDataSource implements DataSource {
         return null;
       }
     }
+  }
+
+  /**
+   * @return
+   * @throws SQLFeatureNotSupportedException
+   */
+  @Override
+  public Logger getParentLogger() {
+    throw new UnsupportedOperationException();
   }
 }
