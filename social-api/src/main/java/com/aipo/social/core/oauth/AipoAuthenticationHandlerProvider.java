@@ -25,8 +25,8 @@ import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
 import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
-import org.apache.shindig.social.core.oauth2.OAuth2AuthenticationHandler;
 
+import com.aipo.social.core.oauth2.AipoOAuth2AuthenticationHandler;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -40,7 +40,7 @@ public class AipoAuthenticationHandlerProvider implements
 
   @Inject
   public AipoAuthenticationHandlerProvider(
-      OAuth2AuthenticationHandler oauth2Handler,
+      AipoOAuth2AuthenticationHandler oauth2Handler,
       UrlParameterAuthenticationHandler urlParam,
       AipoOAuthAuthenticationHandler threeLeggedOAuth,
       AnonymousAuthenticationHandler anonymous) {

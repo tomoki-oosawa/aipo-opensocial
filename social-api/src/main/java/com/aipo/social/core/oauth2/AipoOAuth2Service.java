@@ -30,12 +30,13 @@ import org.apache.shindig.social.core.oauth2.OAuth2NormalizedRequest;
 import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.core.oauth2.OAuth2ServiceImpl;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.CodeType;
-import org.apache.shindig.social.core.oauth2.validators.AccessTokenRequestValidator;
 import org.apache.shindig.social.core.oauth2.validators.AuthorizationCodeRequestValidator;
 import org.apache.shindig.social.core.oauth2.validators.DefaultResourceRequestValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2ProtectedResourceValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
 
+import com.aipo.orm.service.TurbineUserDbService;
+import com.aipo.social.core.oauth2.validators.AipoOAuth2RequstValidator;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -59,6 +60,7 @@ public class AipoOAuth2Service implements OAuth2Service {
 
   @Inject
   public AipoOAuth2Service(OAuth2DataService store,
+      TurbineUserDbService turbineUserDbService,
       @Named("shindig.oauth2.authCodeExpiration") long authCodeExpires,
       @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
     this.store = store;
@@ -67,7 +69,8 @@ public class AipoOAuth2Service implements OAuth2Service {
     this.accessTokenExpires = accessTokenExpires;
 
     authCodeValidator = new AuthorizationCodeRequestValidator(store);
-    accessTokenValidator = new AccessTokenRequestValidator(store);
+    accessTokenValidator =
+      new AipoOAuth2RequstValidator(store, turbineUserDbService);
     resourceReqValidator = new DefaultResourceRequestValidator(store);
   }
 

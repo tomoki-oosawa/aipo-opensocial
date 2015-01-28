@@ -41,7 +41,7 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public OAuth2Client getClient(String clientId) {
-    return null;
+    return new OAuth2Client();
   }
 
   /**

@@ -38,6 +38,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
 
   public static int MAX_LIMIT = 1000;
 
+  @Override
   public int getCountByGroupname(String groupname, SearchOptions options) {
     List<DataRow> dataRows =
       queryByGroupname(groupname, options, true).fetchListAsDataRow();
@@ -52,6 +53,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     return 0;
   }
 
+  @Override
   public List<TurbineUser> findByGroupname(String groupname,
       SearchOptions options) {
     SQLTemplate<TurbineUser> selectBySql =
@@ -62,6 +64,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     return selectBySql.fetchList();
   }
 
+  @Override
   public TurbineUser findByUsername(String username) {
     if (username == null) {
       return null;
@@ -81,6 +84,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchSingle();
   }
 
+  @Override
   public List<TurbineUser> findByUsername(Set<String> username) {
     if (username == null || username.size() == 0) {
       return null;
@@ -100,6 +104,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchList();
   }
 
+  @Override
   public List<TurbineUser> find(SearchOptions options) {
     return buildQuery(
       " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ",
@@ -107,6 +112,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       false).fetchList();
   }
 
+  @Override
   public int getCount(SearchOptions options) {
     List<DataRow> dataRows =
       buildQuery(" COUNT(*) ", options, true).fetchListAsDataRow();
@@ -336,5 +342,15 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     }
 
     return sqlTemplate;
+  }
+
+  /**
+   * @param username
+   * @param password
+   * @return
+   */
+  @Override
+  public TurbineUser auth(String username, String password) {
+    throw new UnsupportedOperationException();
   }
 }
