@@ -19,6 +19,9 @@
 
 package com.aipo.orm.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +35,7 @@ import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.google.inject.Singleton;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 @Singleton
 public class AipoTurbineUserDbService implements TurbineUserDbService {
@@ -351,6 +355,33 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
    */
   @Override
   public TurbineUser auth(String username, String password) {
-    throw new UnsupportedOperationException();
+    TurbineUser user = findByUsername(username);
+    if (user == null) {
+      return null;
+    }
+    String encodedPassword = null;
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA");
+      // We need to use unicode here, to be independent of platform's
+      // default encoding. Thanks to SGawin for spotting this.
+      byte[] digest = md.digest(password.getBytes("UTF-8"));
+      ByteArrayOutputStream bas =
+        new ByteArrayOutputStream(digest.length + digest.length / 3 + 1);
+      OutputStream encodedStream = MimeUtility.encode(bas, "base64");
+      encodedStream.write(digest);
+      encodedStream.flush();
+      encodedStream.close();
+      encodedPassword = bas.toString();
+    } catch (Throwable ignore) {
+      // ignore
+    }
+    if (encodedPassword == null) {
+      return null;
+    }
+    if (encodedPassword.equals(user.getPasswordValue())) {
+      return user;
+    } else {
+      return null;
+    }
   }
 }
