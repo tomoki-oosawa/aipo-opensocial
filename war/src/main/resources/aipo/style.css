@@ -1,6 +1,6 @@
 @charset "UTF-8";
 * {
-  font-family: Helvetica, Arial, "lucida grande", tahoma, verdana, arial, "hiragino kaku gothic pro", meiryo, "ms pgothic", sans-serif;
+  font-family: Arial, Helvetica, "lucida grande", tahoma, verdana, arial, "hiragino kaku gothic pro", meiryo, "ms pgothic", sans-serif;
 }
 
 html, body {
@@ -226,6 +226,17 @@ a img {
   -moz-box-sizing: border-box !important;
   box-sizing: border-box !important;
 }
+@-moz-document url-prefix() {
+  /*Fx*/
+.aipostyle input[type=submit],
+.aipostyle input[type=button],
+.aipostyle input[type=reset],
+.aipostyle a.button,
+.aipostyle .pagination li a:link,
+.aipostyle .pagination li a:visited {
+    line-height: -moz-block-height;
+  }
+}
 .aipostyle input[type=submit]:hover, .aipostyle input[type=submit]:focus, .aipostyle input[type=submit]:active, .aipostyle input[type=submit].active,
 .aipostyle input[type=button]:hover,
 .aipostyle input[type=button]:focus,
@@ -251,20 +262,6 @@ a img {
   color: #333;
   text-decoration: none;
 }
-.aipostyle input[type=submit]:active,
-.aipostyle input[type=button]:active,
-.aipostyle input[type=reset]:active,
-.aipostyle a.button:active,
-.aipostyle .pagination li a:active:link,
-.aipostyle .pagination li a:active:visited {
-  background-image: none !important;
-  -webkit-filter: none !important;
-  filter: none !important;
-  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
-  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
-  background-color: #d2d2d2 !important;
-}
 .aipostyle input[type=submit]:hover, .aipostyle input[type=submit]:focus,
 .aipostyle input[type=button]:hover,
 .aipostyle input[type=button]:focus,
@@ -279,6 +276,19 @@ a img {
   border: solid 1px #999;
   color: #333;
   text-decoration: none;
+}
+.aipostyle input[type=submit]:active,
+.aipostyle input[type=button]:active,
+.aipostyle input[type=reset]:active,
+.aipostyle a.button:active,
+.aipostyle .pagination li a:active {
+  background-image: none !important;
+  -webkit-filter: none !important;
+  filter: none !important;
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  background-color: #d2d2d2 !important;
 }
 .aipostyle input[type=submit]:focus,
 .aipostyle input[type=button]:focus,
@@ -341,38 +351,52 @@ a img {
 .aipostyle .pagination li a:visited {
   display: block;
   min-width: 25px;
-  line-height: 28px;
-  padding: 0 2px;
-  margin: 0;
+  line-height: 30px;
+  padding: 0 6px;
+  margin: 0 -1px;
   color: #333333;
   text-decoration: none;
-  font-size: .9em;
   border-top: solid 1px #d2d2d2;
   border-bottom: solid 1px #d2d2d2;
   border-right: 1px solid #d2d2d2;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  border-radius: 0;
 }
-.aipostyle .pagination li a:hover {
-  background-color: #fff5d8;
-  color: #f90;
+.aipostyle .pagination li a:hover,
+.aipostyle .pagination li a:active,
+.aipostyle .pagination li a:focus {
+  position: relative;
 }
 .aipostyle .pagination li:first-child a {
-  border-left: 1px solid #d2d2d2;
+  margin-left: 0;
   border-radius: 4px 0 0 4px;
 }
+.aipostyle .pagination li a.prev {
+  margin-left: 0;
+  padding: 0 8px;
+}
+.aipostyle .pagination li a.next {
+  margin-right: 0;
+  padding: 0 8px;
+}
+
 .aipostyle .pagination li:last-child a {
   border-radius: 0 4px 4px 0;
 }
 .aipostyle .pagination li.selected a:link,
-.aipostyle .pagination li.selected a:visited,
+.aipostyle .pagination li.selected a:visited {
+  background: #d2d2d2;
+  border-color: #d2d2d2 #d2d2d2 silver;
+  cursor: default;
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false) !important;
+}
 .aipostyle .pagination li.selected a:active,
 .aipostyle .pagination li.selected a:hover {
-  background-color: #d2d2d2;
-  color: black;
-  cursor: default;
-  font-weight: bold;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  box-shadow: none !important;
 }
 .aipostyle .pagination li.prev a {
   margin: 0 4px 0 0;
