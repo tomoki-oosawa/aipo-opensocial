@@ -12,7 +12,6 @@
 
   <groupId>com.aipo.container</groupId>
   <artifactId>war</artifactId>
-  <version>${aipo.version}</version>
   <packaging>war</packaging>
 
   <name>Aipo OpenSocial Container Web App</name>
@@ -32,6 +31,7 @@
       <plugin>
         <groupId>net.sf.alchim</groupId>
         <artifactId>yuicompressor-maven-plugin</artifactId>
+        <version>0.7.1</version>
         <executions>
           <execution>
             <goals>
