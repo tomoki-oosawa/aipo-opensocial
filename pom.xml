@@ -173,6 +173,22 @@
   </pluginRepositories>
 
   <build>
+      <pluginManagement>
+      <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <onlyAnalyze>com.aipo.-</onlyAnalyze>
+          <effort>Max</effort>
+          <findbugsXmlOutput>true</findbugsXmlOutput>
+          <xmlOutput>true</xmlOutput>
+          <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
