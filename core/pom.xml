@@ -27,13 +27,8 @@
             <id>copy</id>
             <phase>package</phase>
             <configuration>
-<<<<<<< HEAD
-              <tasks>
-                <copy todir="../war/target/container" verbose="false"
-=======
               <target>
-                <copy todir="../war/target/ROOT" verbose="false"
->>>>>>> master
+                <copy todir="../war/target/container" verbose="false"
                   overwrite="true">
                   <fileset dir="./src/main/webapp" includes="**/*" />
                 </copy>

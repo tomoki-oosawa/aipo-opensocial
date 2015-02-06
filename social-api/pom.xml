@@ -28,7 +28,7 @@
             <id>copy</id>
             <phase>package</phase>
             <configuration>
-              <tasks>
+              <target>
                 <copy todir="../war/target/container/WEB-INF/lib"
                   verbose="false" overwrite="true">
                   <fileset dir="./target" includes="*.jar" />
