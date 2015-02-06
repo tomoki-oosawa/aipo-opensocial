@@ -199,11 +199,8 @@
     ".tablib_navContainer a:hover {",
       "color: #3366aa;",
       "text-decoration: none;",
-    "}"
-    ]
-  },
-  "minimessage": {
-      "css": [
+    "}",
+
         ".mmlib_table {",
         "width:100%;",
         "margin: 5px 0;",
@@ -218,12 +215,7 @@
       "}",
       ".mmlib_xlink {",
         "display:block;",
-        "overflow:hidden;",
-        "line-height:50px;",
-        "height:11px;",
-        "width:11px;",
         "cursor: pointer;",
-        "background:url(../images/common/icon_close_mini.gif) top left no-repeat;",
       "}"
      ]
   },

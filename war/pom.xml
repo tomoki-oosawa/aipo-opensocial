@@ -12,11 +12,10 @@
 
   <groupId>com.aipo.container</groupId>
   <artifactId>war</artifactId>
-  <version>${aipo.version}</version>
   <packaging>war</packaging>
 
   <name>Aipo OpenSocial Container Web App</name>
-  
+
    <build>
     <finalName>container</finalName>
     <pluginManagement>
@@ -32,6 +31,7 @@
       <plugin>
         <groupId>net.sf.alchim</groupId>
         <artifactId>yuicompressor-maven-plugin</artifactId>
+        <version>0.7.1</version>
         <executions>
           <execution>
             <goals>
@@ -66,18 +66,6 @@
       <artifactId>aipo-social-api</artifactId>
       <version>${aipo.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>el-api</artifactId>
-      <version>${tomcat.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>jasper-el</artifactId>
-      <version>${tomcat.version}</version>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
-  
+
 </project>

@@ -13,7 +13,6 @@
 
   <groupId>com.aipo</groupId>
   <artifactId>aipo-social-api</artifactId>
-  <version>${aipo.version}</version>
   <packaging>jar</packaging>
 
   <name>Aipo OpenSocial Container Social API</name>
@@ -23,7 +22,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.4</version>
+        <version>1.8</version>
         <executions>
           <execution>
             <id>copy</id>
@@ -34,7 +33,7 @@
                   verbose="false" overwrite="true">
                   <fileset dir="./target" includes="*.jar" />
                 </copy>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
