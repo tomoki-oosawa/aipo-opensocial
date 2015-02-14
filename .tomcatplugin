@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tomcatProjectProperties>
-    <rootDir>/war/target/ROOT</rootDir>
+    <rootDir>/war/target/container</rootDir>
     <exportSource>false</exportSource>
     <reloadable>false</reloadable>
     <redirectLogger>false</redirectLogger>
     <updateXml>true</updateXml>
     <warLocation></warLocation>
     <extraInfo></extraInfo>
-    <webPath>/</webPath>
+    <webPath>/container</webPath>
 </tomcatProjectProperties>
