@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.mail.internet.MimeUtility;
+
 import org.apache.cayenne.DataRow;
 
 import com.aipo.orm.Database;
@@ -35,7 +37,6 @@ import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.google.inject.Singleton;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 @Singleton
 public class AipoTurbineUserDbService implements TurbineUserDbService {
