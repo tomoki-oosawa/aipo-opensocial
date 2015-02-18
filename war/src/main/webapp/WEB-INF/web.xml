@@ -26,7 +26,7 @@
 	version="2.5">
 	<display-name>Aipo OpenSocial Container</display-name>
 	<!-- configuration -->
-	<!-- If you have your own Guice module(s), put them here as a colon-separated 
+	<!-- If you have your own Guice module(s), put them here as a colon-separated
 		list. -->
 	<!-- Note that any extras modules are optional -->
 	<context-param>
@@ -43,22 +43,22 @@
     </param-value>
 	</context-param>
 
-	<!-- Syntax: <key>=<value> separated by a newline system.properties specifies 
-		the environmental variables that will be set to the JVM System Properties 
-		at server startup time. Alternatively, you may add these values in your app 
-		server (ex: Tomcat) as VM arguments like this: -Dshindig.host="my.production.shindig.server.com". 
-		Here are a few properties that can be set for Shindig: shindig.host: the 
-		server name that Shindig is deployed and running on shindig.port: the port 
-		number of shindig.host server Make sure you escape all HTML values for the 
+	<!-- Syntax: <key>=<value> separated by a newline system.properties specifies
+		the environmental variables that will be set to the JVM System Properties
+		at server startup time. Alternatively, you may add these values in your app
+		server (ex: Tomcat) as VM arguments like this: -Dshindig.host="my.production.shindig.server.com".
+		Here are a few properties that can be set for Shindig: shindig.host: the
+		server name that Shindig is deployed and running on shindig.port: the port
+		number of shindig.host server Make sure you escape all HTML values for the
 		web.xml to be parsed correctly. -->
 	<context-param>
 		<param-name>system.properties</param-name>
 		<param-value>
     	shindig.host=localhost
-    	
+
     	aKey=/shindig/gadgets/proxy?container=default&amp;url=
     	shindig.port=
-    	
+
      </param-value>
 	</context-param>
 
@@ -153,7 +153,7 @@
 	</servlet -->
 
 	<!-- Proxy -->
-	<!-- servlet> <servlet-name>proxy</servlet-name> <servlet-class> org.apache.shindig.gadgets.servlet.ProxyServlet 
+	<!-- servlet> <servlet-name>proxy</servlet-name> <servlet-class> org.apache.shindig.gadgets.servlet.ProxyServlet
 		</servlet-class> </servlet -->
 
 	<!-- makeRequest -->
@@ -163,7 +163,7 @@
 	</servlet>
 
 	<!-- Concat -->
-	<!-- servlet> <servlet-name>concat</servlet-name> <servlet-class> org.apache.shindig.gadgets.servlet.ConcatProxyServlet 
+	<!-- servlet> <servlet-name>concat</servlet-name> <servlet-class> org.apache.shindig.gadgets.servlet.ConcatProxyServlet
 		</servlet-class> </servlet -->
 
 	<!-- OAuth callback -->
@@ -183,6 +183,11 @@
 	<servlet>
 		<servlet-name>js</servlet-name>
 		<servlet-class>org.apache.shindig.gadgets.servlet.JsServlet</servlet-class>
+	</servlet>
+
+    <servlet>
+		<servlet-name>oauth2Servlet</servlet-name>
+		<servlet-class>com.aipo.social.core.oauth2.AipoOAuth2Servlet</servlet-class>
 	</servlet>
 
 	<!-- servlet>
@@ -216,7 +221,7 @@
 		<url-pattern>/gadgets/js/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- servlet-mapping> <servlet-name>proxy</servlet-name> <url-pattern>/gadgets/proxy/*</url-pattern> 
+	<!-- servlet-mapping> <servlet-name>proxy</servlet-name> <url-pattern>/gadgets/proxy/*</url-pattern>
 		</servlet-mapping -->
 
 	<servlet-mapping>
@@ -238,7 +243,7 @@
 		<url-pattern>/social/rest/*</url-pattern>
 	</servlet-mapping -->
 
-	<!-- servlet-mapping> <servlet-name>concat</servlet-name> <url-pattern>/gadgets/concat</url-pattern> 
+	<!-- servlet-mapping> <servlet-name>concat</servlet-name> <url-pattern>/gadgets/concat</url-pattern>
 		</servlet-mapping -->
 
 	<servlet-mapping>
@@ -261,9 +266,9 @@
 		<url-pattern>/gadgets/metadata</url-pattern>
 	</servlet-mapping>
 
-	<!-- servlet-mapping>
-		<servlet-name>sampleOAuth</servlet-name>
-		<url-pattern>/oauth/*</url-pattern>
-	</servlet-mapping -->
+	<servlet-mapping>
+		<servlet-name>oauth2Servlet</servlet-name>
+		<url-pattern>/oauth2/*</url-pattern>
+	</servlet-mapping>
 
 </web-app>

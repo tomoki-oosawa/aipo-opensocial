@@ -51,7 +51,7 @@ public class AipoOAuth2RequstValidator implements OAuth2RequestValidator {
     this.grantValidators = new ArrayList<OAuth2GrantValidator>();
     // grantValidators.add(new AuthCodeGrantValidator(store));
     // grantValidators.add(new ClientCredentialsGrantValidator(store));
-    // grantValidators.add(new PasswordGrantValidator(turbineUserDbService));
+    grantValidators.add(new PasswordGrantValidator(turbineUserDbService));
     this.store = store;
   }
 

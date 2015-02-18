@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.mail.internet.MimeUtility;
 
 import org.apache.cayenne.DataRow;
+import org.apache.cayenne.access.DataContext;
 
 import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
@@ -356,6 +357,15 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
    */
   @Override
   public TurbineUser auth(String username, String password) {
+
+    DataContext dataContext = null;
+    try {
+      dataContext = Database.createDataContext("org001");
+      DataContext.bindThreadObjectContext(dataContext);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+
     TurbineUser user = findByUsername(username);
     if (user == null) {
       return null;
