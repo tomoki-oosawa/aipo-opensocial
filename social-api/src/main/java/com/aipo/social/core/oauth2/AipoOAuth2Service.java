@@ -20,8 +20,10 @@
 package com.aipo.social.core.oauth2;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
+import org.apache.cayenne.access.DataContext;
 import org.apache.shindig.social.core.oauth2.OAuth2Client;
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2DataService;
@@ -35,6 +37,8 @@ import org.apache.shindig.social.core.oauth2.validators.DefaultResourceRequestVa
 import org.apache.shindig.social.core.oauth2.validators.OAuth2ProtectedResourceValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
 
+import com.aipo.orm.model.security.TurbineOAuthToken;
+import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.TurbineUserDbService;
 import com.aipo.social.core.oauth2.validators.AipoOAuth2RequstValidator;
 import com.google.inject.Inject;
@@ -61,6 +65,7 @@ public class AipoOAuth2Service implements OAuth2Service {
   @Inject
   public AipoOAuth2Service(OAuth2DataService store,
       TurbineUserDbService turbineUserDbService,
+
       @Named("shindig.oauth2.authCodeExpiration") long authCodeExpires,
       @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
     this.store = store;
@@ -245,7 +250,32 @@ public class AipoOAuth2Service implements OAuth2Service {
       }
     }
 
+    // registerAccessToken((TurbineUser) req.get("user"), accessToken);
     return accessToken;
+  }
+
+  public void registerAccessToken(TurbineUser user, OAuth2Code accessToken) {
+    if (accessToken == null) {
+      return;
+    }
+    DataContext ctx = DataContext.createDataContext();
+    TurbineOAuthToken token = ctx.newObject(TurbineOAuthToken.class);
+    token.setAccessToken(accessToken.getValue());
+    token.setUser(user);
+    token.setCreateDate(new Date());
+    token.setExpireTime(new Date(accessToken.getExpiration()));
+    StringBuilder scopes = new StringBuilder();
+    if (accessToken.getScope() != null) {
+      for (String scope : accessToken.getScope()) {
+        scopes.append(scope).append(", ");
+      }
+    }
+    if (scopes.length() > 2) {
+      scopes.setLength(scopes.length() - 2);
+    }
+    token.setScope(scopes.toString());
+    token.setTokenType(accessToken.getType().toString());
+    ctx.commitChanges();
   }
 
   /**
