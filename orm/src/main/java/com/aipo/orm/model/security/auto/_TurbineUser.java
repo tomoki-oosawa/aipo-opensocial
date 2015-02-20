@@ -10,6 +10,7 @@ import com.aipo.orm.model.account.EipTAclUserRoleMap;
 import com.aipo.orm.model.portlet.EipTEventlog;
 import com.aipo.orm.model.portlet.EipTMsgboardCategory;
 import com.aipo.orm.model.portlet.EipTTodo;
+import com.aipo.orm.model.security.TurbineOAuthToken;
 import com.aipo.orm.model.security.TurbineUserGroupRole;
 
 /**
@@ -50,6 +51,7 @@ public abstract class _TurbineUser extends CayenneDataObject {
     public static final String EIP_TEVENTLOG_PROPERTY = "eipTEventlog";
     public static final String EIP_TMSGBOARD_CATEGORY_PROPERTY = "eipTMsgboardCategory";
     public static final String EIP_TTODO_PROPERTY = "eipTTodo";
+    public static final String TURBINE_OAUTH_TOKEN_PROPERTY = "turbineOAuthToken";
     public static final String TURBINE_USER_GROUP_ROLE_PROPERTY = "turbineUserGroupRole";
 
     public static final String USER_ID_PK_COLUMN = "USER_ID";
@@ -283,6 +285,18 @@ public abstract class _TurbineUser extends CayenneDataObject {
     @SuppressWarnings("unchecked")
     public List<EipTTodo> getEipTTodo() {
         return (List<EipTTodo>)readProperty("eipTTodo");
+    }
+
+
+    public void addToTurbineOAuthToken(TurbineOAuthToken obj) {
+        addToManyTarget("turbineOAuthToken", obj, true);
+    }
+    public void removeFromTurbineOAuthToken(TurbineOAuthToken obj) {
+        removeToManyTarget("turbineOAuthToken", obj, true);
+    }
+    @SuppressWarnings("unchecked")
+    public List<TurbineOAuthToken> getTurbineOAuthToken() {
+        return (List<TurbineOAuthToken>)readProperty("turbineOAuthToken");
     }
 
 
