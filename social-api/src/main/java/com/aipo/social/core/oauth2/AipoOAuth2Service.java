@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-import org.apache.cayenne.access.DataContext;
 import org.apache.shindig.social.core.oauth2.OAuth2Client;
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2DataService;
@@ -37,9 +36,9 @@ import org.apache.shindig.social.core.oauth2.validators.DefaultResourceRequestVa
 import org.apache.shindig.social.core.oauth2.validators.OAuth2ProtectedResourceValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
 
-import com.aipo.orm.model.security.TurbineUser;
-import com.aipo.orm.model.social.OAuth2Token;
 import com.aipo.orm.service.TurbineUserDbService;
+//import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.service.bean.OAuth2Token;
 import com.aipo.social.core.oauth2.validators.AipoOAuth2RequstValidator;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -254,12 +253,12 @@ public class AipoOAuth2Service implements OAuth2Service {
     return accessToken;
   }
 
-  public void registerAccessToken(TurbineUser user, OAuth2Code accessToken) {
+  public void registerAccessToken(String userId, OAuth2Code accessToken) {
     if (accessToken == null) {
       return;
     }
-    DataContext ctx = DataContext.createDataContext();
-    OAuth2Token token = ctx.newObject(OAuth2Token.class);
+    // DataContext ctx = DataContext.createDataContext();
+    OAuth2Token token = new OAuth2Token();
     token.setAccessToken(accessToken.getValue());
     // token.setUser(user);
     token.setCreateDate(new Date());
@@ -275,7 +274,6 @@ public class AipoOAuth2Service implements OAuth2Service {
     }
     token.setScope(scopes.toString());
     token.setTokenType(accessToken.getType().toString());
-    ctx.commitChanges();
   }
 
   /**

@@ -57,7 +57,7 @@ public class PasswordGrantValidator implements OAuth2GrantValidator {
       throwAccessDenied("Bad username or password");
     }
     // FIXME
-    req.put("user", user);
+    req.put("user_id", user.getLoginName());
   }
 
   /**
