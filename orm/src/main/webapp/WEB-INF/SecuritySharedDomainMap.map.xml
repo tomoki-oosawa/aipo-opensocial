@@ -12,15 +12,6 @@
 		<db-attribute name="OWNER_ID" type="INTEGER"/>
 		<db-attribute name="PUBLIC_FLAG" type="CHAR" length="1"/>
 	</db-entity>
-	<db-entity name="turbine_oauth_token">
-		<db-attribute name="ACCESS_TOKEN" type="VARCHAR"/>
-		<db-attribute name="CREATE_DATE" type="TIMESTAMP"/>
-		<db-attribute name="EXPIRE_TIME" type="TIMESTAMP"/>
-		<db-attribute name="SCOPE" type="VARCHAR"/>
-		<db-attribute name="TOKEN_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
-		<db-attribute name="TOKEN_TYPE" type="VARCHAR"/>
-		<db-attribute name="USER_ID" type="INTEGER"/>
-	</db-entity>
 	<db-entity name="turbine_permission">
 		<db-attribute name="OBJECTDATA" type="BINARY"/>
 		<db-attribute name="PERMISSION_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
@@ -76,13 +67,6 @@
 		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
 		<obj-attribute name="publicFlag" type="java.lang.String" db-attribute-path="PUBLIC_FLAG"/>
 	</obj-entity>
-	<obj-entity name="TurbineOAuthToken" className="com.aipo.orm.model.security.TurbineOAuthToken" dbEntityName="turbine_oauth_token">
-		<obj-attribute name="accessToken" type="java.lang.String" db-attribute-path="ACCESS_TOKEN"/>
-		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
-		<obj-attribute name="expireTime" type="java.util.Date" db-attribute-path="EXPIRE_TIME"/>
-		<obj-attribute name="scope" type="java.lang.String" db-attribute-path="SCOPE"/>
-		<obj-attribute name="tokenType" type="java.lang.String" db-attribute-path="TOKEN_TYPE"/>
-	</obj-entity>
 	<obj-entity name="TurbinePermission" className="com.aipo.orm.model.security.TurbinePermission" dbEntityName="turbine_permission">
 		<obj-attribute name="OBJECTDATA" type="byte[]" db-attribute-path="OBJECTDATA"/>
 		<obj-attribute name="permissionName" type="java.lang.String" db-attribute-path="PERMISSION_NAME"/>
@@ -130,9 +114,6 @@
 	<db-relationship name="turbineUserGroupRole" source="turbine_group" target="turbine_user_group_role" toMany="true">
 		<db-attribute-pair source="GROUP_ID" target="GROUP_ID"/>
 	</db-relationship>
-	<db-relationship name="user" source="turbine_oauth_token" target="turbine_user" toMany="false">
-		<db-attribute-pair source="USER_ID" target="USER_ID"/>
-	</db-relationship>
 	<db-relationship name="rolePermission" source="turbine_permission" target="turbine_role_permission" toDependentPK="true" toMany="true">
 		<db-attribute-pair source="PERMISSION_ID" target="PERMISSION_ID"/>
 	</db-relationship>
@@ -163,9 +144,6 @@
 	<db-relationship name="eipTTodo" source="turbine_user" target="eip_t_todo" toMany="true">
 		<db-attribute-pair source="USER_ID" target="USER_ID"/>
 	</db-relationship>
-	<db-relationship name="oauthTokens" source="turbine_user" target="turbine_oauth_token" toMany="true">
-		<db-attribute-pair source="USER_ID" target="USER_ID"/>
-	</db-relationship>
 	<db-relationship name="turbineUserGroupRole" source="turbine_user" target="turbine_user_group_role" toMany="true">
 		<db-attribute-pair source="USER_ID" target="USER_ID"/>
 	</db-relationship>
@@ -184,7 +162,6 @@
 	<obj-relationship name="eipFacilityGroup" source="TurbineGroup" target="EipFacilityGroup" db-relationship-path="eipFacilityGroup"/>
 	<obj-relationship name="eipMPost" source="TurbineGroup" target="EipMPost" db-relationship-path="eipMPost"/>
 	<obj-relationship name="turbineUserGroupRole" source="TurbineGroup" target="TurbineUserGroupRole" db-relationship-path="turbineUserGroupRole"/>
-	<obj-relationship name="user" source="TurbineOAuthToken" target="TurbineUser" deleteRule="Nullify" db-relationship-path="user"/>
 	<obj-relationship name="turbineRolePermission" source="TurbinePermission" target="TurbineRolePermission" db-relationship-path="rolePermission"/>
 	<obj-relationship name="turbineRolePermission" source="TurbineRole" target="TurbineRolePermission" db-relationship-path="rolePermission"/>
 	<obj-relationship name="turbineUserGroupRole" source="TurbineRole" target="TurbineUserGroupRole" db-relationship-path="turbineUserGroupRole"/>
@@ -195,7 +172,6 @@
 	<obj-relationship name="eipTEventlog" source="TurbineUser" target="EipTEventlog" db-relationship-path="eipTEventlog"/>
 	<obj-relationship name="eipTMsgboardCategory" source="TurbineUser" target="EipTMsgboardCategory" db-relationship-path="eipTMsgboardCategory"/>
 	<obj-relationship name="eipTTodo" source="TurbineUser" target="EipTTodo" db-relationship-path="eipTTodo"/>
-	<obj-relationship name="turbineOAuthToken" source="TurbineUser" target="TurbineOAuthToken" deleteRule="Deny" db-relationship-path="oauthTokens"/>
 	<obj-relationship name="turbineUserGroupRole" source="TurbineUser" target="TurbineUserGroupRole" db-relationship-path="turbineUserGroupRole"/>
 	<obj-relationship name="eipTScheduleMap" source="TurbineUserGroupRole" target="EipTScheduleMap" db-relationship-path="eipTScheduleMap"/>
 	<obj-relationship name="turbineGroup" source="TurbineUserGroupRole" target="TurbineGroup" db-relationship-path="turbineGroup"/>

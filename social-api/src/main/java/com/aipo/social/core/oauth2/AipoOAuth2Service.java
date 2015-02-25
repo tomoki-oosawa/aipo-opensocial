@@ -37,8 +37,8 @@ import org.apache.shindig.social.core.oauth2.validators.DefaultResourceRequestVa
 import org.apache.shindig.social.core.oauth2.validators.OAuth2ProtectedResourceValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
 
-import com.aipo.orm.model.security.TurbineOAuthToken;
 import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.model.social.OAuth2Token;
 import com.aipo.orm.service.TurbineUserDbService;
 import com.aipo.social.core.oauth2.validators.AipoOAuth2RequstValidator;
 import com.google.inject.Inject;
@@ -259,9 +259,9 @@ public class AipoOAuth2Service implements OAuth2Service {
       return;
     }
     DataContext ctx = DataContext.createDataContext();
-    TurbineOAuthToken token = ctx.newObject(TurbineOAuthToken.class);
+    OAuth2Token token = ctx.newObject(OAuth2Token.class);
     token.setAccessToken(accessToken.getValue());
-    token.setUser(user);
+    // token.setUser(user);
     token.setCreateDate(new Date());
     token.setExpireTime(new Date(accessToken.getExpiration()));
     StringBuilder scopes = new StringBuilder();
