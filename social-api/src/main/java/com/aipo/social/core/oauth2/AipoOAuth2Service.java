@@ -36,6 +36,7 @@ import org.apache.shindig.social.core.oauth2.validators.DefaultResourceRequestVa
 import org.apache.shindig.social.core.oauth2.validators.OAuth2ProtectedResourceValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
 
+import com.aipo.orm.service.OAuth2TokenDbService;
 import com.aipo.orm.service.TurbineUserDbService;
 //import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.bean.OAuth2Token;
@@ -49,6 +50,8 @@ import com.google.inject.name.Named;
 public class AipoOAuth2Service implements OAuth2Service {
 
   private final OAuth2DataService store; // underlying OAuth data store
+
+  private final OAuth2TokenDbService db;
 
   private final long authCodeExpires;
 
@@ -64,10 +67,12 @@ public class AipoOAuth2Service implements OAuth2Service {
   @Inject
   public AipoOAuth2Service(OAuth2DataService store,
       TurbineUserDbService turbineUserDbService,
+      OAuth2TokenDbService db,
 
       @Named("shindig.oauth2.authCodeExpiration") long authCodeExpires,
       @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
     this.store = store;
+    this.db = db;
 
     this.authCodeExpires = authCodeExpires;
     this.accessTokenExpires = accessTokenExpires;
@@ -249,17 +254,25 @@ public class AipoOAuth2Service implements OAuth2Service {
       }
     }
 
-    // registerAccessToken((TurbineUser) req.get("user"), accessToken);
+    registerAccessToken((String) req.get("user_id"), accessToken);
     return accessToken;
   }
 
+  /**
+   * 発行したAccessToekenをデータベースに永続化します
+   *
+   * @param userId
+   * @param accessToken
+   */
   public void registerAccessToken(String userId, OAuth2Code accessToken) {
     if (accessToken == null) {
       return;
     }
     // DataContext ctx = DataContext.createDataContext();
     OAuth2Token token = new OAuth2Token();
-    token.setAccessToken(accessToken.getValue());
+    token.setCodeType(OAuth2Token.CODE_TYPE_ACCESS_TOKEN);
+    token.setToken(accessToken.getValue());
+    token.setUserId(userId);
     // token.setUser(user);
     token.setCreateDate(new Date());
     token.setExpireTime(new Date(accessToken.getExpiration()));
@@ -274,6 +287,7 @@ public class AipoOAuth2Service implements OAuth2Service {
     }
     token.setScope(scopes.toString());
     token.setTokenType(accessToken.getType().toString());
+    db.put(token);
   }
 
   /**
