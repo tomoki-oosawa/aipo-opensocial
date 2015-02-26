@@ -5,9 +5,11 @@ import java.util.Date;
 
 // TODO:
 public class OAuth2Token implements Serializable {
+  public static final String CODE_TYPE_ACCESS_TOKEN = "ACCESS_TOKEN";
+
   private String userId;
 
-  private String accessToken;
+  private String token;
 
   private Date createDate;
 
@@ -16,6 +18,8 @@ public class OAuth2Token implements Serializable {
   private String scope;
 
   private String tokenType;
+
+  private String codeType;
 
   /**
    * @return userId
@@ -33,18 +37,18 @@ public class OAuth2Token implements Serializable {
   }
 
   /**
-   * @return accessToken
+   * @return token
    */
-  public String getAccessToken() {
-    return accessToken;
+  public String getToken() {
+    return token;
   }
 
   /**
-   * @param accessToken
-   *          セットする accessToken
+   * @param token
+   *          セットする token
    */
-  public void setAccessToken(String accessToken) {
-    this.accessToken = accessToken;
+  public void setToken(String token) {
+    this.token = token;
   }
 
   /**
@@ -105,6 +109,21 @@ public class OAuth2Token implements Serializable {
    */
   public void setTokenType(String tokenType) {
     this.tokenType = tokenType;
+  }
+
+  /**
+   * @return codeType
+   */
+  public String getCodeType() {
+    return codeType;
+  }
+
+  /**
+   * @param codeType
+   *          セットする codeType
+   */
+  public void setCodeType(String codeType) {
+    this.codeType = codeType;
   }
 
 }

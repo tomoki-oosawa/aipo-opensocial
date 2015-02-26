@@ -54,13 +54,14 @@
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 	</db-entity>
 	<db-entity name="oauth2_token">
-		<db-attribute name="ACCESS_TOKEN" type="VARCHAR" length="255"/>
+		<db-attribute name="USER_ID" type="VARCHAR" length="255"/>
+		<db-attribute name="TOKEN" type="VARCHAR" length="255"/>
 		<db-attribute name="CREATE_DATE" type="TIMESTAMP"/>
 		<db-attribute name="EXPIRE_TIME" type="TIMESTAMP"/>
 		<db-attribute name="SCOPE" type="VARCHAR" length="255"/>
 		<db-attribute name="TOKEN_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 		<db-attribute name="TOKEN_TYPE" type="VARCHAR" length="255"/>
-		<db-attribute name="USER_ID" type="INTEGER"/>
+		<db-attribute name="CODE_TYPE" type="VARCHAR" length="255"/>
 	</db-entity>
 	<db-entity name="oauth_consumer">
 		<db-attribute name="APP_ID" type="INTEGER"/>
@@ -141,11 +142,12 @@
 	</obj-entity>
 	<obj-entity name="OAuth2Token" className="com.aipo.orm.model.social.OAuth2Token" dbEntityName="oauth2_token">
 		<obj-attribute name="userId" type="java.lang.String" db-attribute-path="USER_ID"/>
-		<obj-attribute name="accessToken" type="java.lang.String" db-attribute-path="ACCESS_TOKEN"/>
+		<obj-attribute name="token" type="java.lang.String" db-attribute-path="TOKEN"/>
 		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
 		<obj-attribute name="expireTime" type="java.util.Date" db-attribute-path="EXPIRE_TIME"/>
 		<obj-attribute name="scope" type="java.lang.String" db-attribute-path="SCOPE"/>
 		<obj-attribute name="tokenType" type="java.lang.String" db-attribute-path="TOKEN_TYPE"/>
+		<obj-attribute name="codeType" type="java.lang.String" db-attribute-path="CODE_TYPE"/>
 	</obj-entity>
 	<obj-entity name="OAuthConsumer" className="com.aipo.orm.model.social.OAuthConsumer" dbEntityName="oauth_consumer">
 		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>
