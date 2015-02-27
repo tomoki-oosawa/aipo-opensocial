@@ -49,9 +49,10 @@ public class PasswordGrantValidator implements OAuth2GrantValidator {
   @Override
   public void validateRequest(OAuth2NormalizedRequest req)
       throws OAuth2Exception {
-    String username = req.getHttpServletRequest().getParameter("username");
-    String password = req.getHttpServletRequest().getParameter("password");
-
+    // String _username = req.getHttpServletRequest().getParameter("username");
+    // String _password = req.getHttpServletRequest().getParameter("password");
+    String username = (String) req.get("username");
+    String password = (String) req.get("password");
     TurbineUser user = turbineUserDbService.auth(username, password);
     if (user == null) {
       throwAccessDenied("Bad username or password");
