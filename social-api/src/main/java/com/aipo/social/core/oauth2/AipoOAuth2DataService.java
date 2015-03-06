@@ -19,6 +19,7 @@
 
 package com.aipo.social.core.oauth2;
 
+import org.apache.shindig.social.core.oauth2.AipoOAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2Client;
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2DataService;
@@ -85,7 +86,8 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     // TODO: ここ実装
     OAuth2Token token =
       store.get(accessToken, CodeType.ACCESS_TOKEN.toString());
-    OAuth2Code code = new OAuth2Code();
+    AipoOAuth2Code code = new AipoOAuth2Code();
+    code.setUserId(token.getUserId());
     code.setExpiration(token.getExpireTime().getTime());
     code.setType(CodeType.ACCESS_TOKEN);
     code.setValue(token.getToken());
