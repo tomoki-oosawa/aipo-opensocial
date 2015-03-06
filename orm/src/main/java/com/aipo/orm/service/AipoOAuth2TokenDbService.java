@@ -4,6 +4,7 @@ import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 
 import com.aipo.orm.Database;
+import com.aipo.orm.query.Operations;
 import com.aipo.orm.service.bean.OAuth2Token;
 
 // TODO:
@@ -14,11 +15,17 @@ public class AipoOAuth2TokenDbService implements OAuth2TokenDbService {
    * @return
    */
   @Override
-  public OAuth2Token get(int hashCode) {
+  public OAuth2Token get(String tokenString, String codeType) {
     // TODO: hashCode -> token
     selectDefaultDataDomain();
     com.aipo.orm.model.social.OAuth2Token model =
-      Database.get(com.aipo.orm.model.social.OAuth2Token.class, hashCode);
+      Database.query(com.aipo.orm.model.social.OAuth2Token.class).where(
+        Operations.eq(
+          com.aipo.orm.model.social.OAuth2Token.CODE_TYPE_PROPERTY,
+          codeType)).where(
+        Operations.eq(
+          com.aipo.orm.model.social.OAuth2Token.TOKEN_PROPERTY,
+          tokenString)).fetchSingle();
     if (model != null) {
       OAuth2Token oAuth2Token = new OAuth2Token();
       oAuth2Token.setUserId(model.getUserId());

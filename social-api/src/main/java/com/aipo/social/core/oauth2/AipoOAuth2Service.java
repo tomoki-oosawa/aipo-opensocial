@@ -270,7 +270,7 @@ public class AipoOAuth2Service implements OAuth2Service {
     }
     // DataContext ctx = DataContext.createDataContext();
     OAuth2Token token = new OAuth2Token();
-    token.setCodeType(OAuth2Token.CODE_TYPE_ACCESS_TOKEN);
+    token.setCodeType(CodeType.ACCESS_TOKEN.toString());
     token.setToken(accessToken.getValue());
     token.setUserId(userId);
     // token.setUser(user);

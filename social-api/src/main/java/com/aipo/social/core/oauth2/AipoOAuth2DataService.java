@@ -23,7 +23,10 @@ import org.apache.shindig.social.core.oauth2.OAuth2Client;
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2DataService;
 import org.apache.shindig.social.core.oauth2.OAuth2DataServiceImpl;
+import org.apache.shindig.social.core.oauth2.OAuth2Types.CodeType;
 
+import com.aipo.orm.service.OAuth2TokenDbService;
+import com.aipo.orm.service.bean.OAuth2Token;
 import com.google.inject.Inject;
 
 /**
@@ -31,8 +34,11 @@ import com.google.inject.Inject;
  */
 public class AipoOAuth2DataService implements OAuth2DataService {
 
+  private OAuth2TokenDbService store = null;
+
   @Inject
-  public AipoOAuth2DataService() throws Exception {
+  public AipoOAuth2DataService(OAuth2TokenDbService store) throws Exception {
+    this.store = store;
   }
 
   /**
@@ -76,7 +82,14 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public OAuth2Code getAccessToken(String accessToken) {
-    return null;
+    // TODO: ここ実装
+    OAuth2Token token =
+      store.get(accessToken, CodeType.ACCESS_TOKEN.toString());
+    OAuth2Code code = new OAuth2Code();
+    code.setExpiration(token.getExpireTime().getTime());
+    code.setType(CodeType.ACCESS_TOKEN);
+    code.setValue(token.getToken());
+    return code;
   }
 
   /**
