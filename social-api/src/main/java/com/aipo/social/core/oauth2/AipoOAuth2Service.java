@@ -32,7 +32,6 @@ import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.core.oauth2.OAuth2ServiceImpl;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.CodeType;
 import org.apache.shindig.social.core.oauth2.validators.AuthorizationCodeRequestValidator;
-import org.apache.shindig.social.core.oauth2.validators.DefaultResourceRequestValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2ProtectedResourceValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
 
@@ -40,6 +39,7 @@ import com.aipo.orm.service.OAuth2TokenDbService;
 import com.aipo.orm.service.TurbineUserDbService;
 //import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.bean.OAuth2Token;
+import com.aipo.social.core.oauth2.validators.AipoOAuth2ProtectedResourceValidator;
 import com.aipo.social.core.oauth2.validators.AipoOAuth2RequstValidator;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -80,7 +80,7 @@ public class AipoOAuth2Service implements OAuth2Service {
     authCodeValidator = new AuthorizationCodeRequestValidator(store);
     accessTokenValidator =
       new AipoOAuth2RequstValidator(store, turbineUserDbService);
-    resourceReqValidator = new DefaultResourceRequestValidator(store);
+    resourceReqValidator = new AipoOAuth2ProtectedResourceValidator(store);
   }
 
   /**
