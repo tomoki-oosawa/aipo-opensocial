@@ -20,9 +20,9 @@
 package com.aipo.social.core.oauth2;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.UUID;
 
+import org.apache.shindig.social.core.oauth2.AipoOAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2Client;
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2DataService;
@@ -37,8 +37,6 @@ import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
 
 import com.aipo.orm.service.OAuth2TokenDbService;
 import com.aipo.orm.service.TurbineUserDbService;
-//import com.aipo.orm.model.security.TurbineUser;
-import com.aipo.orm.service.bean.OAuth2Token;
 import com.aipo.social.core.oauth2.validators.AipoOAuth2ProtectedResourceValidator;
 import com.aipo.social.core.oauth2.validators.AipoOAuth2RequstValidator;
 import com.google.inject.Inject;
@@ -230,10 +228,11 @@ public class AipoOAuth2Service implements OAuth2Service {
   @Override
   public OAuth2Code generateAccessToken(OAuth2NormalizedRequest req) {
     // generate token value
-    OAuth2Code accessToken = new OAuth2Code();
+    AipoOAuth2Code accessToken = new AipoOAuth2Code();
     accessToken.setType(CodeType.ACCESS_TOKEN);
     accessToken.setValue(UUID.randomUUID().toString());
     accessToken.setExpiration(System.currentTimeMillis() + accessTokenExpires);
+    accessToken.setUserId((String) req.get("user_id"));
     if (req.getRedirectURI() != null) {
       accessToken.setRedirectURI(req.getRedirectURI());
     } else {
@@ -253,41 +252,7 @@ public class AipoOAuth2Service implements OAuth2Service {
         accessToken.setScope(new ArrayList<String>(authCode.getScope()));
       }
     }
-
-    registerAccessToken((String) req.get("user_id"), accessToken);
     return accessToken;
-  }
-
-  /**
-   * 発行したAccessToekenをデータベースに永続化します
-   *
-   * @param userId
-   * @param accessToken
-   */
-  public void registerAccessToken(String userId, OAuth2Code accessToken) {
-    if (accessToken == null) {
-      return;
-    }
-    // DataContext ctx = DataContext.createDataContext();
-    OAuth2Token token = new OAuth2Token();
-    token.setCodeType(CodeType.ACCESS_TOKEN.toString());
-    token.setToken(accessToken.getValue());
-    token.setUserId(userId);
-    // token.setUser(user);
-    token.setCreateDate(new Date());
-    token.setExpireTime(new Date(accessToken.getExpiration()));
-    StringBuilder scopes = new StringBuilder();
-    if (accessToken.getScope() != null) {
-      for (String scope : accessToken.getScope()) {
-        scopes.append(scope).append(", ");
-      }
-    }
-    if (scopes.length() > 2) {
-      scopes.setLength(scopes.length() - 2);
-    }
-    token.setScope(scopes.toString());
-    token.setTokenType(accessToken.getType().toString());
-    db.put(token);
   }
 
   /**

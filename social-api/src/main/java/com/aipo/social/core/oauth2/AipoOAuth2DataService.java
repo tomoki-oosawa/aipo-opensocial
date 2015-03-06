@@ -19,6 +19,8 @@
 
 package com.aipo.social.core.oauth2;
 
+import java.util.Date;
+
 import org.apache.shindig.social.core.oauth2.AipoOAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2Client;
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
@@ -100,6 +102,33 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public void registerAccessToken(String clientId, OAuth2Code accessToken) {
+    if (accessToken == null) {
+      return;
+    }
+    // DataContext ctx = DataContext.createDataContext();
+    OAuth2Token token = new OAuth2Token();
+    token.setCodeType(CodeType.ACCESS_TOKEN.toString());
+    token.setToken(accessToken.getValue());
+    if (accessToken instanceof AipoOAuth2Code) {
+      token.setUserId(((AipoOAuth2Code) accessToken).getUserId());
+    } else {
+      throw new UnsupportedOperationException();
+    }
+    // token.setUser(user);
+    token.setCreateDate(new Date());
+    token.setExpireTime(new Date(accessToken.getExpiration()));
+    StringBuilder scopes = new StringBuilder();
+    if (accessToken.getScope() != null) {
+      for (String scope : accessToken.getScope()) {
+        scopes.append(scope).append(", ");
+      }
+    }
+    if (scopes.length() > 2) {
+      scopes.setLength(scopes.length() - 2);
+    }
+    token.setScope(scopes.toString());
+    token.setTokenType(accessToken.getType().toString());
+    store.put(token);
   }
 
   /**
