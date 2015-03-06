@@ -49,8 +49,6 @@ public class AipoOAuth2Service implements OAuth2Service {
 
   private final OAuth2DataService store; // underlying OAuth data store
 
-  private final OAuth2TokenDbService db;
-
   private final long authCodeExpires;
 
   private final long accessTokenExpires;
@@ -70,7 +68,6 @@ public class AipoOAuth2Service implements OAuth2Service {
       @Named("shindig.oauth2.authCodeExpiration") long authCodeExpires,
       @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
     this.store = store;
-    this.db = db;
 
     this.authCodeExpires = authCodeExpires;
     this.accessTokenExpires = accessTokenExpires;
