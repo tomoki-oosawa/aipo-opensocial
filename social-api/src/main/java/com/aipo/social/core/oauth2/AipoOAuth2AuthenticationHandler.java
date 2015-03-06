@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.shindig.auth.AnonymousSecurityToken;
+import org.apache.shindig.auth.AipoOAuth2SecurityToken;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.logging.i18n.MessageKeys;
@@ -108,7 +108,8 @@ public class AipoOAuth2AuthenticationHandler implements AuthenticationHandler {
    */
   protected SecurityToken createSecurityTokenForValidatedRequest(
       OAuth2NormalizedRequest request) throws InvalidAuthenticationException {
-    return new AnonymousSecurityToken(); // Return your valid security token
+    // FIXME: ownerId, viewerIdを設定する
+    return new AipoOAuth2SecurityToken("", "");
   }
 
 }
