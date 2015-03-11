@@ -229,7 +229,8 @@ public class AipoOAuth2Service implements OAuth2Service {
     accessToken.setType(CodeType.ACCESS_TOKEN);
     accessToken.setValue(UUID.randomUUID().toString());
     accessToken.setExpiration(System.currentTimeMillis() + accessTokenExpires);
-    accessToken.setUserId((String) req.get("user_id"));
+    // XXX: org001
+    accessToken.setUserId("org001:" + (String) req.get("user_id"));
     if (req.getRedirectURI() != null) {
       accessToken.setRedirectURI(req.getRedirectURI());
     } else {

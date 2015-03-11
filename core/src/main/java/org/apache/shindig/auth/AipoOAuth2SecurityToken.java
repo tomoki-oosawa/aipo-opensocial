@@ -47,6 +47,8 @@ public class AipoOAuth2SecurityToken implements SecurityToken {
    */
   @Override
   public String getContainer() {
+    // FIXME: 動作させるには実装が必要です。
+    // return "";
     throw new UnsupportedOperationException();
   }
 

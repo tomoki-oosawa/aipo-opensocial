@@ -28,7 +28,9 @@ import org.apache.shindig.auth.AipoOAuth2SecurityToken;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.logging.i18n.MessageKeys;
+import org.apache.shindig.social.core.oauth2.AipoOAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2AuthenticationHandler;
+import org.apache.shindig.social.core.oauth2.OAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2Exception;
 import org.apache.shindig.social.core.oauth2.OAuth2NormalizedRequest;
 import org.apache.shindig.social.core.oauth2.OAuth2Service;
@@ -108,8 +110,20 @@ public class AipoOAuth2AuthenticationHandler implements AuthenticationHandler {
    */
   protected SecurityToken createSecurityTokenForValidatedRequest(
       OAuth2NormalizedRequest request) throws InvalidAuthenticationException {
-    // FIXME: ownerId, viewerIdを設定する
-    return new AipoOAuth2SecurityToken("", "");
+    try {
+      OAuth2Code code =
+        store.getDataService().getAccessToken(request.getAccessToken());
+      if (code instanceof AipoOAuth2Code) {
+        AipoOAuth2Code aipoCode = (AipoOAuth2Code) code;
+        return new AipoOAuth2SecurityToken(aipoCode.getUserId(), aipoCode
+          .getUserId());
+      } else {
+        throw new UnsupportedOperationException();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
 }
