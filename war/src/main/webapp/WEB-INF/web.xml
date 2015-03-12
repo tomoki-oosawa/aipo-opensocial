@@ -190,6 +190,14 @@
 		<servlet-class>com.aipo.social.core.oauth2.AipoOAuth2Servlet</servlet-class>
 	</servlet>
 
+	<servlet>
+		<servlet-name>restapiServlet</servlet-name>
+		<servlet-class>org.apache.shindig.protocol.DataServiceServlet</servlet-class>
+		<init-param>
+			<param-name>handlers</param-name>
+			<param-value>org.apache.shindig.handlers</param-value>
+		</init-param>
+	</servlet>
 	<!-- servlet>
 		<servlet-name>restapiServlet</servlet-name>
 		<servlet-class>org.apache.shindig.protocol.DataServiceServlet</servlet-class>
@@ -234,6 +242,11 @@
 		<url-pattern>/rpc/*</url-pattern>
 		<url-pattern>/gadgets/api/rpc/*</url-pattern>
 		<url-pattern>/social/rpc/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>restapiServlet</servlet-name>
+		<url-pattern>/rest/v1/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- servlet-mapping>
