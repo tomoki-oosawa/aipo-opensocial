@@ -1,13 +1,18 @@
 package org.apache.shindig.auth;
 
+import org.apache.shindig.config.ContainerConfig;
+
 public class AipoOAuth2SecurityToken implements SecurityToken {
   private final String ownerId;
 
   private final String viewerId;
 
+  private final String container;
+
   public AipoOAuth2SecurityToken(String ownerId, String viewerId) {
     this.ownerId = ownerId;
     this.viewerId = viewerId;
+    this.container = ContainerConfig.DEFAULT_CONTAINER;
   }
 
   /**
@@ -47,9 +52,7 @@ public class AipoOAuth2SecurityToken implements SecurityToken {
    */
   @Override
   public String getContainer() {
-    // FIXME: 動作させるには実装が必要です。
-    // return "";
-    throw new UnsupportedOperationException();
+    return this.container;
   }
 
   /**
