@@ -34,101 +34,116 @@
     <developer>
       <id>nbeppu</id>
       <name>Nobuhiko Beppu</name>
-      <email>nbeppu_at_gmail.com</email>
+      <url>https://github.com/nbeppu</url>
       <organization>Aimluck,Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>dercll1020</id>
       <name>Dai Hamada</name>
-      <email>dercll1020_at_gmail.com</email>
-      <organization></organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>rio.carbon</id>
       <name>Tomoharu Ono</name>
-      <email>rio.carbon_at_gmail.com</email>
-      <organization></organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>atsushi.shi</id>
       <name>Atsushi Shibata</name>
-      <email>atsushi.shi_at_gmail.com</email>
-      <organization></organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>yoshiteru.i</id>
       <name>Yoshiteru Iwasaki</name>
-      <email>yoshiteru.i_at_gmail.com</email>
+      <url>https://github.com/YoshiteruIwasaki</url>
       <organization>Aimluck,Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>ges.jonieet</id>
       <name>Yuji Koshikawa</name>
-      <email>ges.jonieet_at_gmail.com</email>
+      <url>https://github.com/alkoshikawa</url>
       <organization>Aimluck,Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>yusuke.takase.al</id>
       <name>Yusuke Takase</name>
-      <email>yusuke.takase.al_at_gmail.com</email>
+      <url>https://github.com/altakase</url>
       <organization>Aimluck,Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>keisuke.takada</id>
       <name>Keisuke Takada</name>
-      <email>keisuke.takada_at_gmail.com</email>
-      <organization></organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>nagatanoadoless</id>
       <name>Takashi Nagata</name>
-      <email>nagatanoadoless_at_gmail.com</email>
-      <organization></organization>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>nonstop-girl</id>
+      <url>https://github.com/nonstop-girl</url>
+      <organization>Aimluck,Inc.</organization>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>haradaaa</id>
+      <url>https://github.com/haradaaa</url>
+      <organization>Aimluck,Inc.</organization>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>y-ozaki</id>
+      <url>https://github.com/y-ozaki</url>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>tomoumi-n</id>
+      <url>https://github.com/tomoumi-n</url>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>ktaguro</id>
+      <url>https://github.com/ktaguro</url>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>shin-taro</id>
+      <url>https://github.com/shin-taro</url>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>evistream</id>
+      <url>https://github.com/evistream</url>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>reotogashi</id>
+      <url>https://github.com/reotogashi</url>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>ryosukeyamamoto</id>
+      <url>https://github.com/ryosukeyamamoto</url>
+      <timezone>+9</timezone>
+    </developer>
+    <developer>
+      <id>sho0110</id>
+      <url>https://github.com/sho0110</url>
       <timezone>+9</timezone>
     </developer>
   </developers>
   <contributors>
   </contributors>
 
-  <issueManagement>
-    <system>Goole Code</system>
-    <url><![CDATA[http://code.google.com/p/aipo/issues/list]]></url>
-  </issueManagement>
-  <mailingLists>
-    <mailingList>
-      <name>Aipo User Group</name>
-      <subscribe>http://groups.google.com/group/aipo-user/subscribe</subscribe>
-      <unsubscribe>http://groups.google.com/group/aipo-user</unsubscribe>
-      <post>aipo-user@googlegroups.com</post>
-      <archive>http://groups.google.com/group/aipo-user/topics</archive>
-    </mailingList>
-    <mailingList>
-      <name>Aipo Developer Group</name>
-      <subscribe>http://groups.google.com/group/aipo-dev/subscribe</subscribe>
-      <unsubscribe>http://groups.google.com/group/aipo-dev</unsubscribe>
-      <post>aipo-dev@googlegroups.com</post>
-      <archive>http://groups.google.com/group/aipo-dev/topics</archive>
-    </mailingList>
-    <mailingList>
-      <name>Aipo Security Group</name>
-      <subscribe>http://groups.google.com/group/aipo-security/subscribe</subscribe>
-      <unsubscribe>http://groups.google.com/group/aipo-security</unsubscribe>
-      <post>aipo-security@googlegroups.com</post>
-      <archive>http://groups.google.com/group/aipo-security/topics</archive>
-    </mailingList>
-  </mailingLists>
   <scm>
-    <connection>scm:svn:https://aipo.googlecode.com/svn/</connection>
-    <developerConnection>scm:svn:https://aipo.googlecode.com/svn/</developerConnection>
-    <url>http://code.google.com/p/aipo/source/browse#svn/trunk</url>
+    <url>https://github.com/aipocom/aipo</url>
+    <connection>scm:git:git://github.com/aipocom/aipo.git</connection>
+    <developerConnection>scm:git:git@github.com:aipocom/aipo.git</developerConnection>
   </scm>
   <repositories>
     <repository>
@@ -227,12 +242,15 @@
           </includes>
           <excludes>
             <exclude>**/*.opt.js</exclude>
+            <exclude>**/src/main/java/com/aipo/orm/model/**/auto/*.*</exclude>
+            <exclude>**/src/main/js/features/**/*.*</exclude>
+            <exclude>**/src/main/resources/features/**/*.*</exclude>
           </excludes>
           <encoding>UTF-8</encoding>
           <strictCheck>true</strictCheck>
           <skipExistingHeaders>false</skipExistingHeaders>
           <properties>
-            <year>2011</year>
+            <year>2015</year>
           </properties>
           <headerDefinitions>
             <headerDefinition>header-definition.xml</headerDefinition>
