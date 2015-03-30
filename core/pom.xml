@@ -13,7 +13,7 @@
 
   <groupId>com.aipo.container</groupId>
   <artifactId>aipo-container-core</artifactId>
-  
+
   <name>Aipo OpenSocial Container Core Code</name>
 
   <build>
@@ -52,6 +52,12 @@
       <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-common</artifactId>
       <version>${shindig.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.tomcat</groupId>
+          <artifactId>el-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.shindig</groupId>
@@ -64,6 +70,12 @@
       <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-gadgets</artifactId>
       <version>${shindig.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.tomcat</groupId>
+          <artifactId>el-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.shindig</groupId>
