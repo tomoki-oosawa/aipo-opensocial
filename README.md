@@ -1,10 +1,12 @@
-aipo-opensocial
-===============
+# Aipo OpenSocial
 
-関連情報
---------
-[aipo](https://code.google.com/p/aipo/)
+Aipoでソーシャルアプリを動かすためのOpenSocialコンテナです。
 
-ライセンス
-----------
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [公式サイト](http://www.aipo.com/)  
+* [ダウンロード](http://free.aipo.com/)
+* [ドキュメント](http://doc.aipo.com/)  
+* [コミュニティ](http://user.aipo.com/)  
+
+## ライセンス
+
+[AGPLv3](http://ja.wikipedia.org/wiki/Affero_General_Public_License)
