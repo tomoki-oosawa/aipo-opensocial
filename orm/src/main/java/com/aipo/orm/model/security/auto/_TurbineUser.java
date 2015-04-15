@@ -36,7 +36,6 @@ public abstract class _TurbineUser extends CayenneDataObject {
     public static final String LAST_NAME_PROPERTY = "lastName";
     public static final String LAST_NAME_KANA_PROPERTY = "lastNameKana";
     public static final String LOGIN_NAME_PROPERTY = "loginName";
-    public static final String MIGRATE_VERSION_PROPERTY = "migrateVersion";
     public static final String MODIFIED_PROPERTY = "modified";
     public static final String OBJECTDATA_PROPERTY = "objectdata";
     public static final String OUT_TELEPHONE_PROPERTY = "outTelephone";
@@ -164,13 +163,6 @@ public abstract class _TurbineUser extends CayenneDataObject {
     }
     public String getLoginName() {
         return (String)readProperty("loginName");
-    }
-
-    public void setMigrateVersion(Integer migrateVersion) {
-        writeProperty("migrateVersion", migrateVersion);
-    }
-    public Integer getMigrateVersion() {
-        return (Integer)readProperty("migrateVersion");
     }
 
     public void setModified(Date modified) {

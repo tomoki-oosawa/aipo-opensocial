@@ -38,4 +38,6 @@ public interface TurbineUserDbService {
   public List<TurbineUser> find(SearchOptions options);
 
   public int getCount(SearchOptions options);
+
+  public TurbineUser auth(String username, String password);
 }

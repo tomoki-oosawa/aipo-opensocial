@@ -18,11 +18,17 @@
  */
 package com.aipo.orm.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.mail.internet.MimeUtility;
+
 import org.apache.cayenne.DataRow;
+import org.apache.cayenne.access.DataContext;
 
 import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
@@ -37,6 +43,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
 
   public static int MAX_LIMIT = 1000;
 
+  @Override
   public int getCountByGroupname(String groupname, SearchOptions options) {
     List<DataRow> dataRows =
       queryByGroupname(groupname, options, true).fetchListAsDataRow();
@@ -51,6 +58,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     return 0;
   }
 
+  @Override
   public List<TurbineUser> findByGroupname(String groupname,
       SearchOptions options) {
     SQLTemplate<TurbineUser> selectBySql =
@@ -61,13 +69,15 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     return selectBySql.fetchList();
   }
 
+  @Override
   public TurbineUser findByUsername(String username) {
     if (username == null) {
       return null;
     }
 
     StringBuilder b = new StringBuilder();
-    b.append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME ");
+    b
+      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.PASSWORD_VALUE ");
     b.append(" FROM turbine_user AS B ");
     b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
     b.append(" AND B.LOGIN_NAME = #bind($username) ");
@@ -80,6 +90,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchSingle();
   }
 
+  @Override
   public List<TurbineUser> findByUsername(Set<String> username) {
     if (username == null || username.size() == 0) {
       return null;
@@ -99,6 +110,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchList();
   }
 
+  @Override
   public List<TurbineUser> find(SearchOptions options) {
     return buildQuery(
       " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ",
@@ -106,6 +118,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       false).fetchList();
   }
 
+  @Override
   public int getCount(SearchOptions options) {
     List<DataRow> dataRows =
       buildQuery(" COUNT(*) ", options, true).fetchListAsDataRow();
@@ -335,5 +348,51 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     }
 
     return sqlTemplate;
+  }
+
+  /**
+   * @param username
+   * @param password
+   * @return
+   */
+  @Override
+  public TurbineUser auth(String username, String password) {
+
+    DataContext dataContext = null;
+    try {
+      dataContext = Database.createDataContext("org001");
+      DataContext.bindThreadObjectContext(dataContext);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+
+    TurbineUser user = findByUsername(username);
+    if (user == null) {
+      return null;
+    }
+    String encodedPassword = null;
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA");
+      // We need to use unicode here, to be independent of platform's
+      // default encoding. Thanks to SGawin for spotting this.
+      byte[] digest = md.digest(password.getBytes("UTF-8"));
+      ByteArrayOutputStream bas =
+        new ByteArrayOutputStream(digest.length + digest.length / 3 + 1);
+      OutputStream encodedStream = MimeUtility.encode(bas, "base64");
+      encodedStream.write(digest);
+      encodedStream.flush();
+      encodedStream.close();
+      encodedPassword = bas.toString();
+    } catch (Throwable ignore) {
+      // ignore
+    }
+    if (encodedPassword == null) {
+      return null;
+    }
+    if (encodedPassword.equals(user.getPasswordValue())) {
+      return user;
+    } else {
+      return null;
+    }
   }
 }
