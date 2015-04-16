@@ -77,7 +77,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
 
     StringBuilder b = new StringBuilder();
     b
-      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.PASSWORD_VALUE ");
+      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, B.PASSWORD_VALUE ");
     b.append(" FROM turbine_user AS B ");
     b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
     b.append(" AND B.LOGIN_NAME = #bind($username) ");
@@ -113,7 +113,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
   @Override
   public List<TurbineUser> find(SearchOptions options) {
     return buildQuery(
-      " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ",
+      " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, D.POSITION ",
       options,
       false).fetchList();
   }
@@ -252,7 +252,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       b.append(" SELECT COUNT(*) ");
     } else {
       b
-        .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ");
+        .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, D.POSITION ");
     }
     b.append(" FROM turbine_user_group_role AS A ");
     b.append(" LEFT JOIN turbine_user AS B ");

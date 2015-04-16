@@ -23,7 +23,6 @@ import org.apache.shindig.social.core.oauth2.OAuth2DataService;
 import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
-import org.apache.shindig.social.opensocial.spi.PersonService;
 
 import com.aipo.orm.service.AipoOAuth2TokenDbService;
 import com.aipo.orm.service.OAuth2TokenDbService;
