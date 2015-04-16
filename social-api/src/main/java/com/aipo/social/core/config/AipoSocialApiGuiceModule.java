@@ -38,6 +38,7 @@ import com.aipo.social.core.oauth.AipoAuthenticationHandlerProvider;
 import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.aipo.social.opensocial.service.AipoHandler;
+import com.aipo.social.opensocial.service.messages.AipoMessageRoomHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -80,7 +81,7 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
   }
 
   /**
-   * 
+   *
    * @return
    */
   protected Set<Class<?>> getHandlers() {
@@ -89,7 +90,8 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoActivityHandler.class,
       AppDataHandler.class,
       PersonHandler.class,
-      AipoGroupHandler.class
+      AipoGroupHandler.class,
+      AipoMessageRoomHandler.class
     // MessageHandler.class,
     // AlbumHandler.class,
     // MediaItemHandler.class
