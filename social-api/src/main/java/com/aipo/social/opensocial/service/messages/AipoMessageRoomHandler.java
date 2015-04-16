@@ -24,6 +24,7 @@ import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 
+import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
 
 /**
@@ -32,8 +33,11 @@ import com.google.inject.Inject;
 @Service(name = "messages", path = "/rooms/{userId}+/{groupId}/{roomId}+")
 public class AipoMessageRoomHandler {
 
+  private final MessageService service;
+
   @Inject
-  public AipoMessageRoomHandler() {
+  public AipoMessageRoomHandler(MessageService service) {
+    this.service = service;
   }
 
   /**
@@ -65,7 +69,8 @@ public class AipoMessageRoomHandler {
       "updateDate" : "2015-04-01T12:31:45+09:00"
     }
      */
-    throw new UnsupportedOperationException();
+    // throw new UnsupportedOperationException();
+    return service.getRooms(null, null, null, null);
   }
 
   /**
