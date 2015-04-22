@@ -29,36 +29,93 @@ import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.orm.model.portlet.EipTMessageRoom;
+import com.aipo.orm.service.MessageDbService;
+import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.orm.service.request.SearchOptions.FilterOperation;
+import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.aipo.social.core.model.ALMessageRoomImpl;
 import com.aipo.social.opensocial.model.ALMessageRoom;
+import com.google.inject.Inject;
 
 public class AipoMessageService extends AbstractService implements
     MessageService {
 
+  private final MessageDbService messageDbService;
+
+  /**
+   *
+   */
+  @Inject
+  public AipoMessageService(MessageDbService turbineUserSercice) {
+    this.messageDbService = turbineUserSercice;
+  }
+
   /**
    * @param userId
-   * @param options
+   * @param collectionOptions
    * @param fields
    * @param token
    * @return
    */
   @Override
   public Future<RestfulCollection<ALMessageRoom>> getRooms(UserId userId,
-      CollectionOptions options, Set<String> fields, SecurityToken token) {
-    List<ALMessageRoom> result = new ArrayList<ALMessageRoom>();
-    ALMessageRoom entity = new ALMessageRoomImpl();
-    result.add(entity);
-    // for (TurbineGroup post : list) {
-    // result.add(assginGroup(post, fields, token));
-    // }
-    // int totalResults = turbineGroupDbService.getCount(username, options);
+      CollectionOptions collectionOptions, Set<String> fields,
+      SecurityToken token) {
+
+    // TODO: FIELDS
+
+    setUp(token);
+
+    String username = getUserId(userId, token);
+
+    // Search
+    SearchOptions options =
+      SearchOptions.build().withRange(
+        collectionOptions.getMax(),
+        collectionOptions.getFirst()).withFilter(
+        collectionOptions.getFilter(),
+        collectionOptions.getFilterOperation() == null
+          ? FilterOperation.equals
+          : FilterOperation.valueOf(collectionOptions
+            .getFilterOperation()
+            .toString()),
+        collectionOptions.getFilterValue()).withSort(
+        collectionOptions.getSortBy(),
+        collectionOptions.getSortOrder() == null
+          ? SortOrder.ascending
+          : SortOrder.valueOf(collectionOptions.getSortOrder().toString()));
+
+    List<EipTMessageRoom> list = null;
+    // /messages/rooms/\(userId)/\(groupId)
+    // {userId} が所属しているルームを取得
+    list = messageDbService.find(username, options);
+    List<ALMessageRoom> result = new ArrayList<ALMessageRoom>(list.size());
+    for (EipTMessageRoom room : list) {
+      result.add(assignMessageRoom(room, fields, token));
+    }
+
+    int totalResults = messageDbService.getCount(username, options);
+
     RestfulCollection<ALMessageRoom> restCollection =
-      new RestfulCollection<ALMessageRoom>(result,
-      // options.getFirst(),
-        0,
-        1,
-        // options.getMax()
-        1);
+      new RestfulCollection<ALMessageRoom>(
+        result,
+        collectionOptions.getFirst(),
+        totalResults,
+        collectionOptions.getMax());
     return ImmediateFuture.newInstance(restCollection);
+  }
+
+  protected ALMessageRoom assignMessageRoom(EipTMessageRoom model,
+      Set<String> fields, SecurityToken token) {
+    ALMessageRoom room = new ALMessageRoomImpl();
+
+    room.setId(model.getRoomId());
+    room.setName(model.getName());
+    room.setUserId(model.getUserId().toString());
+    room.setUnreadCount(model.getUnreadCount());
+    room.setIsDirect("O".equals(model.getRoomType()));
+
+    return room;
   }
 }

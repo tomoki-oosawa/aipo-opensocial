@@ -74,14 +74,14 @@
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 	</db-entity>
 	<db-entity name="oauth2_token">
-		<db-attribute name="USER_ID" type="VARCHAR" length="255"/>
-		<db-attribute name="TOKEN" type="VARCHAR" length="255"/>
+		<db-attribute name="CODE_TYPE" type="VARCHAR" length="255"/>
 		<db-attribute name="CREATE_DATE" type="TIMESTAMP"/>
 		<db-attribute name="EXPIRE_TIME" type="TIMESTAMP"/>
 		<db-attribute name="SCOPE" type="VARCHAR" length="255"/>
+		<db-attribute name="TOKEN" type="VARCHAR" length="255"/>
 		<db-attribute name="TOKEN_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 		<db-attribute name="TOKEN_TYPE" type="VARCHAR" length="255"/>
-		<db-attribute name="CODE_TYPE" type="VARCHAR" length="255"/>
+		<db-attribute name="USER_ID" type="VARCHAR" length="255"/>
 	</db-entity>
 	<db-entity name="oauth_consumer">
 		<db-attribute name="APP_ID" type="INTEGER"/>

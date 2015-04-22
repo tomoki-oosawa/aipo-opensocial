@@ -19,13 +19,12 @@
 package com.aipo.social.opensocial.model;
 
 import org.apache.shindig.protocol.model.Exportablebean;
-import org.apache.shindig.social.opensocial.spi.GroupId;
 
 @Exportablebean
 public interface ALMessageRoom {
   public long roomId();
 
-  public void setId(GroupId roomId);
+  public void setId(long roomId);
 
   public String getName();
 

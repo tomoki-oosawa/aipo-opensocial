@@ -18,11 +18,15 @@
  */
 package com.aipo.social.opensocial.service.messages;
 
+import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
+import org.apache.shindig.social.opensocial.spi.CollectionOptions;
+import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
@@ -50,27 +54,17 @@ public class AipoMessageRoomHandler {
    */
   @Operation(httpMethods = "GET")
   public Future<?> get(SocialRequestItem request) {
-    /*-
-    {
-      "roomId" : 1,
-      "name" : "木村 一郎",
-      "userId" : "org001:sample1",
-      "unreadCount" : 3,
-      "isDirect" : true,
-      "isAutoName" : true,
-      "updateDate" : "2015-04-01T12:31:45+09:00"
-    },
-    {
-      "roomId" : 2,
-      "name" : "営業本部",
-      "unreadCount" : 3,
-      "isDirect" : false,
-      "isAutoName" : false,
-      "updateDate" : "2015-04-01T12:31:45+09:00"
-    }
-     */
-    // throw new UnsupportedOperationException();
-    return service.getRooms(null, null, null, null);
+
+    Set<UserId> userIds = request.getUsers();
+    CollectionOptions options = new CollectionOptions(request);
+
+    // Preconditions
+    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+    HandlerPreconditions.requireSingular(
+      userIds,
+      "Only one userId must be specified");
+    return service.getRooms(userIds.iterator().next(), options, request
+      .getFields(), request.getToken());
   }
 
   /**

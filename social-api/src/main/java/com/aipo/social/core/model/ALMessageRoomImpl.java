@@ -18,8 +18,6 @@
  */
 package com.aipo.social.core.model;
 
-import org.apache.shindig.social.opensocial.spi.GroupId;
-
 import com.aipo.social.opensocial.model.ALMessageRoom;
 
 /**
@@ -39,7 +37,7 @@ public class ALMessageRoomImpl implements ALMessageRoom {
    * @param roomId
    */
   @Override
-  public void setId(GroupId roomId) {
+  public void setId(long roomId) {
   }
 
   /**
