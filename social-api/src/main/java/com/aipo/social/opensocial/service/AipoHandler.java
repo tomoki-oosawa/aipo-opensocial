@@ -18,6 +18,10 @@
  */
 package com.aipo.social.opensocial.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.RequestItem;
 import org.apache.shindig.protocol.Service;
@@ -38,5 +42,58 @@ public class AipoHandler {
   @Operation(httpMethods = "GET", path = "/version")
   public String version(RequestItem request) {
     return version;
+  }
+
+  @Operation(httpMethods = "GET", path = "/mytest")
+  public byte[] mytest(RequestItem request) {
+    try {
+      return "this is test".getBytes();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "failed".getBytes();
+    }
+    // int[] results = { 0, 1 };
+    // return results;
+  }
+
+  @Operation(httpMethods = "GET", path = "/mypicture.png")
+  public FileInputStream mytest2(RequestItem request) {
+    try {
+      return new FileInputStream("./aipo_logo_l.png");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
+   * ファイルを読み込み、その中身をバイト配列で取得する
+   *
+   * @param filePath
+   *          対象ファイルパス
+   * @return 読み込んだバイト配列
+   * @throws Exception
+   *           ファイルが見つからない、アクセスできないときなど
+   */
+  private byte[] readFileToByte(String filePath) throws Exception {
+    byte[] b = new byte[1];
+    FileInputStream fis = new FileInputStream(filePath);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    while (fis.read(b) > 0) {
+      baos.write(b);
+    }
+    baos.close();
+    fis.close();
+    b = baos.toByteArray();
+
+    return b;
+  }
+
+  public static class Container {
+    private final byte[] data;
+
+    public Container(byte[] data) {
+      this.data = data;
+    }
   }
 }
