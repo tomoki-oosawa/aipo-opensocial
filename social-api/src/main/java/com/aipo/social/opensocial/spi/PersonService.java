@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.spi;
 
+import java.io.ByteArrayInputStream;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -40,4 +41,6 @@ public interface PersonService {
   public Future<ALPerson> getPerson(UserId paramUserId, Set<String> paramSet,
       SecurityToken paramSecurityToken) throws ProtocolException;
 
+  public ByteArrayInputStream getProfilePicture(UserId paramUserId,
+      SecurityToken paramSecurityToken) throws ProtocolException;
 }

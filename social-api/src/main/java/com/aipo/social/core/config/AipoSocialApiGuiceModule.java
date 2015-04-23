@@ -38,6 +38,7 @@ import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.aipo.social.opensocial.service.AipoHandler;
 import com.aipo.social.opensocial.service.AipoPersonHandler;
+import com.aipo.social.opensocial.service.AipoProfilePictureHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -90,7 +91,8 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoActivityHandler.class,
       AppDataHandler.class,
       AipoPersonHandler.class,
-      AipoGroupHandler.class
+      AipoGroupHandler.class,
+      AipoProfilePictureHandler.class
     // MessageHandler.class,
     // AlbumHandler.class,
     // MediaItemHandler.class
