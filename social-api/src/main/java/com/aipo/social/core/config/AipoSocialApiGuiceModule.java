@@ -52,8 +52,9 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
   /** {@inheritDoc} */
   @Override
   protected void configure() {
-    bind(ParameterFetcher.class).annotatedWith(
-      Names.named("DataServiceServlet")).to(DataServiceServletFetcher.class);
+    bind(ParameterFetcher.class)
+      .annotatedWith(Names.named("AipoDataServiceServlet"))
+      .to(DataServiceServletFetcher.class);
 
     bind(Boolean.class)
       .annotatedWith(

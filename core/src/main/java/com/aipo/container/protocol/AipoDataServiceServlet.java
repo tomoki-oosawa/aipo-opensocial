@@ -1,9 +1,8 @@
 /*** Eclipse Class Decompiler plugin, copyright (c) 2012 Chao Chen (cnfree2000@hotmail.com) ***/
-package org.apache.shindig.protocol;
+package com.aipo.container.protocol;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -19,14 +18,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.servlet.HttpUtil;
+import org.apache.shindig.protocol.ApiServlet;
+import org.apache.shindig.protocol.ContentTypes;
+import org.apache.shindig.protocol.DataCollection;
+import org.apache.shindig.protocol.ResponseItem;
+import org.apache.shindig.protocol.RestHandler;
+import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.protocol.conversion.BeanConverter;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-public class DataServiceServlet extends ApiServlet {
-  private static final Logger LOG = Logger.getLogger(DataServiceServlet.class
-    .getName());
+public class AipoDataServiceServlet extends ApiServlet {
+  private static final Logger LOG = Logger
+    .getLogger(AipoDataServiceServlet.class.getName());
 
   public static final Set<String> ALLOWED_CONTENT_TYPES =
     new ImmutableSet.Builder()
@@ -38,7 +43,7 @@ public class DataServiceServlet extends ApiServlet {
   protected static final String X_HTTP_METHOD_OVERRIDE =
     "X-HTTP-Method-Override";
 
-  public DataServiceServlet() {
+  public AipoDataServiceServlet() {
   }
 
   @Override
@@ -142,40 +147,21 @@ public class DataServiceServlet extends ApiServlet {
     servletResponse.setContentType(converter.getContentType());
     if ((responseItem.getErrorCode() >= 200)
       && (responseItem.getErrorCode() < 400)) {
-      try {
-        String formatString = servletRequest.getParameter("format");
-        if ("binary".equals(formatString)) {
-          Object res = responseItem.getResponse();
-          byte[] b = new byte[1];
-          if (res instanceof InputStream) {
-            servletResponse.setContentType("image/png");
-            InputStream is = (InputStream) res;
-            OutputStream out = servletResponse.getOutputStream();
-            while (is.read(b) > 0) {
-              out.write(b);
-            }
-            out.close();
-            is.close();
-          } else if (res.getClass().getName().equals("[B")) {
-            b = (byte[]) res;
-            OutputStream out = servletResponse.getOutputStream();
-            out.write(b);
-            out.close();
-            servletResponse.getWriter().println("it represents Bytes array!");
-          } else {
-            ObjectOutputStream oos =
-              new ObjectOutputStream(servletResponse.getOutputStream());
-            oos.writeObject(res);
-          }
-          return;
+      Object response = responseItem.getResponse();
+      if (response instanceof StreamContent) {
+        byte[] b = new byte[1];
+        StreamContent content = (StreamContent) response;
+        servletResponse.setContentType(content.getContentType());
+        InputStream is = content.getInputStream();
+        OutputStream out = servletResponse.getOutputStream();
+        while (is.read(b) > 0) {
+          out.write(b);
         }
-      } catch (Throwable t) {
-        if (LOG.isLoggable(Level.FINE)) {
-          LOG.fine("Unexpected error : format param is null " + t.toString());
-        }
+        out.close();
+        is.close();
+        return;
       }
       PrintWriter writer = servletResponse.getWriter();
-      Object response = responseItem.getResponse();
       if ((!(response instanceof DataCollection))
         && (!(response instanceof RestfulCollection))) {
         response = ImmutableMap.of("entry", response);

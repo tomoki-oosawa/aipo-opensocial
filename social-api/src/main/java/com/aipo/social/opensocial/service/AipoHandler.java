@@ -18,7 +18,7 @@
  */
 package com.aipo.social.opensocial.service;
 
-import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -26,6 +26,7 @@ import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.RequestItem;
 import org.apache.shindig.protocol.Service;
 
+import com.aipo.container.protocol.StreamContent;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -45,55 +46,22 @@ public class AipoHandler {
   }
 
   @Operation(httpMethods = "GET", path = "/mytest")
-  public byte[] mytest(RequestItem request) {
-    try {
-      return "this is test".getBytes();
-    } catch (Exception e) {
-      e.printStackTrace();
-      return "failed".getBytes();
-    }
-    // int[] results = { 0, 1 };
-    // return results;
+  public StreamContent mytest(RequestItem request) {
+    return new StreamContent("text/plain", new ByteArrayInputStream(
+      "this is test".getBytes()));
   }
 
   @Operation(httpMethods = "GET", path = "/mypicture.png")
-  public FileInputStream mytest2(RequestItem request) {
+  public StreamContent mytest2(RequestItem request) {
     try {
-      return new FileInputStream("./aipo_logo_l.png");
+      StreamContent content = new StreamContent();
+      content.setInputStream(new FileInputStream(
+        "/Users/develop35/aipo_logo_l.png"));
+      content.setContentType("image/png");
+      return content;
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       return null;
-    }
-  }
-
-  /**
-   * ファイルを読み込み、その中身をバイト配列で取得する
-   *
-   * @param filePath
-   *          対象ファイルパス
-   * @return 読み込んだバイト配列
-   * @throws Exception
-   *           ファイルが見つからない、アクセスできないときなど
-   */
-  private byte[] readFileToByte(String filePath) throws Exception {
-    byte[] b = new byte[1];
-    FileInputStream fis = new FileInputStream(filePath);
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    while (fis.read(b) > 0) {
-      baos.write(b);
-    }
-    baos.close();
-    fis.close();
-    b = baos.toByteArray();
-
-    return b;
-  }
-
-  public static class Container {
-    private final byte[] data;
-
-    public Container(byte[] data) {
-      this.data = data;
     }
   }
 }
