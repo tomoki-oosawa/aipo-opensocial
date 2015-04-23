@@ -95,7 +95,7 @@ public class AipoMessageService extends AbstractService implements
       result.add(assignMessageRoom(room, fields, token));
     }
 
-    int totalResults = messageDbService.getCount(username, options);
+    int totalResults = result.size();
 
     RestfulCollection<ALMessageRoom> restCollection =
       new RestfulCollection<ALMessageRoom>(

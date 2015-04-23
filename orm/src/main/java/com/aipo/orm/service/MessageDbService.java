@@ -27,5 +27,4 @@ public interface MessageDbService {
 
   public List<EipTMessageRoom> find(String username, SearchOptions options);
 
-  public int getCount(String username, SearchOptions options);
 }
