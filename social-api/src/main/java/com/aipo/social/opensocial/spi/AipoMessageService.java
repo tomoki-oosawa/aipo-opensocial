@@ -29,12 +29,16 @@ import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
+import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.service.MessageDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
+import com.aipo.social.core.model.ALMessageImpl;
 import com.aipo.social.core.model.ALMessageRoomImpl;
+import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageRoom;
 import com.google.inject.Inject;
 
@@ -89,7 +93,7 @@ public class AipoMessageService extends AbstractService implements
     List<EipTMessageRoom> list = null;
     // /messages/rooms/\(userId)/\(groupId)
     // {userId} が所属しているルームを取得
-    list = messageDbService.find(username, options);
+    list = messageDbService.findMessageRoom(username, options);
     List<ALMessageRoom> result = new ArrayList<ALMessageRoom>(list.size());
     for (EipTMessageRoom room : list) {
       result.add(assignMessageRoom(room, fields, token));
@@ -118,4 +122,90 @@ public class AipoMessageService extends AbstractService implements
 
     return room;
   }
+
+  /**
+   * @param userId
+   * @param collectionOptions
+   * @param fields
+   * @param token
+   * @return
+   */
+  @Override
+  public Future<RestfulCollection<ALMessage>> getPosts(UserId userId,
+      CollectionOptions collectionOptions, Set<String> fields,
+      SecurityToken token) {
+
+    // TODO: FIELDS
+
+    setUp(token);
+
+    String username = getUserId(userId, token);
+
+    // Search
+    SearchOptions options =
+      SearchOptions.build().withRange(
+        collectionOptions.getMax(),
+        collectionOptions.getFirst()).withFilter(
+        collectionOptions.getFilter(),
+        collectionOptions.getFilterOperation() == null
+          ? FilterOperation.equals
+          : FilterOperation.valueOf(collectionOptions
+            .getFilterOperation()
+            .toString()),
+        collectionOptions.getFilterValue()).withSort(
+        collectionOptions.getSortBy(),
+        collectionOptions.getSortOrder() == null
+          ? SortOrder.ascending
+          : SortOrder.valueOf(collectionOptions.getSortOrder().toString()));
+
+    List<EipTMessage> list = null;
+    // /messages/rooms/\(userId)/\(groupId)
+    // {userId} が所属しているルームを取得
+    list = messageDbService.findMessage(username, options);
+    List<ALMessage> result = new ArrayList<ALMessage>(list.size());
+    for (EipTMessage room : list) {
+      result.add(assignMessage(room, fields, token));
+    }
+
+    int totalResults = result.size();
+
+    RestfulCollection<ALMessage> restCollection =
+      new RestfulCollection<ALMessage>(
+        result,
+        collectionOptions.getFirst(),
+        totalResults,
+        collectionOptions.getMax());
+    return ImmediateFuture.newInstance(restCollection);
+  }
+
+  /**
+   * @param room
+   * @param fields
+   * @param token
+   * @return
+   */
+  private ALMessage assignMessage(EipTMessage model, Set<String> fields,
+      SecurityToken token) {
+    ALMessage message = new ALMessageImpl();
+
+    message.setId(model.getMessageId());
+    message.setRoomId(model.getEipTMessageRoom().getRoomId());
+    message.setUserId(model.getUserId().toString());
+    message.setUnreadCount(model.getUnreadCount());
+    message.setMemberCount(model.getMemberCount());
+    message.setMessage(model.getMessage());
+    List<String> members = new ArrayList<String>();
+    for (EipTMessageRoomMember member : model
+      .getEipTMessageRoom()
+      .getEipTMessageRoomMember()) {
+      // fix
+      members.add(member.getLoginName());
+    }
+    message.setReadMembers(members);
+
+    message.setCreateDate(model.getCreateDate().toString());
+
+    return message;
+  }
+
 }

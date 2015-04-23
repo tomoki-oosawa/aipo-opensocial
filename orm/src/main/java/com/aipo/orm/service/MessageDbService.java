@@ -20,11 +20,15 @@ package com.aipo.orm.service;
 
 import java.util.List;
 
+import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
 import com.aipo.orm.service.request.SearchOptions;
 
 public interface MessageDbService {
 
-  public List<EipTMessageRoom> find(String username, SearchOptions options);
+  public List<EipTMessageRoom> findMessageRoom(String username,
+      SearchOptions options);
+
+  public List<EipTMessage> findMessage(int roomId, SearchOptions options);
 
 }

@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.cayenne.DataRow;
 
 import com.aipo.orm.Database;
+import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.request.SearchOptions;
@@ -44,12 +45,13 @@ public class AipoMessageDbService implements MessageDbService {
   }
 
   /**
-   * @param userId
+   * @param username
    * @param options
    * @return
    */
   @Override
-  public List<EipTMessageRoom> find(String username, SearchOptions options) {
+  public List<EipTMessageRoom> findMessageRoom(String username,
+      SearchOptions options) {
     TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
     if (turbineUser == null) {
       return new ArrayList<EipTMessageRoom>();
@@ -137,6 +139,78 @@ public class AipoMessageDbService implements MessageDbService {
 
     return list;
 
+  }
+
+  /**
+   * @param userId
+   * @param options
+   * @return
+   */
+  @Override
+  public List<EipTMessage> findMessage(int roomId, SearchOptions options) {
+    // MessageUtils.getRoomListと同等の処理（pageの制約はなし）に必要な変数を取得
+    String keyword = options.getFilterValue();
+    int limit = options.getLimit();
+
+    StringBuilder select = new StringBuilder();
+
+    select.append("select");
+    select.append(" t1.message_id, ");
+    select.append(" t1.room_id,  ");
+    select.append(" t1.user_id, ");
+    select.append(" t1.message, ");
+    select.append(" t1.create_date, ");
+    select.append(" t1.member_count, ");
+    select.append(" t2.last_name, ");
+    select.append(" t2.first_name, ");
+    select.append(" t2.has_photo, ");
+    select.append(" t2.photo_modified, ");
+
+    select
+      .append(" (select count(*) from eip_t_message_read t3 where t3.message_id = t1.message_id and t3.room_id = t1.room_id and t3.is_read = 'F') as unread ");
+
+    StringBuilder count = new StringBuilder();
+    count.append("select count(t1.message_id) AS c ");
+
+    StringBuilder body = new StringBuilder();
+    body
+      .append("  from eip_t_message t1, turbine_user t2 where t1.user_id = t2.user_id and t1.room_id = #bind($room_id) ");
+
+    StringBuilder last = new StringBuilder();
+
+    last.append(" order by t1.create_date desc ");
+
+    if (limit > 0) {
+      last.append(" limit ");
+      last.append(limit);
+    }
+
+    List<DataRow> fetchList =
+      Database.sql(
+        EipTMessage.class,
+        select.toString() + body.toString() + last.toString()).param(
+        "room_id",
+        Integer.valueOf(roomId)).fetchListAsDataRow();
+
+    List<EipTMessage> list = new ArrayList<EipTMessage>();
+    for (DataRow row : fetchList) {
+      Long unread = (Long) row.get("unread");
+      String lastName = (String) row.get("last_name");
+      String firstName = (String) row.get("first_name");
+      String hasPhoto = (String) row.get("has_photo");
+      Date photoModified = (Date) row.get("photo_modified");
+
+      EipTMessage object = Database.objectFromRowData(row, EipTMessage.class);
+      object.setUnreadCount(unread.intValue());
+      object.setFirstName(firstName);
+      object.setLastName(lastName);
+      object.setHasPhoto(hasPhoto);
+      if (photoModified != null) {
+        object.setPhotoModified(photoModified.getTime());
+      }
+      list.add(object);
+    }
+    return list;
   }
 
 }

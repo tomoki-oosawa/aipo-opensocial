@@ -18,101 +18,108 @@
  */
 package com.aipo.social.core.model;
 
-import com.aipo.social.opensocial.model.ALMessageRoom;
+import java.util.List;
+
+import com.aipo.social.opensocial.model.ALMessage;
 
 /**
  * @see org.apache.shindig. social.core.model.GroupImpl
  */
-public class ALMessageRoomImpl implements ALMessageRoom {
+public class ALMessageImpl implements ALMessage {
+  private long messageId;
 
   private long roomId;
-
-  private String name;
 
   private String userId;
 
   private int unreadCount;
 
-  private boolean isDirect;
+  private int memberCount;
 
-  /**
-   * @return
-   */
+  private String message;
+
+  private List<String> readMembers;
+
+  private String createDate;
+
   @Override
-  public long roomId() {
+  public long messageId() {
+    return messageId;
+  }
+
+  @Override
+  public void setId(long messageId) {
+    this.messageId = messageId;
+  }
+
+  @Override
+  public long getRoomId() {
     return roomId;
   }
 
-  /**
-   * @param roomId
-   */
   @Override
-  public void setId(long roomId) {
+  public void setRoomId(long roomId) {
     this.roomId = roomId;
   }
 
-  /**
-   * @return
-   */
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * @param name
-   */
-  @Override
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  /**
-   * @return
-   */
   @Override
   public String getUserId() {
     return userId;
   }
 
-  /**
-   * @param paramString
-   */
   @Override
   public void setUserId(String paramString) {
     this.userId = paramString;
   }
 
-  /**
-   * @return
-   */
   @Override
   public int getUnreadCount() {
     return unreadCount;
   }
 
-  /**
-   * @param count
-   */
   @Override
   public void setUnreadCount(int count) {
     this.unreadCount = count;
   }
 
-  /**
-   * @return
-   */
   @Override
-  public boolean getIsDirect() {
-    return isDirect;
+  public int getMemberCount() {
+    return memberCount;
   }
 
-  /**
-   * @param isDirect
-   */
   @Override
-  public void setIsDirect(boolean isDirect) {
-    this.isDirect = isDirect;
+  public void setMemberCount(int count) {
+    this.memberCount = count;
+  }
+
+  @Override
+  public String getMessage() {
+    return message;
+  }
+
+  @Override
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  @Override
+  public List<String> getReadMembers() {
+    return readMembers;
+  }
+
+  @Override
+  public void setReadMembers(List<String> paramStrings) {
+    this.readMembers = paramStrings;
+  }
+
+  @Override
+  public String getCreateDate() {
+    return createDate;
+  }
+
+  @Override
+  public void setCreateDate(String paramString) {
+    this.createDate = paramString;
   }
 
 }

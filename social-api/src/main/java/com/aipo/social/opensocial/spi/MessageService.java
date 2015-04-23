@@ -26,11 +26,15 @@ import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageRoom;
 
 public interface MessageService {
 
   public Future<RestfulCollection<ALMessageRoom>> getRooms(UserId userId,
+      CollectionOptions options, Set<String> fields, SecurityToken token);
+
+  public Future<RestfulCollection<ALMessage>> getPosts(UserId userId,
       CollectionOptions options, Set<String> fields, SecurityToken token);
 
 }
