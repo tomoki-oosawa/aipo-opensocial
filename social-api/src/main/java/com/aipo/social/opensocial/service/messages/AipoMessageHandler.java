@@ -34,7 +34,7 @@ import com.google.inject.Inject;
 /**
  * Message API :posts
  */
-@Service(name = "messages", path = "/posts/{userId}+/{groupId}/{roomId}+")
+@Service(name = "messages", path = "/posts/{userId}+/{groupId}/{roomId}/{messageId}+")
 public class AipoMessageHandler {
 
   private final MessageService service;
@@ -45,9 +45,9 @@ public class AipoMessageHandler {
   }
 
   /**
-   * メッセージ一覧 GET /messages/posts/@viewer/@self
+   * メッセージ一覧 GET /messages/posts/@viewer/@self/1/
    *
-   * メッセージ詳細 GET /messages/posts/@viewer/@self/1
+   * メッセージ詳細 GET /messages/posts/@viewer/@self/1/1
    *
    * @param request
    * @return
@@ -56,7 +56,7 @@ public class AipoMessageHandler {
   public Future<?> get(SocialRequestItem request) {
 
     Set<UserId> userIds = request.getUsers();
-
+    String roomId = request.getParameter("roomId");
     CollectionOptions options = new CollectionOptions(request);
 
     // Preconditions
@@ -65,7 +65,7 @@ public class AipoMessageHandler {
       userIds,
       "Only one userId must be specified");
     return service.getPosts(userIds.iterator().next(), options, request
-      .getFields(), request.getToken());
+      .getFields(), roomId, request.getToken());
   }
 
   /**

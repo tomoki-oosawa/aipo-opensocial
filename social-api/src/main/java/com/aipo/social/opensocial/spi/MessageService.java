@@ -35,6 +35,7 @@ public interface MessageService {
       CollectionOptions options, Set<String> fields, SecurityToken token);
 
   public Future<RestfulCollection<ALMessage>> getPosts(UserId userId,
-      CollectionOptions options, Set<String> fields, SecurityToken token);
+      CollectionOptions options, Set<String> fields, String roomId,
+      SecurityToken token);
 
 }

@@ -132,7 +132,7 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<RestfulCollection<ALMessage>> getPosts(UserId userId,
-      CollectionOptions collectionOptions, Set<String> fields,
+      CollectionOptions collectionOptions, Set<String> fields, String roomId,
       SecurityToken token) {
 
     // TODO: FIELDS
@@ -140,6 +140,19 @@ public class AipoMessageService extends AbstractService implements
     setUp(token);
 
     String username = getUserId(userId, token);
+
+    Integer roomIdInt = null;
+    String directUsername = null;
+    // Room
+    try {
+      roomIdInt = Integer.valueOf(roomId);
+    } catch (Throwable ignore) {
+      //
+    }
+    // Direct Message
+    if (roomIdInt == null) {
+      directUsername = roomId;
+    }
 
     // Search
     SearchOptions options =
@@ -161,7 +174,13 @@ public class AipoMessageService extends AbstractService implements
     List<EipTMessage> list = null;
     // /messages/rooms/\(userId)/\(groupId)
     // {userId} が所属しているルームを取得
-    list = messageDbService.findMessage(username, options);
+    // TODO: 閲覧権限をチェック
+    if (roomIdInt != null) {
+      // ルーム
+      list = messageDbService.findMessage(roomIdInt, options);
+    } else {
+      // ダイレクトメッセージ
+    }
     List<ALMessage> result = new ArrayList<ALMessage>(list.size());
     for (EipTMessage room : list) {
       result.add(assignMessage(room, fields, token));
