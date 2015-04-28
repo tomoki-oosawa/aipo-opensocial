@@ -19,7 +19,7 @@
 package com.aipo.orm.service.request;
 
 /**
- * 
+ *
  */
 public class SearchOptions {
 
@@ -44,6 +44,9 @@ public class SearchOptions {
   private FilterOperation filterOperation = FilterOperation.equals;
 
   private String filterValue;
+
+  // untilIdを起点に古いデータを取得　未指定の場合は0
+  private int untilId = 0;
 
   public static SearchOptions build() {
     return new SearchOptions();
@@ -182,6 +185,30 @@ public class SearchOptions {
    */
   public void setFilterValue(String filterValue) {
     this.filterValue = filterValue;
+  }
+
+  /**
+   * @return untilId
+   */
+  public int getUntilId() {
+    return untilId;
+  }
+
+  /**
+   * @param untilId
+   *          セットする untilId
+   */
+  public void setUntilId(int untilId) {
+    this.untilId = untilId;
+  }
+
+  /**
+   * @param untilId
+   * @return
+   */
+  public SearchOptions withUntilId(int untilId) {
+    setUntilId(untilId);
+    return this;
   }
 
 }

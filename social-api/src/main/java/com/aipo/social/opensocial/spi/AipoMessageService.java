@@ -123,52 +123,56 @@ public class AipoMessageService extends AbstractService implements
   }
 
   /**
+   *
    * @param userId
    * @param collectionOptions
    * @param fields
+   * @param roomId
+   * @param messageId
    * @param token
    * @return
    */
   @Override
-  public Future<RestfulCollection<ALMessage>> getPosts(UserId userId,
-      CollectionOptions collectionOptions, Set<String> fields, String roomId,
-      SecurityToken token) {
+  public Future<RestfulCollection<ALMessage>> getPost(UserId userId,
+      AipoCollectionOptions collectionOptions, Set<String> fields,
+      String roomId, String messageId, SecurityToken token) {
 
     // TODO: FIELDS
 
     setUp(token);
 
-    String username = getUserId(userId, token);
-
     Integer roomIdInt = null;
-    String directUsername = null;
+    Integer messageIdInt = 0;
+
     // Room
     try {
       roomIdInt = Integer.valueOf(roomId);
+      if (messageId != null && !"".equals(messageId)) {
+        messageIdInt = Integer.valueOf(messageId);
+      }
     } catch (Throwable ignore) {
       //
-    }
-    // Direct Message
-    if (roomIdInt == null) {
-      directUsername = roomId;
     }
 
     // Search
     SearchOptions options =
-      SearchOptions.build().withRange(
-        collectionOptions.getMax(),
-        collectionOptions.getFirst()).withFilter(
-        collectionOptions.getFilter(),
-        collectionOptions.getFilterOperation() == null
-          ? FilterOperation.equals
-          : FilterOperation.valueOf(collectionOptions
-            .getFilterOperation()
-            .toString()),
-        collectionOptions.getFilterValue()).withSort(
-        collectionOptions.getSortBy(),
-        collectionOptions.getSortOrder() == null
-          ? SortOrder.ascending
-          : SortOrder.valueOf(collectionOptions.getSortOrder().toString()));
+      SearchOptions
+        .build()
+        .withRange(collectionOptions.getMax(), collectionOptions.getFirst())
+        .withFilter(
+          collectionOptions.getFilter(),
+          collectionOptions.getFilterOperation() == null
+            ? FilterOperation.equals
+            : FilterOperation.valueOf(collectionOptions
+              .getFilterOperation()
+              .toString()),
+          collectionOptions.getFilterValue())
+        .withSort(
+          collectionOptions.getSortBy(),
+          collectionOptions.getSortOrder() == null
+            ? SortOrder.ascending
+            : SortOrder.valueOf(collectionOptions.getSortOrder().toString()))
+        .withUntilId(collectionOptions.getUntilId());
 
     List<EipTMessage> list = null;
     // /messages/rooms/\(userId)/\(groupId)
@@ -176,7 +180,7 @@ public class AipoMessageService extends AbstractService implements
     // TODO: 閲覧権限をチェック
     if (roomIdInt != null) {
       // ルーム
-      list = messageDbService.findMessage(roomIdInt, options);
+      list = messageDbService.findMessage(roomIdInt, messageIdInt, options);
     } else {
       // ダイレクトメッセージ
     }

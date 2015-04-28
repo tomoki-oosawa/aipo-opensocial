@@ -25,9 +25,9 @@ import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
 
@@ -57,15 +57,26 @@ public class AipoMessageHandler {
 
     Set<UserId> userIds = request.getUsers();
     String roomId = request.getParameter("roomId");
-    CollectionOptions options = new CollectionOptions(request);
+    String messageId = request.getParameter("messageId");
+    AipoCollectionOptions options = new AipoCollectionOptions(request);
 
     // Preconditions
     HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
     HandlerPreconditions.requireSingular(
       userIds,
       "Only one userId must be specified");
-    return service.getPosts(userIds.iterator().next(), options, request
-      .getFields(), roomId, request.getToken());
+
+    if (messageId == null || "".equals(messageId)) {
+      // メッセージ一覧を取得
+      return service.getPost(userIds.iterator().next(), options, request
+        .getFields(), roomId, messageId, request.getToken());
+
+    } else {
+      // メッセージ詳細を取得
+      return service.getPost(userIds.iterator().next(), options, request
+        .getFields(), roomId, messageId, request.getToken());
+    }
+
   }
 
   /**

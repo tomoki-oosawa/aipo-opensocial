@@ -29,6 +29,7 @@ public interface MessageDbService {
   public List<EipTMessageRoom> findMessageRoom(String username,
       SearchOptions options);
 
-  public List<EipTMessage> findMessage(int roomId, SearchOptions options);
+  public List<EipTMessage> findMessage(int roomId, int messageId,
+      SearchOptions options);
 
 }
