@@ -28,6 +28,7 @@ import org.apache.cayenne.DataRow;
 import com.aipo.orm.Database;
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
+import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.request.SearchOptions;
 import com.google.inject.Inject;
@@ -192,6 +193,14 @@ public class AipoMessageDbService implements MessageDbService {
         "room_id",
         Integer.valueOf(roomId)).fetchListAsDataRow();
 
+    List<EipTMessageRoomMember> roomMembers =
+      Database
+        .sql(
+          EipTMessageRoomMember.class,
+          "select login_name from eip_t_message_room_member where room_id=#bind($room_id)")
+        .param("room_id", Integer.valueOf(roomId))
+        .fetchList();
+
     List<EipTMessage> list = new ArrayList<EipTMessage>();
     for (DataRow row : fetchList) {
       Long unread = (Long) row.get("unread");
@@ -205,6 +214,12 @@ public class AipoMessageDbService implements MessageDbService {
       object.setFirstName(firstName);
       object.setLastName(lastName);
       object.setHasPhoto(hasPhoto);
+      object.setRoomId(roomId);
+      List<String> roomMembersStr = new ArrayList();
+      for (EipTMessageRoomMember roomMember : roomMembers) {
+        roomMembersStr.add(roomMember.getLoginName());
+      }
+      object.setRoomMembers(roomMembersStr);
       if (photoModified != null) {
         object.setPhotoModified(photoModified.getTime());
       }

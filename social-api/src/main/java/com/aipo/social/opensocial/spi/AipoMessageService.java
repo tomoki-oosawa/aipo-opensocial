@@ -31,7 +31,6 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
-import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.service.MessageDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
@@ -208,17 +207,15 @@ public class AipoMessageService extends AbstractService implements
     ALMessage message = new ALMessageImpl();
 
     message.setId(model.getMessageId());
-    message.setRoomId(model.getEipTMessageRoom().getRoomId());
+    message.setRoomId(model.getRoomId());
     message.setUserId(model.getUserId().toString());
     message.setUnreadCount(model.getUnreadCount());
     message.setMemberCount(model.getMemberCount());
     message.setMessage(model.getMessage());
     List<String> members = new ArrayList<String>();
-    for (EipTMessageRoomMember member : model
-      .getEipTMessageRoom()
-      .getEipTMessageRoomMember()) {
+    for (String member : model.getRoomMembers()) {
       // fix
-      members.add(member.getLoginName());
+      members.add(member);
     }
     message.setReadMembers(members);
 
