@@ -112,10 +112,11 @@ public class AipoMessageService extends AbstractService implements
   protected ALMessageRoom assignMessageRoom(EipTMessageRoom model,
       Set<String> fields, SecurityToken token) {
     ALMessageRoom room = new ALMessageRoomImpl();
+    String orgId = getOrgId(token);
 
     room.setId(model.getRoomId());
     room.setName(model.getName());
-    room.setUserId(model.getUserId().toString());
+    room.setUserId(orgId + ":" + model.getLoginName());
     room.setUnreadCount(model.getUnreadCount());
     room.setIsDirect("O".equals(model.getRoomType()));
 
@@ -185,8 +186,8 @@ public class AipoMessageService extends AbstractService implements
       // ダイレクトメッセージ
     }
     List<ALMessage> result = new ArrayList<ALMessage>(list.size());
-    for (EipTMessage room : list) {
-      result.add(assignMessage(room, fields, token));
+    for (EipTMessage message : list) {
+      result.add(assignMessage(message, fields, token, messageIdInt));
     }
 
     int totalResults = result.size();
@@ -207,25 +208,28 @@ public class AipoMessageService extends AbstractService implements
    * @return
    */
   private ALMessage assignMessage(EipTMessage model, Set<String> fields,
-      SecurityToken token) {
+      SecurityToken token, Integer messageIdInt) {
     ALMessage message = new ALMessageImpl();
+    String orgId = getOrgId(token);
 
     message.setId(model.getMessageId());
     message.setRoomId(model.getRoomId());
-    message.setUserId(model.getUserId().toString());
+    message.setUserId(orgId + ":" + model.getLoginName());
     message.setUnreadCount(model.getUnreadCount());
     message.setMemberCount(model.getMemberCount());
     message.setMessage(model.getMessage());
+    message.setCreateDate(model.getCreateDate().toString());
+    if (messageIdInt == 0) {
+      // メッセージ詳細の場合
+      return message;
+    }
+
     List<String> members = new ArrayList<String>();
     for (String member : model.getRoomMembers()) {
-      // fix
-      members.add(member);
+      members.add(orgId + ":" + member);
     }
     message.setReadMembers(members);
-
-    message.setCreateDate(model.getCreateDate().toString());
-
+    // メッセージ一覧の場合
     return message;
   }
-
 }

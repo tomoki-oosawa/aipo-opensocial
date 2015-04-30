@@ -10,6 +10,8 @@ public class EipTMessage extends _EipTMessage {
 
   private int unreadCount = 0;
 
+  private String loginName = null;
+
   private String firstName = null;
 
   private String lastName = null;
@@ -53,6 +55,21 @@ public class EipTMessage extends _EipTMessage {
    */
   public Integer getUnreadCount() {
     return unreadCount;
+  }
+
+  /**
+   * @param loginName
+   *          セットする loginName
+   */
+  public void setLoginName(String loginName) {
+    this.loginName = loginName;
+  }
+
+  /**
+   * @return loginName
+   */
+  public String getLoginName() {
+    return loginName;
   }
 
   /**

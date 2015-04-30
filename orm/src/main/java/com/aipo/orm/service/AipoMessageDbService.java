@@ -73,6 +73,7 @@ public class AipoMessageDbService implements MessageDbService {
     select.append(" t2.has_photo, ");
     select.append(" t2.photo_modified, ");
     select.append(" t4.user_id, ");
+    select.append(" t4.login_name, ");
     select.append(" t4.last_name, ");
     select.append(" t4.first_name, ");
     select.append(" t4.has_photo as user_has_photo, ");
@@ -120,6 +121,7 @@ public class AipoMessageDbService implements MessageDbService {
     for (DataRow row : fetchList) {
       Long unread = (Long) row.get("unread");
       Integer tUserId = (Integer) row.get("user_id");
+      String loginName = (String) row.get("login_name");
       String lastName = (String) row.get("last_name");
       String firstName = (String) row.get("first_name");
       String hasPhoto = (String) row.get("user_has_photo");
@@ -129,6 +131,7 @@ public class AipoMessageDbService implements MessageDbService {
         Database.objectFromRowData(row, EipTMessageRoom.class);
       object.setUnreadCount(unread.intValue());
       object.setUserId(tUserId);
+      object.setLoginName(loginName);
       object.setFirstName(firstName);
       object.setLastName(lastName);
       object.setUserHasPhoto(hasPhoto);
@@ -143,7 +146,7 @@ public class AipoMessageDbService implements MessageDbService {
   }
 
   /**
-   * @param userId
+   * @param roomId
    * @param messageId
    * @param options
    * @return
@@ -164,6 +167,7 @@ public class AipoMessageDbService implements MessageDbService {
     select.append(" t1.message, ");
     select.append(" t1.create_date, ");
     select.append(" t1.member_count, ");
+    select.append(" t2.login_name, ");
     select.append(" t2.last_name, ");
     select.append(" t2.first_name, ");
     select.append(" t2.has_photo, ");
@@ -214,6 +218,7 @@ public class AipoMessageDbService implements MessageDbService {
     List<EipTMessage> list = new ArrayList<EipTMessage>();
     for (DataRow row : fetchList) {
       Long unread = (Long) row.get("unread");
+      String loginName = (String) row.get("login_name");
       String lastName = (String) row.get("last_name");
       String firstName = (String) row.get("first_name");
       String hasPhoto = (String) row.get("has_photo");
@@ -221,6 +226,7 @@ public class AipoMessageDbService implements MessageDbService {
 
       EipTMessage object = Database.objectFromRowData(row, EipTMessage.class);
       object.setUnreadCount(unread.intValue());
+      object.setLoginName(loginName);
       object.setFirstName(firstName);
       object.setLastName(lastName);
       object.setHasPhoto(hasPhoto);
