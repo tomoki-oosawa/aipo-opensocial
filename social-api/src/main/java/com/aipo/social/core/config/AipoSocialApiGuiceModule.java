@@ -37,13 +37,10 @@ import com.aipo.social.core.oauth.AipoAuthenticationHandlerProvider;
 import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.aipo.social.opensocial.service.AipoHandler;
-<<<<<<< HEAD
-import com.aipo.social.opensocial.service.messages.AipoMessageHandler;
-import com.aipo.social.opensocial.service.messages.AipoMessageRoomHandler;
-=======
 import com.aipo.social.opensocial.service.AipoPersonHandler;
 import com.aipo.social.opensocial.service.AipoPersonIconHandler;
->>>>>>> features/support-oauth2-v2-2
+import com.aipo.social.opensocial.service.messages.AipoMessageHandler;
+import com.aipo.social.opensocial.service.messages.AipoMessageRoomHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -98,8 +95,7 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoPersonHandler.class,
       AipoGroupHandler.class,
       AipoMessageRoomHandler.class,
-      AipoMessageHandler.class
-      AipoPersonIconHandler.class
-      );
+      AipoMessageHandler.class,
+      AipoPersonIconHandler.class);
   }
 }
