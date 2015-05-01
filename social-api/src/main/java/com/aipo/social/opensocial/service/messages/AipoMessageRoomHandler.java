@@ -33,7 +33,7 @@ import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
 
 /**
- * Message API :rooms
+ * Message API
  */
 @Service(name = "rooms", path = "/{userId}+/{groupId}/{roomId}+")
 public class AipoMessageRoomHandler {
@@ -91,7 +91,7 @@ public class AipoMessageRoomHandler {
   }
 
   /**
-   * ルーム削除 DELETE /messages/rooms/@viewer/@self/1
+   * ルーム削除 DELETE /rooms/@viewer/@self/1
    *
    * @param request
    * @return

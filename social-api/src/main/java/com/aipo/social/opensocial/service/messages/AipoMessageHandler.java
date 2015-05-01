@@ -33,7 +33,7 @@ import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
 
 /**
- * Message API :posts
+ * Message API
  */
 @Service(name = "messages", path = "/{userId}+/{groupId}/{roomId}/{messageId}+")
 public class AipoMessageHandler {
@@ -84,7 +84,7 @@ public class AipoMessageHandler {
   }
 
   /**
-   * メッセージ作成 POST /messages/posts/@viewer/@self
+   * メッセージ作成 POST /messages/@viewer/@self/1
    *
    * @param request
    * @return
@@ -95,7 +95,7 @@ public class AipoMessageHandler {
   }
 
   /**
-   * メッセージ削除 DELETE /messages/posts/@viewer/@self/1
+   * メッセージ削除 DELETE /messages/@viewer/@self/1
    *
    * @param request
    * @return
