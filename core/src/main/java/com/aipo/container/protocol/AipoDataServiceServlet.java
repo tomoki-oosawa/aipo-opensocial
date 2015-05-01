@@ -149,13 +149,28 @@ public class AipoDataServiceServlet extends ApiServlet {
       && (responseItem.getErrorCode() < 400)) {
       Object response = responseItem.getResponse();
       if (response instanceof StreamContent) {
-        byte[] b = new byte[1];
-        StreamContent content = (StreamContent) response;
-        servletResponse.setContentType(content.getContentType());
-        InputStream is = content.getInputStream();
-        OutputStream out = servletResponse.getOutputStream();
-        while (is.read(b) > 0) {
-          out.write(b);
+        InputStream is = null;
+        OutputStream out = null;
+        try {
+          StreamContent content = (StreamContent) response;
+          servletResponse.setContentType(content.getContentType());
+          is = content.getInputStream();
+          out = servletResponse.getOutputStream();
+          int b;
+          while ((b = is.read()) != -1) {
+            out.write(b);
+          }
+        } finally {
+          try {
+            if (out != null) {
+              out.close();
+            }
+            if (is != null) {
+              is.close();
+            }
+          } catch (IOException ignore) {
+            // ignore
+          }
         }
         out.close();
         is.close();

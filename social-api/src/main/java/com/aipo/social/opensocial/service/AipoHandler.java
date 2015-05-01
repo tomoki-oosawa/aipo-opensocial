@@ -18,18 +18,16 @@
  */
 package com.aipo.social.opensocial.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.RequestItem;
 import org.apache.shindig.protocol.Service;
 
-import com.aipo.container.protocol.StreamContent;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+/**
+ *
+ */
 @Service(name = "aipo")
 public class AipoHandler {
 
@@ -43,25 +41,5 @@ public class AipoHandler {
   @Operation(httpMethods = "GET", path = "/version")
   public String version(RequestItem request) {
     return version;
-  }
-
-  @Operation(httpMethods = "GET", path = "/mytest")
-  public StreamContent mytest(RequestItem request) {
-    return new StreamContent("text/plain", new ByteArrayInputStream(
-      "this is test".getBytes()));
-  }
-
-  @Operation(httpMethods = "GET", path = "/mypicture.png")
-  public StreamContent mytest2(RequestItem request) {
-    try {
-      StreamContent content = new StreamContent();
-      content.setInputStream(new FileInputStream(
-        "/Users/develop35/aipo_logo_l.png"));
-      content.setContentType("image/png");
-      return content;
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      return null;
-    }
   }
 }

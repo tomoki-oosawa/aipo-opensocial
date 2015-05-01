@@ -18,6 +18,7 @@
  */
 package com.aipo.orm.service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -40,4 +41,6 @@ public interface TurbineUserDbService {
   public int getCount(SearchOptions options);
 
   public TurbineUser auth(String username, String password);
+
+  public InputStream getPhoto(String username);
 }

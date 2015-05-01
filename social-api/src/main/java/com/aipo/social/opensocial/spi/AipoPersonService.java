@@ -18,7 +18,7 @@
  */
 package com.aipo.social.opensocial.spi;
 
-import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -196,13 +196,14 @@ public class AipoPersonService extends AbstractService implements PersonService 
   }
 
   /**
-   * @param paramUserId
-   * @param paramSecurityToken
+   *
+   * @param id
+   * @param token
    * @return
    * @throws ProtocolException
    */
   @Override
-  public ByteArrayInputStream getProfilePicture(UserId id, SecurityToken token)
+  public InputStream getIcon(UserId id, SecurityToken token)
       throws ProtocolException {
 
     // TODO: FIELDS
@@ -210,9 +211,8 @@ public class AipoPersonService extends AbstractService implements PersonService 
     setUp(token);
 
     String userId = getUserId(id, token);
-    TurbineUser user = turbineUserDbService.findByUsername(userId);
 
-    return new ByteArrayInputStream(user.getPhoto());
+    return turbineUserDbService.getPhoto(userId);
   }
 
 }
