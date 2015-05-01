@@ -399,7 +399,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
   }
 
   /**
-   * @param usernameå
+   * @param username
    * @return
    */
   @Override
