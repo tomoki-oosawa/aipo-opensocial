@@ -32,14 +32,18 @@ import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.service.AppDataHandler;
-import org.apache.shindig.social.opensocial.service.PersonHandler;
 
 import com.aipo.social.core.oauth.AipoAuthenticationHandlerProvider;
 import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.aipo.social.opensocial.service.AipoHandler;
+<<<<<<< HEAD
 import com.aipo.social.opensocial.service.messages.AipoMessageHandler;
 import com.aipo.social.opensocial.service.messages.AipoMessageRoomHandler;
+=======
+import com.aipo.social.opensocial.service.AipoPersonHandler;
+import com.aipo.social.opensocial.service.AipoPersonIconHandler;
+>>>>>>> features/support-oauth2-v2-2
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -54,8 +58,9 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
   /** {@inheritDoc} */
   @Override
   protected void configure() {
-    bind(ParameterFetcher.class).annotatedWith(
-      Names.named("DataServiceServlet")).to(DataServiceServletFetcher.class);
+    bind(ParameterFetcher.class)
+      .annotatedWith(Names.named("AipoDataServiceServlet"))
+      .to(DataServiceServletFetcher.class);
 
     bind(Boolean.class)
       .annotatedWith(
@@ -90,12 +95,11 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoHandler.class,
       AipoActivityHandler.class,
       AppDataHandler.class,
-      PersonHandler.class,
+      AipoPersonHandler.class,
       AipoGroupHandler.class,
       AipoMessageRoomHandler.class,
       AipoMessageHandler.class
-    // AlbumHandler.class,
-    // MediaItemHandler.class
+      AipoPersonIconHandler.class
       );
   }
 }

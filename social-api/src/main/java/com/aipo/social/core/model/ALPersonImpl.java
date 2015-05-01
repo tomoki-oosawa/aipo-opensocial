@@ -16,30 +16,45 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aipo.social.opensocial.service;
+package com.aipo.social.core.model;
 
-import org.apache.shindig.protocol.Operation;
-import org.apache.shindig.protocol.RequestItem;
-import org.apache.shindig.protocol.Service;
+import org.apache.shindig.social.opensocial.model.Name;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import com.aipo.social.opensocial.model.ALPerson;
 
 /**
- *
+ * @see org.apache.shindig. social.core.model.PersonImpl
  */
-@Service(name = "aipo")
-public class AipoHandler {
+public class ALPersonImpl extends
+    org.apache.shindig.social.core.model.PersonImpl implements ALPerson {
 
-  private final String version;
+  private Name nameKana;
 
-  @Inject
-  public AipoHandler(@Named("aipo.version") String version) {
-    this.version = version;
+  /**
+   * @param userId
+   * @param displayName
+   * @param name
+   * @param nameKana2
+   */
+  public ALPersonImpl(String id, String displayName, Name name, Name nameKana) {
+    super(id, displayName, name);
+    this.nameKana = nameKana;
   }
 
-  @Operation(httpMethods = "GET", path = "/version")
-  public String version(RequestItem request) {
-    return version;
+  /**
+   * @return
+   */
+  @Override
+  public Name getNameKana() {
+    return nameKana;
   }
+
+  /**
+   * @param nameKana
+   */
+  @Override
+  public void setNameKana(Name nameKana) {
+    this.nameKana = nameKana;
+  }
+
 }

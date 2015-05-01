@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.spi;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,12 +31,9 @@ import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.core.model.NameImpl;
-import org.apache.shindig.social.core.model.PersonImpl;
 import org.apache.shindig.social.opensocial.model.Name;
-import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
-import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.model.security.TurbineUser;
@@ -43,18 +41,20 @@ import com.aipo.orm.service.TurbineUserDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
+import com.aipo.social.core.model.ALPersonImpl;
+import com.aipo.social.opensocial.model.ALPerson;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 /**
- * 
+ *
  */
 public class AipoPersonService extends AbstractService implements PersonService {
 
   private final TurbineUserDbService turbineUserDbService;
 
   /**
-   * 
+   *
    */
   @Inject
   public AipoPersonService(TurbineUserDbService turbineUserSercice) {
@@ -62,7 +62,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
   }
 
   /**
-   * 
+   *
    * @param userIds
    * @param groupId
    * @param collectionOptions
@@ -71,7 +71,8 @@ public class AipoPersonService extends AbstractService implements PersonService 
    * @return
    * @throws ProtocolException
    */
-  public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds,
+  @Override
+  public Future<RestfulCollection<ALPerson>> getPeople(Set<UserId> userIds,
       GroupId groupId, CollectionOptions collectionOptions, Set<String> fields,
       SecurityToken token) throws ProtocolException {
 
@@ -135,13 +136,13 @@ public class AipoPersonService extends AbstractService implements PersonService 
           "Group ID not recognized");
     }
 
-    List<Person> result = new ArrayList<Person>(list.size());
+    List<ALPerson> result = new ArrayList<ALPerson>(list.size());
     for (TurbineUser user : list) {
       result.add(assignPerson(user, fields, token));
     }
 
-    RestfulCollection<Person> restCollection =
-      new RestfulCollection<Person>(
+    RestfulCollection<ALPerson> restCollection =
+      new RestfulCollection<ALPerson>(
         result,
         collectionOptions.getFirst(),
         totalResults,
@@ -151,14 +152,15 @@ public class AipoPersonService extends AbstractService implements PersonService 
   }
 
   /**
-   * 
+   *
    * @param id
    * @param fields
    * @param token
    * @return
    * @throws ProtocolException
    */
-  public Future<Person> getPerson(UserId id, Set<String> fields,
+  @Override
+  public Future<ALPerson> getPerson(UserId id, Set<String> fields,
       SecurityToken token) throws ProtocolException {
 
     // TODO: FIELDS
@@ -168,7 +170,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
     String userId = getUserId(id, token);
     TurbineUser user = turbineUserDbService.findByUsername(userId);
 
-    Person person = null;
+    ALPerson person = null;
     if (user != null) {
       person = assignPerson(user, fields, token);
     }
@@ -176,7 +178,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
     return ImmediateFuture.newInstance(person);
   }
 
-  protected Person assignPerson(TurbineUser user, Set<String> fields,
+  protected ALPerson assignPerson(TurbineUser user, Set<String> fields,
       SecurityToken token) {
     String userId =
       new StringBuilder(getOrgId(token) + ":" + user.getLoginName()).toString();
@@ -186,8 +188,31 @@ public class AipoPersonService extends AbstractService implements PersonService 
     Name name = new NameImpl();
     name.setFamilyName(user.getLastName());
     name.setGivenName(user.getFirstName());
-    Person person = new PersonImpl(userId, displayName, name);
+    Name nameKana = new NameImpl();
+    nameKana.setFamilyName(user.getLastNameKana());
+    nameKana.setGivenName(user.getFirstNameKana());
+    ALPerson person = new ALPersonImpl(userId, displayName, name, nameKana);
     return person;
+  }
+
+  /**
+   *
+   * @param id
+   * @param token
+   * @return
+   * @throws ProtocolException
+   */
+  @Override
+  public InputStream getIcon(UserId id, SecurityToken token)
+      throws ProtocolException {
+
+    // TODO: FIELDS
+
+    setUp(token);
+
+    String userId = getUserId(id, token);
+
+    return turbineUserDbService.getPhoto(userId);
   }
 
 }
