@@ -18,7 +18,9 @@
  */
 package com.aipo.orm.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -394,5 +396,42 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     } else {
       return null;
     }
+  }
+
+  /**
+   * @param username
+   * @return
+   */
+  @Override
+  public InputStream getPhoto(String username) {
+    if (username == null) {
+      return null;
+    }
+
+    StringBuilder b = new StringBuilder();
+    b
+      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, B.PASSWORD_VALUE, B.PHOTO ");
+    b.append(" FROM turbine_user AS B ");
+    b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
+    b.append(" AND B.LOGIN_NAME = #bind($username) ");
+
+    String query = b.toString();
+
+    TurbineUser tuser =
+      Database
+        .sql(TurbineUser.class, query)
+        .param("username", username)
+        .fetchSingle();
+
+    if (tuser == null) {
+      return null;
+    }
+
+    byte[] photo = tuser.getPhoto();
+    if (photo == null) {
+      return null;
+    }
+
+    return new ByteArrayInputStream(photo);
   }
 }

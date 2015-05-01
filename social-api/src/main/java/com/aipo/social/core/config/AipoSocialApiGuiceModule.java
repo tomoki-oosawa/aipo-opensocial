@@ -38,6 +38,7 @@ import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.aipo.social.opensocial.service.AipoHandler;
 import com.aipo.social.opensocial.service.AipoPersonHandler;
+import com.aipo.social.opensocial.service.AipoPersonIconHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -52,8 +53,9 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
   /** {@inheritDoc} */
   @Override
   protected void configure() {
-    bind(ParameterFetcher.class).annotatedWith(
-      Names.named("DataServiceServlet")).to(DataServiceServletFetcher.class);
+    bind(ParameterFetcher.class)
+      .annotatedWith(Names.named("AipoDataServiceServlet"))
+      .to(DataServiceServletFetcher.class);
 
     bind(Boolean.class)
       .annotatedWith(
@@ -89,7 +91,8 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoActivityHandler.class,
       AppDataHandler.class,
       AipoPersonHandler.class,
-      AipoGroupHandler.class
+      AipoGroupHandler.class,
+      AipoPersonIconHandler.class
     // MessageHandler.class,
     // AlbumHandler.class,
     // MediaItemHandler.class

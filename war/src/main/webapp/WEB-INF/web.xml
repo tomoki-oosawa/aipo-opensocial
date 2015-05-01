@@ -191,7 +191,7 @@
 
 	<servlet>
 		<servlet-name>restapiServlet</servlet-name>
-		<servlet-class>org.apache.shindig.protocol.DataServiceServlet</servlet-class>
+		<servlet-class>com.aipo.container.protocol.AipoDataServiceServlet</servlet-class>
 		<init-param>
 			<param-name>handlers</param-name>
 			<param-value>org.apache.shindig.handlers</param-value>
