@@ -20,7 +20,6 @@ package com.aipo.social.core.oauth;
 
 import java.util.List;
 
-import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
 import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
@@ -41,10 +40,8 @@ public class AipoAuthenticationHandlerProvider implements
   public AipoAuthenticationHandlerProvider(
       AipoOAuth2AuthenticationHandler oauth2Handler,
       UrlParameterAuthenticationHandler urlParam,
-      AipoOAuthAuthenticationHandler threeLeggedOAuth,
-      AnonymousAuthenticationHandler anonymous) {
-    handlers =
-      Lists.newArrayList(oauth2Handler, urlParam, threeLeggedOAuth, anonymous);
+      AipoOAuthAuthenticationHandler threeLeggedOAuth) {
+    handlers = Lists.newArrayList(oauth2Handler, urlParam, threeLeggedOAuth);
   }
 
   @Override
