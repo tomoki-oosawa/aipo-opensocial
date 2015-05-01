@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 
 import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.UserId;
@@ -34,7 +35,7 @@ import com.google.inject.Inject;
 /**
  * Message API :posts
  */
-@Service(name = "messages", path = "/posts/{userId}+/{groupId}/{roomId}/{messageId}+")
+@Service(name = "messages", path = "/{userId}+/{groupId}/{roomId}/{messageId}+")
 public class AipoMessageHandler {
 
   private final MessageService service;
@@ -45,9 +46,9 @@ public class AipoMessageHandler {
   }
 
   /**
-   * メッセージ一覧 GET /messages/posts/@viewer/@self/1/
+   * メッセージ一覧 GET /messages/@viewer/@self/1/
    *
-   * メッセージ詳細 GET /messages/posts/@viewer/@self/1/1
+   * メッセージ詳細 GET /messages/@viewer/@self/1/1
    *
    * @param request
    * @return
@@ -66,28 +67,20 @@ public class AipoMessageHandler {
       userIds,
       "Only one userId must be specified");
 
-    if (messageId == null || "".equals(messageId)) {
-      // メッセージ一覧を取得
-      return service.getPost(userIds.iterator().next(), options, request
-        .getFields(), roomId, messageId, request.getToken());
-
-    } else {
-      // メッセージ詳細を取得
-      return service.getPost(userIds.iterator().next(), options, request
-        .getFields(), roomId, messageId, request.getToken());
-    }
+    return service.getMessages(userIds.iterator().next(), options, request
+      .getFields(), roomId, messageId, request.getToken());
 
   }
 
   /**
-   * メッセージ更新 PUT /messages/posts/@viewer/@self/1
+   * メッセージ更新 PUT /messages/@viewer/@self/1
    *
    * @param request
    * @return
    */
   @Operation(httpMethods = "PUT")
   public Future<?> update(SocialRequestItem request) {
-    throw new UnsupportedOperationException();
+    throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
 
   /**
@@ -98,7 +91,7 @@ public class AipoMessageHandler {
    */
   @Operation(httpMethods = "POST")
   public Future<?> create(SocialRequestItem request) {
-    throw new UnsupportedOperationException();
+    throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
 
   /**
@@ -109,6 +102,6 @@ public class AipoMessageHandler {
    */
   @Operation(httpMethods = "DELETE")
   public Future<?> delete(SocialRequestItem request) {
-    throw new UnsupportedOperationException();
+    throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
 }

@@ -134,7 +134,7 @@ public class AipoMessageService extends AbstractService implements
    * @return
    */
   @Override
-  public Future<RestfulCollection<ALMessage>> getPost(UserId userId,
+  public Future<RestfulCollection<ALMessage>> getMessages(UserId userId,
       AipoCollectionOptions collectionOptions, Set<String> fields,
       String roomId, String messageId, SecurityToken token) {
 

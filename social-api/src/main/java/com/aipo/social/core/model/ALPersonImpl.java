@@ -42,6 +42,12 @@ public class ALPersonImpl extends
   }
 
   /**
+   *
+   */
+  public ALPersonImpl() {
+  }
+
+  /**
    * @return
    */
   @Override

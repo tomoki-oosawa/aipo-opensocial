@@ -34,7 +34,7 @@ public interface MessageService {
   public Future<RestfulCollection<ALMessageRoom>> getRooms(UserId userId,
       CollectionOptions options, Set<String> fields, SecurityToken token);
 
-  public Future<RestfulCollection<ALMessage>> getPost(UserId userId,
+  public Future<RestfulCollection<ALMessage>> getMessages(UserId userId,
       AipoCollectionOptions options, Set<String> fields, String roomId,
       String messageId, SecurityToken token);
 

@@ -16,10 +16,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.servlet.HttpUtil;
 import org.apache.shindig.protocol.ApiServlet;
 import org.apache.shindig.protocol.ContentTypes;
+import org.apache.shindig.protocol.ContentTypes.InvalidContentTypeException;
 import org.apache.shindig.protocol.DataCollection;
 import org.apache.shindig.protocol.ResponseItem;
 import org.apache.shindig.protocol.RestHandler;
@@ -30,15 +32,18 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 public class AipoDataServiceServlet extends ApiServlet {
+
+  private static final long serialVersionUID = -1475640375430152116L;
+
   private static final Logger LOG = Logger
     .getLogger(AipoDataServiceServlet.class.getName());
 
   public static final Set<String> ALLOWED_CONTENT_TYPES =
-    new ImmutableSet.Builder()
-      .addAll(ContentTypes.ALLOWED_JSON_CONTENT_TYPES)
-      .addAll(ContentTypes.ALLOWED_XML_CONTENT_TYPES)
-      .addAll(ContentTypes.ALLOWED_ATOM_CONTENT_TYPES)
-      .build();
+    new ImmutableSet.Builder<String>().addAll(
+      ContentTypes.ALLOWED_JSON_CONTENT_TYPES).addAll(
+      ContentTypes.ALLOWED_XML_CONTENT_TYPES).addAll(
+      ContentTypes.ALLOWED_ATOM_CONTENT_TYPES).addAll(
+      ImmutableSet.of("application/x-www-form-urlencoded")).build();
 
   protected static final String X_HTTP_METHOD_OVERRIDE =
     "X-HTTP-Method-Override";
@@ -56,8 +61,7 @@ public class AipoDataServiceServlet extends ApiServlet {
   protected void doPut(HttpServletRequest servletRequest,
       HttpServletResponse servletResponse) throws ServletException, IOException {
     try {
-      ContentTypes.checkContentTypes(ALLOWED_CONTENT_TYPES, servletRequest
-        .getContentType());
+      checkContentTypes(ALLOWED_CONTENT_TYPES, servletRequest.getContentType());
       executeRequest(servletRequest, servletResponse);
     } catch (ContentTypes.InvalidContentTypeException icte) {
       sendError(servletResponse, new ResponseItem(400, icte.getMessage()));
@@ -74,8 +78,7 @@ public class AipoDataServiceServlet extends ApiServlet {
   protected void doPost(HttpServletRequest servletRequest,
       HttpServletResponse servletResponse) throws ServletException, IOException {
     try {
-      ContentTypes.checkContentTypes(ALLOWED_CONTENT_TYPES, servletRequest
-        .getContentType());
+      checkContentTypes(ALLOWED_CONTENT_TYPES, servletRequest.getContentType());
       executeRequest(servletRequest, servletResponse);
     } catch (ContentTypes.InvalidContentTypeException icte) {
       sendError(servletResponse, new ResponseItem(400, icte.getMessage()));
@@ -134,7 +137,11 @@ public class AipoDataServiceServlet extends ApiServlet {
     Reader bodyReader = null;
     if ((!servletRequest.getMethod().equals("GET"))
       && (!servletRequest.getMethod().equals("HEAD"))) {
-      bodyReader = servletRequest.getReader();
+      try {
+        bodyReader = servletRequest.getReader();
+      } catch (Throwable ignore) {
+
+      }
     }
     Map<String, String[]> parameterMap = servletRequest.getParameterMap();
     Future<?> future =
@@ -248,5 +255,24 @@ public class AipoDataServiceServlet extends ApiServlet {
       converter = this.jsonConverter;
     }
     return converter;
+  }
+
+  protected void checkContentTypes(Set<String> allowedContentTypes,
+      String contentType) throws ContentTypes.InvalidContentTypeException {
+    if (StringUtils.isEmpty(contentType)) {
+      throw new InvalidContentTypeException(
+        "No Content-Type specified. One of "
+          + StringUtils.join(allowedContentTypes, ", ")
+          + " is required");
+    }
+    contentType = ContentTypes.extractMimePart(contentType);
+    if (allowedContentTypes.contains(contentType)) {
+      return;
+    }
+    throw new InvalidContentTypeException("Unsupported Content-Type "
+      + contentType
+      + ". One of "
+      + StringUtils.join(allowedContentTypes, ", ")
+      + " is required");
   }
 }

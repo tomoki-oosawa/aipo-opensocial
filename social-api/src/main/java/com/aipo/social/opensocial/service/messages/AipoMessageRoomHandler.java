@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 
 import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
@@ -34,7 +35,7 @@ import com.google.inject.Inject;
 /**
  * Message API :rooms
  */
-@Service(name = "messages", path = "/rooms/{userId}+/{groupId}/{roomId}+")
+@Service(name = "rooms", path = "/{userId}+/{groupId}/{roomId}+")
 public class AipoMessageRoomHandler {
 
   private final MessageService service;
@@ -45,9 +46,9 @@ public class AipoMessageRoomHandler {
   }
 
   /**
-   * ルーム一覧 GET /messages/rooms/@viewer/@self
+   * ルーム一覧 GET /rooms/@viewer/@self
    *
-   * ルーム詳細 GET /messages/rooms/@viewer/@self/1
+   * ルーム詳細 GET /rooms/@viewer/@self/1
    *
    * @param request
    * @return
@@ -68,25 +69,25 @@ public class AipoMessageRoomHandler {
   }
 
   /**
-   * ルーム更新 PUT /messages/rooms/@viewer/@self/1
+   * ルーム更新 PUT /rooms/@viewer/@self/1
    *
    * @param request
    * @return
    */
   @Operation(httpMethods = "PUT")
   public Future<?> update(SocialRequestItem request) {
-    throw new UnsupportedOperationException();
+    throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
 
   /**
-   * ルーム作成 POST /messages/rooms/@viewer/@self
+   * ルーム作成 POST /rooms/@viewer/@self
    *
    * @param request
    * @return
    */
   @Operation(httpMethods = "POST")
   public Future<?> create(SocialRequestItem request) {
-    throw new UnsupportedOperationException();
+    throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
 
   /**
@@ -97,6 +98,6 @@ public class AipoMessageRoomHandler {
    */
   @Operation(httpMethods = "DELETE")
   public Future<?> delete(SocialRequestItem request) {
-    throw new UnsupportedOperationException();
+    throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
 }
