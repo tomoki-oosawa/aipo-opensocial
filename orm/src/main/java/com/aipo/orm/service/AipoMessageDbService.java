@@ -30,6 +30,7 @@ import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
 import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.query.SQLTemplate;
 import com.aipo.orm.service.request.SearchOptions;
 import com.google.inject.Inject;
 
@@ -58,12 +59,16 @@ public class AipoMessageDbService implements MessageDbService {
       return new ArrayList<EipTMessageRoom>();
     }
 
+    // Filter
+    String filter = options.getFilterBy();
+    // FilterOperation filterOperation = options.getFilterOperation();
+    String filterValue = options.getFilterValue();
+    boolean isFilter = false;
+
     // MessageUtils.getRoomListと同等の処理（pageの制約はなし）に必要な変数を取得
     Integer user_id = turbineUser.getUserId();
-    String keyword = options.getFilterValue();
-    int limit = options.getLimit();
+    // int limit = options.getLimit();
     boolean isMySQL = !Database.isJdbcPostgreSQL();
-    boolean isSearch = (keyword != null && keyword.length() > 0);
 
     StringBuilder select = new StringBuilder();
 
@@ -92,7 +97,8 @@ public class AipoMessageDbService implements MessageDbService {
     StringBuilder body = new StringBuilder();
     body
       .append("  from eip_t_message_room_member t1, eip_t_message_room t2, turbine_user t4 where t1.user_id = #bind($user_id) and t1.room_id = t2.room_id and t1.target_user_id = t4.user_id ");
-    if (isSearch) {
+
+    if ("keyword".equals(filter)) {
       if (isMySQL) {
         body
           .append(" and ((t2.room_type='G' and t2.name like #bind($keyword)) or (t2.room_type='O' and CONCAT(t4.last_name,t4.first_name) like #bind($keyword))) ");
@@ -100,22 +106,29 @@ public class AipoMessageDbService implements MessageDbService {
         body
           .append(" and ((t2.room_type='G' and t2.name like #bind($keyword)) or (t2.room_type='O' and (t4.last_name || t4.first_name) like #bind($keyword))) ");
       }
+      isFilter = true;
     }
 
     StringBuilder last = new StringBuilder();
 
     last.append(" order by t2.last_update_date desc ");
+    /*-
     if (limit > 0) {
       last.append(" LIMIT ");
       last.append(limit);
     }
+     */
 
-    List<DataRow> fetchList =
+    SQLTemplate<EipTMessageRoom> sql =
       Database.sql(
         EipTMessageRoom.class,
         select.toString() + body.toString() + last.toString()).param(
         "user_id",
-        Integer.valueOf(user_id)).fetchListAsDataRow();
+        Integer.valueOf(user_id));
+    if (isFilter) {
+      sql.param("keyword", "%" + filterValue + "%");
+    }
+    List<DataRow> fetchList = sql.fetchListAsDataRow();
 
     List<EipTMessageRoom> list = new ArrayList<EipTMessageRoom>();
     for (DataRow row : fetchList) {

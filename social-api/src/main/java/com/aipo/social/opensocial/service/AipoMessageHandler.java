@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aipo.social.opensocial.service.messages;
+package com.aipo.social.opensocial.service;
 
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -26,29 +26,30 @@ import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
+import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
 
 /**
  * Message API
  */
-@Service(name = "rooms", path = "/{userId}+/{groupId}/{roomId}+")
-public class AipoMessageRoomHandler {
+@Service(name = "messages", path = "/{userId}+/{groupId}/{roomId}/{messageId}+")
+public class AipoMessageHandler {
 
   private final MessageService service;
 
   @Inject
-  public AipoMessageRoomHandler(MessageService service) {
+  public AipoMessageHandler(MessageService service) {
     this.service = service;
   }
 
   /**
-   * ルーム一覧 GET /rooms/@viewer/@self
+   * メッセージ一覧 GET /messages/@viewer/@self/1/
    *
-   * ルーム詳細 GET /rooms/@viewer/@self/1
+   * メッセージ詳細 GET /messages/@viewer/@self/1/1
    *
    * @param request
    * @return
@@ -57,19 +58,26 @@ public class AipoMessageRoomHandler {
   public Future<?> get(SocialRequestItem request) {
 
     Set<UserId> userIds = request.getUsers();
-    CollectionOptions options = new CollectionOptions(request);
+    GroupId groupId = request.getGroup();
+
+    String roomId = request.getParameter("roomId");
+    String messageId = request.getParameter("messageId");
+
+    AipoCollectionOptions options = new AipoCollectionOptions(request);
 
     // Preconditions
     HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
     HandlerPreconditions.requireSingular(
       userIds,
       "Only one userId must be specified");
-    return service.getRooms(userIds.iterator().next(), options, request
-      .getFields(), request.getToken());
+
+    return service.getMessages(userIds.iterator().next(), options, request
+      .getFields(), roomId, messageId, request.getToken());
+
   }
 
   /**
-   * ルーム更新 PUT /rooms/@viewer/@self/1
+   * メッセージ更新 PUT /messages/@viewer/@self/1
    *
    * @param request
    * @return
@@ -80,7 +88,7 @@ public class AipoMessageRoomHandler {
   }
 
   /**
-   * ルーム作成 POST /rooms/@viewer/@self
+   * メッセージ作成 POST /messages/@viewer/@self/1
    *
    * @param request
    * @return
@@ -91,7 +99,7 @@ public class AipoMessageRoomHandler {
   }
 
   /**
-   * ルーム削除 DELETE /rooms/@viewer/@self/1
+   * メッセージ削除 DELETE /messages/@viewer/@self/1
    *
    * @param request
    * @return

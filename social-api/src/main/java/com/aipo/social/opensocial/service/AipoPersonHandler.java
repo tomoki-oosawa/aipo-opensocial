@@ -30,7 +30,6 @@ import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RequestItem;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.protocol.Service;
-import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
@@ -69,7 +68,7 @@ public class AipoPersonHandler {
     GroupId groupId = request.getGroup();
     Set<String> optionalPersonId =
       ImmutableSet.copyOf(request.getListParameter("personId"));
-    Set<String> fields = request.getFields(Person.Field.DEFAULT_FIELDS);
+    Set<String> fields = request.getFields(ALPerson.Field.DEFAULT_FIELDS);
     Set<UserId> userIds = request.getUsers();
 
     // Preconditions

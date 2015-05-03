@@ -69,6 +69,8 @@ public class AipoMessageService extends AbstractService implements
     // TODO: FIELDS
 
     setUp(token);
+    // 自分(Viewer)のルームのみ取得可能
+    checkSameViewer(userId, token);
 
     String username = getUserId(userId, token);
 
@@ -90,9 +92,9 @@ public class AipoMessageService extends AbstractService implements
           : SortOrder.valueOf(collectionOptions.getSortOrder().toString()));
 
     List<EipTMessageRoom> list = null;
-    // /messages/rooms/\(userId)/\(groupId)
-    // {userId} が所属しているルームを取得
+
     list = messageDbService.findMessageRoom(username, options);
+
     List<ALMessageRoom> result = new ArrayList<ALMessageRoom>(list.size());
     for (EipTMessageRoom room : list) {
       result.add(assignMessageRoom(room, fields, token));
