@@ -72,7 +72,13 @@ public interface ALActivity extends
     USER_ID("userId"),
 
     // Ext.
-    RECIPIENTS("recipients");
+    RECIPIENTS("recipients"),
+
+    DISPLAY_NAME("displayName"),
+
+    PORTLET_PARAMS("portletParams"),
+
+    ICON("icon");
 
     /**
      * The json field that the instance represents.
@@ -81,7 +87,7 @@ public interface ALActivity extends
 
     /**
      * create a field base on the a json element.
-     * 
+     *
      * @param jsonString
      *          the name of the element
      */
@@ -91,7 +97,7 @@ public interface ALActivity extends
 
     /**
      * emit the field as a json element.
-     * 
+     *
      * @return the field name
      */
     @Override
@@ -103,5 +109,17 @@ public interface ALActivity extends
   List<String> getRecipients();
 
   void setRecipients(List<String> userIds);
+
+  String getDisplayName();
+
+  void setDisplayName(String displayName);
+
+  String getPortletParams();
+
+  void setPortletParams(String portletParams);
+
+  String getIcon();
+
+  void setIcon(String icon);
 
 }

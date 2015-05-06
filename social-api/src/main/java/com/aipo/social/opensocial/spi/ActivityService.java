@@ -24,7 +24,6 @@ import java.util.concurrent.Future;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
@@ -35,14 +34,10 @@ import com.aipo.social.opensocial.model.ALActivity;
  */
 public interface ActivityService {
 
-  Future<RestfulCollection<ALActivity>> getActivities(Set<UserId> userIds,
-      GroupId groupId, String appId, Set<String> fields,
-      CollectionOptions options, SecurityToken token) throws ProtocolException;
-
   Future<RestfulCollection<ALActivity>> getActivities(UserId userId,
       GroupId groupId, String appId, Set<String> fields,
-      CollectionOptions options, Set<String> activityIds, SecurityToken token)
-      throws ProtocolException;
+      AipoCollectionOptions options, Set<String> activityIds,
+      SecurityToken token) throws ProtocolException;
 
   Future<ALActivity> getActivity(UserId userId, GroupId groupId, String appId,
       Set<String> fields, String activityId, SecurityToken token)

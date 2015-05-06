@@ -30,6 +30,12 @@ public class ALActivityImpl extends
 
   private List<String> recipients;
 
+  private String displayName;
+
+  private String portletParams;
+
+  private String icon;
+
   /**
    * @return
    */
@@ -44,6 +50,54 @@ public class ALActivityImpl extends
   @Override
   public void setRecipients(List<String> userIds) {
     this.recipients = userIds;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  /**
+   * @param displayName
+   */
+  @Override
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public String getPortletParams() {
+    return portletParams;
+  }
+
+  /**
+   * @param portletParams
+   */
+  @Override
+  public void setPortletParams(String portletParams) {
+    this.portletParams = portletParams;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public String getIcon() {
+    return icon;
+  }
+
+  /**
+   * @param icon
+   */
+  @Override
+  public void setIcon(String icon) {
+    this.icon = icon;
   }
 
 }

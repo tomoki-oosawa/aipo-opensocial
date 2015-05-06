@@ -31,12 +31,16 @@ import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.model.social.Activity;
 import com.aipo.orm.model.social.ActivityMap;
 import com.aipo.orm.query.Operations;
+import com.aipo.orm.query.SelectQuery;
 import com.aipo.orm.service.ContainerConfigDbService.Property;
+import com.aipo.orm.service.request.SearchOptions;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AipoActivityDbService implements ActivityDbService {
+
+  public static int MAX_LIMIT = 1000;
 
   private final TurbineUserDbService turbineUserDbService;
 
@@ -49,6 +53,33 @@ public class AipoActivityDbService implements ActivityDbService {
     this.containerConfigDbService = containerConfigDbService;
   }
 
+  /**
+   * @param username
+   * @param appId
+   * @param options
+   * @return
+   */
+  @Override
+  public List<Activity> find(String username, String appId,
+      SearchOptions options) {
+    SelectQuery<Activity> query = buildQuery(username, appId, options);
+    return query.fetchList();
+  }
+
+  /**
+   *
+   * @param username
+   * @param appId
+   * @param options
+   * @return
+   */
+  @Override
+  public int getCount(String username, String appId, SearchOptions options) {
+    SelectQuery<Activity> query = buildQuery(username, appId, options);
+    return query.getCount();
+  }
+
+  @Override
   public void create(String username, String appId, Map<String, Object> values) {
 
     try {
@@ -161,5 +192,80 @@ public class AipoActivityDbService implements ActivityDbService {
       Database.rollback();
       throw new RuntimeException(t);
     }
+  }
+
+  protected SelectQuery<Activity> buildQuery(String username, String appId,
+      SearchOptions options) {
+
+    int limit = options.getLimit();
+    int offset = options.getOffset();
+    Integer externalId = options.getParameterInt("externalId");
+    Integer isRead = options.getParameterInt("isRead");
+    Integer priority = options.getParameterInt("priority");
+    String keyword = options.getParameter("keyword");
+
+    if (limit > MAX_LIMIT) {
+      limit = MAX_LIMIT;
+    }
+    if (priority == null) {
+      priority = 0;
+    }
+
+    SelectQuery<Activity> query = Database.query(Activity.class);
+    if (limit > 0) {
+      query.limit(limit);
+    }
+    if (offset > 0) {
+      query.offset(offset);
+    }
+
+    if (isRead != null && isRead >= 0) {
+      query.where(Operations.eq(Activity.ACTIVITY_MAPS_PROPERTY
+        + "."
+        + ActivityMap.IS_READ_PROPERTY, isRead));
+    }
+
+    if (externalId != null && externalId.intValue() > 0) {
+      query.where(Operations.eq(Activity.EXTERNAL_ID_PROPERTY, externalId));
+    }
+
+    if (priority != null && priority.intValue() >= 0) {
+      query.where(Operations.eq(Activity.PRIORITY_PROPERTY, priority));
+    }
+    if (keyword != null && keyword.length() > 0) {
+      // 選択したキーワードを指定する．
+      query.where(Operations.contains(Activity.TITLE_PROPERTY, keyword).or(
+        Operations.contains(Activity.LOGIN_NAME_PROPERTY, keyword)));
+    }
+
+    query.where(Operations.ne(Activity.LOGIN_NAME_PROPERTY, username));
+
+    if (priority.intValue() == 0) {
+      // 更新情報
+      query.where(Operations.in(Activity.ACTIVITY_MAPS_PROPERTY
+        + "."
+        + ActivityMap.LOGIN_NAME_PROPERTY, username, "-1"));
+
+    } else {
+      // あなた(自分)宛のお知らせ
+      query.where(Operations.in(Activity.ACTIVITY_MAPS_PROPERTY
+        + "."
+        + ActivityMap.LOGIN_NAME_PROPERTY, username));
+    }
+
+    if (appId != null && appId.length() > 0) {
+      if (appId.equals("Gadget")) {
+        query.where(Operations.ne(Activity.APP_ID_PROPERTY, "Schedule"));
+        query.where(Operations.ne(Activity.APP_ID_PROPERTY, "Blog"));
+        query.where(Operations.ne(Activity.APP_ID_PROPERTY, "Msgboard"));
+        query.where(Operations.ne(Activity.APP_ID_PROPERTY, "ToDo"));
+        query.where(Operations.ne(Activity.APP_ID_PROPERTY, "Cabinet"));
+      } else {
+        query.where(Operations.eq(Activity.APP_ID_PROPERTY, appId));
+      }
+    }
+
+    query.orderDesending(Activity.UPDATE_DATE_PROPERTY);
+    return query;
   }
 }

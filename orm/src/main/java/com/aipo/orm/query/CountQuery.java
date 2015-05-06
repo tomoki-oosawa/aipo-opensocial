@@ -28,7 +28,7 @@ import org.apache.cayenne.dba.TypesMapping;
 import org.apache.log4j.Logger;
 
 /**
- * 
+ *
  */
 public class CountQuery extends AbstractCustomQuery {
 
@@ -97,5 +97,21 @@ public class CountQuery extends AbstractCustomQuery {
   @Override
   protected String[] getCustomColumnNames() {
     return null;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  protected int getOffset() {
+    return 0;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  protected int getLimit() {
+    return 0;
   }
 }

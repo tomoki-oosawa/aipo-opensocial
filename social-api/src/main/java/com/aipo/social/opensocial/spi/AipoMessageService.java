@@ -177,7 +177,7 @@ public class AipoMessageService extends AbstractService implements
           collectionOptions.getSortOrder() == null
             ? SortOrder.ascending
             : SortOrder.valueOf(collectionOptions.getSortOrder().toString()))
-        .withUntilId(collectionOptions.getUntilId());
+        .withParameters(collectionOptions.getParameters());
 
     List<EipTMessage> list = null;
     // /messages/rooms/\(userId)/\(groupId)

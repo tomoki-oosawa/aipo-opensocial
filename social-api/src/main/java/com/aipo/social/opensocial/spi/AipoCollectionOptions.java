@@ -19,32 +19,95 @@
 
 package com.aipo.social.opensocial.spi;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.protocol.RequestItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 
+import com.google.common.base.Functions;
 import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 
 /**
  *
  */
 public class AipoCollectionOptions extends CollectionOptions {
-  private int untilId;
+
+  public static enum Parameter {
+    KEYWORD("keyword"), UNTIL_ID("untilId"), PRIORITY("priority"), EXTERNAL_ID(
+        "externalId");
+
+    private static final Map<String, Parameter> LOOKUP = Maps.uniqueIndex(
+      EnumSet.allOf(Parameter.class),
+      Functions.toStringFunction());
+
+    public static final Set<String> ALL_PARAMETERS = LOOKUP.keySet();
+
+    private String value;
+
+    private Parameter(String value) {
+      this.value = value;
+    }
+
+    @Override
+    public String toString() {
+      return this.value;
+    }
+
+    public static Parameter getParameter(String key) {
+      return LOOKUP.get(key);
+    }
+  }
+
+  private final Map<String, String> map = new HashMap<String, String>();
 
   public AipoCollectionOptions(RequestItem request) {
     super(request);
 
-    String untilId = request.getParameter("until_id");
-    if (untilId != null) {
-      this.untilId = Integer.valueOf(untilId).intValue();
+    Iterator<String> iterator = Parameter.ALL_PARAMETERS.iterator();
+    while (iterator.hasNext()) {
+      String next = iterator.next();
+      String value = request.getParameter(next);
+      if (!StringUtils.isEmpty(value)) {
+        map.put(next, value);
+      }
     }
   }
 
-  public int getUntilId() {
-    return this.untilId;
+  /**
+   *
+   * @param key
+   * @return
+   */
+  public String getParameter(String key) {
+    return map.get(key);
   }
 
-  public void setUntilId(int untilId) {
-    this.untilId = untilId;
+  public Map<String, String> getParameters() {
+    return map;
+  }
+
+  public Integer getParameterInt(String key) {
+    try {
+      return Integer.valueOf(map.get(key));
+    } catch (Throwable ignore) {
+      //
+    }
+    return null;
+  }
+
+  /**
+   *
+   * @param key
+   * @param value
+   */
+  public void set(String key, String value) {
+    map.put(key, value);
   }
 
   @Override
@@ -53,7 +116,7 @@ public class AipoCollectionOptions extends CollectionOptions {
       return true;
     }
     AipoCollectionOptions actual = (AipoCollectionOptions) o;
-    return super.equals(o) && (this.untilId == actual.untilId);
+    return super.equals(o) && (this.map.equals(actual.map));
   }
 
   @Override
@@ -65,6 +128,6 @@ public class AipoCollectionOptions extends CollectionOptions {
       getFilterOperation(),
       getFilterValue(),
       Integer.valueOf(getFirst()),
-      Integer.valueOf(getMax()) }, this.untilId);
+      Integer.valueOf(getMax()) }, this.map);
   }
 }

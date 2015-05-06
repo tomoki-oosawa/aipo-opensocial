@@ -167,9 +167,9 @@ public class AipoMessageDbService implements MessageDbService {
   @Override
   public List<EipTMessage> findMessage(int roomId, int messageId,
       SearchOptions options) {
-    String keyword = options.getFilterValue();
     int limit = options.getLimit();
-    int untilId = options.getUntilId();
+    Integer untilId = options.getParameterInt("untilId");
+    String keyword = options.getParameter("keyword");
 
     StringBuilder select = new StringBuilder();
 
@@ -195,7 +195,7 @@ public class AipoMessageDbService implements MessageDbService {
     StringBuilder body = new StringBuilder();
     body
       .append("  from eip_t_message t1, turbine_user t2 where t1.user_id = t2.user_id and t1.room_id = #bind($room_id) ");
-    if (untilId > 0) {
+    if (untilId != null && untilId > 0) {
       body.append(" and t1.message_id<");
       body.append(untilId);
     }

@@ -29,11 +29,11 @@ import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RequestItem;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.social.opensocial.model.ALActivity;
 import com.aipo.social.opensocial.spi.ActivityService;
+import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -57,12 +57,11 @@ public class AipoActivityHandler {
 
   /**
    * Allowed end-points /activities/{userId}/@self/{actvityId}+
-   * 
+   *
    * examples: /activities/john.doe/@self/1
    */
   @Operation(httpMethods = "DELETE")
   public Future<?> delete(SocialRequestItem request) throws ProtocolException {
-
     Set<UserId> userIds = request.getUsers();
     Set<String> activityIds =
       ImmutableSet.copyOf(request.getListParameter("activityId"));
@@ -79,7 +78,7 @@ public class AipoActivityHandler {
 
   /**
    * Allowed end-points /activities/{userId}/@self
-   * 
+   *
    * examples: /activities/john.doe/@self - postBody is an activity object
    */
   @Operation(httpMethods = "PUT", bodyParam = "activity")
@@ -89,7 +88,7 @@ public class AipoActivityHandler {
 
   /**
    * Allowed end-points /activities/{userId}/@self
-   * 
+   *
    * examples: /activities/john.doe/@self - postBody is an activity object
    */
   @Operation(httpMethods = "POST", bodyParam = "activity")
@@ -116,7 +115,7 @@ public class AipoActivityHandler {
   /**
    * Allowed end-points /activities/{userId}/{groupId}/{optionalActvityId}+
    * /activities/{userId}+/{groupId}
-   * 
+   *
    * examples: /activities/john.doe/@self/1 /activities/john.doe/@self
    * /activities/john.doe,jane.doe/@friends
    */
@@ -126,7 +125,7 @@ public class AipoActivityHandler {
     Set<String> optionalActivityIds =
       ImmutableSet.copyOf(request.getListParameter("activityId"));
 
-    CollectionOptions options = new CollectionOptions(request);
+    AipoCollectionOptions options = new AipoCollectionOptions(request);
 
     // Preconditions
     HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
@@ -156,13 +155,13 @@ public class AipoActivityHandler {
       }
     }
 
-    return service.getActivities(userIds, request.getGroup(), request
-      .getAppId(),
-    // TODO: add pagination and sorting support
-    // getSortBy(params), getFilterBy(params), getStartIndex(params),
-    // getCount(params),
+    return service.getActivities(
+      userIds.iterator().next(),
+      request.getGroup(),
+      request.getAppId(),
       request.getFields(),
       options,
+      null,
       request.getToken());
   }
 

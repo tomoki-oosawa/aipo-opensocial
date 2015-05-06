@@ -18,6 +18,9 @@
  */
 package com.aipo.orm.service.request;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
@@ -45,8 +48,7 @@ public class SearchOptions {
 
   private String filterValue;
 
-  // untilIdを起点に古いデータを取得　未指定の場合は0
-  private int untilId = 0;
+  private final Map<String, String> map = new HashMap<String, String>();
 
   public static SearchOptions build() {
     return new SearchOptions();
@@ -188,26 +190,38 @@ public class SearchOptions {
   }
 
   /**
-   * @return untilId
-   */
-  public int getUntilId() {
-    return untilId;
-  }
-
-  /**
-   * @param untilId
-   *          セットする untilId
-   */
-  public void setUntilId(int untilId) {
-    this.untilId = untilId;
-  }
-
-  /**
-   * @param untilId
+   *
+   * @param key
    * @return
    */
-  public SearchOptions withUntilId(int untilId) {
-    setUntilId(untilId);
+  public String getParameter(String key) {
+    return map.get(key);
+  }
+
+  public Integer getParameterInt(String key) {
+    try {
+      return Integer.valueOf(map.get(key));
+    } catch (Throwable ignore) {
+      //
+    }
+    return null;
+  }
+
+  /**
+   *
+   * @param map
+   */
+  public void setParameters(Map<String, String> map) {
+    this.map.putAll(map);
+  }
+
+  /**
+   *
+   * @param map
+   * @return
+   */
+  public SearchOptions withParameters(Map<String, String> map) {
+    setParameters(map);
     return this;
   }
 

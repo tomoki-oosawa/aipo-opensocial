@@ -24,4 +24,17 @@ public class Activity extends _Activity {
 
   private static final long serialVersionUID = 5921943548424255396L;
 
+  public Integer getId() {
+    if (getObjectId() != null && !getObjectId().isTemporary()) {
+      Object obj = getObjectId().getIdSnapshot().get(ID_PK_COLUMN);
+      if (obj instanceof Long) {
+        Long value = (Long) obj;
+        return Integer.valueOf(value.intValue());
+      } else {
+        return (Integer) obj;
+      }
+    } else {
+      return null;
+    }
+  }
 }
