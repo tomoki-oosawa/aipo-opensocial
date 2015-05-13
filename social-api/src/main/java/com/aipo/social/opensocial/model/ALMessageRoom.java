@@ -42,9 +42,18 @@ public interface ALMessageRoom {
 
   public void setIsDirect(boolean isDirect);
 
+  public boolean getIsAutoName();
+
+  public void setIsAutoName(boolean isAutoName);
+
+  public String getUpdateDate();
+
+  public void setUpdateDate(String paramString);
+
   public static enum Field {
     ROOM_ID("roomId"), NAME("name"), USER_ID("userId"), UNREAD_COUNT(
-        "unreadCount"), IS_DIRECT("isDirect");
+        "unreadCount"), IS_DIRECT("isDirect"), IS_AUTO_NAME("isAutoName"), UPDATE_DATE(
+        "updateDate");
 
     private final String jsonString;
 

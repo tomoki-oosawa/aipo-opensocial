@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.common.util.DateUtil;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
@@ -123,6 +124,8 @@ public class AipoMessageService extends AbstractService implements
     }
     room.setUnreadCount(model.getUnreadCount());
     room.setIsDirect("O".equals(model.getRoomType()));
+    room.setIsAutoName("T".equals(model.getAutoName()));
+    room.setUpdateDate(DateUtil.formatIso8601Date(model.getLastUpdateDate()));
 
     return room;
   }
@@ -222,7 +225,7 @@ public class AipoMessageService extends AbstractService implements
     message.setUnreadCount(model.getUnreadCount());
     message.setMemberCount(model.getMemberCount());
     message.setMessage(model.getMessage());
-    message.setCreateDate(model.getCreateDate().toString());
+    message.setCreateDate(DateUtil.formatIso8601Date(model.getCreateDate()));
     if (messageIdInt == 0) {
       // メッセージ詳細の場合
       return message;

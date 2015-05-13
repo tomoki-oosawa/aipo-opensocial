@@ -35,6 +35,10 @@ public class ALMessageRoomImpl implements ALMessageRoom {
 
   private boolean isDirect;
 
+  private boolean isAutoName;
+
+  private String updateDate;
+
   /**
    * @return
    */
@@ -113,6 +117,38 @@ public class ALMessageRoomImpl implements ALMessageRoom {
   @Override
   public void setIsDirect(boolean isDirect) {
     this.isDirect = isDirect;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public boolean getIsAutoName() {
+    return isAutoName;
+  }
+
+  /**
+   * @param isAutoName
+   */
+  @Override
+  public void setIsAutoName(boolean isAutoName) {
+    this.isAutoName = isAutoName;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public String getUpdateDate() {
+    return updateDate;
+  }
+
+  /**
+   * @param paramString
+   */
+  @Override
+  public void setUpdateDate(String paramString) {
+    this.updateDate = paramString;
   }
 
 }
