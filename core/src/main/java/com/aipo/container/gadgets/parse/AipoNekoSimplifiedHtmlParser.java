@@ -23,7 +23,7 @@ import java.io.StringReader;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shindig.common.xml.DomUtil;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
@@ -159,7 +159,7 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
 
   /**
    * Parse HTML source.
-   * 
+   *
    * @return a document handler containing the parsed source
    */
   private DocumentHandler parseHtmlImpl(String source,
@@ -294,6 +294,7 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       return document;
     }
 
+    @Override
     public void startDocument(XMLLocator xmlLocator, String encoding,
         NamespaceContext namespaceContext, Augmentations augs)
         throws XNIException {
@@ -308,6 +309,7 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       elementStack.push(documentFragment);
     }
 
+    @Override
     public void xmlDecl(String version, String encoding, String standalone,
         Augmentations augs) throws XNIException {
       // Dont really do anything with this
@@ -324,6 +326,7 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       builder.append('>');
     }
 
+    @Override
     public void doctypeDecl(String rootElement, String publicId,
         String systemId, Augmentations augs) throws XNIException {
       document =
@@ -334,6 +337,7 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       elementStack.push(documentFragment);
     }
 
+    @Override
     public void comment(XMLString text, Augmentations augs) throws XNIException {
       flushTextBuffer();
 
@@ -345,11 +349,13 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       appendChild(comment);
     }
 
+    @Override
     public void processingInstruction(String s, XMLString xmlString,
         Augmentations augs) throws XNIException {
       // No-op
     }
 
+    @Override
     public void startElement(QName qName, XMLAttributes xmlAttributes,
         Augmentations augs) throws XNIException {
       Element element = startElementImpl(qName, xmlAttributes);
@@ -357,6 +363,7 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       elementStack.push(element);
     }
 
+    @Override
     public void emptyElement(QName qName, XMLAttributes xmlAttributes,
         Augmentations augs) throws XNIException {
       startElementImpl(qName, xmlAttributes);
@@ -425,6 +432,7 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       return element;
     }
 
+    @Override
     public void startGeneralEntity(String name, XMLResourceIdentifier id,
         String encoding, Augmentations augs) throws XNIException {
       if (name.startsWith("#")) {
@@ -451,16 +459,19 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       builder.append(';');
     }
 
+    @Override
     public void textDecl(String s, String s1, Augmentations augs)
         throws XNIException {
       builder.append(s);
     }
 
+    @Override
     public void endGeneralEntity(String s, Augmentations augs)
         throws XNIException {
       inEntity = false;
     }
 
+    @Override
     public void characters(XMLString text, Augmentations augs)
         throws XNIException {
       if (inEntity) {
@@ -469,32 +480,39 @@ public class AipoNekoSimplifiedHtmlParser extends GadgetHtmlParser {
       builder.append(text.ch, text.offset, text.length);
     }
 
+    @Override
     public void ignorableWhitespace(XMLString text, Augmentations augs)
         throws XNIException {
       builder.append(text.ch, text.offset, text.length);
     }
 
+    @Override
     public void endElement(QName qName, Augmentations augs) throws XNIException {
       flushTextBuffer();
       elementStack.pop();
     }
 
+    @Override
     public void startCDATA(Augmentations augs) throws XNIException {
       // No-op
     }
 
+    @Override
     public void endCDATA(Augmentations augs) throws XNIException {
       // No-op
     }
 
+    @Override
     public void endDocument(Augmentations augs) throws XNIException {
       flushTextBuffer();
       elementStack.pop();
     }
 
+    @Override
     public void setDocumentSource(XMLDocumentSource xmlDocumentSource) {
     }
 
+    @Override
     public XMLDocumentSource getDocumentSource() {
       return null;
     }

@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shindig.gadgets.DefaultGuiceModule;
 import org.apache.shindig.gadgets.LockedDomainService;
 import org.apache.shindig.gadgets.config.ConfigContributor;
@@ -139,7 +139,7 @@ public class AipoGadgetsGuiceModule extends AbstractModule {
   /**
    * Merges the features provided in shindig.properties with the extended
    * features from multibinding
-   * 
+   *
    * @param features
    *          Comma separated string from shindig.properties key
    *          'shindig.features.default'

@@ -20,7 +20,7 @@
 	<classpathentry kind="var" path="M2_REPO/commons-digester/commons-digester/1.7/commons-digester-1.7.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4.jar"/>
@@ -50,12 +50,12 @@
 	<classpathentry kind="var" path="M2_REPO/net/oauth/core/oauth-provider/20100527/oauth-provider-20100527.jar"/>
 	<classpathentry kind="var" path="M2_REPO/rome/rome/1.0/rome-1.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/sanselan/sanselan/0.97-incubator/sanselan-0.97-incubator.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-common/2.0.2/shindig-common-2.0.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-common/2.0.2/shindig-common-2.0.2-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-common/2.0.2/shindig-common-2.0.2-tests.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-common/2.0.2/shindig-common-2.0.2-test-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-extras/2.0.2/shindig-extras-2.0.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-extras/2.0.2/shindig-extras-2.0.2-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-features/2.0.2/shindig-features-2.0.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-features/2.0.2/shindig-features-2.0.2-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-gadgets/2.0.2/shindig-gadgets-2.0.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-gadgets/2.0.2/shindig-gadgets-2.0.2-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-social-api/2.0.2/shindig-social-api-2.0.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-social-api/2.0.2/shindig-social-api-2.0.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-common/2.5.2/shindig-common-2.5.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-common/2.0.2/shindig-common-2.0.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-common/2.5.2/shindig-common-2.5.2-tests.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-common/2.0.2/shindig-common-2.0.2-test-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-extras/2.5.2/shindig-extras-2.5.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-extras/2.0.2/shindig-extras-2.0.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-features/2.5.2/shindig-features-2.5.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-features/2.0.2/shindig-features-2.0.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-gadgets/2.5.2/shindig-gadgets-2.5.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-gadgets/2.0.2/shindig-gadgets-2.0.2-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/shindig/shindig-social-api/2.5.2/shindig-social-api-2.5.2.jar" sourcepath="M2_REPO/org/apache/shindig/shindig-social-api/2.0.2/shindig-social-api-2.0.2-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/shiro/shiro-core/1.0.0-incubating/shiro-core-1.0.0-incubating.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/shiro/shiro-web/1.0.0-incubating/shiro-web-1.0.0-incubating.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.5.6/slf4j-api-1.5.6.jar"/>

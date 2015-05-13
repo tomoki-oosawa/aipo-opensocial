@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
 import org.apache.shindig.common.util.Utf8UrlCoder;
@@ -77,6 +77,7 @@ public class AipoProxyUriManager implements ProxyUriManager {
     this.strictParsing = useStrict;
   }
 
+  @Override
   public List<Uri> make(List<ProxyUri> resources, Integer forcedRefresh) {
     if (resources.isEmpty()) {
       return Collections.emptyList();
@@ -150,6 +151,7 @@ public class AipoProxyUriManager implements ProxyUriManager {
     return uri.toUri();
   }
 
+  @Override
   @SuppressWarnings("deprecation")
   public ProxyUri process(Uri uriIn) throws GadgetException {
     UriStatus status = UriStatus.BAD_URI;

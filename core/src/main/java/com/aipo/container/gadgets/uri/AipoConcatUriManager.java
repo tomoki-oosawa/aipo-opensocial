@@ -18,11 +18,11 @@
  */
 package com.aipo.container.gadgets.uri;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.shindig.common.servlet.Authority;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
 import org.apache.shindig.config.ContainerConfig;
@@ -70,6 +70,14 @@ public class AipoConcatUriManager implements ConcatUriManager {
 
   private boolean strictParsing;
 
+  private Authority authority;
+
+  private static int DEFAULT_URL_MAX_LENGTH = 2048;
+
+  private int urlMaxLength = DEFAULT_URL_MAX_LENGTH;
+
+  private static final float URL_LENGTH_BUFFER_MARGIN = .8f;
+
   @Inject
   public AipoConcatUriManager(ContainerConfig config,
       @Nullable Versioner versioner,
@@ -85,6 +93,22 @@ public class AipoConcatUriManager implements ConcatUriManager {
     this.strictParsing = useStrict;
   }
 
+  @Inject(optional = true)
+  public void setUrlMaxLength(
+      @Named("org.apache.shindig.gadgets.uri.urlMaxLength") int urlMaxLength) {
+    this.urlMaxLength = urlMaxLength;
+  }
+
+  @Inject(optional = true)
+  public void setAuthority(Authority authority) {
+    this.authority = authority;
+  }
+
+  public int getUrlMaxLength() {
+    return this.urlMaxLength;
+  }
+
+  @Override
   public List<ConcatData> make(List<ConcatUri> resourceUris, boolean isAdjacent) {
     List<ConcatData> concatUris =
       Lists.newArrayListWithCapacity(resourceUris.size());
@@ -96,28 +120,14 @@ public class AipoConcatUriManager implements ConcatUriManager {
     ConcatUri exemplar = resourceUris.get(0);
     String container = exemplar.getContainer();
 
-    List<String> versions = null;
-    List<List<Uri>> batches =
-      Lists.newArrayListWithCapacity(resourceUris.size());
     for (ConcatUri ctx : resourceUris) {
-      batches.add(ctx.getBatch());
+      concatUris.add(makeConcatUri(ctx, isAdjacent, container));
     }
-
-    if (versioner != null) {
-      versions = versioner.version(batches, container);
-    }
-
-    Iterator<String> versionIt = versions != null ? versions.iterator() : null;
-    for (ConcatUri ctx : resourceUris) {
-      String version = versionIt != null ? versionIt.next() : null;
-      concatUris.add(makeConcatUri(ctx, isAdjacent, version));
-    }
-
     return concatUris;
   }
 
   private ConcatData makeConcatUri(ConcatUri ctx, boolean isAdjacent,
-      String version) {
+      String container) {
     // TODO: Consider per-bundle isAdjacent plus first-bundle direct evaluation
 
     if (!isAdjacent && ctx.getType() != Type.JS) {
@@ -128,45 +138,142 @@ public class AipoConcatUriManager implements ConcatUriManager {
         "Split concatenation only supported for JS");
     }
 
-    UriBuilder uriBuilder = ctx.makeQueryParams(null, version);
-
     String concatHost = ContainerToolkit.getHost(containerConfigDbService);
     String concatPath = getReqVal(ctx.getContainer(), CONCAT_PATH_PARAM);
-    uriBuilder.setAuthority(concatHost);
-    uriBuilder.setPath(concatPath);
 
-    uriBuilder.setScheme(ContainerToolkit.getScheme());
-
-    uriBuilder.addQueryParameter(Param.TYPE.getKey(), ctx.getType().getType());
     List<Uri> resourceUris = ctx.getBatch();
     Map<Uri, String> snippets =
       Maps.newHashMapWithExpectedSize(resourceUris.size());
 
     String splitParam =
       config.getString(ctx.getContainer(), CONCAT_JS_SPLIT_PARAM);
+
     boolean doSplit = false;
     if (!isAdjacent
       && splitParam != null
       && !"false".equalsIgnoreCase(splitParam)) {
-      uriBuilder.addQueryParameter(Param.JSON.getKey(), splitParam);
       doSplit = true;
     }
 
-    Integer i = Integer.valueOf(START_INDEX);
+    UriBuilder uriBuilder = makeUriBuilder(ctx, concatHost, concatPath);
+    uriBuilder.setAuthority(concatHost);
+    uriBuilder.setPath(concatPath);
+
+    uriBuilder.setScheme(ContainerToolkit.getScheme());
+
+    // Allowed Max Url length is .80 times of actual max length. So, Split will
+    // happen whenever Concat url length crosses this value. Here, buffer also
+    // assumes
+    // version length.
+    int injectedMaxUrlLength =
+      (int) (this.getUrlMaxLength() * URL_LENGTH_BUFFER_MARGIN);
+
+    // batchUris holds uris for the current batch of uris being concatenated.
+    List<Uri> batchUris = Lists.newArrayList();
+
+    // uris holds the concatenated uris formed from batches which satisfy the
+    // GET URL limit constraint.
+    List<Uri> uris = Lists.newArrayList();
+
+    Integer i = START_INDEX;
     for (Uri resource : resourceUris) {
       uriBuilder.addQueryParameter(i.toString(), resource.toString());
-      i++;
-      if (doSplit) {
-        snippets.put(resource, getJsSnippet(splitParam, resource));
+      if (uriBuilder.toString().length() > injectedMaxUrlLength) {
+        uriBuilder.removeQueryParameter(i.toString());
+
+        addVersionAndSplitParam(
+          uriBuilder,
+          splitParam,
+          doSplit,
+          batchUris,
+          container,
+          ctx.getType());
+        uris.add(uriBuilder.toUri());
+
+        uriBuilder = makeUriBuilder(ctx, concatHost, concatPath);
+        batchUris = Lists.newArrayList();
+        i = START_INDEX;
+        uriBuilder.addQueryParameter(i.toString(), resource.toString());
       }
+      i++;
+      batchUris.add(resource);
     }
 
-    return new ConcatData(uriBuilder.toUri(), snippets);
+    if (batchUris != null && uriBuilder != ctx.makeQueryParams(null, null)) {
+      addVersionAndSplitParam(
+        uriBuilder,
+        splitParam,
+        doSplit,
+        batchUris,
+        container,
+        ctx.getType());
+      uris.add(uriBuilder.toUri());
+    }
+
+    if (doSplit) {
+      snippets = createSnippets(uris);
+    }
+    return new ConcatData(uris, snippets);
+  }
+
+  private void addVersionAndSplitParam(UriBuilder uriBuilder,
+      String splitParam, boolean doSplit, List<Uri> batchUris,
+      String container, Type type) {
+    // HashCode is used to differentiate splitParam paramter across ConcatUris
+    // within single page/url. This value is appended to the splitParam value
+    // which
+    // is recieved from config container.
+    int hashCode = uriBuilder.hashCode();
+    if (doSplit) {
+      uriBuilder.addQueryParameter(Param.JSON.getKey(), (splitParam + String
+        .valueOf(Math.abs(hashCode))));
+    }
+
+    if (versioner != null) {
+      List<List<Uri>> batches = Lists.newArrayList();
+      List<String> resourceTags = Lists.newArrayList();
+
+      batches.add(batchUris);
+      resourceTags.add(type.getTagName().toLowerCase());
+
+      List<String> versions =
+        versioner.version(batches, container, resourceTags);
+
+      if (versions != null && versions.size() == 1) {
+        String version = versions.get(0);
+        if (version != null) {
+          uriBuilder.addQueryParameter(Param.VERSION.getKey(), version);
+        }
+      }
+    }
+  }
+
+  private Map<Uri, String> createSnippets(List<Uri> uris) {
+    Map<Uri, String> snippets = Maps.newHashMap();
+    for (Uri uri : uris) {
+      Integer i = START_INDEX;
+      String splitParam = uri.getQueryParameter(Param.JSON.getKey());
+      String resourceUri;
+      while ((resourceUri = uri.getQueryParameter(i.toString())) != null) {
+        Uri resource = Uri.parse(resourceUri);
+        snippets.put(resource, getJsSnippet(splitParam, resource));
+        i++;
+      }
+    }
+    return snippets;
+  }
+
+  private UriBuilder makeUriBuilder(ConcatUri ctx, String authority, String path) {
+    UriBuilder uriBuilder = ctx.makeQueryParams(null, null);
+    uriBuilder.setAuthority(authority);
+    uriBuilder.setPath(path);
+    uriBuilder.addQueryParameter(Param.TYPE.getKey(), ctx.getType().getType());
+    return uriBuilder;
   }
 
   static String getJsSnippet(String splitParam, Uri resource) {
     return String.format(CONCAT_JS_EVAL_TPL, splitParam, StringEscapeUtils
-      .escapeJavaScript(resource.toString()));
+      .escapeEcmaScript(resource.toString()));
   }
 
   private String getReqVal(String container, String key) {
@@ -177,9 +284,14 @@ public class AipoConcatUriManager implements ConcatUriManager {
         + "' for container: "
         + container);
     }
+    if (authority != null) {
+      val = val.replace("%authority%", authority.getAuthority());
+    }
+
     return val;
   }
 
+  @Override
   public ConcatUri process(Uri uri) {
     String container = uri.getQueryParameter(Param.CONTAINER.getKey());
     if (strictParsing && container == null) {
@@ -209,11 +321,17 @@ public class AipoConcatUriManager implements ConcatUriManager {
     String splitParam =
       type == Type.JS ? uri.getQueryParameter(Param.JSON.getKey()) : null;
 
-    Integer i = Integer.valueOf(START_INDEX);
-    String uriStr = null;
+    Integer i = START_INDEX;
+    String uriStr;
     while ((uriStr = uri.getQueryParameter(i.toString())) != null) {
       try {
-        uris.add(Uri.parse(uriStr));
+        Uri concatUri = Uri.parse(uriStr);
+        if (concatUri.getScheme() == null) {
+          // For non schema url, use the request schema:
+          concatUri =
+            new UriBuilder(concatUri).setScheme(uri.getScheme()).toUri();
+        }
+        uris.add(concatUri);
       } catch (IllegalArgumentException e) {
         // Malformed inbound Uri. Don't process.
         return BAD_URI;
@@ -227,7 +345,6 @@ public class AipoConcatUriManager implements ConcatUriManager {
         status = versioner.validate(uris, container, version);
       }
     }
-
     return new ConcatUri(status, uris, splitParam, type, uri);
   }
 

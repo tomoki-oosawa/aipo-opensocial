@@ -28,11 +28,14 @@ import org.apache.shindig.auth.SecurityTokenCodec;
 import org.apache.shindig.auth.SecurityTokenException;
 import org.apache.shindig.config.ContainerConfig;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @see DefaultSecurityTokenCodec
  */
+@Singleton
 public class AipoSecurityTokenCodec implements SecurityTokenCodec {
 
   private static final String SECURITY_TOKEN_TYPE = "gadgets.securityTokenType";
@@ -43,8 +46,9 @@ public class AipoSecurityTokenCodec implements SecurityTokenCodec {
   public AipoSecurityTokenCodec(ContainerConfig config) {
     String tokenType =
       config.getString(ContainerConfig.DEFAULT_CONTAINER, SECURITY_TOKEN_TYPE);
+
     if ("insecure".equals(tokenType)) {
-      codec = new BasicSecurityTokenCodec();
+      codec = new BasicSecurityTokenCodec(config);
     } else if ("secure".equals(tokenType)) {
       codec = new AipoBlobCrypterSecurityTokenCodec(config);
     } else {
@@ -57,24 +61,13 @@ public class AipoSecurityTokenCodec implements SecurityTokenCodec {
     }
   }
 
-  /**
-   * 
-   * @param tokenParameters
-   * @return
-   * @throws SecurityTokenException
-   */
+  @Override
   public SecurityToken createToken(Map<String, String> tokenParameters)
       throws SecurityTokenException {
-
     return codec.createToken(tokenParameters);
   }
 
-  /**
-   * 
-   * @param token
-   * @return
-   * @throws SecurityTokenException
-   */
+  @Override
   public String encodeToken(SecurityToken token) throws SecurityTokenException {
     if (token == null) {
       return null;
@@ -82,4 +75,18 @@ public class AipoSecurityTokenCodec implements SecurityTokenCodec {
     return codec.encodeToken(token);
   }
 
+  @VisibleForTesting
+  protected SecurityTokenCodec getCodec() {
+    return codec;
+  }
+
+  @Override
+  public int getTokenTimeToLive() {
+    return codec.getTokenTimeToLive();
+  }
+
+  @Override
+  public int getTokenTimeToLive(String container) {
+    return codec.getTokenTimeToLive(container);
+  }
 }

@@ -22,6 +22,7 @@ import net.oauth.OAuth;
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthMessage;
 import net.oauth.OAuthProblemException;
+import net.oauth.OAuthValidator;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
@@ -38,36 +39,38 @@ public class AipoOAuthAuthenticationHandler extends OAuthAuthenticationHandler {
 
   private final OAuthDataStore store;
 
+  private final OAuthValidator validator;
+
   /**
    * @param store
    */
   @Inject
-  public AipoOAuthAuthenticationHandler(OAuthDataStore store) {
-    super(store);
+  public AipoOAuthAuthenticationHandler(OAuthDataStore store,
+      OAuthValidator validator) {
+    super(store, validator);
     this.store = store;
+    this.validator = validator;
   }
 
+  @SuppressWarnings("unused")
   @Override
   protected SecurityToken getTokenFromVerifiedRequest(OAuthMessage message,
       OAuthEntry entry, OAuthConsumer authConsumer)
       throws OAuthProblemException {
-
+    verifyOrgScope(authConsumer.consumerKey, entry.getUserId());
     if (entry != null) {
-      verifyOrgScope(authConsumer.consumerKey, entry.getUserId());
       return new OAuthSecurityToken(
         entry.getUserId(),
         entry.getCallbackUrl(),
         entry.getAppId(),
         entry.getDomain(),
         entry.getContainer(),
-        entry.expiresAt().getTime());
-    } else {
-      String userId = getParameter(message, REQUESTOR_ID_PARAM);
-      verifyOrgScope(authConsumer.consumerKey, userId);
-      return store.getSecurityTokenForConsumerRequest(
-        authConsumer.consumerKey,
-        userId);
+        Long.valueOf(entry.expiresAt().getTime()));
     }
+    String userId = getParameter(message, "xoauth_requestor_id");
+    return this.store.getSecurityTokenForConsumerRequest(
+      authConsumer.consumerKey,
+      userId);
   }
 
   protected void verifyOrgScope(String consumerKey, String userId)

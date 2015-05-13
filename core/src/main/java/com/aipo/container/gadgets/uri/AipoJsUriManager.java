@@ -18,17 +18,19 @@
  */
 package com.aipo.container.gadgets.uri;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shindig.common.servlet.Authority;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
+import org.apache.shindig.common.util.Utf8UrlCoder;
 import org.apache.shindig.config.ContainerConfig;
-import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.GadgetException.Code;
-import org.apache.shindig.gadgets.RenderingContext;
+import org.apache.shindig.gadgets.JsCompileMode;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.uri.DefaultJsUriManager;
 import org.apache.shindig.gadgets.uri.JsUriManager;
@@ -37,7 +39,9 @@ import org.apache.shindig.gadgets.uri.UriStatus;
 
 import com.aipo.container.util.ContainerToolkit;
 import com.aipo.orm.service.ContainerConfigDbService;
-import com.google.common.collect.Lists;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 
 /**
@@ -49,18 +53,22 @@ public class AipoJsUriManager implements JsUriManager {
 
   static final String JS_PATH_PARAM = "gadgets.uri.js.path";
 
-  static final JsUri INVALID_URI = new JsUri(UriStatus.BAD_URI, Lists
-    .<String> newArrayList());
+  static final JsUri INVALID_URI = new JsUri(UriStatus.BAD_URI);
 
   protected static final String JS_SUFFIX = ".js";
 
   protected static final String JS_DELIMITER = ":";
+
+  private static final Logger LOG = Logger.getLogger(DefaultJsUriManager.class
+    .getName());
 
   private final ContainerConfig config;
 
   private final ContainerConfigDbService containerConfigDbService;
 
   private final Versioner versioner;
+
+  private Authority authority;
 
   @Inject
   public AipoJsUriManager(ContainerConfig config, Versioner versioner,
@@ -70,14 +78,20 @@ public class AipoJsUriManager implements JsUriManager {
     this.containerConfigDbService = containerConfigDbService;
   }
 
-  public Uri makeExternJsUri(Gadget gadget, Collection<String> extern) {
-    String container = gadget.getContext().getContainer();
-    // String jsHost = getReqConfig(container, JS_HOST_PARAM);
+  @Inject(optional = true)
+  public void setAuthority(Authority authority) {
+    this.authority = authority;
+  }
+
+  @Override
+  public Uri makeExternJsUri(JsUri ctx) {
+    String container = ctx.getContainer();
+    String jsHost = ContainerToolkit.getHost(containerConfigDbService);
     String jsPathBase = getReqConfig(container, JS_PATH_PARAM);
 
     // We somewhat cheat in that jsHost may contain protocol/scheme as well.
-    UriBuilder uri = new UriBuilder();
-    uri.setAuthority(ContainerToolkit.getHost(containerConfigDbService));
+    UriBuilder uri = new UriBuilder(Uri.parse(jsHost));
+
     uri.setScheme(ContainerToolkit.getScheme());
 
     // Add JS info to path and set it in URI.
@@ -85,7 +99,13 @@ public class AipoJsUriManager implements JsUriManager {
     if (!jsPathBase.endsWith("/")) {
       jsPath.append('/');
     }
-    jsPath.append(addJsLibs(extern));
+    jsPath.append(addJsLibs(ctx.getLibs()));
+
+    // Add the list of already-loaded libs
+    if (!ctx.getLoadedLibs().isEmpty()) {
+      jsPath.append('!').append(addJsLibs(ctx.getLoadedLibs()));
+    }
+
     jsPath.append(JS_SUFFIX);
     uri.setPath(jsPath.toString());
 
@@ -93,32 +113,54 @@ public class AipoJsUriManager implements JsUriManager {
     uri.addQueryParameter(Param.CONTAINER.getKey(), container);
 
     // Pass through nocache param for dev purposes.
-    uri.addQueryParameter(Param.NO_CACHE.getKey(), gadget
-      .getContext()
-      .getIgnoreCache() ? "1" : "0");
+    uri.addQueryParameter(Param.NO_CACHE.getKey(), ctx.isNoCache() ? "1" : "0");
 
     // Pass through debug param for debugging use.
-    uri.addQueryParameter(Param.DEBUG.getKey(), gadget.getContext().getDebug()
-      ? "1"
-      : "0");
+    uri.addQueryParameter(Param.DEBUG.getKey(), ctx.isDebug() ? "1" : "0");
 
-    uri.addQueryParameter(Param.CONTAINER_MODE.getKey(), gadget
+    uri.addQueryParameter(Param.CONTAINER_MODE.getKey(), ctx
       .getContext()
-      .getRenderingContext() == RenderingContext.CONTAINER ? "1" : "0");
+      .getParamValue());
 
     // Pass through gadget Uri
     if (addGadgetUri()) {
-      uri.addQueryParameter(Param.URL.getKey(), gadget
-        .getSpec()
-        .getUrl()
-        .toString());
+      uri.addQueryParameter(Param.URL.getKey(), ctx.getGadget());
+    }
+
+    if (ctx.getOnload() != null) {
+      uri.addQueryParameter(Param.ONLOAD.getKey(), ctx.getOnload());
+    }
+
+    if (ctx.isJsload()) {
+      uri.addQueryParameter(Param.JSLOAD.getKey(), "1");
+    }
+
+    if (ctx.isNohint()) {
+      uri.addQueryParameter(Param.NO_HINT.getKey(), "1");
+    }
+
+    JsCompileMode mode = ctx.getCompileMode();
+    if (mode != null && mode != JsCompileMode.getDefault()) {
+      uri.addQueryParameter(Param.COMPILE_MODE.getKey(), mode.getParamValue());
+    }
+
+    if (ctx.cajoleContent()) {
+      uri.addQueryParameter(Param.CAJOLE.getKey(), "1");
+    }
+
+    if (ctx.getRepository() != null) {
+      uri.addQueryParameter(Param.REPOSITORY_ID.getKey(), ctx.getRepository());
     }
 
     // Finally, version it, but only if !nocache.
-    if (versioner != null && !gadget.getContext().getIgnoreCache()) {
-      uri.addQueryParameter(Param.VERSION.getKey(), versioner.version(gadget
-        .getContext()
-        .getUrl(), container, extern));
+    if (versioner != null && !ctx.isNoCache()) {
+      String version = versioner.version(ctx);
+      if (version != null && version.length() > 0) {
+        uri.addQueryParameter(Param.VERSION.getKey(), version);
+      }
+    }
+    if (ctx.getExtensionParams() != null) {
+      uri.addQueryParameters(ctx.getExtensionParams());
     }
 
     return uri.toUri();
@@ -128,16 +170,13 @@ public class AipoJsUriManager implements JsUriManager {
    * Essentially pulls apart a Uri created by makeExternJsUri, validating its
    * contents, especially the version key.
    */
+  @Override
   public JsUri processExternJsUri(Uri uri) throws GadgetException {
     // Validate basic Uri structure and params
     String container = uri.getQueryParameter(Param.CONTAINER.getKey());
     if (container == null) {
       container = ContainerConfig.DEFAULT_CONTAINER;
     }
-
-    // Get config values up front.
-    getReqConfig(container, JS_HOST_PARAM); // validate that it exists
-    String jsPrefix = getReqConfig(container, JS_PATH_PARAM);
 
     String host = uri.getAuthority();
     if (host == null) {
@@ -151,14 +190,14 @@ public class AipoJsUriManager implements JsUriManager {
       issueUriFormatError("Unexpected: Js Uri has no path");
       return INVALID_URI;
     }
-    if (!path.startsWith(jsPrefix)) {
-      issueUriFormatError("Js Uri path invalid, expected prefix: "
-        + jsPrefix
-        + ", is: "
-        + path);
-      return INVALID_URI;
+    // Decode the path here because it is not automatically decoded when the Uri
+    // object is created.
+    path = Utf8UrlCoder.decode(path);
+
+    int lastSlash = path.lastIndexOf('/');
+    if (lastSlash != -1) {
+      path = path.substring(lastSlash + 1);
     }
-    path = path.substring(jsPrefix.length());
 
     // Convenience suffix: pull off .js if present; leave alone otherwise.
     if (path.endsWith(JS_SUFFIX)) {
@@ -169,27 +208,45 @@ public class AipoJsUriManager implements JsUriManager {
       path = path.substring(1);
     }
 
-    Collection<String> libs = getJsLibs(path);
+    String[] splits = StringUtils.split(path, '!');
+    Collection<String> libs = getJsLibs(splits.length >= 1 ? splits[0] : "");
+
+    String haveString = (splits.length >= 2 ? splits[1] : "");
+    String haveQueryParam = uri.getQueryParameter(Param.LOADED.getKey());
+    if (haveQueryParam == null) {
+      haveQueryParam = "";
+    } else {
+      LOG.log(
+        Level.WARNING,
+        "Using deprecated query param ?loaded=c:d in URL. "
+          + "Replace by specifying it in path as /gadgets/js/a:b!c:d.js");
+    }
+    haveString = haveString + JS_DELIMITER + haveQueryParam;
+    Collection<String> have = getJsLibs(haveString);
+
     UriStatus status = UriStatus.VALID_UNVERSIONED;
     String version = uri.getQueryParameter(Param.VERSION.getKey());
+    JsUri jsUri = new JsUri(status, uri, libs, have);
     if (version != null && versioner != null) {
-      Uri gadgetUri = null;
-      String gadgetParam = uri.getQueryParameter(Param.URL.getKey());
-      if (gadgetParam != null) {
-        gadgetUri = Uri.parse(gadgetParam);
+      status = versioner.validate(jsUri, version);
+      if (status != UriStatus.VALID_UNVERSIONED) {
+        jsUri = new JsUri(status, jsUri);
       }
-      status = versioner.validate(gadgetUri, container, libs, version);
     }
 
-    return new JsUri(status, libs);
+    return jsUri;
   }
 
   static String addJsLibs(Collection<String> extern) {
-    return StringUtils.join(extern, JS_DELIMITER);
+    return Joiner.on(JS_DELIMITER).join(extern);
   }
 
   static Collection<String> getJsLibs(String path) {
-    return Arrays.asList(StringUtils.split(path, JS_DELIMITER));
+    return ImmutableList.copyOf(Splitter
+      .on(JS_DELIMITER)
+      .trimResults()
+      .omitEmptyStrings()
+      .split(path));
   }
 
   private String getReqConfig(String container, String key) {
@@ -202,6 +259,9 @@ public class AipoJsUriManager implements JsUriManager {
           + "' missing config for required param: "
           + key);
       }
+    }
+    if (authority != null) {
+      ret = ret.replace("%authority%", authority.getAuthority());
     }
     return ret;
   }

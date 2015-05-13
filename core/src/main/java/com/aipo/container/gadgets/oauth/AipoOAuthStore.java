@@ -27,7 +27,7 @@ import net.oauth.OAuthServiceProvider;
 import net.oauth.signature.RSA_SHA1;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ResourceLoader;
 import org.apache.shindig.gadgets.GadgetException;
@@ -96,6 +96,7 @@ public class AipoOAuthStore implements OAuthStore {
     return privateKey.replaceAll("-----[A-Z ]*-----", "").replace("\n", "");
   }
 
+  @Override
   public ConsumerInfo getConsumerKeyAndSecret(SecurityToken securityToken,
       String serviceName, OAuthServiceProvider provider) throws GadgetException {
     String appId = securityToken.getAppId();
@@ -162,6 +163,7 @@ public class AipoOAuthStore implements OAuthStore {
     return tokenKey;
   }
 
+  @Override
   public TokenInfo getTokenInfo(SecurityToken securityToken,
       ConsumerInfo consumerInfo, String serviceName, String tokenName) {
 
@@ -178,6 +180,7 @@ public class AipoOAuthStore implements OAuthStore {
       .getTokenExpireMilis());
   }
 
+  @Override
   public void setTokenInfo(SecurityToken securityToken,
       ConsumerInfo consumerInfo, String serviceName, String tokenName,
       TokenInfo tokenInfo) {
@@ -194,6 +197,7 @@ public class AipoOAuthStore implements OAuthStore {
     oAuthTokenDbService.put(oAuthToken);
   }
 
+  @Override
   public void removeToken(SecurityToken securityToken,
       ConsumerInfo consumerInfo, String serviceName, String tokenName) {
 
