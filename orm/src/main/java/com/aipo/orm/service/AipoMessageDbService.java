@@ -52,7 +52,7 @@ public class AipoMessageDbService implements MessageDbService {
    * @return
    */
   @Override
-  public List<EipTMessageRoom> findMessageRoom(String username,
+  public List<EipTMessageRoom> findMessageRoom(int roomId, String username,
       SearchOptions options) {
     TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
     if (turbineUser == null) {
@@ -98,6 +98,11 @@ public class AipoMessageDbService implements MessageDbService {
     body
       .append("  from eip_t_message_room_member t1, eip_t_message_room t2, turbine_user t4 where t1.user_id = #bind($user_id) and t1.room_id = t2.room_id and t1.target_user_id = t4.user_id ");
 
+    if (roomId > 0) {
+      body.append(" and t1.room_id=");
+      body.append(roomId);
+    }
+
     if ("keyword".equals(filter)) {
       if (isMySQL) {
         body
@@ -130,6 +135,17 @@ public class AipoMessageDbService implements MessageDbService {
     }
     List<DataRow> fetchList = sql.fetchListAsDataRow();
 
+    List<EipTMessageRoomMember> roomMembers = null;
+    if (roomId > 0) {
+      roomMembers =
+        Database
+          .sql(
+            EipTMessageRoomMember.class,
+            "select login_name from eip_t_message_room_member where room_id=#bind($room_id)")
+          .param("room_id", Integer.valueOf(roomId))
+          .fetchList();
+    }
+
     List<EipTMessageRoom> list = new ArrayList<EipTMessageRoom>();
     for (DataRow row : fetchList) {
       Long unread = (Long) row.get("unread");
@@ -147,6 +163,14 @@ public class AipoMessageDbService implements MessageDbService {
       object.setLoginName(loginName);
       object.setFirstName(firstName);
       object.setLastName(lastName);
+      if (roomId > 0 && roomMembers != null) {
+        List<String> roomMembersStr = new ArrayList();
+        for (EipTMessageRoomMember roomMember : roomMembers) {
+          roomMembersStr.add(roomMember.getLoginName());
+        }
+        object.setRoomMembers(roomMembersStr);
+
+      }
       object.setUserHasPhoto(hasPhoto);
       if (photoModified != null) {
         object.setUserPhotoModified(photoModified.getTime());

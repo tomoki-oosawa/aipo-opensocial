@@ -64,12 +64,24 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<RestfulCollection<ALMessageRoom>> getRooms(UserId userId,
-      CollectionOptions collectionOptions, Set<String> fields,
+      CollectionOptions collectionOptions, Set<String> fields, String roomId,
       SecurityToken token) {
 
     // TODO: FIELDS
 
     setUp(token);
+
+    Integer roomIdInt = 0;
+
+    // Room
+    try {
+      if (roomId != null && !"".equals(roomId)) {
+        roomIdInt = Integer.valueOf(roomId);
+      }
+    } catch (Throwable ignore) {
+      //
+    }
+
     // 自分(Viewer)のルームのみ取得可能
     checkSameViewer(userId, token);
 
@@ -94,11 +106,11 @@ public class AipoMessageService extends AbstractService implements
 
     List<EipTMessageRoom> list = null;
 
-    list = messageDbService.findMessageRoom(username, options);
+    list = messageDbService.findMessageRoom(roomIdInt, username, options);
 
     List<ALMessageRoom> result = new ArrayList<ALMessageRoom>(list.size());
     for (EipTMessageRoom room : list) {
-      result.add(assignMessageRoom(room, fields, token));
+      result.add(assignMessageRoom(room, fields, token, roomIdInt));
     }
 
     int totalResults = result.size();
@@ -113,7 +125,7 @@ public class AipoMessageService extends AbstractService implements
   }
 
   protected ALMessageRoom assignMessageRoom(EipTMessageRoom model,
-      Set<String> fields, SecurityToken token) {
+      Set<String> fields, SecurityToken token, Integer roomIdInt) {
     ALMessageRoom room = new ALMessageRoomImpl();
     String orgId = getOrgId(token);
 
@@ -126,7 +138,18 @@ public class AipoMessageService extends AbstractService implements
     room.setIsDirect("O".equals(model.getRoomType()));
     room.setIsAutoName("T".equals(model.getAutoName()));
     room.setUpdateDate(DateUtil.formatIso8601Date(model.getLastUpdateDate()));
+    if (roomIdInt == 0) {
+      // ルーム一覧の場合
+      return room;
+    }
 
+    List<String> members = new ArrayList<String>();
+    for (String member : model.getRoomMembers()) {
+      members.add(orgId + ":" + member);
+    }
+    room.setMembers(members);
+
+    // ルーム詳細の場合
     return room;
   }
 
@@ -227,7 +250,7 @@ public class AipoMessageService extends AbstractService implements
     message.setMessage(model.getMessage());
     message.setCreateDate(DateUtil.formatIso8601Date(model.getCreateDate()));
     if (messageIdInt == 0) {
-      // メッセージ詳細の場合
+      // メッセージ一覧の場合
       return message;
     }
 
@@ -236,7 +259,7 @@ public class AipoMessageService extends AbstractService implements
       members.add(orgId + ":" + member);
     }
     message.setReadMembers(members);
-    // メッセージ一覧の場合
+    // メッセージ詳細の場合
     return message;
   }
 }

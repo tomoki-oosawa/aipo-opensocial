@@ -32,7 +32,8 @@ import com.aipo.social.opensocial.model.ALMessageRoom;
 public interface MessageService {
 
   public Future<RestfulCollection<ALMessageRoom>> getRooms(UserId userId,
-      CollectionOptions options, Set<String> fields, SecurityToken token);
+      CollectionOptions options, Set<String> fields, String roomId,
+      SecurityToken token);
 
   public Future<RestfulCollection<ALMessage>> getMessages(UserId userId,
       AipoCollectionOptions options, Set<String> fields, String roomId,

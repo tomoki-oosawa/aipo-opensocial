@@ -26,7 +26,7 @@ import com.aipo.orm.service.request.SearchOptions;
 
 public interface MessageDbService {
 
-  public List<EipTMessageRoom> findMessageRoom(String username,
+  public List<EipTMessageRoom> findMessageRoom(int roomId, String username,
       SearchOptions options);
 
   public List<EipTMessage> findMessage(int roomId, int messageId,

@@ -18,6 +18,8 @@
  */
 package com.aipo.social.core.model;
 
+import java.util.List;
+
 import com.aipo.social.opensocial.model.ALMessageRoom;
 
 /**
@@ -36,6 +38,8 @@ public class ALMessageRoomImpl implements ALMessageRoom {
   private boolean isDirect;
 
   private boolean isAutoName;
+
+  private List<String> members;
 
   private String updateDate;
 
@@ -133,6 +137,22 @@ public class ALMessageRoomImpl implements ALMessageRoom {
   @Override
   public void setIsAutoName(boolean isAutoName) {
     this.isAutoName = isAutoName;
+  }
+
+  /**
+   * @return members
+   */
+  @Override
+  public List<String> getMembers() {
+    return members;
+  }
+
+  /**
+   * @param members
+   */
+  @Override
+  public void setMembers(List<String> members) {
+    this.members = members;
   }
 
   /**

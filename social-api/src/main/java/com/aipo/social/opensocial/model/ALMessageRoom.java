@@ -18,6 +18,8 @@
  */
 package com.aipo.social.opensocial.model;
 
+import java.util.List;
+
 import org.apache.shindig.protocol.model.Exportablebean;
 
 @Exportablebean
@@ -46,14 +48,18 @@ public interface ALMessageRoom {
 
   public void setIsAutoName(boolean isAutoName);
 
+  public List<String> getMembers();
+
+  public void setMembers(List<String> members);
+
   public String getUpdateDate();
 
   public void setUpdateDate(String paramString);
 
   public static enum Field {
     ROOM_ID("roomId"), NAME("name"), USER_ID("userId"), UNREAD_COUNT(
-        "unreadCount"), IS_DIRECT("isDirect"), IS_AUTO_NAME("isAutoName"), UPDATE_DATE(
-        "updateDate");
+        "unreadCount"), IS_DIRECT("isDirect"), IS_AUTO_NAME("isAutoName"), MEMBERS(
+        "members"), UPDATE_DATE("updateDate");
 
     private final String jsonString;
 

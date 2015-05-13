@@ -1,5 +1,7 @@
 package com.aipo.orm.model.portlet;
 
+import java.util.List;
+
 import org.apache.cayenne.ObjectId;
 
 import com.aipo.orm.model.portlet.auto._EipTMessageRoom;
@@ -19,6 +21,8 @@ public class EipTMessageRoom extends _EipTMessageRoom {
   private String hasPhoto = null;
 
   private Long photoModified = null;
+
+  private List<String> roomMembers = null;
 
   public Integer getRoomId() {
     if (getObjectId() != null && !getObjectId().isTemporary()) {
@@ -138,6 +142,21 @@ public class EipTMessageRoom extends _EipTMessageRoom {
    */
   public Integer getUserId() {
     return userId;
+  }
+
+  /**
+   * @param roomId
+   *          セットする roomId
+   */
+  public void setRoomMembers(List<String> roomMembers) {
+    this.roomMembers = roomMembers;
+  }
+
+  /**
+   * @return roomId
+   */
+  public List<String> getRoomMembers() {
+    return roomMembers;
   }
 
 }
