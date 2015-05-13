@@ -39,7 +39,7 @@ public class ALMessageRoomImpl implements ALMessageRoom {
    * @return
    */
   @Override
-  public long roomId() {
+  public long getRoomId() {
     return roomId;
   }
 
@@ -47,7 +47,7 @@ public class ALMessageRoomImpl implements ALMessageRoom {
    * @param roomId
    */
   @Override
-  public void setId(long roomId) {
+  public void setRoomId(long roomId) {
     this.roomId = roomId;
   }
 

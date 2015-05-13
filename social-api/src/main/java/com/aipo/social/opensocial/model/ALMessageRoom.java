@@ -22,9 +22,9 @@ import org.apache.shindig.protocol.model.Exportablebean;
 
 @Exportablebean
 public interface ALMessageRoom {
-  public long roomId();
+  public long getRoomId();
 
-  public void setId(long roomId);
+  public void setRoomId(long roomId);
 
   public String getName();
 
