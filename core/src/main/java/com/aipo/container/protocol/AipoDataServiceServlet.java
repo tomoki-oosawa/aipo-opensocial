@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -16,6 +19,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.servlet.HttpUtil;
@@ -40,6 +47,7 @@ public class AipoDataServiceServlet extends ApiServlet {
 
   public static final Set<String> ALLOWED_CONTENT_TYPES =
     new ImmutableSet.Builder<String>().addAll(
+      ContentTypes.ALLOWED_MULTIPART_CONTENT_TYPES).addAll(
       ContentTypes.ALLOWED_JSON_CONTENT_TYPES).addAll(
       ContentTypes.ALLOWED_XML_CONTENT_TYPES).addAll(
       ContentTypes.ALLOWED_ATOM_CONTENT_TYPES).addAll(
@@ -134,6 +142,8 @@ public class AipoDataServiceServlet extends ApiServlet {
       BeanConverter converter) throws IOException {
     RestHandler handler = getRestHandler(servletRequest);
 
+    Map<String, String[]> parameterMap = loadParameters(servletRequest);
+
     Reader bodyReader = null;
     if ((!servletRequest.getMethod().equals("GET"))
       && (!servletRequest.getMethod().equals("HEAD"))) {
@@ -143,7 +153,7 @@ public class AipoDataServiceServlet extends ApiServlet {
 
       }
     }
-    Map<String, String[]> parameterMap = servletRequest.getParameterMap();
+
     Future<?> future =
       handler.execute(parameterMap, bodyReader, token, converter);
 
@@ -203,6 +213,53 @@ public class AipoDataServiceServlet extends ApiServlet {
     } else {
       sendError(servletResponse, responseItem);
     }
+  }
+
+  /**
+   * @param servletRequest
+   * @return
+   */
+  private Map<String, String[]> loadParameters(HttpServletRequest servletRequest) {
+    Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+
+    // Content-typeがmultipart/form-dataの場合にパラメータを取り出す処理
+    if ((servletRequest.getMethod().equals("PUT") || servletRequest
+      .getMethod()
+      .equals("POST"))
+      && ContentTypes.MULTIPART_FORM_CONTENT_TYPE.equals(ContentTypes
+        .extractMimePart(servletRequest.getContentType()))) {
+      ServletFileUpload upload =
+        new ServletFileUpload(new DiskFileItemFactory());
+      List items = null;
+      try {
+        items = upload.parseRequest(servletRequest);
+      } catch (FileUploadException e) {
+      }
+
+      for (Object val : items) {
+        FileItem item = (FileItem) val;
+        if (item.isFormField()) {
+          String[] value = { new String(item.get()) };
+          parameterMap.put(item.getFieldName(), value);
+        } else {
+          // file found!
+        }
+      }
+    }
+
+    // requestParameterを取り出す処理
+    Map<String, String[]> _parameterMap = servletRequest.getParameterMap();
+    for (Iterator it = _parameterMap.entrySet().iterator(); it.hasNext();) {
+      Map.Entry entry = (Map.Entry) it.next();
+      String key = (String) entry.getKey();
+      String[] _value = (String[]) entry.getValue();
+      String[] value = new String[_value.length];
+      for (int i = 0; i < _value.length; i++) {
+        value[i] = _value[i];
+      }
+      parameterMap.put(key, value);
+    }
+    return parameterMap;
   }
 
   protected RestHandler getRestHandler(HttpServletRequest servletRequest) {

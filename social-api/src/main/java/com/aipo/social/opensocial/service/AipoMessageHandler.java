@@ -82,7 +82,7 @@ public class AipoMessageHandler {
    * @param request
    * @return
    */
-  @Operation(httpMethods = "PUT")
+  @Operation(httpMethods = "PUT", bodyParam = "body")
   public Future<?> update(SocialRequestItem request) {
     throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
@@ -93,7 +93,7 @@ public class AipoMessageHandler {
    * @param request
    * @return
    */
-  @Operation(httpMethods = "POST")
+  @Operation(httpMethods = "POST", bodyParam = "body")
   public Future<?> create(SocialRequestItem request) {
     throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
