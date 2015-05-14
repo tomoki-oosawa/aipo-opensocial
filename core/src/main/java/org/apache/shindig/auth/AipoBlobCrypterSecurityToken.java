@@ -18,22 +18,67 @@
  */
 package org.apache.shindig.auth;
 
+import java.util.EnumSet;
 import java.util.Map;
 
 /**
  *
  */
-public class AipoBlobCrypterSecurityToken extends BlobCrypterSecurityToken {
+public class AipoBlobCrypterSecurityToken extends AbstractSecurityToken {
 
-  /**
-   *
-   * @param container
-   * @param domain
-   * @param activeUrl
-   * @param values
-   */
+  private static final EnumSet<AbstractSecurityToken.Keys> MAP_KEYS = EnumSet
+    .of(AbstractSecurityToken.Keys.OWNER, new AbstractSecurityToken.Keys[] {
+      AbstractSecurityToken.Keys.VIEWER,
+      AbstractSecurityToken.Keys.APP_ID,
+      AbstractSecurityToken.Keys.APP_URL,
+      AbstractSecurityToken.Keys.MODULE_ID,
+      AbstractSecurityToken.Keys.EXPIRES,
+      AbstractSecurityToken.Keys.TRUSTED_JSON });
+
   public AipoBlobCrypterSecurityToken(String container, String domain,
       String activeUrl, Map<String, String> values) {
-    super(container, domain, activeUrl, values);
+    if (values != null) {
+      loadFromMap(values);
+    }
+    setContainer(container).setDomain(domain).setActiveUrl(activeUrl);
+  }
+
+  @Override
+  public String getUpdatedToken() {
+    return null;
+  }
+
+  @Override
+  public String getAuthenticationMode() {
+    return AuthenticationMode.SECURITY_TOKEN_URL_PARAMETER.name();
+  }
+
+  @Override
+  public boolean isAnonymous() {
+    return false;
+  }
+
+  @Override
+  protected EnumSet<AbstractSecurityToken.Keys> getMapKeys() {
+    return MAP_KEYS;
+  }
+
+  public static BlobCrypterSecurityToken fromToken(SecurityToken token) {
+    BlobCrypterSecurityToken interpretedToken =
+      new BlobCrypterSecurityToken(
+        token.getContainer(),
+        token.getDomain(),
+        token.getActiveUrl(),
+        null);
+    interpretedToken
+      .setAppId(token.getAppId())
+      .setAppUrl(token.getAppUrl())
+      .setExpiresAt(token.getExpiresAt())
+      .setModuleId(token.getModuleId())
+      .setOwnerId(token.getOwnerId())
+      .setTrustedJson(token.getTrustedJson())
+      .setViewerId(token.getViewerId());
+
+    return interpretedToken;
   }
 }

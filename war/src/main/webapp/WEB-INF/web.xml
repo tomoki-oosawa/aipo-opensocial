@@ -41,10 +41,10 @@
       com.aipo.container.gadgets.oauth.AipoOAuthModule:
       com.aipo.social.core.config.AipoSocialApiGuiceModule:
       com.aipo.social.opensocial.spi.AipoSocialModule:
-      org.apache.shindig.gadgets.oauth2.OAuth2Module:
+      com.aipo.container.gadgets.oauth2.AipoOAuth2Module:
+      com.aipo.container.gadgets.oauth2.AipoOAuth2PersistenceModule:
       org.apache.shindig.gadgets.oauth2.OAuth2MessageModule:
       org.apache.shindig.gadgets.oauth2.handler.OAuth2HandlerModule:
-      org.apache.shindig.gadgets.oauth2.persistence.sample.OAuth2PersistenceModule:
       org.apache.shindig.gadgets.admin.GadgetAdminModule
     </param-value>
 	</context-param>
