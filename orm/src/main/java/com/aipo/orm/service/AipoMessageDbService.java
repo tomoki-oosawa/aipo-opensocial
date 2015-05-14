@@ -22,16 +22,19 @@ package com.aipo.orm.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.cayenne.DataRow;
 
 import com.aipo.orm.Database;
 import com.aipo.orm.model.portlet.EipTMessage;
+import com.aipo.orm.model.portlet.EipTMessageRead;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
 import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.query.SQLTemplate;
 import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.util.CommonUtils;
 import com.google.inject.Inject;
 
 /**
@@ -281,4 +284,98 @@ public class AipoMessageDbService implements MessageDbService {
     return list;
   }
 
+  /**
+   * @param roomId
+   * @param targetUserId
+   * @param message
+   * @param fields
+   */
+  @Override
+  public void createMessage(String username, Integer roomId,
+      String targetUsername, String message, Set<String> fields) {
+    try {
+      TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+      TurbineUser targetUser =
+        turbineUserDbService.findByUsername(targetUsername);
+      Date now = new Date();
+
+      if (roomId == null && targetUsername != null) {
+        // int userId = (int) login_user.getUserId().getValue();
+        // int targetUserId = (int) targetUser.getUserId().getValue();
+        // room = MessageUtils.getRoom(userId, targetUserId);
+        // if (room == null) {
+        // room = Database.create(EipTMessageRoom.class);
+        //
+        // EipTMessageRoomMember map1 =
+        // Database.create(EipTMessageRoomMember.class);
+        // map1.setEipTMessageRoom(room);
+        // map1.setUserId((int) login_user.getUserId().getValue());
+        // map1.setTargetUserId((int) targetUser.getUserId().getValue());
+        // map1.setLoginName(login_user.getName().getValue());
+        //
+        // EipTMessageRoomMember map2 =
+        // Database.create(EipTMessageRoomMember.class);
+        // map2.setEipTMessageRoom(room);
+        // map2.setTargetUserId((int) login_user.getUserId().getValue());
+        // map2.setUserId((int) targetUser.getUserId().getValue());
+        // map2.setLoginName(targetUser.getName().getValue());
+        //
+        // room.setAutoName("T");
+        // room.setRoomType("O");
+        // room.setLastUpdateDate(now);
+        // room.setCreateDate(now);
+        // room.setCreateUserId((int) login_user.getUserId().getValue());
+        // room.setUpdateDate(now);
+        //
+        // Database.commit();
+        // }
+      }
+      // if (room == null) {
+      // throw new IllegalArgumentException("room may not be null. ");
+      // }
+      @SuppressWarnings("unchecked")
+      EipTMessageRoom room =
+        Database.get(EipTMessageRoom.class, roomId.longValue());
+      List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
+
+      EipTMessage model = Database.create(EipTMessage.class);
+      model.setEipTMessageRoom(room);
+      model.setMessage(CommonUtils.removeSpace(message));
+      model.setCreateDate(now);
+      model.setUpdateDate(now);
+      model.setMemberCount(members.size());
+      model.setUserId((int) turbineUser.getUserId());
+
+      List<String> recipients = new ArrayList<String>();
+      for (EipTMessageRoomMember member : members) {
+        if (member.getUserId().intValue() != turbineUser.getUserId()) {
+          EipTMessageRead record = Database.create(EipTMessageRead.class);
+          record.setEipTMessage(model);
+          record.setIsRead("F");
+          record.setUserId(member.getUserId());
+          record.setRoomId(room.getRoomId());
+          recipients.add(member.getLoginName());
+        }
+      }
+
+      room.setLastMessage(CommonUtils.compressString(message, 100));
+      room.setLastUpdateDate(now);
+
+      // TODO:ファイル添付機能の追加
+      // insertAttachmentFiles(fileuploadList, folderName, (int) login_user
+      // .getUserId()
+      // .getValue(), model, msgList);
+
+      Database.commit();
+
+      // TODO:プッシュ通知機能の追加
+      // Map<String, String> params = new HashMap<String, String>();
+      // params.put("roomId", String.valueOf(room.getRoomId()));
+      // params.put("messageId", String.valueOf(model.getMessageId()));
+      // ALPushService.pushAsync("messagev2", params, recipients);
+
+    } catch (Exception ex) {
+      Database.rollback();
+    }
+  }
 }

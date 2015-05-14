@@ -39,4 +39,7 @@ public interface MessageService {
       AipoCollectionOptions options, Set<String> fields, String roomId,
       String messageId, SecurityToken token);
 
+  public void postMessage(UserId userId, Set<String> fields, String roomId,
+      String targetUserId, String message, SecurityToken token);
+
 }

@@ -262,4 +262,51 @@ public class AipoMessageService extends AbstractService implements
     // メッセージ詳細の場合
     return message;
   }
+
+  /**
+   * @param next
+   * @param options
+   * @param fields
+   * @param roomId
+   * @param message
+   * @param token
+   * @return
+   */
+  @Override
+  public void postMessage(UserId userId, Set<String> fields, String roomId,
+      String targetUserId, String message, SecurityToken token) {
+    // TODO: FIELDS
+
+    setUp(token);
+
+    Integer roomIdInt = null;
+
+    // Room
+    try {
+      if (roomId != null && !"".equals(roomId)) {
+        roomIdInt = Integer.valueOf(roomId);
+      }
+    } catch (Throwable ignore) {
+    }
+
+    String targetUsername = getUserId(targetUserId, token);
+
+    // TODO: 権限をチェック
+    // 自分(Viewer)のルームのみ取得可能
+    checkSameViewer(userId, token);
+    String username = getUserId(userId, token);
+
+    if (roomIdInt != null
+      || !("".equals(targetUsername) || targetUsername == null)) {
+      // ルーム
+      messageDbService.createMessage(
+        username,
+        roomIdInt,
+        targetUsername,
+        message,
+        fields);
+    } else {
+      // ダイレクトメッセージ
+    }
+  }
 }

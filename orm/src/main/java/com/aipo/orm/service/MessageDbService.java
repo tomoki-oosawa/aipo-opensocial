@@ -19,6 +19,7 @@
 package com.aipo.orm.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
@@ -31,5 +32,8 @@ public interface MessageDbService {
 
   public List<EipTMessage> findMessage(int roomId, int messageId,
       SearchOptions options);
+
+  public void createMessage(String username, Integer roomId,
+      String targetUsername, String message, Set<String> fields);
 
 }
