@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
@@ -37,6 +36,7 @@ import com.aipo.orm.service.ApplicationDbService;
 import com.aipo.social.opensocial.model.ALActivity;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 
 /**
@@ -73,7 +73,7 @@ public class AipoActivityService extends AbstractService implements
       Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields,
       CollectionOptions options, SecurityToken token) throws ProtocolException {
     // NOT SUPPORTED
-    return ImmediateFuture.newInstance(null);
+    return Futures.immediateFuture(null);
   }
 
   /**
@@ -93,7 +93,7 @@ public class AipoActivityService extends AbstractService implements
       CollectionOptions options, Set<String> activityIds, SecurityToken token)
       throws ProtocolException {
     // NOT SUPPORTED
-    return ImmediateFuture.newInstance(null);
+    return Futures.immediateFuture(null);
   }
 
   /**
@@ -111,7 +111,7 @@ public class AipoActivityService extends AbstractService implements
       String appId, Set<String> fields, String activityId, SecurityToken token)
       throws ProtocolException {
     // NOT SUPPORTED
-    return ImmediateFuture.newInstance(null);
+    return Futures.immediateFuture(null);
   }
 
   /**
@@ -128,7 +128,7 @@ public class AipoActivityService extends AbstractService implements
       String appId, Set<String> activityIds, SecurityToken token)
       throws ProtocolException {
     // NOT SUPPORTED
-    return ImmediateFuture.newInstance(null);
+    return Futures.immediateFuture(null);
   }
 
   /**
@@ -181,6 +181,6 @@ public class AipoActivityService extends AbstractService implements
     activityDbService.create(username, appId, values);
 
     // TODO: Generate された Activity ID を返却する
-    return ImmediateFuture.newInstance(null);
+    return Futures.immediateFuture(null);
   }
 }

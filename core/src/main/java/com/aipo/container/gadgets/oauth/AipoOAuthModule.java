@@ -24,7 +24,6 @@ import org.apache.shindig.gadgets.oauth.OAuthModule;
 import org.apache.shindig.gadgets.oauth.OAuthRequest;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
 
-import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 
 /**
@@ -34,10 +33,13 @@ public class AipoOAuthModule extends OAuthModule {
 
   @Override
   protected void configure() {
+    // Used for encrypting client-side OAuth state.
     bind(BlobCrypter.class).annotatedWith(
       Names.named(OAuthFetcherConfig.OAUTH_STATE_CRYPTER)).toProvider(
       OAuthCrypterProvider.class);
-    bind(OAuthStore.class).to(AipoOAuthStore.class).in(Scopes.SINGLETON);
+
+    // Used for persistent storage of OAuth access tokens.
+    bind(OAuthStore.class).to(AipoOAuthStore.class);
     bind(OAuthRequest.class).toProvider(OAuthRequestProvider.class);
   }
 

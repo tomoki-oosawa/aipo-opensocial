@@ -25,14 +25,14 @@ import java.util.Set;
 import com.aipo.orm.model.social.AppData;
 
 /**
- * 
+ *
  */
 public interface AppDataDbService {
 
   public List<AppData> get(Set<String> usernames, String appId,
       Set<String> fields);
 
-  public void put(String username, String appId, Map<String, String> values);
+  public void put(String username, String appId, Map<String, Object> values);
 
   public void delete(String username, String appId, Set<String> fields);
 }

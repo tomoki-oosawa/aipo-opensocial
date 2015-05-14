@@ -20,12 +20,14 @@
 
 -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="Shindig"
+         version="2.5">
 	<display-name>Aipo OpenSocial Container</display-name>
 	<!-- configuration -->
-	<!-- If you have your own Guice module(s), put them here as a colon-separated 
+	<!-- If you have your own Guice module(s), put them here as a colon-separated
 		list. -->
 	<!-- Note that any extras modules are optional -->
 	<context-param>
@@ -38,26 +40,31 @@
       com.aipo.container.gadgets.AipoGadgetsGuiceModule:
       com.aipo.container.gadgets.oauth.AipoOAuthModule:
       com.aipo.social.core.config.AipoSocialApiGuiceModule:
-      com.aipo.social.opensocial.spi.AipoSocialModule
+      com.aipo.social.opensocial.spi.AipoSocialModule:
+      org.apache.shindig.gadgets.oauth2.OAuth2Module:
+      org.apache.shindig.gadgets.oauth2.OAuth2MessageModule:
+      org.apache.shindig.gadgets.oauth2.handler.OAuth2HandlerModule:
+      org.apache.shindig.gadgets.oauth2.persistence.sample.OAuth2PersistenceModule:
+      org.apache.shindig.gadgets.admin.GadgetAdminModule
     </param-value>
 	</context-param>
 
-	<!-- Syntax: <key>=<value> separated by a newline system.properties specifies 
-		the environmental variables that will be set to the JVM System Properties 
-		at server startup time. Alternatively, you may add these values in your app 
-		server (ex: Tomcat) as VM arguments like this: -Dshindig.host="my.production.shindig.server.com". 
-		Here are a few properties that can be set for Shindig: shindig.host: the 
-		server name that Shindig is deployed and running on shindig.port: the port 
-		number of shindig.host server Make sure you escape all HTML values for the 
+	<!-- Syntax: <key>=<value> separated by a newline system.properties specifies
+		the environmental variables that will be set to the JVM System Properties
+		at server startup time. Alternatively, you may add these values in your app
+		server (ex: Tomcat) as VM arguments like this: -Dshindig.host="my.production.shindig.server.com".
+		Here are a few properties that can be set for Shindig: shindig.host: the
+		server name that Shindig is deployed and running on shindig.port: the port
+		number of shindig.host server Make sure you escape all HTML values for the
 		web.xml to be parsed correctly. -->
 	<context-param>
 		<param-name>system.properties</param-name>
 		<param-value>
     	shindig.host=localhost
-    	
+
     	aKey=/shindig/gadgets/proxy?container=default&amp;url=
     	shindig.port=
-    	
+
      </param-value>
 	</context-param>
 
@@ -152,7 +159,7 @@
 	</servlet -->
 
 	<!-- Proxy -->
-	<!-- servlet> <servlet-name>proxy</servlet-name> <servlet-class> org.apache.shindig.gadgets.servlet.ProxyServlet 
+	<!-- servlet> <servlet-name>proxy</servlet-name> <servlet-class> org.apache.shindig.gadgets.servlet.ProxyServlet
 		</servlet-class> </servlet -->
 
 	<!-- makeRequest -->
@@ -162,7 +169,7 @@
 	</servlet>
 
 	<!-- Concat -->
-	<!-- servlet> <servlet-name>concat</servlet-name> <servlet-class> org.apache.shindig.gadgets.servlet.ConcatProxyServlet 
+	<!-- servlet> <servlet-name>concat</servlet-name> <servlet-class> org.apache.shindig.gadgets.servlet.ConcatProxyServlet
 		</servlet-class> </servlet -->
 
 	<!-- OAuth callback -->
@@ -215,7 +222,7 @@
 		<url-pattern>/gadgets/js/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- servlet-mapping> <servlet-name>proxy</servlet-name> <url-pattern>/gadgets/proxy/*</url-pattern> 
+	<!-- servlet-mapping> <servlet-name>proxy</servlet-name> <url-pattern>/gadgets/proxy/*</url-pattern>
 		</servlet-mapping -->
 
 	<servlet-mapping>
@@ -237,7 +244,7 @@
 		<url-pattern>/social/rest/*</url-pattern>
 	</servlet-mapping -->
 
-	<!-- servlet-mapping> <servlet-name>concat</servlet-name> <url-pattern>/gadgets/concat</url-pattern> 
+	<!-- servlet-mapping> <servlet-name>concat</servlet-name> <url-pattern>/gadgets/concat</url-pattern>
 		</servlet-mapping -->
 
 	<servlet-mapping>

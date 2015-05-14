@@ -21,6 +21,8 @@ package com.aipo.social.core.config;
 import java.util.List;
 import java.util.Set;
 
+import net.oauth.OAuthValidator;
+
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
@@ -29,6 +31,7 @@ import org.apache.shindig.protocol.conversion.BeanConverter;
 import org.apache.shindig.protocol.conversion.BeanJsonConverter;
 import org.apache.shindig.protocol.conversion.BeanXStreamConverter;
 import org.apache.shindig.protocol.conversion.xstream.XStreamConfiguration;
+import org.apache.shindig.social.core.oauth.OAuthValidatorProvider;
 import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.service.AppDataHandler;
@@ -40,6 +43,7 @@ import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.aipo.social.opensocial.service.AipoHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
@@ -77,10 +81,13 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
     for (Class<?> handler : getHandlers()) {
       handlerBinder.addBinding().toInstance(handler);
     }
+
+    bind(OAuthValidator.class).toProvider(OAuthValidatorProvider.class).in(
+      Singleton.class);
   }
 
   /**
-   * 
+   *
    * @return
    */
   protected Set<Class<?>> getHandlers() {

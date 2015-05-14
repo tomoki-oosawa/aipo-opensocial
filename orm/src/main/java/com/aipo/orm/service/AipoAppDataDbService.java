@@ -42,12 +42,13 @@ public class AipoAppDataDbService implements AppDataDbService {
   }
 
   /**
-   * 
+   *
    * @param usernames
    * @param appId
    * @param fields
    * @return
    */
+  @Override
   public List<AppData> get(Set<String> usernames, String appId,
       Set<String> fields) {
     try {
@@ -64,12 +65,12 @@ public class AipoAppDataDbService implements AppDataDbService {
   }
 
   /**
-   * 
+   *
    * @param username
    * @param appId
    * @param values
    */
-  public void put(String username, String appId, Map<String, String> values) {
+  public void put(String username, String appId, Map<String, Object> values) {
     try {
       TurbineUser user = null;
       if (!"@admin".equals(username)) {
@@ -78,11 +79,11 @@ public class AipoAppDataDbService implements AppDataDbService {
           return;
         }
       }
-      Iterator<Entry<String, String>> iterator = values.entrySet().iterator();
+      Iterator<Entry<String, Object>> iterator = values.entrySet().iterator();
       while (iterator.hasNext()) {
-        Entry<String, String> next = iterator.next();
+        Entry<String, Object> next = iterator.next();
         String key = next.getKey();
-        String value = next.getValue();
+        String value = next.getValue().toString();
         AppData appData =
           Database.query(AppData.class).where(
             Operations.eq(AppData.NAME_PROPERTY, key)).where(
@@ -108,6 +109,7 @@ public class AipoAppDataDbService implements AppDataDbService {
    * @param appId
    * @param fields
    */
+  @Override
   public void delete(String username, String appId, Set<String> fields) {
     try {
       TurbineUser user = null;

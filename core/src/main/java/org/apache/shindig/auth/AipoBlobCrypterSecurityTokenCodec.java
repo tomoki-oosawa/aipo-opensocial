@@ -21,7 +21,6 @@ package org.apache.shindig.auth;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +35,6 @@ import org.apache.shindig.common.util.ResourceLoader;
 import org.apache.shindig.config.ContainerConfig;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -45,12 +43,11 @@ import com.google.inject.Singleton;
  * @see BlobCrypterSecurityTokenCodec
  */
 @Singleton
-public class AipoBlobCrypterSecurityTokenCodec implements SecurityTokenCodec,
-    ContainerConfig.ConfigObserver {
+public class AipoBlobCrypterSecurityTokenCodec implements SecurityTokenCodec {
 
   // Logging
-  private static final String CLASSNAME = BlobCrypterSecurityTokenCodec.class
-    .getName();
+  private static final String CLASSNAME =
+    AipoBlobCrypterSecurityTokenCodec.class.getName();
 
   private static final Logger LOG = Logger.getLogger(CLASSNAME);
 
@@ -58,95 +55,32 @@ public class AipoBlobCrypterSecurityTokenCodec implements SecurityTokenCodec,
 
   public static final String SIGNED_FETCH_DOMAIN = "gadgets.signedFetchDomain";
 
-  /**
-   * Keys are container ids, values are crypters
-   */
-  protected Map<String, BlobCrypter> crypters = Maps.newHashMap();
+  protected BlobCrypter crypter = null;
 
   /**
    * Keys are container ids, values are domains used for signed fetch.
    */
-  protected Map<String, String> domains = Maps.newHashMap();
+  protected String domain = "shindig";
 
-  private Map<String, Integer> tokenTTLs = Maps.newHashMap();
+  protected String container = "default";
+
+  private final Integer tokenTTL =
+    AipoBlobCrypterSecurityToken.DEFAULT_MAX_TOKEN_TTL;
 
   @Inject
   public AipoBlobCrypterSecurityTokenCodec(ContainerConfig config) {
     try {
-      config.addConfigObserver(this, false);
-      loadContainers(
-        config,
-        config.getContainers(),
-        crypters,
-        domains,
-        tokenTTLs);
-    } catch (IOException e) {
+      String key = config.getString(container, SECURITY_TOKEN_KEY);
+      crypter = loadCrypter(key);
+    } catch (Throwable e) {
       // Someone specified securityTokenKeyFile, but we couldn't load the key.
       // That merits killing
       // the server.
       LOG.log(
         Level.SEVERE,
-        "Error while initializing BlobCrypterSecurityTokenCodec",
+        "Error while initializing AipoBlobCrypterSecurityTokenCodec",
         e);
       throw new RuntimeException(e);
-    }
-  }
-
-  @Override
-  public void containersChanged(ContainerConfig config,
-      Collection<String> changed, Collection<String> removed) {
-    Map<String, BlobCrypter> newCrypters = Maps.newHashMap(crypters);
-    Map<String, String> newDomains = Maps.newHashMap(domains);
-    Map<String, Integer> newTokenTTLs = Maps.newHashMap(tokenTTLs);
-    try {
-      loadContainers(config, changed, newCrypters, newDomains, newTokenTTLs);
-      for (String container : removed) {
-        newCrypters.remove(container);
-        newDomains.remove(container);
-        newTokenTTLs.remove(container);
-      }
-    } catch (IOException e) {
-      // Someone specified securityTokenKeyFile, but we couldn't load the key.
-      // Keep the old configuration.
-      LOG.log(
-        Level.WARNING,
-        "There was an error loading an updated container configuration. "
-          + "Keeping old configuration.",
-        e);
-      return;
-    }
-    crypters = newCrypters;
-    domains = newDomains;
-    tokenTTLs = newTokenTTLs;
-  }
-
-  private void loadContainers(ContainerConfig config,
-      Collection<String> containers, Map<String, BlobCrypter> crypters,
-      Map<String, String> domains, Map<String, Integer> tokenTTLs)
-      throws IOException {
-    for (String container : containers) {
-      String key = config.getString(container, SECURITY_TOKEN_KEY);
-      if (key != null) {
-        BlobCrypter crypter = loadCrypterFromFile(key);
-        crypters.put(container, crypter);
-      }
-      String domain = config.getString(container, SIGNED_FETCH_DOMAIN);
-      domains.put(container, domain);
-
-      // Process tokenTTLs
-      int tokenTTL = config.getInt(container, SECURITY_TOKEN_TTL_CONFIG);
-      // 0 means the value was not defined or NaN. 0 shouldn't be a valid TTL
-      // anyway.
-      if (tokenTTL > 0) {
-        tokenTTLs.put(container, tokenTTL);
-      } else {
-        LOG.logp(
-          Level.WARNING,
-          CLASSNAME,
-          "loadContainers",
-          "Token TTL for container \"{0}\" was {1} and will be ignored.",
-          new Object[] { container, tokenTTL });
-      }
     }
   }
 
@@ -177,12 +111,6 @@ public class AipoBlobCrypterSecurityTokenCodec implements SecurityTokenCodec,
     if (fields.length != 2) {
       throw new SecurityTokenException("Invalid security token " + token);
     }
-    String container = fields[0];
-    BlobCrypter crypter = crypters.get(container);
-    if (crypter == null) {
-      throw new SecurityTokenException("Unknown container " + token);
-    }
-    String domain = domains.get(container);
     String activeUrl = tokenParameters.get(SecurityTokenCodec.ACTIVE_URL_NAME);
     String crypted = fields[1];
     try {
@@ -216,14 +144,7 @@ public class AipoBlobCrypterSecurityTokenCodec implements SecurityTokenCodec,
         ? (AbstractSecurityToken) token
         : BlobCrypterSecurityToken.fromToken(token);
 
-    BlobCrypter crypter = crypters.get(aToken.getContainer());
-    if (crypter == null) {
-      throw new SecurityTokenException("Unknown container "
-        + aToken.getContainer());
-    }
-
     try {
-      Integer tokenTTL = this.tokenTTLs.get(aToken.getContainer());
       if (tokenTTL != null) {
         aToken.setExpires(tokenTTL);
       } else {
@@ -242,7 +163,6 @@ public class AipoBlobCrypterSecurityTokenCodec implements SecurityTokenCodec,
 
   @Override
   public int getTokenTimeToLive(String container) {
-    Integer tokenTTL = this.tokenTTLs.get(container);
     if (tokenTTL == null) {
       return getTokenTimeToLive();
     }

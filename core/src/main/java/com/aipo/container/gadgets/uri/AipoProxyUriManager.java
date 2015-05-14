@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shindig.common.Nullable;
+import org.apache.shindig.common.servlet.Authority;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
 import org.apache.shindig.common.util.Utf8UrlCoder;
@@ -37,17 +39,16 @@ import org.apache.shindig.gadgets.uri.UriStatus;
 
 import com.aipo.container.util.ContainerToolkit;
 import com.aipo.orm.service.ContainerConfigDbService;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.google.inject.internal.Nullable;
 import com.google.inject.name.Named;
 
 /**
  * @see DefaultProxyUriManager
  */
 public class AipoProxyUriManager implements ProxyUriManager {
-
   public static final String PROXY_HOST_PARAM = "gadgets.uri.proxy.host";
 
   public static final String PROXY_PATH_PARAM = "gadgets.uri.proxy.path";
@@ -61,6 +62,8 @@ public class AipoProxyUriManager implements ProxyUriManager {
   private final Versioner versioner;
 
   private boolean strictParsing = false;
+
+  private Authority authority;
 
   @Inject
   public AipoProxyUriManager(ContainerConfig config,
@@ -77,6 +80,11 @@ public class AipoProxyUriManager implements ProxyUriManager {
     this.strictParsing = useStrict;
   }
 
+  @Inject(optional = true)
+  public void setAuthority(Authority authority) {
+    this.authority = authority;
+  }
+
   @Override
   public List<Uri> make(List<ProxyUri> resources, Integer forcedRefresh) {
     if (resources.isEmpty()) {
@@ -84,9 +92,12 @@ public class AipoProxyUriManager implements ProxyUriManager {
     }
 
     List<Uri> resourceUris = Lists.newArrayListWithCapacity(resources.size());
+    List<String> resourceTags =
+      Lists.newArrayListWithCapacity(resources.size());
 
     for (ProxyUri puc : resources) {
       resourceUris.add(puc.getResource());
+      resourceTags.add(puc.getHtmlTagContext());
     }
 
     Map<Uri, String> versions;
@@ -95,7 +106,10 @@ public class AipoProxyUriManager implements ProxyUriManager {
     } else {
       versions = Maps.newHashMapWithExpectedSize(resources.size());
       List<String> versionList =
-        versioner.version(resourceUris, resources.get(0).getContainer());
+        versioner.version(
+          resourceUris,
+          resources.get(0).getContainer(),
+          resourceTags);
       if (versionList != null && versionList.size() == resources.size()) {
         // This should always be the case.
         // Should we error if not, or just WARNING?
@@ -120,7 +134,6 @@ public class AipoProxyUriManager implements ProxyUriManager {
 
     String container = puc.getContainer();
     UriBuilder uri = new UriBuilder();
-
     uri.setAuthority(ContainerToolkit.getHost(containerConfigDbService));
     uri.setScheme(ContainerToolkit.getScheme());
 
@@ -154,9 +167,6 @@ public class AipoProxyUriManager implements ProxyUriManager {
   @Override
   @SuppressWarnings("deprecation")
   public ProxyUri process(Uri uriIn) throws GadgetException {
-    UriStatus status = UriStatus.BAD_URI;
-    Uri uri = null;
-
     // First determine if the URI is chained-syntax or query-style.
     String container = uriIn.getQueryParameter(Param.CONTAINER.getKey());
     if (container == null) {
@@ -212,6 +222,10 @@ public class AipoProxyUriManager implements ProxyUriManager {
             if (chainedChunks.length == 2 && chainedChunks[1].length() > 0) {
               endToken = chainedChunks[1];
             }
+            if (!endToken.endsWith("/")) {
+              // add suffix '/' that was added by the creator
+              endToken = endToken + '/';
+            }
 
             // Pull URI out of original inUri's full representation.
             String fullProxyUri = uriIn.toString();
@@ -225,29 +239,25 @@ public class AipoProxyUriManager implements ProxyUriManager {
               }
               queryUri = new UriBuilder().setQuery(chainedQuery).toUri();
               uriStr = fullProxyUri.substring(endIx + endToken.length());
-              while (uriStr.startsWith("/")) {
-                uriStr = uriStr.substring(1);
-              }
-
             }
           }
         }
       }
     }
 
-    if (!strictParsing && container != null && StringUtils.isEmpty(uriStr)) {
+    if (!strictParsing && container != null && Strings.isNullOrEmpty(uriStr)) {
       // Query-style despite the container being configured for chained style.
       uriStr = uriIn.getQueryParameter(Param.URL.getKey());
       queryUri = uriIn;
     }
 
     // Parameter validation.
-    if (StringUtils.isEmpty(uriStr) || StringUtils.isEmpty(container)) {
+    if (Strings.isNullOrEmpty(uriStr) || Strings.isNullOrEmpty(container)) {
       throw new GadgetException(
         GadgetException.Code.MISSING_PARAMETER,
         "Missing required parameter(s):"
-          + (StringUtils.isEmpty(uriStr) ? ' ' + Param.URL.getKey() : "")
-          + (StringUtils.isEmpty(container)
+          + (Strings.isNullOrEmpty(uriStr) ? ' ' + Param.URL.getKey() : "")
+          + (Strings.isNullOrEmpty(container)
             ? ' ' + Param.CONTAINER.getKey()
             : ""),
         HttpResponse.SC_BAD_REQUEST);
@@ -264,8 +274,13 @@ public class AipoProxyUriManager implements ProxyUriManager {
       }
     }
 
+    Uri uri;
     try {
       uri = Uri.parse(uriStr);
+      if (uri.getScheme() == null) {
+        // For non schema url, use the proxy schema:
+        uri = new UriBuilder(uri).setScheme(uriIn.getScheme()).toUri();
+      }
     } catch (Exception e) {
       // NullPointerException or InvalidArgumentException.
       throw new GadgetException(
@@ -275,7 +290,7 @@ public class AipoProxyUriManager implements ProxyUriManager {
     }
 
     // URI is valid.
-    status = UriStatus.VALID_UNVERSIONED;
+    UriStatus status = UriStatus.VALID_UNVERSIONED;
 
     String version = queryUri.getQueryParameter(Param.VERSION.getKey());
     if (versioner != null && version != null) {
@@ -297,7 +312,15 @@ public class AipoProxyUriManager implements ProxyUriManager {
         + "container: "
         + container);
     }
+    if (authority != null) {
+      val = val.replace("%authority%", authority.getAuthority());
+    } else {
+      // require this for test purpose, %host% needs to be replaced with default
+      // value eg. StyleTagProxyEmbeddedUrlsVisitorTest
+      if (val.contains("%authority%")) {
+        val = val.replace("%authority%", "localhost:8080");
+      }
+    }
     return val;
   }
-
 }

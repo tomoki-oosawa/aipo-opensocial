@@ -26,7 +26,6 @@ import java.util.concurrent.Future;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.core.model.NameImpl;
@@ -44,17 +43,18 @@ import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 
 /**
- * 
+ *
  */
 public class AipoPersonService extends AbstractService implements PersonService {
 
   private final TurbineUserDbService turbineUserDbService;
 
   /**
-   * 
+   *
    */
   @Inject
   public AipoPersonService(TurbineUserDbService turbineUserSercice) {
@@ -62,7 +62,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
   }
 
   /**
-   * 
+   *
    * @param userIds
    * @param groupId
    * @param collectionOptions
@@ -71,6 +71,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds,
       GroupId groupId, CollectionOptions collectionOptions, Set<String> fields,
       SecurityToken token) throws ProtocolException {
@@ -108,21 +109,18 @@ public class AipoPersonService extends AbstractService implements PersonService 
         list = turbineUserDbService.find(options);
         totalResults = turbineUserDbService.getCount(options);
         break;
-      case groupId:
+      case objectId:
         // /people/{guid}/{groupId}
         // /people/{guid}/{groupId}
         // {guid} が閲覧できるすべてのユーザーで {groupId} グループに所属しているものを取得
         list =
-          turbineUserDbService.findByGroupname(groupId.getGroupId(), options);
-        totalResults =
-          turbineUserDbService.getCountByGroupname(
-            groupId.getGroupId(),
+          turbineUserDbService.findByGroupname(
+            groupId.getObjectId().toString(),
             options);
-        break;
-      case deleted:
-        // /people/{guid}/@deleted
-        // {guid} が閲覧できる無効なユーザーを取得
-        list = Lists.newArrayList();
+        totalResults =
+          turbineUserDbService.getCountByGroupname(groupId
+            .getObjectId()
+            .toString(), options);
         break;
       case self:
         // {guid} 自身のユーザー情報を取得
@@ -146,18 +144,19 @@ public class AipoPersonService extends AbstractService implements PersonService 
         collectionOptions.getFirst(),
         totalResults,
         collectionOptions.getMax());
-    return ImmediateFuture.newInstance(restCollection);
+    return Futures.immediateFuture(restCollection);
 
   }
 
   /**
-   * 
+   *
    * @param id
    * @param fields
    * @param token
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<Person> getPerson(UserId id, Set<String> fields,
       SecurityToken token) throws ProtocolException {
 
@@ -173,7 +172,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
       person = assignPerson(user, fields, token);
     }
 
-    return ImmediateFuture.newInstance(person);
+    return Futures.immediateFuture(person);
   }
 
   protected Person assignPerson(TurbineUser user, Set<String> fields,
@@ -188,6 +187,19 @@ public class AipoPersonService extends AbstractService implements PersonService 
     name.setGivenName(user.getFirstName());
     Person person = new PersonImpl(userId, displayName, name);
     return person;
+  }
+
+  /**
+   * @param userId
+   * @param person
+   * @param token
+   * @return
+   * @throws ProtocolException
+   */
+  @Override
+  public Future<Person> updatePerson(UserId userId, Person person,
+      SecurityToken token) throws ProtocolException {
+    return Futures.immediateFuture(null);
   }
 
 }

@@ -18,16 +18,30 @@
  */
 package com.aipo.container.gadgets;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.shindig.common.util.Base32;
+import org.apache.shindig.common.logging.i18n.MessageKeys;
+import org.apache.shindig.common.servlet.Authority;
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.uri.Uri.UriException;
 import org.apache.shindig.config.ContainerConfig;
+import org.apache.shindig.gadgets.AbstractLockedDomainService;
 import org.apache.shindig.gadgets.Gadget;
-import org.apache.shindig.gadgets.LockedDomainService;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.spec.Feature;
+import org.apache.shindig.gadgets.uri.LockedDomainPrefixGenerator;
 
 import com.aipo.orm.service.ContainerConfigDbService;
 import com.aipo.orm.service.ContainerConfigDbService.Property;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
@@ -36,61 +50,96 @@ import com.google.inject.name.Named;
  * @HashLockedDomainService
  */
 @Singleton
-public class AipoHashLockedDomainService implements LockedDomainService {
+public class AipoHashLockedDomainService extends AbstractLockedDomainService {
 
-  @SuppressWarnings("unused")
-  private static final Logger logger = Logger
-    .getLogger(AipoHashLockedDomainService.class.getName());
+  /**
+   * Used to observer locked domain suffixes for this class
+   */
+  private class HashLockedDomainObserver implements
+      ContainerConfig.ConfigObserver {
+
+    @Override
+    public void containersChanged(ContainerConfig config,
+        Collection<String> changed, Collection<String> removed) {
+      for (String container : changed) {
+        String suffix = config.getString(container, LOCKED_DOMAIN_SUFFIX_KEY);
+        if (suffix == null) {
+          if (LOG.isLoggable(Level.WARNING)) {
+            LOG.logp(
+              Level.WARNING,
+              classname,
+              "containersChanged",
+              MessageKeys.NO_LOCKED_DOMAIN_CONFIG,
+              new Object[] { container });
+          }
+        } else {
+          AipoHashLockedDomainService.this.lockedSuffixes.put(
+            container,
+            checkSuffix(suffix));
+        }
+      }
+      for (String container : removed) {
+        AipoHashLockedDomainService.this.lockedSuffixes.remove(container);
+      }
+    }
+  }
+
+  // class name for logging purpose
+  private static final String classname = AipoHashLockedDomainService.class
+    .getName();
+
+  private static final Logger LOG = Logger.getLogger(
+    classname,
+    MessageKeys.MESSAGES);
+
+  private final Map<String, String> lockedSuffixes;
+
+  private Authority authority;
+
+  private final LockedDomainPrefixGenerator ldGen;
+
+  private final Pattern authpattern = Pattern.compile("%authority%");
+
+  private HashLockedDomainObserver ldObserver;
+
+  public static final String LOCKED_DOMAIN_SUFFIX_KEY =
+    "gadgets.uri.iframe.lockedDomainSuffix";
 
   private final ContainerConfigDbService containerConfigDbService;
 
-  private final boolean enabled;
+  /*
+   * Injected methods
+   */
 
-  private boolean lockSecurityTokens = false;
-
+  /**
+   * Create a LockedDomainService
+   *
+   * @param config
+   *          per-container configuration
+   * @param enabled
+   *          whether this service should do anything at all.
+   */
   @Inject
   public AipoHashLockedDomainService(ContainerConfig config,
       @Named("shindig.locked-domain.enabled") boolean enabled,
+      LockedDomainPrefixGenerator ldGen,
       ContainerConfigDbService containerConfigDbService) {
-    this.enabled = enabled;
+    super(config, enabled);
+    this.lockedSuffixes = Maps.newHashMap();
+    this.ldGen = ldGen;
+    if (enabled) {
+      this.ldObserver = new HashLockedDomainObserver();
+      config.addConfigObserver(this.ldObserver, true);
+    }
     this.containerConfigDbService = containerConfigDbService;
-
   }
 
-  @Inject(optional = true)
-  public void setLockSecurityTokens(
-      @Named("shindig.locked-domain.lock-security-tokens") Boolean lockSecurityTokens) {
-    this.lockSecurityTokens = lockSecurityTokens;
-  }
-
-  public boolean isEnabled() {
-    return enabled;
-  }
-
-  public boolean isSafeForOpenProxy(String host) {
-    if (enabled) {
-      return !hostRequiresLockedDomain(host);
-    }
-    return true;
-  }
-
-  public boolean gadgetCanRender(String host, Gadget gadget, String container) {
-    container = normalizeContainer(container);
-    if (enabled) {
-      if (gadgetWantsLockedDomain(gadget)
-        || hostRequiresLockedDomain(host)
-        || containerRequiresLockedDomain(container)) {
-        String neededHost = getLockedDomain(gadget, container);
-        return host.equals(neededHost);
-      }
-    }
-    return true;
-  }
-
-  public String getLockedDomainForGadget(Gadget gadget, String container) {
-    container = normalizeContainer(container);
-    if (enabled) {
-      if (gadgetWantsLockedDomain(gadget)
+  @Override
+  public String getLockedDomainForGadget(Gadget gadget, String container)
+      throws GadgetException {
+    container = getContainer(container);
+    if (isEnabled() && !isExcludedFromLockedDomain(gadget, container)) {
+      if (isGadgetReqestingLocking(gadget)
         || containerRequiresLockedDomain(container)) {
         return getLockedDomain(gadget, container);
       }
@@ -98,41 +147,141 @@ public class AipoHashLockedDomainService implements LockedDomainService {
     return null;
   }
 
-  private String getLockedDomain(Gadget gadget, String container) {
-    String suffix = getLockedDomainSuffix();
-    if (suffix == null) {
-      return null;
+  /**
+   * Generates a locked domain prefix given a gadget Uri.
+   *
+   * @param gadget
+   *          The uri of the gadget.
+   * @return A locked domain prefix for the gadgetUri. Returns empty string if
+   *         locked domains are not enabled on the server.
+   */
+  private String getLockedDomainPrefix(Gadget gadget) throws GadgetException {
+    String ret = "";
+    if (isEnabled()) {
+      ret =
+        this.ldGen.getLockedDomainPrefix(getLockedDomainParticipants(gadget));
     }
-    byte[] sha1 = DigestUtils.sha(gadget.getSpec().getUrl().toString());
-    String hash = new String(Base32.encodeBase32(sha1));
-    return hash + suffix;
+    // Lower-case to prevent casing from being relevant.
+    return ret.toLowerCase();
   }
 
-  private boolean gadgetWantsLockedDomain(Gadget gadget) {
-    if (lockSecurityTokens) {
-      return gadget.getAllFeatures().contains("locked-domain");
+  @Override
+  public boolean isGadgetValidForHost(String host, Gadget gadget,
+      String container) {
+    container = getContainer(container);
+    if (isEnabled()) {
+      if (isGadgetReqestingLocking(gadget)
+        || isHostUsingLockedDomain(host)
+        || containerRequiresLockedDomain(container)) {
+        if (isRefererCheckEnabled() && !isValidReferer(gadget, container)) {
+          return false;
+        }
+        String neededHost;
+        try {
+          neededHost = getLockedDomain(gadget, container);
+        } catch (GadgetException e) {
+          if (LOG.isLoggable(Level.WARNING)) {
+            LOG.log(Level.WARNING, "Invalid host for call.", e);
+          }
+          return false;
+        }
+        return host.equalsIgnoreCase(neededHost);
+      }
     }
-    return gadget.getSpec().getModulePrefs().getFeatures().keySet().contains(
-      "locked-domain");
+    return true;
   }
 
-  private boolean hostRequiresLockedDomain(String host) {
-    String suffix = getLockedDomainSuffix();
-    if (suffix == null || suffix.isEmpty()) {
-      return false;
-    }
-    if (host.endsWith(getLockedDomainSuffix())) {
-      return true;
+  @Override
+  public boolean isHostUsingLockedDomain(String host) {
+    if (isEnabled()) {
+      if (host.endsWith(getLockedDomainSuffix())) {
+        return true;
+      }
     }
     return false;
   }
 
-  private boolean containerRequiresLockedDomain(String container) {
-    return isLockedDomainRequired();
+  @Inject(optional = true)
+  public void setAuthority(Authority authority) {
+    this.authority = authority;
   }
 
-  private String normalizeContainer(String container) {
+  private String checkSuffix(String suffix) {
+    if (suffix != null) {
+      Matcher m = this.authpattern.matcher(suffix);
+      if (m.matches()) {
+        if (LOG.isLoggable(Level.WARNING)) {
+          LOG
+            .warning("You should not be using %authority% replacement in a running environment!");
+          LOG
+            .warning("Check your config and specify an explicit locked domain suffix.");
+          LOG.warning("Found suffix: " + suffix);
+        }
+        if (this.authority != null) {
+          suffix = m.replaceAll(this.authority.getAuthority());
+        }
+      }
+    }
+    return suffix;
+  }
+
+  private String getContainer(String container) {
+    if (this.required.containsKey(container)) {
+      return container;
+    }
     return ContainerConfig.DEFAULT_CONTAINER;
+  }
+
+  private String getLockedDomain(Gadget gadget, String container)
+      throws GadgetException {
+    String suffix = getLockedDomainSuffix();
+    if (suffix == null) {
+      return null;
+    }
+    return getLockedDomainPrefix(gadget) + suffix;
+  }
+
+  private String getLockedDomainParticipants(Gadget gadget)
+      throws GadgetException {
+    Map<String, Feature> features =
+      gadget.getSpec().getModulePrefs().getFeatures();
+    Feature ldFeature = features.get("locked-domain");
+
+    // This gadget is always a participant.
+    Set<String> filtered = new TreeSet<String>();
+    filtered.add(gadget.getSpec().getUrl().toString().toLowerCase());
+
+    if (ldFeature != null) {
+      Collection<String> participants =
+        ldFeature.getParamCollection("participant");
+      for (String participant : participants) {
+        // be picky, this should be a valid uri
+        try {
+          Uri.parse(participant);
+        } catch (UriException e) {
+          throw new GadgetException(
+            GadgetException.Code.INVALID_PARAMETER,
+            "Participant param must be a valid uri",
+            e);
+        }
+        filtered.add(participant.toLowerCase());
+      }
+    }
+
+    StringBuilder buffer = new StringBuilder();
+    for (String participant : filtered) {
+      buffer.append(participant);
+    }
+    return buffer.toString();
+  }
+
+  @VisibleForTesting
+  ContainerConfig.ConfigObserver getConfigObserver() {
+    return this.ldObserver;
+  }
+
+  private boolean containerRequiresLockedDomain(String container) {
+    return isLockedDomainRequired();
   }
 
   private boolean isLockedDomainRequired() {
@@ -145,5 +294,4 @@ public class AipoHashLockedDomainService implements LockedDomainService {
     String value = containerConfigDbService.get(Property.LOCKED_DOMAIN_SUFFIX);
     return value;
   }
-
 }

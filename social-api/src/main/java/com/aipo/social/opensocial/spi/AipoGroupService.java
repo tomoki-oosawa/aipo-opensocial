@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
@@ -38,6 +37,7 @@ import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.aipo.social.core.model.ALGroupImpl;
 import com.aipo.social.opensocial.model.ALGroup;
+import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 
 /**
@@ -105,13 +105,13 @@ public class AipoGroupService extends AbstractService implements GroupService {
         collectionOptions.getFirst(),
         totalResults,
         collectionOptions.getMax());
-    return ImmediateFuture.newInstance(restCollection);
+    return Futures.immediateFuture(restCollection);
   }
 
   protected ALGroup assginGroup(TurbineGroup turbineGroup, Set<String> fields,
       SecurityToken token) {
     ALGroup group = new ALGroupImpl();
-    GroupId groupId = new GroupId(Type.groupId, turbineGroup.getGroupName());
+    GroupId groupId = new GroupId(Type.objectId, turbineGroup.getGroupName());
     group.setId(groupId);
     group.setTitle(turbineGroup.getGroupAliasName());
     group.setType(turbineGroup.getOwnerId().intValue() == 1

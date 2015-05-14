@@ -22,6 +22,7 @@
 
 <feature>
   <name>opensocial-reference</name>
+  <dependency>taming</dependency>
   <dependency>core.util</dependency>
   <gadget>
     <script src="opensocial.js"/>
@@ -48,6 +49,9 @@
     <script src="phone.js"/>
     <script src="responseitem.js"/>
     <script src="url.js"/>
-    <script src="taming.js"/>
+    <script src="taming.js" caja="1"/>
+    <api>
+      <uses type="rpc">requestSendMessage</uses>
+    </api>
   </gadget>
 </feature>

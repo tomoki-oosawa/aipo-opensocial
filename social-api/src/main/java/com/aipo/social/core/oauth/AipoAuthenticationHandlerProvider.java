@@ -44,6 +44,7 @@ public class AipoAuthenticationHandlerProvider implements
     handlers = Lists.newArrayList(urlParam, threeLeggedOAuth, anonymous);
   }
 
+  @Override
   public List<AuthenticationHandler> get() {
     return handlers;
   }

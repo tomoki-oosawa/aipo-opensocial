@@ -22,14 +22,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Future;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.DataCollection;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
@@ -40,13 +38,13 @@ import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.model.social.AppData;
 import com.aipo.orm.service.AppDataDbService;
 import com.aipo.orm.service.TurbineUserDbService;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
-import com.google.inject.internal.Sets;
 
 /**
- * 
+ *
  */
 public class AipoAppDataService extends AbstractService implements
     AppDataService {
@@ -56,7 +54,7 @@ public class AipoAppDataService extends AbstractService implements
   private final AppDataDbService appDataDbService;
 
   /**
-   * 
+   *
    */
   @Inject
   public AipoAppDataService(TurbineUserDbService turbineUserDbService,
@@ -68,16 +66,17 @@ public class AipoAppDataService extends AbstractService implements
   /**
    * @param userId
    * @param groupId
+   * @param appId
    * @param fields
    * @param values
    * @param token
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<Void> updatePersonData(UserId userId, GroupId groupId,
-      String appId, Set<String> fields, Map<String, String> values,
+      String appId, Set<String> fields, Map<String, Object> values,
       SecurityToken token) throws ProtocolException {
-
     setUp(token);
     // appId が NULL の場合、SecurityToken から抽出
     if (appId == null) {
@@ -93,11 +92,11 @@ public class AipoAppDataService extends AbstractService implements
       checkSameViewer(userId, token);
     }
 
-    Iterator<Entry<String, String>> iterator = values.entrySet().iterator();
+    Iterator<Map.Entry<String, Object>> iterator = values.entrySet().iterator();
     while (iterator.hasNext()) {
-      Entry<String, String> next = iterator.next();
+      Map.Entry<String, Object> next = iterator.next();
       String key = next.getKey();
-      String value = next.getValue();
+      String value = next.getValue().toString();
       // キー ： 32 byte 以内
       checkInputByte(key, 1, 32);
       // 値： 1024 byte 以内
@@ -107,7 +106,7 @@ public class AipoAppDataService extends AbstractService implements
     String username = isAdmin ? "@admin" : getUserId(userId, token);
     appDataDbService.put(username, appId, values);
 
-    return ImmediateFuture.newInstance(null);
+    return Futures.immediateFuture(null);
   }
 
   /**
@@ -119,6 +118,7 @@ public class AipoAppDataService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<Void> deletePersonData(UserId userId, GroupId groupId,
       String appId, Set<String> fields, SecurityToken token)
       throws ProtocolException {
@@ -141,7 +141,7 @@ public class AipoAppDataService extends AbstractService implements
     String username = isAdmin ? "@admin" : getUserId(userId, token);
     appDataDbService.delete(username, appId, fields);
 
-    return ImmediateFuture.newInstance(null);
+    return Futures.immediateFuture(null);
   }
 
   /**
@@ -153,6 +153,7 @@ public class AipoAppDataService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<DataCollection> getPersonData(Set<UserId> userIds,
       GroupId groupId, String appId, Set<String> fields, SecurityToken token)
       throws ProtocolException {
@@ -175,21 +176,6 @@ public class AipoAppDataService extends AbstractService implements
         // TODO: 検索件数の制限を設ける
         // NOT SUPPORTED
         // list = turbineUserDbService.find(SearchOptions.build());
-        break;
-      case groupId:
-        // {guid} が閲覧できるすべてのユーザーで {groupId} グループに所属しているものを取得
-        // TODO: 検索件数の制限を設ける
-        // NOT SUPPORTED
-        /*-
-         list =
-          turbineUserDbService.findByGroupname(
-            groupId.getGroupId(),
-            SearchOptions.build());
-         */
-        break;
-      case deleted:
-        // {guid} が閲覧できる無効なユーザーを取得
-        list = Lists.newArrayList();
         break;
       case self:
         // {guid} 自身のユーザー情報を取得
@@ -219,15 +205,15 @@ public class AipoAppDataService extends AbstractService implements
     }
     List<AppData> appDataList = appDataDbService.get(usernames, appId, fields);
 
-    Map<String, Map<String, String>> results =
-      new HashMap<String, Map<String, String>>();
+    Map<String, Map<String, Object>> results =
+      new HashMap<String, Map<String, Object>>();
 
     // only add in the fields
     if (fields == null || fields.isEmpty()) {
       for (String username : usernames) {
         results.put(
           convertUserId(username, token),
-          new HashMap<String, String>());
+          new HashMap<String, Object>());
       }
     } else {
       for (AppData appData : appDataList) {
@@ -236,7 +222,7 @@ public class AipoAppDataService extends AbstractService implements
           "@admin".equals(loginName) ? "@admin" : convertUserId(
             loginName,
             token);
-        Map<String, String> map = results.get(userId);
+        Map<String, Object> map = results.get(userId);
         if (map == null) {
           map = Maps.newHashMap();
         }
@@ -250,6 +236,7 @@ public class AipoAppDataService extends AbstractService implements
       }
     }
 
-    return ImmediateFuture.newInstance(new DataCollection(results));
+    return Futures.immediateFuture(new DataCollection(results));
   }
+
 }
