@@ -179,6 +179,14 @@
 			org.apache.shindig.gadgets.servlet.OAuthCallbackServlet</servlet-class>
 	</servlet>
 
+	  <!-- OAuth2 callback -->
+  <servlet>
+    <servlet-name>oauth2callback</servlet-name>
+    <servlet-class>
+      org.apache.shindig.gadgets.servlet.OAuth2CallbackServlet
+    </servlet-class>
+  </servlet>
+
 	<!-- Metadata RPC -->
 	<servlet>
 		<servlet-name>metadata</servlet-name>
@@ -251,6 +259,11 @@
 		<servlet-name>oauthCallback</servlet-name>
 		<url-pattern>/gadgets/oauthcallback</url-pattern>
 	</servlet-mapping>
+
+	<servlet-mapping>
+        <servlet-name>oauth2callback</servlet-name>
+        <url-pattern>/gadgets/oauth2callback</url-pattern>
+    </servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>xml-to-html</servlet-name>

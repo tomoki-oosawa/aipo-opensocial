@@ -32,6 +32,7 @@ import org.apache.shindig.common.logging.i18n.MessageKeys;
 import org.apache.shindig.common.servlet.Authority;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.http.HttpFetcher;
+import org.apache.shindig.gadgets.oauth2.AipoOAuth2Request;
 import org.apache.shindig.gadgets.oauth2.BasicOAuth2Request;
 import org.apache.shindig.gadgets.oauth2.BasicOAuth2RequestParameterGenerator;
 import org.apache.shindig.gadgets.oauth2.BasicOAuth2Store;

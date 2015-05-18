@@ -24,6 +24,7 @@ import org.apache.shindig.common.crypto.BlobCrypter;
 import org.apache.shindig.common.servlet.Authority;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.GadgetException.Code;
+import org.apache.shindig.gadgets.oauth2.AipoOAuth2Accessor;
 import org.apache.shindig.gadgets.oauth2.OAuth2Accessor;
 import org.apache.shindig.gadgets.oauth2.OAuth2CallbackState;
 import org.apache.shindig.gadgets.oauth2.OAuth2FetcherConfig;
@@ -200,7 +201,18 @@ public class AipoOAuth2Store implements OAuth2Store {
         state);
     }
 
-    final OAuth2Accessor ret = this.cache.getOAuth2Accessor(state);
+    OAuth2Accessor ret = this.cache.getOAuth2Accessor(state);
+    if (ret == null) {
+      try {
+        ret =
+          getOAuth2Accessor(state.getAppId(), state.getGadgetUri(), state
+            .getServiceName(), state.getUser(), state.getScope());
+      } catch (GadgetException e) {
+        if (isLogging) {
+          AipoOAuth2Store.LOG.log("getOAuth2Accessor", e);
+        }
+      }
+    }
 
     if (isLogging) {
       AipoOAuth2Store.LOG.exiting(
@@ -257,6 +269,7 @@ public class AipoOAuth2Store implements OAuth2Store {
 
         final AipoOAuth2Accessor newAccessor =
           new AipoOAuth2Accessor(
+            appId,
             gadgetUri,
             serviceName,
             user,

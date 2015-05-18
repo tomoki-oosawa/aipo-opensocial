@@ -154,6 +154,8 @@ public class AipoOAuth2Persister implements OAuth2Persister {
     client.setGadgetUri(gadgetUri);
     client.setServiceName(serviceName);
     client.setClientId(consumer.getConsumerKey());
+    client.setGrantType(OAuth2Message.AUTHORIZATION);
+    client.setAllowModuleOverride(true);
     try {
       client.setClientSecret(consumer.getConsumerSecret().getBytes());
     } catch (OAuth2EncryptionException e) {

@@ -16,17 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.aipo.container.gadgets.oauth2;
+package org.apache.shindig.gadgets.oauth2;
 
 import java.util.Map;
 
 import org.apache.shindig.common.servlet.Authority;
-import org.apache.shindig.gadgets.oauth2.BasicOAuth2Accessor;
-import org.apache.shindig.gadgets.oauth2.OAuth2Accessor;
-import org.apache.shindig.gadgets.oauth2.OAuth2CallbackState;
-import org.apache.shindig.gadgets.oauth2.OAuth2Error;
-import org.apache.shindig.gadgets.oauth2.OAuth2Store;
-import org.apache.shindig.gadgets.oauth2.OAuth2Token;
 
 import com.google.common.collect.Maps;
 
@@ -98,7 +92,7 @@ public class AipoOAuth2Accessor implements OAuth2Accessor {
   private String[] allowedDomains;
 
   public AipoOAuth2Accessor() {
-    this(null, null, null, null, false, null, null, null, null);
+    this(null, null, null, null, null, false, null, null, null, null);
   }
 
   AipoOAuth2Accessor(final Throwable exception, final OAuth2Error error,
@@ -150,8 +144,8 @@ public class AipoOAuth2Accessor implements OAuth2Accessor {
     this.allowedDomains = accessor.getAllowedDomains();
   }
 
-  public AipoOAuth2Accessor(final String gadgetUri, final String serviceName,
-      final String user, final String scope,
+  public AipoOAuth2Accessor(final String appId, final String gadgetUri,
+      final String serviceName, final String user, final String scope,
       final boolean allowModuleOverrides, final OAuth2Store store,
       final String globalRedirectUri, final Authority authority,
       final String contextRoot) {
@@ -170,6 +164,7 @@ public class AipoOAuth2Accessor implements OAuth2Accessor {
     this.state.setServiceName(serviceName);
     this.state.setUser(user);
     this.state.setScope(scope);
+    this.state.setAppId(appId);
     this.authority = authority;
     this.contextRoot = contextRoot;
     this.errorResponse = false;

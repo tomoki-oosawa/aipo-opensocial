@@ -120,4 +120,8 @@ public class OAuth2CallbackState implements Serializable {
   public void setAppId(final String appId) {
     this.state.setAppId(appId);
   }
+
+  public String getAppId() {
+    return this.state.getAppId();
+  }
 }

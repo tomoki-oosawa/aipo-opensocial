@@ -172,7 +172,7 @@ public class GadgetOAuth2TokenStore {
 
     if ((this.store == null) || (gadgetUri == null) || (securityToken == null)) {
       ret =
-        new BasicOAuth2Accessor(
+        new AipoOAuth2Accessor(
           null,
           OAuth2Error.GET_OAUTH2_ACCESSOR_PROBLEM,
           "OAuth2Accessor missing a param --- store = "
@@ -194,16 +194,15 @@ public class GadgetOAuth2TokenStore {
           GadgetOAuth2TokenStore.LOG.log("No gadget spec", e1);
         }
         ret =
-          new BasicOAuth2Accessor(
-            e1,
-            OAuth2Error.NO_GADGET_SPEC,
-            "gadgetUri = " + gadgetUri + " , serviceName = " + serviceName,
-            "");
+          new AipoOAuth2Accessor(e1, OAuth2Error.NO_GADGET_SPEC, "gadgetUri = "
+            + gadgetUri
+            + " , serviceName = "
+            + serviceName, "");
       }
 
       if (specInfo == null) {
         ret =
-          new BasicOAuth2Accessor(
+          new AipoOAuth2Accessor(
             null,
             OAuth2Error.NO_GADGET_SPEC,
             "gadgetUri = " + gadgetUri + " , serviceName = " + serviceName,
@@ -235,14 +234,14 @@ public class GadgetOAuth2TokenStore {
 
         if (persistedAccessor == null) {
           ret =
-            new BasicOAuth2Accessor(
+            new AipoOAuth2Accessor(
               null,
               OAuth2Error.GET_OAUTH2_ACCESSOR_PROBLEM,
               "gadgetUri = " + gadgetUri + " , serviceName = " + serviceName,
               "");
         } else {
           final OAuth2Accessor mergedAccessor =
-            new BasicOAuth2Accessor(persistedAccessor);
+            new AipoOAuth2Accessor(persistedAccessor);
 
           if (persistedAccessor.isAllowModuleOverrides()) {
             final String specAuthorizationUrl = specInfo.getAuthorizationUrl();

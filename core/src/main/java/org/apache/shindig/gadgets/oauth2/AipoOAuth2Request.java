@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aipo.container.gadgets.oauth2;
+package org.apache.shindig.gadgets.oauth2;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -33,6 +33,7 @@ import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
+import org.apache.shindig.gadgets.oauth2.AipoOAuth2Accessor;
 import org.apache.shindig.gadgets.oauth2.GadgetOAuth2TokenStore;
 import org.apache.shindig.gadgets.oauth2.OAuth2Accessor;
 import org.apache.shindig.gadgets.oauth2.OAuth2Arguments;
