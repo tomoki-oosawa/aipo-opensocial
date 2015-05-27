@@ -130,9 +130,11 @@ public class AipoMessageService extends AbstractService implements
     String orgId = getOrgId(token);
 
     room.setRoomId(model.getRoomId());
-    room.setName(model.getName());
     if ("O".equals(model.getRoomType())) {
       room.setUserId(orgId + ":" + model.getLoginName());
+      room.setName(model.getLastName() + " " + model.getFirstName());
+    } else {
+      room.setName(model.getName());
     }
     room.setUnreadCount(model.getUnreadCount());
     room.setIsDirect("O".equals(model.getRoomType()));
