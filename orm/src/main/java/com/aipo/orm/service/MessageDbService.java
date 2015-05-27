@@ -33,6 +33,9 @@ public interface MessageDbService {
   public List<EipTMessage> findMessage(int roomId, int messageId,
       SearchOptions options);
 
+  public void createRoom(String username, String name,
+      List<String> memberNameList, Set<String> fields);
+
   public void createMessage(String username, Integer roomId,
       String targetUsername, String message, Set<String> fields);
 

@@ -156,6 +156,42 @@ public class AipoMessageService extends AbstractService implements
   }
 
   /**
+   * @param userId
+   * @param fields
+   * @param name
+   * @param memberList
+   * @param token
+   */
+  @Override
+  public void postRoom(UserId userId, Set<String> fields, String name,
+      List<String> memberList, SecurityToken token) {
+    // TODO: FIELDS
+
+    setUp(token);
+
+    List<String> memberNameList = new ArrayList<String>();
+    for (String memberId : memberList) {
+      if (!"".equals(memberId)) {
+        String memberName = getUserId(memberId, token);
+        memberNameList.add(memberName);
+      }
+    }
+
+    // TODO: 権限をチェック
+    // 自分(Viewer)を含むルームのみ作成可能
+    checkSameViewer(userId, token);
+    String username = getUserId(userId, token);
+
+    if (memberNameList.size() != 0) {
+      // ルーム
+      messageDbService.createRoom(username, name, memberNameList, fields);
+    } else {
+      // ダイレクトメッセージ
+    }
+
+  }
+
+  /**
    *
    * @param userId
    * @param collectionOptions

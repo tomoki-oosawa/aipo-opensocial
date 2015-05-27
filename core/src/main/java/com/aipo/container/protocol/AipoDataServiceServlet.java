@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -239,8 +240,16 @@ public class AipoDataServiceServlet extends ApiServlet {
       for (Object val : items) {
         FileItem item = (FileItem) val;
         if (item.isFormField()) {
-          String[] value = { new String(item.get()) };
-          parameterMap.put(item.getFieldName(), value);
+          String value = new String(item.get());
+          String key = item.getFieldName();
+
+          String[] valueArray = { value };
+          if (parameterMap.containsKey(key)) {
+            String[] preValue = parameterMap.get(key);
+            valueArray = Arrays.copyOf(preValue, preValue.length + 1);
+            valueArray[preValue.length] = value;
+          }
+          parameterMap.put(key, valueArray);
         } else {
           // file found!
         }

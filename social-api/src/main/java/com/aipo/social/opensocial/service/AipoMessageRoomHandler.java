@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -27,8 +28,10 @@ import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
+import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
 
@@ -89,8 +92,29 @@ public class AipoMessageRoomHandler {
    * @return
    */
   @Operation(httpMethods = "POST")
-  public Future<?> create(SocialRequestItem request) {
-    throw new ProtocolException(501, null, new UnsupportedOperationException());
+  public void create(SocialRequestItem request) {
+
+    Set<UserId> userIds = request.getUsers();
+    GroupId groupId = request.getGroup();
+
+    String name = request.getParameter("name");
+    List<String> memberList = request.getListParameter("member_to");
+
+    AipoCollectionOptions options = new AipoCollectionOptions(request);
+
+    // Preconditions
+    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+    HandlerPreconditions.requireSingular(
+      userIds,
+      "Only one userId must be specified");
+
+    service.postRoom(
+      userIds.iterator().next(),
+      request.getFields(),
+      name,
+      memberList,
+      request.getToken());
+
   }
 
   /**

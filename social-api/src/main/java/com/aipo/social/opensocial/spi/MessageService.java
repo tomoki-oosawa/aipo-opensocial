@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.spi;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -38,6 +39,9 @@ public interface MessageService {
   public Future<RestfulCollection<ALMessage>> getMessages(UserId userId,
       AipoCollectionOptions options, Set<String> fields, String roomId,
       String messageId, SecurityToken token);
+
+  public void postRoom(UserId userId, Set<String> fields, String name,
+      List<String> memberList, SecurityToken token);
 
   public void postMessage(UserId userId, Set<String> fields, String roomId,
       String targetUserId, String message, SecurityToken token);

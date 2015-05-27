@@ -21,6 +21,7 @@ package com.aipo.orm.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -287,6 +288,72 @@ public class AipoMessageDbService implements MessageDbService {
       list.add(object);
     }
     return list;
+  }
+
+  /**
+   * @param username
+   * @param name
+   * @param memberNameList
+   * @param fields
+   */
+  @Override
+  public void createRoom(String username, String name,
+      List<String> memberNameList, Set<String> fields) {
+    try {
+      TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+      List<TurbineUser> memberList =
+        turbineUserDbService.findByUsername(new HashSet(memberNameList));
+      Date now = new Date();
+
+      EipTMessageRoom model = Database.create(EipTMessageRoom.class);
+
+      boolean isFirst = true;
+      StringBuilder autoName = new StringBuilder();
+      for (TurbineUser user : memberList) {
+        EipTMessageRoomMember map =
+          Database.create(EipTMessageRoomMember.class);
+        int userid = user.getUserId();
+        map.setEipTMessageRoom(model);
+        map.setTargetUserId(1);
+        map.setUserId(Integer.valueOf(userid));
+        map.setLoginName(user.getLoginName());
+        if (!isFirst) {
+          autoName.append(",");
+        }
+        autoName.append(new StringBuffer().append(user.getLastName()).append(
+          " ").append(user.getFirstName()).toString());
+        isFirst = false;
+      }
+
+      if (name == null || "".equals(name)) {
+        model.setAutoName("T");
+        model.setName(autoName.toString());
+      } else {
+        model.setAutoName("F");
+        model.setName(CommonUtils.removeSpace(name));
+      }
+
+      model.setRoomType("G");
+      model.setLastUpdateDate(now);
+      model.setCreateDate(now);
+      model.setCreateUserId((int) turbineUser.getUserId());
+      model.setUpdateDate(now);
+
+      // TODO:顔写真添付機能の追加
+      // if (filebean != null && filebean.getFileId() != 0) {
+      // model.setPhotoSmartphone(facePhoto_smartphone);
+      // model.setPhoto(facePhoto);
+      // model.setPhotoModified(new Date());
+      // model.setHasPhoto("T");
+      // } else {
+      // model.setHasPhoto("F");
+      // }
+
+      Database.commit();
+
+    } catch (Exception ex) {
+      Database.rollback();
+    }
   }
 
   /**
