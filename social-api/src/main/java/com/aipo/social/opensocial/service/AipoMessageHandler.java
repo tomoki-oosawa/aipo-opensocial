@@ -97,27 +97,27 @@ public class AipoMessageHandler {
   public void create(SocialRequestItem request) {
 
     // エラーが出ているため一旦該当部分をコメントアウト
-    // Set<UserId> userIds = request.getUsers();
-    // GroupId groupId = request.getGroup();
-    //
-    // String roomId = request.getParameter("roomId");
-    // String message = request.getParameter("message");
-    //
-    // AipoCollectionOptions options = new AipoCollectionOptions(request);
-    //
-    // // Preconditions
-    // HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    // HandlerPreconditions.requireSingular(
-    // userIds,
-    // "Only one userId must be specified");
-    //
-    // service.postMessage(
-    // userIds.iterator().next(),
-    // request.getFields(),
-    // roomId,
-    // "",
-    // message,
-    // request.getToken());
+    Set<UserId> userIds = request.getUsers();
+    GroupId groupId = request.getGroup();
+
+    String roomId = request.getParameter("roomId");
+    String message = request.getParameter("message");
+
+    AipoCollectionOptions options = new AipoCollectionOptions(request);
+
+    // Preconditions
+    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+    HandlerPreconditions.requireSingular(
+      userIds,
+      "Only one userId must be specified");
+
+    service.postMessage(
+      userIds.iterator().next(),
+      request.getFields(),
+      roomId,
+      "",
+      message,
+      request.getToken());
   }
 
   /**
