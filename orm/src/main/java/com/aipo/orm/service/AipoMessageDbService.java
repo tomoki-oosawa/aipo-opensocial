@@ -197,8 +197,8 @@ public class AipoMessageDbService implements MessageDbService {
   public List<EipTMessage> findMessage(int roomId, int messageId,
       SearchOptions options) {
     int limit = options.getLimit();
-    Integer untilId = options.getParameterInt("untilId");
-    Integer sinceId = options.getParameterInt("sinceId");
+    Integer untilId = options.getParameterInt("until_id");
+    Integer sinceId = options.getParameterInt("since_id");
     String keyword = options.getParameter("keyword");
     boolean isReverse = false;
     if (sinceId != null && sinceId > 0) {

@@ -39,7 +39,7 @@ import com.google.common.collect.Maps;
 public class AipoCollectionOptions extends CollectionOptions {
 
   public static enum Parameter {
-    KEYWORD("keyword"), UNTIL_ID("untilId"), SINCE_ID("sinceId"), PRIORITY(
+    KEYWORD("keyword"), UNTIL_ID("until_id"), SINCE_ID("since_id"), PRIORITY(
         "priority"), EXTERNAL_ID("externalId");
 
     private static final Map<String, Parameter> LOOKUP = Maps.uniqueIndex(
