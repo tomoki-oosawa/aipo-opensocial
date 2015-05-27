@@ -244,7 +244,7 @@ public class AipoMessageService extends AbstractService implements
     ALMessage message = new ALMessageImpl();
     String orgId = getOrgId(token);
 
-    message.setId(model.getMessageId());
+    message.setMessegeId(model.getMessageId());
     message.setRoomId(model.getRoomId());
     message.setUserId(orgId + ":" + model.getLoginName());
     message.setUnreadCount(model.getUnreadCount());

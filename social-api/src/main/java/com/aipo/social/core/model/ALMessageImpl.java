@@ -43,12 +43,12 @@ public class ALMessageImpl implements ALMessage {
   private String createDate;
 
   @Override
-  public long messageId() {
+  public long getMessageId() {
     return messageId;
   }
 
   @Override
-  public void setId(long messageId) {
+  public void setMessegeId(long messageId) {
     this.messageId = messageId;
   }
 

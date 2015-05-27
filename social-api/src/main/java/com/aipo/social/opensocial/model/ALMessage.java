@@ -24,9 +24,9 @@ import org.apache.shindig.protocol.model.Exportablebean;
 
 @Exportablebean
 public interface ALMessage {
-  public long messageId();
+  public long getMessageId();
 
-  public void setId(long messageId);
+  public void setMessegeId(long messageId);
 
   public long getRoomId();
 
