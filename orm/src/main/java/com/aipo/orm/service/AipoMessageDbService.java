@@ -20,6 +20,7 @@
 package com.aipo.orm.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -199,6 +200,10 @@ public class AipoMessageDbService implements MessageDbService {
     Integer untilId = options.getParameterInt("untilId");
     Integer sinceId = options.getParameterInt("sinceId");
     String keyword = options.getParameter("keyword");
+    boolean isReverse = false;
+    if (sinceId != null && sinceId > 0) {
+      isReverse = true;
+    }
 
     StringBuilder select = new StringBuilder();
 
@@ -239,7 +244,11 @@ public class AipoMessageDbService implements MessageDbService {
 
     StringBuilder last = new StringBuilder();
 
-    last.append(" order by t1.create_date desc ");
+    if (isReverse) {
+      last.append(" order by t1.create_date asc ");
+    } else {
+      last.append(" order by t1.create_date desc ");
+    }
 
     if (limit > 0) {
       last.append(" limit ");
@@ -286,6 +295,10 @@ public class AipoMessageDbService implements MessageDbService {
         object.setPhotoModified(photoModified.getTime());
       }
       list.add(object);
+    }
+
+    if (isReverse) {
+      Collections.reverse(list);
     }
     return list;
   }
