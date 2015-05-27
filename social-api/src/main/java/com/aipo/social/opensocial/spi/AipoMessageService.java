@@ -291,7 +291,10 @@ public class AipoMessageService extends AbstractService implements
     } catch (Throwable ignore) {
     }
 
-    String targetUsername = getUserId(targetUserId, token);
+    String targetUsername = null;
+    if (targetUserId != null && !"".equals(targetUserId)) {
+      targetUsername = getUserId(targetUserId, token);
+    }
 
     // TODO: 権限をチェック
     // 自分(Viewer)のルームのみ取得可能
