@@ -39,8 +39,8 @@ import com.google.common.collect.Maps;
 public class AipoCollectionOptions extends CollectionOptions {
 
   public static enum Parameter {
-    KEYWORD("keyword"), UNTIL_ID("untilId"), PRIORITY("priority"), EXTERNAL_ID(
-        "externalId");
+    KEYWORD("keyword"), UNTIL_ID("untilId"), SINCE_ID("sinceId"), PRIORITY(
+        "priority"), EXTERNAL_ID("externalId");
 
     private static final Map<String, Parameter> LOOKUP = Maps.uniqueIndex(
       EnumSet.allOf(Parameter.class),

@@ -196,6 +196,7 @@ public class AipoMessageDbService implements MessageDbService {
       SearchOptions options) {
     int limit = options.getLimit();
     Integer untilId = options.getParameterInt("untilId");
+    Integer sinceId = options.getParameterInt("sinceId");
     String keyword = options.getParameter("keyword");
 
     StringBuilder select = new StringBuilder();
@@ -225,6 +226,10 @@ public class AipoMessageDbService implements MessageDbService {
     if (untilId != null && untilId > 0) {
       body.append(" and t1.message_id<");
       body.append(untilId);
+    }
+    if (sinceId != null && sinceId > 0) {
+      body.append(" and t1.message_id>");
+      body.append(sinceId);
     }
     if (messageId > 0) {
       body.append(" and t1.message_id=");
