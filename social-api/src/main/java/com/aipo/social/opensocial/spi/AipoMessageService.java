@@ -311,13 +311,14 @@ public class AipoMessageService extends AbstractService implements
    * @return
    */
   @Override
-  public void postMessage(UserId userId, Set<String> fields, String roomId,
-      String targetUserId, String message, SecurityToken token) {
+  public Future<ALMessage> postMessage(UserId userId, Set<String> fields,
+      String roomId, String targetUserId, String message, SecurityToken token) {
     // TODO: FIELDS
 
     setUp(token);
 
     Integer roomIdInt = null;
+    Integer messageIdInt = 0;
 
     // Room
     try {
@@ -337,17 +338,26 @@ public class AipoMessageService extends AbstractService implements
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
 
+    EipTMessage model = null;
     if (roomIdInt != null
       || !("".equals(targetUsername) || targetUsername == null)) {
       // ルーム
-      messageDbService.createMessage(
-        username,
-        roomIdInt,
-        targetUsername,
-        message,
-        fields);
+      model =
+        messageDbService.createMessage(
+          username,
+          roomIdInt,
+          targetUsername,
+          message,
+          fields);
     } else {
       // ダイレクトメッセージ
     }
+
+    messageIdInt = model.getMessageId();
+
+    ALMessage result = new ALMessageImpl();
+    result = assignMessage(model, fields, token, messageIdInt);
+
+    return ImmediateFuture.newInstance(result);
   }
 }

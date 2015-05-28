@@ -374,9 +374,10 @@ public class AipoMessageDbService implements MessageDbService {
    * @param targetUserId
    * @param message
    * @param fields
+   * @return
    */
   @Override
-  public void createMessage(String username, Integer roomId,
+  public EipTMessage createMessage(String username, Integer roomId,
       String targetUsername, String message, Set<String> fields) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
@@ -428,8 +429,18 @@ public class AipoMessageDbService implements MessageDbService {
       model.setMessage(CommonUtils.removeSpace(message));
       model.setCreateDate(now);
       model.setUpdateDate(now);
+      model.setRoomId(roomId);
+      if (roomId > 0 && members != null) {
+        List<String> roomMembersStr = new ArrayList<String>();
+        for (EipTMessageRoomMember roomMember : members) {
+          roomMembersStr.add(roomMember.getLoginName());
+        }
+        model.setRoomMembers(roomMembersStr);
+      }
       model.setMemberCount(members.size());
+      model.setUnreadCount(members.size() - 1);
       model.setUserId((int) turbineUser.getUserId());
+      model.setLoginName(turbineUser.getLoginName());
 
       List<String> recipients = new ArrayList<String>();
       for (EipTMessageRoomMember member : members) {
@@ -453,6 +464,8 @@ public class AipoMessageDbService implements MessageDbService {
 
       Database.commit();
 
+      return model;
+
       // TODO:プッシュ通知機能の追加
       // Map<String, String> params = new HashMap<String, String>();
       // params.put("roomId", String.valueOf(room.getRoomId()));
@@ -461,6 +474,7 @@ public class AipoMessageDbService implements MessageDbService {
 
     } catch (Exception ex) {
       Database.rollback();
+      return null;
     }
   }
 }

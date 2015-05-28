@@ -29,6 +29,7 @@ import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
@@ -92,9 +93,10 @@ public class AipoMessageHandler {
    *
    * @param request
    * @return
+   * @return
    */
   @Operation(httpMethods = "POST", bodyParam = "body")
-  public void create(SocialRequestItem request) {
+  public Future<ALMessage> create(SocialRequestItem request) {
 
     // エラーが出ているため一旦該当部分をコメントアウト
     Set<UserId> userIds = request.getUsers();
@@ -111,7 +113,7 @@ public class AipoMessageHandler {
       userIds,
       "Only one userId must be specified");
 
-    service.postMessage(
+    return service.postMessage(
       userIds.iterator().next(),
       request.getFields(),
       roomId,

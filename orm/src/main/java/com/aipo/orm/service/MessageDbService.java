@@ -36,7 +36,7 @@ public interface MessageDbService {
   public void createRoom(String username, String name,
       List<String> memberNameList, Set<String> fields);
 
-  public void createMessage(String username, Integer roomId,
+  public EipTMessage createMessage(String username, Integer roomId,
       String targetUsername, String message, Set<String> fields);
 
 }
