@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.model;
 
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
@@ -227,4 +228,8 @@ public interface ALPerson extends
   Name getNameKana();
 
   void setNameKana(Name nameKana);
+
+  Date getPhotoModified();
+
+  void setPhotoModified(Date photoModified);
 }

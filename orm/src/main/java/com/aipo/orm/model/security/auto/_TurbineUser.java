@@ -36,12 +36,14 @@ public abstract class _TurbineUser extends CayenneDataObject {
     public static final String LAST_NAME_PROPERTY = "lastName";
     public static final String LAST_NAME_KANA_PROPERTY = "lastNameKana";
     public static final String LOGIN_NAME_PROPERTY = "loginName";
+    public static final String MIGRATE_VERSION_PROPERTY = "migrateVersion";
     public static final String MODIFIED_PROPERTY = "modified";
     public static final String OBJECTDATA_PROPERTY = "objectdata";
     public static final String OUT_TELEPHONE_PROPERTY = "outTelephone";
     public static final String PASSWORD_CHANGED_PROPERTY = "passwordChanged";
     public static final String PASSWORD_VALUE_PROPERTY = "passwordValue";
     public static final String PHOTO_PROPERTY = "photo";
+    public static final String PHOTO_MODIFIED_PROPERTY = "photoModified";
     public static final String POSITION_ID_PROPERTY = "positionId";
     public static final String UPDATED_USER_ID_PROPERTY = "updatedUserId";
     public static final String EIP_MUSER_POSITION_PROPERTY = "eipMUserPosition";
@@ -165,6 +167,13 @@ public abstract class _TurbineUser extends CayenneDataObject {
         return (String)readProperty("loginName");
     }
 
+    public void setMigrateVersion(Integer migrateVersion) {
+        writeProperty("migrateVersion", migrateVersion);
+    }
+    public Integer getMigrateVersion() {
+        return (Integer)readProperty("migrateVersion");
+    }
+
     public void setModified(Date modified) {
         writeProperty("modified", modified);
     }
@@ -205,6 +214,13 @@ public abstract class _TurbineUser extends CayenneDataObject {
     }
     public byte[] getPhoto() {
         return (byte[])readProperty("photo");
+    }
+
+    public void setPhotoModified(Date photoModified) {
+        writeProperty("photoModified", photoModified);
+    }
+    public Date getPhotoModified() {
+        return (Date)readProperty("photoModified");
     }
 
     public void setPositionId(Integer positionId) {

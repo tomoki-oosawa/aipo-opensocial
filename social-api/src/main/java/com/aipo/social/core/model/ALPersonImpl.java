@@ -18,6 +18,8 @@
  */
 package com.aipo.social.core.model;
 
+import java.util.Date;
+
 import org.apache.shindig.social.opensocial.model.Name;
 
 import com.aipo.social.opensocial.model.ALPerson;
@@ -29,6 +31,8 @@ public class ALPersonImpl extends
     org.apache.shindig.social.core.model.PersonImpl implements ALPerson {
 
   private Name nameKana;
+
+  private Date photoModified;
 
   /**
    * @param userId
@@ -63,4 +67,19 @@ public class ALPersonImpl extends
     this.nameKana = nameKana;
   }
 
+  /**
+   * @return
+   */
+  @Override
+  public Date getPhotoModified() {
+    return photoModified;
+  }
+
+  /**
+   * @param photoModified
+   */
+  @Override
+  public void setPhotoModified(Date photoModified) {
+    this.photoModified = photoModified;
+  }
 }
