@@ -293,7 +293,7 @@ public class AipoMessageService extends AbstractService implements
     }
 
     List<String> members = new ArrayList<String>();
-    for (String member : model.getRoomMembers()) {
+    for (String member : model.getReadMembers()) {
       members.add(orgId + ":" + member);
     }
     message.setReadMembers(members);
