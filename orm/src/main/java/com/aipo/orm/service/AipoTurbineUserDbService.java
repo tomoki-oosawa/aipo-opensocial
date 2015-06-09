@@ -359,11 +359,11 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
    * @return
    */
   @Override
-  public TurbineUser auth(String username, String password) {
+  public TurbineUser auth(String orgId, String username, String password) {
 
     DataContext dataContext = null;
     try {
-      dataContext = Database.createDataContext("org001");
+      dataContext = Database.createDataContext(orgId);
       DataContext.bindThreadObjectContext(dataContext);
     } catch (Throwable t) {
       t.printStackTrace();

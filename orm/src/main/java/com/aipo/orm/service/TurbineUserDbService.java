@@ -40,7 +40,7 @@ public interface TurbineUserDbService {
 
   public int getCount(SearchOptions options);
 
-  public TurbineUser auth(String username, String password);
+  public TurbineUser auth(String orgId, String username, String password);
 
   public InputStream getPhoto(String username);
 }

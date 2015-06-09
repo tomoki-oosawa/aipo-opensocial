@@ -62,8 +62,7 @@ public class AipoOAuth2Service implements OAuth2Service {
 
   @Inject
   public AipoOAuth2Service(OAuth2DataService store,
-      TurbineUserDbService turbineUserDbService,
-      OAuth2TokenDbService db,
+      TurbineUserDbService turbineUserDbService, OAuth2TokenDbService db,
 
       @Named("shindig.oauth2.authCodeExpiration") long authCodeExpires,
       @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
@@ -229,8 +228,9 @@ public class AipoOAuth2Service implements OAuth2Service {
     accessToken.setType(CodeType.ACCESS_TOKEN);
     accessToken.setValue(UUID.randomUUID().toString());
     accessToken.setExpiration(System.currentTimeMillis() + accessTokenExpires);
-    // XXX: org001
-    accessToken.setUserId("org001:" + (String) req.get("user_id"));
+    accessToken.setUserId((String) req.get("orgId")
+      + ":"
+      + (String) req.get("username"));
     if (req.getRedirectURI() != null) {
       accessToken.setRedirectURI(req.getRedirectURI());
     } else {
