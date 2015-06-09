@@ -27,6 +27,7 @@ import org.apache.shindig.social.core.oauth2.OAuth2NormalizedResponse;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.ErrorType;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2GrantValidator;
 
+import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.TurbineUserDbService;
 
@@ -51,12 +52,11 @@ public class PasswordGrantValidator implements OAuth2GrantValidator {
       throws OAuth2Exception {
     String username = (String) req.get("username");
     String password = (String) req.get("password");
-    String orgId = "org001";
-    TurbineUser user = turbineUserDbService.auth(orgId, username, password);
+    TurbineUser user = turbineUserDbService.auth(username, password);
     if (user == null) {
       throwAccessDenied("Bad username or password");
     }
-    req.put("orgId", orgId);
+    req.put("orgId", Database.getDomainName());
     req.put("username", user.getLoginName());
   }
 
