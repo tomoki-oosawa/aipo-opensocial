@@ -7,7 +7,7 @@ public interface OAuth2TokenDbService {
 
   public OAuth2Token get(String tokenString, String codeType);
 
-  public void remove(int hashCode);
+  public void remove(String tokenString);
 
   public void put(OAuth2Token oAuthToken);
 
