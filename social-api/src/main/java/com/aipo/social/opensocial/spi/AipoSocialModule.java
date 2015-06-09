@@ -24,8 +24,6 @@ import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.spi.AppDataService;
 
-import com.aipo.orm.service.AipoOAuth2TokenDbService;
-import com.aipo.orm.service.OAuth2TokenDbService;
 import com.aipo.social.core.oauth2.AipoOAuth2AuthenticationHandler;
 import com.aipo.social.core.oauth2.AipoOAuth2DataService;
 import com.aipo.social.core.oauth2.AipoOAuth2Service;
@@ -63,7 +61,6 @@ public class AipoSocialModule extends AbstractModule {
     bind(OAuthDataStore.class).to(AipoOAuthDataStore.class);
     bind(OAuth2Service.class).to(AipoOAuth2Service.class);
     bind(OAuth2DataService.class).to(AipoOAuth2DataService.class);
-    bind(OAuth2TokenDbService.class).to(AipoOAuth2TokenDbService.class);
     bind(AuthenticationHandler.class).to(AipoOAuth2AuthenticationHandler.class);
 
     Multibinder.newSetBinder(binder(), Object.class, Names

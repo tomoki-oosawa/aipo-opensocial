@@ -24,6 +24,7 @@ import com.aipo.orm.service.AipoAppDataDbService;
 import com.aipo.orm.service.AipoApplicationDbService;
 import com.aipo.orm.service.AipoContainerConfigDbService;
 import com.aipo.orm.service.AipoMessageDbService;
+import com.aipo.orm.service.AipoOAuth2TokenDbService;
 import com.aipo.orm.service.AipoOAuthConsumerDbService;
 import com.aipo.orm.service.AipoOAuthEntryDbService;
 import com.aipo.orm.service.AipoOAuthTokenDbService;
@@ -33,6 +34,7 @@ import com.aipo.orm.service.AppDataDbService;
 import com.aipo.orm.service.ApplicationDbService;
 import com.aipo.orm.service.ContainerConfigDbService;
 import com.aipo.orm.service.MessageDbService;
+import com.aipo.orm.service.OAuth2TokenDbService;
 import com.aipo.orm.service.OAuthConsumerDbService;
 import com.aipo.orm.service.OAuthEntryDbService;
 import com.aipo.orm.service.OAuthTokenDbService;
@@ -71,6 +73,7 @@ public class AipoOrmModule extends AbstractModule {
       Scopes.SINGLETON);
     bind(OAuthEntryDbService.class).to(AipoOAuthEntryDbService.class).in(
       Scopes.SINGLETON);
+    bind(OAuth2TokenDbService.class).to(AipoOAuth2TokenDbService.class);
     bind(MessageDbService.class).to(AipoMessageDbService.class).in(
       Scopes.SINGLETON);
   }
