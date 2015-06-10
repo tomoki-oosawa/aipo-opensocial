@@ -102,6 +102,7 @@ public class AipoMessageHandler {
     Set<UserId> userIds = request.getUsers();
     GroupId groupId = request.getGroup();
 
+    String transactionId = request.getParameter("transactionId");
     String roomId = request.getParameter("roomId");
     String message = request.getParameter("message");
 
@@ -119,7 +120,8 @@ public class AipoMessageHandler {
       roomId,
       "",
       message,
-      request.getToken());
+      request.getToken(),
+      transactionId);
   }
 
   /**

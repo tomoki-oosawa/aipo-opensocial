@@ -42,6 +42,8 @@ public class ALMessageImpl implements ALMessage {
 
   private String createDate;
 
+  private String transactionId;
+
   @Override
   public long getMessageId() {
     return messageId;
@@ -120,6 +122,22 @@ public class ALMessageImpl implements ALMessage {
   @Override
   public void setCreateDate(String paramString) {
     this.createDate = paramString;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public String getTransactionId() {
+    return this.transactionId;
+  }
+
+  /**
+   * @param transactionId
+   */
+  @Override
+  public void setTransactionId(String transactionId) {
+    this.transactionId = transactionId;
   }
 
 }
