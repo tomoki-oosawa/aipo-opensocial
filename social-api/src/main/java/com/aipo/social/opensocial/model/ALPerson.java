@@ -229,7 +229,13 @@ public interface ALPerson extends
 
   void setNameKana(Name nameKana);
 
+  /**
+   * @return
+   */
   Date getPhotoModified();
 
+  /**
+   * @param photoModified
+   */
   void setPhotoModified(Date photoModified);
 }
