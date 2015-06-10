@@ -56,10 +56,15 @@ public interface ALMessage {
 
   public void setCreateDate(String paramString);
 
+  public String getTransactionId();
+
+  public void setTransactionId(String transactionId);
+
   public static enum Field {
     MESSAGE_ID("messageId"), ROOM_ID("roomId"), USER_ID("userId"), UNREAD_COUNT(
         "unreadCount"), MEMBER_COUNT("memberCount"), MESSAGE("message"), READ_MEMBERS(
-        "readMembers"), CREATEDATE("createDate");
+        "readMembers"), CREATEDATE("createDate"), TRANSACTION_ID(
+        "transactionId");
 
     private final String jsonString;
 

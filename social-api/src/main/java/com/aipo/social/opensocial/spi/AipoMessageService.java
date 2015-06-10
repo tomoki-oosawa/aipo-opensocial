@@ -297,11 +297,13 @@ public class AipoMessageService extends AbstractService implements
       return message;
     }
 
-    List<String> members = new ArrayList<String>();
-    for (String member : model.getReadMembers()) {
-      members.add(orgId + ":" + member);
+    if (model.getReadMembers() != null) {
+      List<String> members = new ArrayList<String>();
+      for (String member : model.getReadMembers()) {
+        members.add(orgId + ":" + member);
+      }
+      message.setReadMembers(members);
     }
-    message.setReadMembers(members);
     // メッセージ詳細の場合
     return message;
   }
@@ -317,7 +319,8 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<ALMessage> postMessage(UserId userId, Set<String> fields,
-      String roomId, String targetUserId, String message, SecurityToken token) {
+      String roomId, String targetUserId, String message, SecurityToken token,
+      String transactionId) {
     // TODO: FIELDS
 
     setUp(token);
@@ -362,6 +365,7 @@ public class AipoMessageService extends AbstractService implements
 
     ALMessage result = new ALMessageImpl();
     result = assignMessage(model, fields, token, messageIdInt);
+    result.setTransactionId(transactionId);
 
     return ImmediateFuture.newInstance(result);
   }
