@@ -174,7 +174,6 @@ public class AipoMessageDbService implements MessageDbService {
           roomMembersStr.add(roomMember.getLoginName());
         }
         object.setRoomMembers(roomMembersStr);
-
       }
       object.setUserHasPhoto(hasPhoto);
       if (photoModified != null) {
@@ -551,6 +550,14 @@ public class AipoMessageDbService implements MessageDbService {
       // }
 
       Database.commit();
+
+      List<String> roomMembersStr = new ArrayList<String>();
+      for (EipTMessageRoomMember roomMember : model.getEipTMessageRoomMember()) {
+        if (!roomMembersStr.contains(roomMember.getLoginName())) {
+          roomMembersStr.add(roomMember.getLoginName());
+        }
+      }
+      model.setRoomMembers(roomMembersStr);
       return model;
 
     } catch (Throwable t) {

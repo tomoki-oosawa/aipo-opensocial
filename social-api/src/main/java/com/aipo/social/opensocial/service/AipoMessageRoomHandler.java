@@ -60,7 +60,7 @@ public class AipoMessageRoomHandler {
   public Future<?> get(SocialRequestItem request) {
 
     Set<UserId> userIds = request.getUsers();
-    List<String> roomId = request.getListParameter("roomId");
+    String roomId = request.getParameter("roomId");
 
     CollectionOptions options = new CollectionOptions(request);
 
@@ -71,7 +71,7 @@ public class AipoMessageRoomHandler {
       "Only one userId must be specified");
 
     return service.getRooms(userIds.iterator().next(), options, request
-      .getFields(), roomId.iterator().next(), request.getToken());
+      .getFields(), roomId, request.getToken());
   }
 
   /**

@@ -33,7 +33,6 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
-import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.service.MessageDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
@@ -148,12 +147,9 @@ public class AipoMessageService extends AbstractService implements
     }
 
     List<String> members = new ArrayList<String>();
-//    for (EipTMessageRoomMember member : model.getEipTMessageRoomMember()) {
-//      members.add(orgId + ":" + member.getLoginName());
-//    }
     for (String member : model.getRoomMembers()) {
-        members.add(orgId + ":" + member);
-      }
+      members.add(orgId + ":" + member);
+    }
     room.setMembers(members);
 
     // ルーム詳細の場合
