@@ -15,8 +15,7 @@ public class AipoOAuth2TokenDbService implements OAuth2TokenDbService {
    * @return
    */
   @Override
-  public OAuth2Token get(String tokenString, String codeType) {
-    // TODO: hashCode -> token
+  public OAuth2Token get(String token, String codeType) {
     selectDefaultDataDomain();
     com.aipo.orm.model.social.OAuth2Token model =
       Database.query(com.aipo.orm.model.social.OAuth2Token.class).where(
@@ -25,7 +24,7 @@ public class AipoOAuth2TokenDbService implements OAuth2TokenDbService {
           codeType)).where(
         Operations.eq(
           com.aipo.orm.model.social.OAuth2Token.TOKEN_PROPERTY,
-          tokenString)).fetchSingle();
+          token)).fetchSingle();
     if (model != null) {
       OAuth2Token oAuth2Token = new OAuth2Token();
       oAuth2Token.setUserId(model.getUserId());
@@ -67,11 +66,14 @@ public class AipoOAuth2TokenDbService implements OAuth2TokenDbService {
    * @param hashCode
    */
   @Override
-  public void remove(int hashCode) {
+  public void remove(String token) {
     try {
       selectDefaultDataDomain();
       com.aipo.orm.model.social.OAuth2Token model =
-        Database.get(com.aipo.orm.model.social.OAuth2Token.class, hashCode);
+        Database.query(com.aipo.orm.model.social.OAuth2Token.class).where(
+          Operations.eq(
+            com.aipo.orm.model.social.OAuth2Token.TOKEN_PROPERTY,
+            token)).fetchSingle();
       if (model == null) {
         return;
       }
@@ -83,7 +85,6 @@ public class AipoOAuth2TokenDbService implements OAuth2TokenDbService {
     }
   }
 
-  // FIXME: OAuthTokenからのコピペのまま
   private void selectDefaultDataDomain() {
     ObjectContext dataContext = null;
     try {

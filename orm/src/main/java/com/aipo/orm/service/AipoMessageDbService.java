@@ -169,7 +169,7 @@ public class AipoMessageDbService implements MessageDbService {
       object.setFirstName(firstName);
       object.setLastName(lastName);
       if (roomId > 0 && roomMembers != null) {
-        List<String> roomMembersStr = new ArrayList();
+        List<String> roomMembersStr = new ArrayList<String>();
         for (EipTMessageRoomMember roomMember : roomMembers) {
           roomMembersStr.add(roomMember.getLoginName());
         }
@@ -262,14 +262,6 @@ public class AipoMessageDbService implements MessageDbService {
         "room_id",
         Integer.valueOf(roomId)).fetchListAsDataRow();
 
-    List<EipTMessageRoomMember> roomMembers =
-      Database
-        .sql(
-          EipTMessageRoomMember.class,
-          "select login_name from eip_t_message_room_member where room_id=#bind($room_id)")
-        .param("room_id", Integer.valueOf(roomId))
-        .fetchList();
-
     List<EipTMessage> list = new ArrayList<EipTMessage>();
     for (DataRow row : fetchList) {
       Long unread = (Long) row.get("unread");
@@ -286,11 +278,16 @@ public class AipoMessageDbService implements MessageDbService {
       object.setLastName(lastName);
       object.setHasPhoto(hasPhoto);
       object.setRoomId(roomId);
-      List<String> roomMembersStr = new ArrayList();
-      for (EipTMessageRoomMember roomMember : roomMembers) {
-        roomMembersStr.add(roomMember.getLoginName());
+
+      if (messageId > 0) {
+        List<String> readMembers = new ArrayList<String>();
+        List<TurbineUser> tusers = getReadUserList(messageId);
+        for (TurbineUser tuser : tusers) {
+          readMembers.add(tuser.getLoginName());
+        }
+        object.setReadMembers(readMembers);
       }
-      object.setRoomMembers(roomMembersStr);
+
       if (photoModified != null) {
         object.setPhotoModified(photoModified.getTime());
       }
@@ -315,7 +312,8 @@ public class AipoMessageDbService implements MessageDbService {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
-        turbineUserDbService.findByUsername(new HashSet(memberNameList));
+        turbineUserDbService
+          .findByUsername(new HashSet<String>(memberNameList));
       Date now = new Date();
 
       EipTMessageRoom model = Database.create(EipTMessageRoom.class);
@@ -419,7 +417,6 @@ public class AipoMessageDbService implements MessageDbService {
       // if (room == null) {
       // throw new IllegalArgumentException("room may not be null. ");
       // }
-      @SuppressWarnings("unchecked")
       EipTMessageRoom room =
         Database.get(EipTMessageRoom.class, roomId.longValue());
       List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
@@ -430,13 +427,7 @@ public class AipoMessageDbService implements MessageDbService {
       model.setCreateDate(now);
       model.setUpdateDate(now);
       model.setRoomId(roomId);
-      if (roomId > 0 && members != null) {
-        List<String> roomMembersStr = new ArrayList<String>();
-        for (EipTMessageRoomMember roomMember : members) {
-          roomMembersStr.add(roomMember.getLoginName());
-        }
-        model.setRoomMembers(roomMembersStr);
-      }
+
       model.setMemberCount(members.size());
       model.setUnreadCount(members.size() - 1);
       model.setUserId((int) turbineUser.getUserId());
@@ -476,5 +467,18 @@ public class AipoMessageDbService implements MessageDbService {
       Database.rollback();
       return null;
     }
+  }
+
+  protected List<TurbineUser> getReadUserList(int messageId) {
+    StringBuilder sql = new StringBuilder();
+    sql
+      .append("select t1.user_id, t1.login_name, t1.last_name, t1.first_name, t1.has_photo, t1.photo_modified from turbine_user t1, eip_t_message_read t2 where t1.user_id = t2.user_id and t2.message_id = #bind($message_id) and t2.is_read = 'T';");
+
+    SQLTemplate<TurbineUser> query =
+      Database.sql(TurbineUser.class, sql.toString()).param(
+        "message_id",
+        messageId);
+
+    return query.fetchList();
   }
 }

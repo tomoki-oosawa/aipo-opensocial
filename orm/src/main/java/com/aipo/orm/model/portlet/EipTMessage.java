@@ -22,7 +22,7 @@ public class EipTMessage extends _EipTMessage {
 
   private Integer roomId = 0;
 
-  private List<String> roomMembers = null;
+  private List<String> readMembers = null;
 
   public Integer getMessageId() {
     if (getObjectId() != null && !getObjectId().isTemporary()) {
@@ -148,18 +148,19 @@ public class EipTMessage extends _EipTMessage {
   }
 
   /**
-   * @param roomId
-   *          セットする roomId
+   *
+   * @param readMembers
    */
-  public void setRoomMembers(List<String> roomMembers) {
-    this.roomMembers = roomMembers;
+  public void setReadMembers(List<String> readMembers) {
+    this.readMembers = readMembers;
   }
 
   /**
-   * @return roomId
+   *
+   * @return
    */
-  public List<String> getRoomMembers() {
-    return roomMembers;
+  public List<String> getReadMembers() {
+    return readMembers;
   }
 
 }
