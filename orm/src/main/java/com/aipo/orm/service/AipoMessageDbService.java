@@ -174,7 +174,6 @@ public class AipoMessageDbService implements MessageDbService {
           roomMembersStr.add(roomMember.getLoginName());
         }
         object.setRoomMembers(roomMembersStr);
-
       }
       object.setUserHasPhoto(hasPhoto);
       if (photoModified != null) {
@@ -469,6 +468,104 @@ public class AipoMessageDbService implements MessageDbService {
     }
   }
 
+  /**
+   * @param roomId
+   * @param username
+   * @param name
+   * @param memberNameList
+   */
+  @Override
+  public EipTMessageRoom updateRoom(Integer roomId, String username,
+      String name, List<String> memberNameList) {
+    try {
+      TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+      List<TurbineUser> memberList =
+        turbineUserDbService
+          .findByUsername(new HashSet<String>(memberNameList));
+      Date now = new Date();
+
+      EipTMessageRoom model = Database.get(EipTMessageRoom.class, roomId);
+
+      if (model == null) {
+        return null;
+      }
+
+      if (!isJoinRoom(model, turbineUser.getUserId())) {
+        return null;
+      }
+
+      Database.deleteAll(model.getEipTMessageRoomMember());
+
+      boolean isFirst = true;
+      StringBuilder autoName = new StringBuilder();
+      for (TurbineUser user : memberList) {
+        EipTMessageRoomMember map =
+          Database.create(EipTMessageRoomMember.class);
+        int userid = user.getUserId();
+        map.setEipTMessageRoom(model);
+        map.setTargetUserId(1);
+        map.setUserId(Integer.valueOf(userid));
+        map.setLoginName(user.getLoginName());
+        if (!isFirst) {
+          autoName.append(",");
+        }
+        autoName.append(new StringBuffer().append(user.getLastName()).append(
+          " ").append(user.getFirstName()).toString());
+        isFirst = false;
+      }
+
+      if (name == null || "".equals(name)) {
+        model.setAutoName("T");
+        model.setName(autoName.toString());
+      } else {
+        model.setAutoName("F");
+        model.setName(CommonUtils.removeSpace(name));
+      }
+
+      model.setRoomType("G");
+      model.setLastUpdateDate(now);
+      model.setCreateDate(now);
+      model.setCreateUserId((int) turbineUser.getUserId());
+      model.setUpdateDate(now);
+
+      // if (filebean != null && filebean.getFileId() != 0) {
+      // model.setPhotoSmartphone(facePhoto_smartphone);
+      // model.setPhoto(facePhoto);
+      // model.setPhotoModified(new Date());
+      // model.setHasPhoto("T");
+      // }
+      //
+      // if (filebean != null) {
+      // if (filebean.getFileId() != 0) {
+      // model.setPhoto(facePhoto);
+      // model.setPhotoSmartphone(facePhoto_smartphone);
+      // model.setPhotoModified(new Date());
+      // model.setHasPhoto("T");
+      // }
+      // } else {
+      // model.setPhoto(null);
+      // model.setPhotoSmartphone(null);
+      // model.setPhotoModified(null);
+      // model.setHasPhoto("F");
+      // }
+
+      Database.commit();
+
+      List<String> roomMembersStr = new ArrayList<String>();
+      for (EipTMessageRoomMember roomMember : model.getEipTMessageRoomMember()) {
+        if (!roomMembersStr.contains(roomMember.getLoginName())) {
+          roomMembersStr.add(roomMember.getLoginName());
+        }
+      }
+      model.setRoomMembers(roomMembersStr);
+      return model;
+
+    } catch (Throwable t) {
+      Database.rollback();
+      return null;
+    }
+  }
+
   protected List<TurbineUser> getReadUserList(int messageId) {
     StringBuilder sql = new StringBuilder();
     sql
@@ -480,5 +577,16 @@ public class AipoMessageDbService implements MessageDbService {
         messageId);
 
     return query.fetchList();
+  }
+
+  public static boolean isJoinRoom(EipTMessageRoom room, int userId) {
+    @SuppressWarnings("unchecked")
+    List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
+    for (EipTMessageRoomMember member : list) {
+      if (member.getUserId().intValue() == userId) {
+        return true;
+      }
+    }
+    return false;
   }
 }

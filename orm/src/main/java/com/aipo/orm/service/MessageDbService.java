@@ -39,4 +39,7 @@ public interface MessageDbService {
   public EipTMessage createMessage(String username, Integer roomId,
       String targetUsername, String message, Set<String> fields);
 
+  public EipTMessageRoom updateRoom(Integer roomId, String username,
+      String name, List<String> memberNameList);
+
 }

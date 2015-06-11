@@ -19,6 +19,7 @@
 package com.aipo.social.opensocial.spi;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -361,6 +362,59 @@ public class AipoMessageService extends AbstractService implements
     ALMessage result = new ALMessageImpl();
     result = assignMessage(model, fields, token, messageIdInt);
     result.setTransactionId(transactionId);
+
+    return ImmediateFuture.newInstance(result);
+  }
+
+  /**
+   * @param next
+   * @param fields
+   * @param name
+   * @param memberList
+   * @param token
+   * @return
+   */
+  @Override
+  public Future<ALMessageRoom> putRoom(UserId userId, String name,
+      List<String> memberList, String roomId, SecurityToken token) {
+    // TODO: FIELDS
+
+    setUp(token);
+
+    Integer roomIdInt = null;
+
+    // Room
+    try {
+      roomIdInt = Integer.valueOf(roomId);
+    } catch (Throwable ignore) {
+      //
+    }
+
+    List<String> memberNameList = new ArrayList<String>();
+    for (String memberId : memberList) {
+      if (!"".equals(memberId)) {
+        String memberName = getUserId(memberId, token);
+        memberNameList.add(memberName);
+      }
+    }
+
+    // TODO: 権限をチェック
+    // 自分(Viewer)を含むルームのみ設定可能
+    checkSameViewer(userId, token);
+    String username = getUserId(userId, token);
+
+    EipTMessageRoom model = null;
+    if (roomIdInt != null && memberNameList.size() != 0) {
+      // ルーム
+      model =
+        messageDbService.updateRoom(roomIdInt, username, name, memberNameList);
+    } else {
+      // ダイレクトメッセージ
+    }
+
+    ALMessageRoom result = new ALMessageRoomImpl();
+    Set<String> dummy = new HashSet<String>();
+    result = assignMessageRoom(model, dummy, token, roomIdInt);
 
     return ImmediateFuture.newInstance(result);
   }
