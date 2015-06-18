@@ -69,8 +69,16 @@ public abstract class AbstractService {
   }
 
   protected void selectDataDomain(String orgId) throws Exception {
-    DataContext dataContext = Database.createDataContext(orgId);
-    DataContext.bindThreadObjectContext(dataContext);
+    String currentOrgId = Database.getDomainName();
+    if (currentOrgId == null) {
+      DataContext dataContext = Database.createDataContext(orgId);
+      DataContext.bindThreadObjectContext(dataContext);
+    } else if (currentOrgId.equals(orgId)) {
+      // Validate OK.
+      return;
+    } else {
+      throw new RuntimeException();
+    }
   }
 
   protected String getOrgId(SecurityToken token) {
@@ -116,7 +124,7 @@ public abstract class AbstractService {
 
   /**
    * 指定したデータベース名が、現在選択しているデータベース名と一致しているかチェックします。
-   * 
+   *
    * @param orgId
    * @param token
    */
@@ -133,7 +141,7 @@ public abstract class AbstractService {
 
   /**
    * Viewer が存在するかどうかチェックします。
-   * 
+   *
    * @param token
    * @throws ProtocolException
    */
@@ -156,7 +164,7 @@ public abstract class AbstractService {
 
   /**
    * 指定されたユーザーが Viewer と一致しているかチェックします。
-   * 
+   *
    * @param userId
    * @param token
    * @throws ProtocolException
@@ -172,7 +180,7 @@ public abstract class AbstractService {
 
   /**
    * 指定されたアプリが現在利用しているアプリと一致しているかチェックします。
-   * 
+   *
    * @param appId
    * @param token
    */
