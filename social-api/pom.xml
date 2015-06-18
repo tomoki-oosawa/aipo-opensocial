@@ -174,7 +174,7 @@
     <dependency>
       <groupId>com.aipo.container</groupId>
       <artifactId>aipo-container-core</artifactId>
-      <version>8.0.0</version>
+      <version>8.0.1</version>
     </dependency>
 
     <!-- test -->

@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -194,6 +195,14 @@ public class AipoDataServiceServlet extends ApiServlet {
         is.close();
         return;
       }
+
+      // responseの中身が空だった場合404を返す
+      if (response == Collections.EMPTY_MAP) {
+        ResponseItem notFoundResponse =
+          new ResponseItem(404, "Not Found", null);
+        sendError(servletResponse, notFoundResponse);
+      }
+
       PrintWriter writer = servletResponse.getWriter();
       if ((!(response instanceof DataCollection))
         && (!(response instanceof RestfulCollection))) {

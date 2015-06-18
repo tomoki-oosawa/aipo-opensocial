@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.service;
 
+import java.io.InputStream;
 import java.util.Set;
 
 import org.apache.shindig.config.ContainerConfig;
@@ -82,9 +83,13 @@ public class AipoPersonIconHandler {
               new UnsupportedOperationException());
           } else {
             // TODO: content typeを確認する方法を考える
-            return new StreamContent("image/jpeg", personService.getIcon(
-              userIds.iterator().next(),
-              request.getToken()));
+            InputStream userIcon =
+              personService.getIcon(userIds.iterator().next(), request
+                .getToken());
+            if (userIcon == null) {
+              return null;
+            }
+            return new StreamContent("image/jpeg", userIcon);
           }
         } else {
           throw new ProtocolException(
@@ -96,9 +101,12 @@ public class AipoPersonIconHandler {
         UserId userId =
           new UserId(UserId.Type.userId, optionalPersonId.iterator().next());
         // TODO: content typeを確認する方法を考える
-        return new StreamContent("image/jpeg", personService.getIcon(
-          userId,
-          request.getToken()));
+        InputStream userIcon =
+          personService.getIcon(userId, request.getToken());
+        if (userIcon == null) {
+          return null;
+        }
+        return new StreamContent("image/jpeg", userIcon);
       } else {
         throw new ProtocolException(
           501,

@@ -82,7 +82,28 @@ public class AipoMessageRoomHandler {
    */
   @Operation(httpMethods = "PUT")
   public Future<?> update(SocialRequestItem request) {
-    throw new ProtocolException(501, null, new UnsupportedOperationException());
+    Set<UserId> userIds = request.getUsers();
+    GroupId groupId = request.getGroup();
+    List<String> roomId = request.getListParameter("roomId");
+
+    String name = request.getParameter("name");
+    List<String> memberList = request.getListParameter("member_to");
+
+    AipoCollectionOptions options = new AipoCollectionOptions(request);
+
+    // Preconditions
+    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+    HandlerPreconditions.requireSingular(
+      userIds,
+      "Only one userId must be specified");
+    HandlerPreconditions.requireNotEmpty(roomId, "No roomId specified");
+    HandlerPreconditions.requireSingular(
+      roomId,
+      "Only one roomId must be specified");
+
+    return service.putRoom(userIds.iterator().next(), name, memberList, roomId
+      .iterator()
+      .next(), request.getToken());
   }
 
   /**

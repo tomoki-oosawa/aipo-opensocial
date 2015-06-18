@@ -213,7 +213,11 @@ public class AipoPersonService extends AbstractService implements PersonService 
 
     String userId = getUserId(id, token);
 
-    return turbineUserDbService.getPhoto(userId);
+    InputStream userIcon = turbineUserDbService.getPhoto(userId);
+    if (userIcon == null) {
+      return null;
+    }
+    return userIcon;
   }
 
 }
