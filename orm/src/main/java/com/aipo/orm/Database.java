@@ -49,7 +49,7 @@ import com.aipo.orm.query.SelectQuery;
 
 /**
  * データベース操作ユーティリティ
- * 
+ *
  */
 public class Database {
 
@@ -60,7 +60,7 @@ public class Database {
 
   /**
    * 検索用クエリを作成します。
-   * 
+   *
    * @param <M>
    * @param modelClass
    * @return
@@ -71,7 +71,7 @@ public class Database {
 
   /**
    * 検索用クエリを作成します。
-   * 
+   *
    * @param <M>
    * @param dataContext
    * @param modelClass
@@ -84,7 +84,7 @@ public class Database {
 
   /**
    * 検索用クエリを作成します。
-   * 
+   *
    * @param <M>
    * @param modelClass
    * @param exp
@@ -96,7 +96,7 @@ public class Database {
 
   /**
    * 検索用クエリを作成します。
-   * 
+   *
    * @param <M>
    * @param dataContext
    * @param modelClass
@@ -110,7 +110,7 @@ public class Database {
 
   /**
    * SQL検索クエリを作成します。
-   * 
+   *
    * @param <M>
    * @param modelClass
    * @param sql
@@ -122,7 +122,7 @@ public class Database {
 
   /**
    * SQL検索クエリを作成します。
-   * 
+   *
    * @param <M>
    * @param dataContext
    * @param modelClass
@@ -136,7 +136,7 @@ public class Database {
 
   /**
    * プライマリキーで指定されたオブジェクトモデルを取得します。
-   * 
+   *
    * @param <M>
    * @param modelClass
    * @param primaryKey
@@ -151,7 +151,7 @@ public class Database {
 
   /**
    * 指定されたオブジェクトモデルを取得します。
-   * 
+   *
    * @param <M>
    * @param dataContext
    * @param modelClass
@@ -164,7 +164,7 @@ public class Database {
   }
 
   /**
-   * 
+   *
    * @param <M>
    * @param modelClass
    * @param key
@@ -180,7 +180,7 @@ public class Database {
   }
 
   /**
-   * 
+   *
    * @param <M>
    * @param dataContext
    * @param modelClass
@@ -197,7 +197,7 @@ public class Database {
 
   /**
    * オブジェクトモデルを新規作成します。
-   * 
+   *
    * @param <M>
    * @param modelClass
    * @return
@@ -210,7 +210,7 @@ public class Database {
 
   /**
    * オブジェクトモデルを新規作成します。
-   * 
+   *
    * @param <M>
    * @param dataContext
    * @param modelClass
@@ -223,7 +223,7 @@ public class Database {
 
   /**
    * オブジェクトモデルを削除します。
-   * 
+   *
    * @param target
    */
   public static void delete(Persistent target) {
@@ -232,7 +232,7 @@ public class Database {
 
   /**
    * オブジェクトモデルを削除します。
-   * 
+   *
    * @param dataContext
    * @param target
    */
@@ -242,7 +242,7 @@ public class Database {
 
   /**
    * オブジェクトモデルをすべて削除します。
-   * 
+   *
    * @param target
    */
   public static void deleteAll(List<?> target) {
@@ -251,7 +251,7 @@ public class Database {
 
   /**
    * オブジェクトモデルをすべて削除します。
-   * 
+   *
    * @param dataContext
    * @param target
    */
@@ -262,7 +262,7 @@ public class Database {
 
   /**
    * オブジェクトモデルをすべて削除します。
-   * 
+   *
    * @param target
    */
   public static void deleteAll(DataObject... target) {
@@ -271,7 +271,7 @@ public class Database {
 
   /**
    * オブジェクトモデルをすべて削除します。
-   * 
+   *
    * @param dataContext
    * @param target
    */
@@ -281,7 +281,7 @@ public class Database {
 
   /**
    * 現在までの更新をコミットします。
-   * 
+   *
    */
   public static void commit() {
     commit((DataContext) BaseContext.getThreadObjectContext());
@@ -289,7 +289,7 @@ public class Database {
 
   /**
    * 現在までの更新をコミットします。
-   * 
+   *
    * @param dataContext
    */
   public static void commit(DataContext dataContext) {
@@ -313,7 +313,7 @@ public class Database {
 
   /**
    * 現在までの更新をロールバックします。
-   * 
+   *
    */
   public static void rollback() {
     rollback((DataContext) BaseContext.getThreadObjectContext());
@@ -321,7 +321,7 @@ public class Database {
 
   /**
    * 現在までの更新をロールバックします。
-   * 
+   *
    * @param dataContext
    */
   public static void rollback(DataContext dataContext) {
@@ -334,7 +334,7 @@ public class Database {
 
   /**
    * DataRow から指定したキーの値を取得します。
-   * 
+   *
    * @param dataRow
    * @param key
    * @return
@@ -362,21 +362,38 @@ public class Database {
 
     DataContext dataContext =
       (DataContext) BaseContext.getThreadObjectContext();
-    String url = null;
+    String adapterName = null;
     try {
-      url =
-        dataContext
-          .getParentDataDomain()
-          .getNode(Database.getDomainName() + "domainNode")
-          .getDataSource()
-          .getConnection()
-          .getMetaData()
-          .getURL();
-    } catch (SQLException e) {
+      adapterName =
+        ((AutoAdapter) dataContext.getParentDataDomain().getNode(
+          Database.getDomainName() + "domainNode").getAdapter())
+          .getAdapter()
+          .getClass()
+          .getName();
+    } catch (Exception e) {
       logger.warn(e.getMessage(), e);
     }
 
-    return url != null && url.startsWith("jdbc:postgresql");
+    return adapterName != null && adapterName.endsWith("PostgresAdapter");
+  }
+
+  public static boolean isJdbcMySQL() {
+
+    DataContext dataContext =
+      (DataContext) BaseContext.getThreadObjectContext();
+    String adapterName = null;
+    try {
+      adapterName =
+        ((AutoAdapter) dataContext.getParentDataDomain().getNode(
+          Database.getDomainName() + "domainNode").getAdapter())
+          .getAdapter()
+          .getClass()
+          .getName();
+    } catch (Exception e) {
+      logger.warn(e.getMessage(), e);
+    }
+
+    return adapterName != null && adapterName.endsWith("MySQLAdapter");
   }
 
   public static DataContext createDataContext(String orgId) throws Exception {
