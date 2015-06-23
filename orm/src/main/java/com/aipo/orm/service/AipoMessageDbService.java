@@ -30,11 +30,14 @@ import org.apache.cayenne.DataRow;
 
 import com.aipo.orm.Database;
 import com.aipo.orm.model.portlet.EipTMessage;
+import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRead;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
 import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.query.Operations;
 import com.aipo.orm.query.SQLTemplate;
+import com.aipo.orm.query.SelectQuery;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.util.CommonUtils;
 import com.google.inject.Inject;
@@ -285,6 +288,11 @@ public class AipoMessageDbService implements MessageDbService {
           readMembers.add(tuser.getLoginName());
         }
         object.setReadMembers(readMembers);
+      }
+
+      List<EipTMessageFile> files = getMessageFiles(object);
+      if (files != null && files.size() > 0) {
+        object.setMessageFiles(files);
       }
 
       if (photoModified != null) {
@@ -575,6 +583,16 @@ public class AipoMessageDbService implements MessageDbService {
       Database.sql(TurbineUser.class, sql.toString()).param(
         "message_id",
         messageId);
+
+    return query.fetchList();
+  }
+
+  protected List<EipTMessageFile> getMessageFiles(EipTMessage object) {
+    SelectQuery<EipTMessageFile> query = Database.query(EipTMessageFile.class);
+    query.where(Operations.eq(EipTMessageFile.EIP_TMESSAGE_PROPERTY, object));
+
+    query.orderAscending(EipTMessageFile.UPDATE_DATE_PROPERTY);
+    query.orderAscending(EipTMessageFile.FILE_PATH_PROPERTY);
 
     return query.fetchList();
   }

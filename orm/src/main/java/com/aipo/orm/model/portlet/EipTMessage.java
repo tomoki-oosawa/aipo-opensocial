@@ -24,6 +24,8 @@ public class EipTMessage extends _EipTMessage {
 
   private List<String> readMembers = null;
 
+  private List<EipTMessageFile> messageFiles = null;
+
   public Integer getMessageId() {
     if (getObjectId() != null && !getObjectId().isTemporary()) {
       Object obj = getObjectId().getIdSnapshot().get(MESSAGE_ID_PK_COLUMN);
@@ -161,6 +163,21 @@ public class EipTMessage extends _EipTMessage {
    */
   public List<String> getReadMembers() {
     return readMembers;
+  }
+
+  /**
+   * @return messageFiles
+   */
+  public List<EipTMessageFile> getMessageFiles() {
+    return messageFiles;
+  }
+
+  /**
+   *
+   * @param messageFiles
+   */
+  public void setMessageFiles(List<EipTMessageFile> messageFiles) {
+    this.messageFiles = messageFiles;
   }
 
 }

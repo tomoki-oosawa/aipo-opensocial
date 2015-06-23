@@ -32,14 +32,17 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.orm.model.portlet.EipTMessage;
+import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
 import com.aipo.orm.service.MessageDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
+import com.aipo.social.core.model.ALMessageFileImpl;
 import com.aipo.social.core.model.ALMessageImpl;
 import com.aipo.social.core.model.ALMessageRoomImpl;
 import com.aipo.social.opensocial.model.ALMessage;
+import com.aipo.social.opensocial.model.ALMessageFile;
 import com.aipo.social.opensocial.model.ALMessageRoom;
 import com.google.inject.Inject;
 
@@ -288,6 +291,16 @@ public class AipoMessageService extends AbstractService implements
     message.setMemberCount(model.getMemberCount());
     message.setMessage(model.getMessage());
     message.setCreateDate(DateUtil.formatIso8601Date(model.getCreateDate()));
+
+    if (model.getMessageFiles() != null) {
+      List<ALMessageFile> files = new ArrayList<ALMessageFile>();
+      for (EipTMessageFile file : model.getMessageFiles()) {
+        ALMessageFile messageFile = assignMessageFile(file);
+        files.add(messageFile);
+      }
+      message.setFiles(files);
+    }
+
     if (messageIdInt == 0) {
       // メッセージ一覧の場合
       return message;
@@ -300,8 +313,26 @@ public class AipoMessageService extends AbstractService implements
       }
       message.setReadMembers(members);
     }
+
     // メッセージ詳細の場合
     return message;
+  }
+
+  /**
+   * @param room
+   * @param fields
+   * @param token
+   * @return
+   */
+  private ALMessageFile assignMessageFile(EipTMessageFile model) {
+    ALMessageFile file = new ALMessageFileImpl();
+
+    file.setFileId(model.getFileId());
+    file.setFileName(model.getFileName());
+    // TODO ファイルサイズの取得
+    file.setFileSize(1);
+
+    return file;
   }
 
   /**

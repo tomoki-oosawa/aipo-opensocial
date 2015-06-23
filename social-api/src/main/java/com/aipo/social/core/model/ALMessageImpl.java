@@ -21,6 +21,7 @@ package com.aipo.social.core.model;
 import java.util.List;
 
 import com.aipo.social.opensocial.model.ALMessage;
+import com.aipo.social.opensocial.model.ALMessageFile;
 
 /**
  * @see org.apache.shindig. social.core.model.GroupImpl
@@ -43,6 +44,8 @@ public class ALMessageImpl implements ALMessage {
   private String createDate;
 
   private String transactionId;
+
+  private List<ALMessageFile> files;
 
   @Override
   public long getMessageId() {
@@ -138,6 +141,22 @@ public class ALMessageImpl implements ALMessage {
   @Override
   public void setTransactionId(String transactionId) {
     this.transactionId = transactionId;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public List<ALMessageFile> getFiles() {
+    return files;
+  }
+
+  /**
+   * @param files
+   */
+  @Override
+  public void setFiles(List<ALMessageFile> files) {
+    this.files = files;
   }
 
 }
