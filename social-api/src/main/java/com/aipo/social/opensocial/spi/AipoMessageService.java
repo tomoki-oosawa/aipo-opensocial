@@ -182,10 +182,12 @@ public class AipoMessageService extends AbstractService implements
       }
     }
 
-    // TODO: 権限をチェック
     // 自分(Viewer)を含むルームのみ作成可能
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
+    if (!memberNameList.contains(username)) {
+      throw new ProtocolException(400, "member_to should contain userId");
+    }
 
     if (memberNameList.size() != 0) {
       // ルーム
@@ -428,7 +430,6 @@ public class AipoMessageService extends AbstractService implements
       }
     }
 
-    // TODO: 権限をチェック
     // 自分(Viewer)を含むルームのみ設定可能
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
