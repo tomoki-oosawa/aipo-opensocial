@@ -100,6 +100,10 @@ public class AipoMessageRoomHandler {
     HandlerPreconditions.requireSingular(
       roomId,
       "Only one roomId must be specified");
+    HandlerPreconditions.requireNotEmpty(memberList, "No member_to specified");
+    HandlerPreconditions.requirePlural(
+      memberList,
+      "More than one member_to must be specified");
 
     return service.putRoom(userIds.iterator().next(), name, memberList, roomId
       .iterator()

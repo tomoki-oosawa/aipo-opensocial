@@ -27,6 +27,7 @@ import java.util.concurrent.Future;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.DateUtil;
 import org.apache.shindig.common.util.ImmediateFuture;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
@@ -431,6 +432,10 @@ public class AipoMessageService extends AbstractService implements
     // 自分(Viewer)を含むルームのみ設定可能
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
+
+    if (!memberNameList.contains(username)) {
+      throw new ProtocolException(400, "member_to should contain userId");
+    }
 
     EipTMessageRoom model = null;
     if (roomIdInt != null && memberNameList.size() != 0) {
