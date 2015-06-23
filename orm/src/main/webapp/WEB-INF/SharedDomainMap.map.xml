@@ -813,6 +813,7 @@
 		<obj-attribute name="fileName" type="java.lang.String" db-attribute-path="FILE_NAME"/>
 		<obj-attribute name="filePath" type="java.lang.String" db-attribute-path="FILE_PATH"/>
 		<obj-attribute name="fileThumbnail" type="byte[]" db-attribute-path="FILE_THUMBNAIL"/>
+		<obj-attribute name="messageId" type="java.lang.Integer" db-attribute-path="MESSAGE_ID"/>
 		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
 		<obj-attribute name="roomId" type="java.lang.Integer" db-attribute-path="ROOM_ID"/>
 		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>

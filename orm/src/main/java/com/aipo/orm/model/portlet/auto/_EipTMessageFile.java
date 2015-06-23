@@ -18,6 +18,7 @@ public abstract class _EipTMessageFile extends CayenneDataObject {
     public static final String FILE_NAME_PROPERTY = "fileName";
     public static final String FILE_PATH_PROPERTY = "filePath";
     public static final String FILE_THUMBNAIL_PROPERTY = "fileThumbnail";
+    public static final String MESSAGE_ID_PROPERTY = "messageId";
     public static final String OWNER_ID_PROPERTY = "ownerId";
     public static final String ROOM_ID_PROPERTY = "roomId";
     public static final String UPDATE_DATE_PROPERTY = "updateDate";
@@ -51,6 +52,13 @@ public abstract class _EipTMessageFile extends CayenneDataObject {
     }
     public byte[] getFileThumbnail() {
         return (byte[])readProperty("fileThumbnail");
+    }
+
+    public void setMessageId(Integer messageId) {
+        writeProperty("messageId", messageId);
+    }
+    public Integer getMessageId() {
+        return (Integer)readProperty("messageId");
     }
 
     public void setOwnerId(Integer ownerId) {

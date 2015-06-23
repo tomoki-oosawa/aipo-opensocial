@@ -264,6 +264,7 @@ public class AipoMessageDbService implements MessageDbService {
         "room_id",
         Integer.valueOf(roomId)).fetchListAsDataRow();
 
+    List<Integer> messageIds = new ArrayList<Integer>();
     List<EipTMessage> list = new ArrayList<EipTMessage>();
     for (DataRow row : fetchList) {
       Long unread = (Long) row.get("unread");
@@ -290,15 +291,26 @@ public class AipoMessageDbService implements MessageDbService {
         object.setReadMembers(readMembers);
       }
 
-      List<EipTMessageFile> files = getMessageFiles(object);
-      if (files != null && files.size() > 0) {
-        object.setMessageFiles(files);
-      }
-
       if (photoModified != null) {
         object.setPhotoModified(photoModified.getTime());
       }
       list.add(object);
+      messageIds.add(object.getMessageId());
+    }
+
+    List<EipTMessageFile> files = getMessageFiles(messageIds);
+    if (files != null && files.size() > 0) {
+      for (EipTMessage message : list) {
+        ArrayList<EipTMessageFile> arrayList = new ArrayList<EipTMessageFile>();
+        for (EipTMessageFile file : files) {
+          if (message.getMessageId().equals(file.getMessageId())) {
+            arrayList.add(file);
+          }
+        }
+        if (arrayList != null && arrayList.size() > 0) {
+          message.setMessageFiles(arrayList);
+        }
+      }
     }
 
     if (isReverse) {
@@ -587,10 +599,11 @@ public class AipoMessageDbService implements MessageDbService {
     return query.fetchList();
   }
 
-  protected List<EipTMessageFile> getMessageFiles(EipTMessage object) {
+  protected List<EipTMessageFile> getMessageFiles(List<Integer> messageIds) {
     SelectQuery<EipTMessageFile> query = Database.query(EipTMessageFile.class);
-    query.where(Operations.eq(EipTMessageFile.EIP_TMESSAGE_PROPERTY, object));
+    query.where(Operations.in(EipTMessageFile.MESSAGE_ID_PROPERTY, messageIds));
 
+    query.orderAscending(EipTMessageFile.MESSAGE_ID_PROPERTY);
     query.orderAscending(EipTMessageFile.UPDATE_DATE_PROPERTY);
     query.orderAscending(EipTMessageFile.FILE_PATH_PROPERTY);
 
