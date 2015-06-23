@@ -329,8 +329,6 @@ public class AipoMessageService extends AbstractService implements
 
     file.setFileId(model.getFileId());
     file.setFileName(model.getFileName());
-    // TODO ファイルサイズの取得
-    file.setFileSize(1);
 
     return file;
   }
