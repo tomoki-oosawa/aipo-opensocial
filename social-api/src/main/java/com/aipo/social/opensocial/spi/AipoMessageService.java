@@ -113,7 +113,7 @@ public class AipoMessageService extends AbstractService implements
 
     list = messageDbService.findMessageRoom(roomIdInt, username, options);
     if (list.size() == 0) {
-      throw new ProtocolException(400, "authentication failed");
+      throw new ProtocolException(400, "Access denied");
     }
 
     List<ALMessageRoom> result = new ArrayList<ALMessageRoom>(list.size());
@@ -268,7 +268,7 @@ public class AipoMessageService extends AbstractService implements
     String username = getUserId(userId, token);
     if (roomIdInt != null) {
       if (messageDbService.findMessageRoom(roomIdInt, username, options).size() == 0) {
-        throw new ProtocolException(400, "authentication failed");
+        throw new ProtocolException(400, "Access denied");
       }
     }
 
@@ -396,7 +396,7 @@ public class AipoMessageService extends AbstractService implements
     if (roomIdInt != null) {
       SearchOptions dummy = SearchOptions.build();
       if (messageDbService.findMessageRoom(roomIdInt, username, dummy).size() == 0) {
-        throw new ProtocolException(400, "authentication failed");
+        throw new ProtocolException(400, "Access denied");
       }
     }
 
@@ -466,7 +466,7 @@ public class AipoMessageService extends AbstractService implements
     if (roomIdInt != null) {
       SearchOptions dummy = SearchOptions.build();
       if (messageDbService.findMessageRoom(roomIdInt, username, dummy).size() == 0) {
-        throw new ProtocolException(400, "authentication failed");
+        throw new ProtocolException(400, "Access denied");
       }
     }
 
