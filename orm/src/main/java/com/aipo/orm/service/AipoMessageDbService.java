@@ -326,7 +326,7 @@ public class AipoMessageDbService implements MessageDbService {
    * @param fields
    */
   @Override
-  public void createRoom(String username, String name,
+  public EipTMessageRoom createRoom(String username, String name,
       List<String> memberNameList, Set<String> fields) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
@@ -381,8 +381,19 @@ public class AipoMessageDbService implements MessageDbService {
 
       Database.commit();
 
+      List<String> roomMembersStr = new ArrayList<String>();
+      for (EipTMessageRoomMember roomMember : model.getEipTMessageRoomMember()) {
+        if (!roomMembersStr.contains(roomMember.getLoginName())) {
+          roomMembersStr.add(roomMember.getLoginName());
+        }
+      }
+      model.setRoomMembers(roomMembersStr);
+
+      return model;
+
     } catch (Exception ex) {
       Database.rollback();
+      return null;
     }
   }
 
