@@ -40,8 +40,8 @@ public interface MessageService {
       AipoCollectionOptions options, Set<String> fields, String roomId,
       String messageId, SecurityToken token);
 
-  public void postRoom(UserId userId, Set<String> fields, String name,
-      List<String> memberList, SecurityToken token);
+  public Future<ALMessageRoom> postRoom(UserId userId, Set<String> fields,
+      String name, List<String> memberList, SecurityToken token);
 
   public Future<ALMessage> postMessage(UserId userId, Set<String> fields,
       String roomId, String targetUserId, String message, SecurityToken token,

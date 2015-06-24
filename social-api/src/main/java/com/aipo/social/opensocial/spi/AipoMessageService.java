@@ -112,6 +112,9 @@ public class AipoMessageService extends AbstractService implements
     List<EipTMessageRoom> list = null;
 
     list = messageDbService.findMessageRoom(roomIdInt, username, options);
+    if (list.size() == 0) {
+      throw new ProtocolException(400, "authentication failed");
+    }
 
     List<ALMessageRoom> result = new ArrayList<ALMessageRoom>(list.size());
     for (EipTMessageRoom room : list) {
@@ -168,8 +171,8 @@ public class AipoMessageService extends AbstractService implements
    * @param token
    */
   @Override
-  public void postRoom(UserId userId, Set<String> fields, String name,
-      List<String> memberList, SecurityToken token) {
+  public Future<ALMessageRoom> postRoom(UserId userId, Set<String> fields,
+      String name, List<String> memberList, SecurityToken token) {
     // TODO: FIELDS
 
     setUp(token);
@@ -189,12 +192,20 @@ public class AipoMessageService extends AbstractService implements
       throw new ProtocolException(400, "member_to should contain userId");
     }
 
+    EipTMessageRoom model = null;
     if (memberNameList.size() != 0) {
       // ルーム
-      messageDbService.createRoom(username, name, memberNameList, fields);
+      model =
+        messageDbService.createRoom(username, name, memberNameList, fields);
     } else {
       // ダイレクトメッセージ
     }
+
+    ALMessageRoom result = new ALMessageRoomImpl();
+    Set<String> dummy = new HashSet<String>();
+    result = assignMessageRoom(model, dummy, token, model.getRoomId());
+
+    return ImmediateFuture.newInstance(result);
 
   }
 
@@ -251,9 +262,19 @@ public class AipoMessageService extends AbstractService implements
         .withParameters(collectionOptions.getParameters());
 
     List<EipTMessage> list = null;
+
+    // 自分(Viewer)のルームのみ取得可能
+    checkSameViewer(userId, token);
+    String username = getUserId(userId, token);
+    if (roomIdInt != null) {
+      if (messageDbService.findMessageRoom(roomIdInt, username, options).size() == 0) {
+        throw new ProtocolException(400, "authentication failed");
+      }
+    }
+
     // /messages/rooms/\(userId)/\(groupId)
     // {userId} が所属しているルームを取得
-    // TODO: 閲覧権限をチェック
+
     if (roomIdInt != null) {
       // ルーム
       list = messageDbService.findMessage(roomIdInt, messageIdInt, options);
@@ -369,10 +390,15 @@ public class AipoMessageService extends AbstractService implements
       targetUsername = getUserId(targetUserId, token);
     }
 
-    // TODO: 権限をチェック
     // 自分(Viewer)のルームのみ取得可能
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
+    if (roomIdInt != null) {
+      SearchOptions dummy = SearchOptions.build();
+      if (messageDbService.findMessageRoom(roomIdInt, username, dummy).size() == 0) {
+        throw new ProtocolException(400, "authentication failed");
+      }
+    }
 
     EipTMessage model = null;
     if (roomIdInt != null
@@ -436,6 +462,12 @@ public class AipoMessageService extends AbstractService implements
 
     if (!memberNameList.contains(username)) {
       throw new ProtocolException(400, "member_to should contain userId");
+    }
+    if (roomIdInt != null) {
+      SearchOptions dummy = SearchOptions.build();
+      if (messageDbService.findMessageRoom(roomIdInt, username, dummy).size() == 0) {
+        throw new ProtocolException(400, "authentication failed");
+      }
     }
 
     EipTMessageRoom model = null;

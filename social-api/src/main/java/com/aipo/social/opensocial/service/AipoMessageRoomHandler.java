@@ -117,7 +117,7 @@ public class AipoMessageRoomHandler {
    * @return
    */
   @Operation(httpMethods = "POST")
-  public void create(SocialRequestItem request) {
+  public Future<?> create(SocialRequestItem request) {
 
     Set<UserId> userIds = request.getUsers();
     GroupId groupId = request.getGroup();
@@ -137,7 +137,7 @@ public class AipoMessageRoomHandler {
       memberList,
       "More than one member_to must be specified");
 
-    service.postRoom(
+    return service.postRoom(
       userIds.iterator().next(),
       request.getFields(),
       name,
