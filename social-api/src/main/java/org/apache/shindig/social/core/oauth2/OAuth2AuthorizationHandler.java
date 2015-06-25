@@ -80,6 +80,7 @@ public class OAuth2AuthorizationHandler {
             // implicit flow
             service.validateRequestForAccessToken(normalizedReq);
             OAuth2Code accessToken = service.grantAccessToken(normalizedReq);
+            OAuth2Code refreshToken = service.grantRefreshToken(normalizedReq);
 
             // send response
             normalizedResp.setAccessToken(accessToken.getValue());
@@ -87,6 +88,7 @@ public class OAuth2AuthorizationHandler {
             normalizedResp.setExpiresIn((accessToken.getExpiration() - System
               .currentTimeMillis())
               + "");
+            normalizedResp.setRefreshToken(refreshToken.getValue());
             if (normalizedReq.getState() != null) {
               normalizedResp.setState(normalizedReq.getState());
             }

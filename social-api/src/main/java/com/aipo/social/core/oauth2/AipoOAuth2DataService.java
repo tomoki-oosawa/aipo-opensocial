@@ -145,7 +145,14 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public OAuth2Code getRefreshToken(String refreshToken) {
-    return null;
+    OAuth2Token token =
+      store.get(refreshToken, CodeType.ACCESS_TOKEN.toString());
+    AipoOAuth2Code code = new AipoOAuth2Code();
+    code.setUserId(token.getUserId());
+    code.setExpiration(token.getExpireTime().getTime());
+    code.setType(CodeType.REFRESH_TOKEN);
+    code.setValue(token.getToken());
+    return code;
   }
 
   /**
@@ -154,6 +161,33 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public void registerRefreshToken(String clientId, OAuth2Code refreshToken) {
+    if (refreshToken == null) {
+      return;
+    }
+    // DataContext ctx = DataContext.createDataContext();
+    OAuth2Token token = new OAuth2Token();
+    token.setCodeType(CodeType.ACCESS_TOKEN.toString());
+    token.setToken(refreshToken.getValue());
+    if (refreshToken instanceof AipoOAuth2Code) {
+      token.setUserId(((AipoOAuth2Code) refreshToken).getUserId());
+    } else {
+      throw new UnsupportedOperationException();
+    }
+    // token.setUser(user);
+    token.setCreateDate(new Date());
+    token.setExpireTime(new Date(refreshToken.getExpiration()));
+    StringBuilder scopes = new StringBuilder();
+    if (refreshToken.getScope() != null) {
+      for (String scope : refreshToken.getScope()) {
+        scopes.append(scope).append(", ");
+      }
+    }
+    if (scopes.length() > 2) {
+      scopes.setLength(scopes.length() - 2);
+    }
+    token.setScope(scopes.toString());
+    token.setTokenType(refreshToken.getType().toString());
+    store.put(token);
   }
 
   /**
