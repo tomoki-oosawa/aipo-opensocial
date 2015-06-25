@@ -20,6 +20,7 @@ package com.aipo.social.opensocial.spi;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Calendar;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
@@ -31,27 +32,77 @@ import com.aipo.social.opensocial.model.ALFile;
  */
 public interface StorageService {
 
+  public void saveFile(InputStream is, String folderPath, String fileName,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public void createNewFile(InputStream is, String folderPath, String fileName,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public void createNewTmpFile(InputStream is, int uid, String dir,
+      String fileName, String realFileName, SecurityToken paramSecurityToken)
+      throws ProtocolException;
+
+  public long getTmpFolderSize(int uid, String dir,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public boolean copyTmpFile(int uid, String srcDir, String srcFileName,
+      String destRootPath, String destDir, String destFileName,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public boolean deleteTmpFolder(int uid, String dir,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public InputStream getTmpFile(int uid, String folderName, String finename,
+      SecurityToken paramSecurityToken) throws FileNotFoundException,
+      ProtocolException;
+
+  public long getFolderSize(String rootPath, String dir,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public long getFileSize(String rootPath, String dir, String filename,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public boolean copyFile(String srcRootPath, String srcDir,
+      String srcFileName, String destRootPath, String destDir,
+      String destFileName, SecurityToken paramSecurityToken)
+      throws ProtocolException;
+
+  public boolean deleteFolder(String rootPath, String dir,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public boolean deleteFile(String rootPath, String dir, String filename,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public boolean deleteFile(String filePath, SecurityToken paramSecurityToken)
+      throws ProtocolException;
+
+  public InputStream getFile(String rootPath, String dir, String fineName,
+      SecurityToken paramSecurityToken) throws FileNotFoundException,
+      ProtocolException;
+
   public InputStream getFile(ALFile file, SecurityToken paramSecurityToken)
       throws ProtocolException, FileNotFoundException;
 
   public InputStream getFile(String filePath, SecurityToken paramSecurityToken)
       throws ProtocolException, FileNotFoundException;
 
+  public String getDocumentPath(String rootPath, String categoryKey,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public boolean deleteOldFolder(String folderPath, Calendar cal,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
   public String separator() throws ProtocolException;
 
+  public void createNewFile(InputStream inputStream, String filepath,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
   public String getSaveDirPath(String rootPath, String categoryKey,
-      String userId) throws ProtocolException;
-
-  public String getDocumentPath(String rootPath, String categoryKey)
-      throws ProtocolException;
-
-  public long getFileSize(String rootPath, String dir, String filename)
-      throws ProtocolException;
+      String userId, SecurityToken paramSecurityToken) throws ProtocolException;
 
   public String getContentType(ALFile file, SecurityToken paramSecurityToken)
       throws ProtocolException, FileNotFoundException;
 
   public String getContentType(String filePath, SecurityToken paramSecurityToken)
       throws ProtocolException, FileNotFoundException;
-
 }
