@@ -1,22 +1,22 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ * Aipo is a groupware program developed by Aimluck,Inc.
+ * Copyright (C) 2004-2015 Aimluck,Inc.
+ * http://www.aipo.com
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.apache.shindig.social.core.oauth2;
+package com.aipo.social.core.oauth2;
 
 import java.io.IOException;
 
@@ -24,17 +24,24 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shindig.social.core.oauth2.OAuth2AuthorizationHandler;
+import org.apache.shindig.social.core.oauth2.OAuth2Code;
+import org.apache.shindig.social.core.oauth2.OAuth2Exception;
+import org.apache.shindig.social.core.oauth2.OAuth2NormalizedRequest;
+import org.apache.shindig.social.core.oauth2.OAuth2NormalizedResponse;
+import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.ErrorType;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.TokenFormat;
+import org.apache.shindig.social.core.oauth2.OAuth2Utils;
 
 /**
- * Handles requests to the OAuth 2.0 authorization end-point.
+ * @see OAuth2AuthorizationHandler
  */
-public class OAuth2AuthorizationHandler {
+public class AipoOAuth2AuthorizationHandler {
 
   private final OAuth2Service service;
 
-  public OAuth2AuthorizationHandler(OAuth2Service service) {
+  public AipoOAuth2AuthorizationHandler(OAuth2Service service) {
     this.service = service;
   }
 
@@ -80,6 +87,7 @@ public class OAuth2AuthorizationHandler {
             // implicit flow
             service.validateRequestForAccessToken(normalizedReq);
             OAuth2Code accessToken = service.grantAccessToken(normalizedReq);
+            OAuth2Code refreshToken = service.grantRefreshToken(normalizedReq);
 
             // send response
             normalizedResp.setAccessToken(accessToken.getValue());
@@ -87,6 +95,7 @@ public class OAuth2AuthorizationHandler {
             normalizedResp.setExpiresIn((accessToken.getExpiration() - System
               .currentTimeMillis())
               + "");
+            normalizedResp.setRefreshToken(refreshToken.getValue());
             if (normalizedReq.getState() != null) {
               normalizedResp.setState(normalizedReq.getState());
             }

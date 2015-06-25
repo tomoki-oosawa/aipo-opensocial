@@ -53,6 +53,8 @@ public class AipoOAuth2Service implements OAuth2Service {
 
   private final long accessTokenExpires;
 
+  private final long refreshTokenExpires;
+
   // validators
   private final OAuth2RequestValidator accessTokenValidator;
 
@@ -65,11 +67,13 @@ public class AipoOAuth2Service implements OAuth2Service {
       TurbineUserDbService turbineUserDbService, OAuth2TokenDbService db,
 
       @Named("shindig.oauth2.authCodeExpiration") long authCodeExpires,
-      @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
+      @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires,
+      @Named("shindig.oauth2.refreshTokenExpiration") long refreshTokenExpires) {
     this.store = store;
 
     this.authCodeExpires = authCodeExpires;
     this.accessTokenExpires = accessTokenExpires;
+    this.refreshTokenExpires = refreshTokenExpires;
 
     authCodeValidator = new AuthorizationCodeRequestValidator(store);
     accessTokenValidator =
@@ -263,7 +267,8 @@ public class AipoOAuth2Service implements OAuth2Service {
     AipoOAuth2Code refreshToken = new AipoOAuth2Code();
     refreshToken.setType(CodeType.REFRESH_TOKEN);
     refreshToken.setValue(UUID.randomUUID().toString());
-    refreshToken.setExpiration(System.currentTimeMillis() + accessTokenExpires);
+    refreshToken
+      .setExpiration(System.currentTimeMillis() + refreshTokenExpires);
     refreshToken.setUserId((String) req.get("orgId")
       + ":"
       + (String) req.get("username"));

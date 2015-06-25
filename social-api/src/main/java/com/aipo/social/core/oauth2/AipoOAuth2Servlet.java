@@ -34,7 +34,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.shindig.common.logging.i18n.MessageKeys;
 import org.apache.shindig.common.servlet.HttpUtil;
 import org.apache.shindig.common.servlet.InjectedServlet;
-import org.apache.shindig.social.core.oauth2.OAuth2AuthorizationHandler;
 import org.apache.shindig.social.core.oauth2.OAuth2NormalizedResponse;
 import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.core.oauth2.OAuth2Servlet;
@@ -54,7 +53,7 @@ public class AipoOAuth2Servlet extends InjectedServlet {
 
   private static final long serialVersionUID = -4257719224664564922L;
 
-  private static OAuth2AuthorizationHandler authorizationHandler;
+  private static AipoOAuth2AuthorizationHandler authorizationHandler;
 
   private static OAuth2TokenHandler tokenHandler;
 
@@ -67,7 +66,7 @@ public class AipoOAuth2Servlet extends InjectedServlet {
 
   @Inject
   public void setOAuth2Service(OAuth2Service oauthService) {
-    authorizationHandler = new OAuth2AuthorizationHandler(oauthService);
+    authorizationHandler = new AipoOAuth2AuthorizationHandler(oauthService);
     tokenHandler = new OAuth2TokenHandler(oauthService);
   }
 
