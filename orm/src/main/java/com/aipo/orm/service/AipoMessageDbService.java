@@ -631,4 +631,28 @@ public class AipoMessageDbService implements MessageDbService {
     }
     return false;
   }
+
+  @Override
+  public boolean isJoinRoom(int roomId, String username) {
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      return false;
+    }
+    Integer userId = turbineUser.getUserId();
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
+      return isJoinRoom(room, userId);
+    }
+    return false;
+  }
+
+  /**
+   *
+   * @param fileId
+   * @return
+   */
+  @Override
+  public EipTMessageFile findMessageFile(int fileId) {
+    return Database.get(EipTMessageFile.class, fileId);
+  }
 }

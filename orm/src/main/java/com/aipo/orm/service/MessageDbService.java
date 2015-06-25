@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.aipo.orm.model.portlet.EipTMessage;
+import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
 import com.aipo.orm.service.request.SearchOptions;
 
@@ -41,5 +42,9 @@ public interface MessageDbService {
 
   public EipTMessageRoom updateRoom(Integer roomId, String username,
       String name, List<String> memberNameList);
+
+  public EipTMessageFile findMessageFile(int fileId);
+
+  public boolean isJoinRoom(int roomId, String username);
 
 }
