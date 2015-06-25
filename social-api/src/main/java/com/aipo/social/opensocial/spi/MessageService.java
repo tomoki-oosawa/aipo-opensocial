@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.spi;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -54,6 +55,7 @@ public interface MessageService {
 
   public InputStream getRoomIcon(String roomId, SecurityToken token)
       throws ProtocolException;
+
   public Future<ALFile> getMessageFiles(UserId userId,
       CollectionOptions options, Set<String> fields, String fileId,
       SecurityToken token);
