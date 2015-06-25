@@ -18,6 +18,7 @@
  */
 package com.aipo.orm.service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -41,5 +42,7 @@ public interface MessageDbService {
 
   public EipTMessageRoom updateRoom(Integer roomId, String username,
       String name, List<String> memberNameList);
+
+  public InputStream getPhoto(String roomId);
 
 }

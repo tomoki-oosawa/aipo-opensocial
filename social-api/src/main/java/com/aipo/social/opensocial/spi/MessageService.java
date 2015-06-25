@@ -18,11 +18,13 @@
  */
 package com.aipo.social.opensocial.spi;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
@@ -50,4 +52,6 @@ public interface MessageService {
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, String roomId, SecurityToken token);
 
+  public InputStream getRoomIcon(String roomId, SecurityToken token)
+      throws ProtocolException;
 }

@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.spi;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -484,5 +485,24 @@ public class AipoMessageService extends AbstractService implements
     result = assignMessageRoom(model, dummy, token, roomIdInt);
 
     return ImmediateFuture.newInstance(result);
+  }
+
+  /**
+   * @param roomId
+   * @param token
+   * @return
+   * @throws ProtocolException
+   */
+  @Override
+  public InputStream getRoomIcon(String roomId, SecurityToken token)
+      throws ProtocolException {
+
+    setUp(token);
+
+    InputStream roomIcon = messageDbService.getPhoto(roomId);
+    if (roomIcon == null) {
+      return null;
+    }
+    return roomIcon;
   }
 }

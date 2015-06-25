@@ -19,6 +19,8 @@
 
 package com.aipo.orm.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -630,5 +632,40 @@ public class AipoMessageDbService implements MessageDbService {
       }
     }
     return false;
+  }
+
+  /**
+   * @param roomId
+   * @return
+   */
+  @Override
+  public InputStream getPhoto(String roomId) {
+    if (roomId == null) {
+      return null;
+    }
+
+    StringBuilder select = new StringBuilder();
+    select.append(" select t1.room_id, t1.photo_smartphone ");
+    select.append(" from eip_t_message_room as t1 ");
+    select.append(" where t1.room_id = #bind($roomId) ");
+
+    String query = select.toString();
+
+    EipTMessageRoom room =
+      Database
+        .sql(EipTMessageRoom.class, query)
+        .param("roomId", roomId)
+        .fetchSingle();
+
+    if (room == null) {
+      return null;
+    }
+
+    byte[] photo = room.getPhotoSmartphone();
+    if (photo == null) {
+      return null;
+    }
+
+    return new ByteArrayInputStream(photo);
   }
 }
