@@ -210,6 +210,18 @@ public class AipoStorageService extends AbstractService implements
   }
 
   @Override
+  public String getContentType(ALFile file, SecurityToken paramSecurityToken)
+      throws ProtocolException, FileNotFoundException {
+
+    String documentPath =
+      getSaveDirPath(FILE_DIR, file.getCategoryKey(), file.getUserId());
+
+    return getContentType(
+      documentPath + separator() + file.getFilePath(),
+      paramSecurityToken);
+  }
+
+  @Override
   public String getContentType(String filePath, SecurityToken paramSecurityToken)
       throws ProtocolException, FileNotFoundException {
     String contenType = null;

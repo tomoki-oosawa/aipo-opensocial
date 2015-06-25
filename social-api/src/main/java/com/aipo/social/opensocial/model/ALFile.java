@@ -34,10 +34,6 @@ public interface ALFile {
 
   public void setFilePath(String filePath);
 
-  public String getDocumentPath();
-
-  public void setDocumentPath(String documentPath);
-
   public String getUserId();
 
   public void setUserId(String userId);

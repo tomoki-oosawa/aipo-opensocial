@@ -48,6 +48,9 @@ public interface StorageService {
   public long getFileSize(String rootPath, String dir, String filename)
       throws ProtocolException;
 
+  public String getContentType(ALFile file, SecurityToken paramSecurityToken)
+      throws ProtocolException, FileNotFoundException;
+
   public String getContentType(String filePath, SecurityToken paramSecurityToken)
       throws ProtocolException, FileNotFoundException;
 

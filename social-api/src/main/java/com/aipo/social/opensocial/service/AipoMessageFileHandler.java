@@ -97,7 +97,15 @@ public class AipoMessageFileHandler {
           null,
           new UnsupportedOperationException());
       }
-      return new StreamContent("image/jpeg", stream);
+      String contentType =
+        storageService.getContentType(file.get(), request.getToken());
+      if (contentType == null) {
+        throw new ProtocolException(
+          501,
+          null,
+          new UnsupportedOperationException());
+      }
+      return new StreamContent(contentType, stream);
     } catch (Exception e) {
       // ignore
     }

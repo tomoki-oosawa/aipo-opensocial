@@ -31,8 +31,6 @@ public class ALFileImpl implements ALFile {
 
   private String filePath;
 
-  private String documentPath;
-
   private String userId;
 
   private int fileSize;
@@ -169,21 +167,5 @@ public class ALFileImpl implements ALFile {
   @Override
   public void setUserId(String userId) {
     this.userId = userId;
-  }
-
-  /**
-   * @return
-   */
-  @Override
-  public String getDocumentPath() {
-    return documentPath;
-  }
-
-  /**
-   * @param documentPath
-   */
-  @Override
-  public void setDocumentPath(String documentPath) {
-    this.documentPath = documentPath;
   }
 }
