@@ -37,10 +37,10 @@ import org.apache.shindig.common.servlet.InjectedServlet;
 import org.apache.shindig.social.core.oauth2.OAuth2NormalizedResponse;
 import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.core.oauth2.OAuth2Servlet;
-import org.apache.shindig.social.core.oauth2.OAuth2TokenHandler;
 import org.json.JSONObject;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
  * Main servlet to catch OAuth 2.0 requests.
@@ -55,7 +55,7 @@ public class AipoOAuth2Servlet extends InjectedServlet {
 
   private static AipoOAuth2AuthorizationHandler authorizationHandler;
 
-  private static OAuth2TokenHandler tokenHandler;
+  private static AipoOAuth2TokenHandler tokenHandler;
 
   // class name for logging purpose
   private static final String classname = OAuth2Servlet.class.getName();
@@ -65,9 +65,11 @@ public class AipoOAuth2Servlet extends InjectedServlet {
     MessageKeys.MESSAGES);
 
   @Inject
-  public void setOAuth2Service(OAuth2Service oauthService) {
-    authorizationHandler = new AipoOAuth2AuthorizationHandler(oauthService);
-    tokenHandler = new OAuth2TokenHandler(oauthService);
+  public void setOAuth2Service(OAuth2Service oauthService,
+      @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
+    authorizationHandler =
+      new AipoOAuth2AuthorizationHandler(oauthService, accessTokenExpires);
+    tokenHandler = new AipoOAuth2TokenHandler(oauthService, accessTokenExpires);
   }
 
   @Override

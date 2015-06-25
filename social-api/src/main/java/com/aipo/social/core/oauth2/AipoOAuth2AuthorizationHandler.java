@@ -41,8 +41,12 @@ public class AipoOAuth2AuthorizationHandler {
 
   private final OAuth2Service service;
 
-  public AipoOAuth2AuthorizationHandler(OAuth2Service service) {
+  private final long accessTokenExpires;
+
+  public AipoOAuth2AuthorizationHandler(OAuth2Service service,
+      long accessTokenExpires) {
     this.service = service;
+    this.accessTokenExpires = accessTokenExpires;
   }
 
   /**
@@ -87,15 +91,14 @@ public class AipoOAuth2AuthorizationHandler {
             // implicit flow
             service.validateRequestForAccessToken(normalizedReq);
             OAuth2Code accessToken = service.grantAccessToken(normalizedReq);
-            OAuth2Code refreshToken = service.grantRefreshToken(normalizedReq);
+            // OAuth2Code refreshToken =
+            // service.grantRefreshToken(normalizedReq);
 
             // send response
             normalizedResp.setAccessToken(accessToken.getValue());
             normalizedResp.setTokenType(TokenFormat.BEARER.toString());
-            normalizedResp.setExpiresIn((accessToken.getExpiration() - System
-              .currentTimeMillis())
-              + "");
-            normalizedResp.setRefreshToken(refreshToken.getValue());
+            normalizedResp.setExpiresIn((accessTokenExpires / 1000) + "");
+            // normalizedResp.setRefreshToken(refreshToken.getValue());
             if (normalizedReq.getState() != null) {
               normalizedResp.setState(normalizedReq.getState());
             }
