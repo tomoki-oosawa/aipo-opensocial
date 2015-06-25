@@ -18,23 +18,40 @@
  */
 package com.aipo.social.opensocial.service;
 
+import java.io.InputStream;
+import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
+import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
+import org.apache.shindig.social.opensocial.spi.CollectionOptions;
+import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.container.protocol.StreamContent;
+import com.aipo.social.opensocial.model.ALFile;
+import com.aipo.social.opensocial.spi.MessageService;
+import com.aipo.social.opensocial.spi.StorageService;
 import com.google.inject.Inject;
 
 /**
  * Message API :files
  *
  */
-@Service(name = "messages", path = "/messageFiles/{userId}+/{groupId}/{fileId}+")
+@Service(name = "messageFiles", path = "/{userId}+/{groupId}/{fileId}+")
 public class AipoMessageFileHandler {
 
+  private final StorageService storageService;
+
+  private final MessageService messageService;
+
   @Inject
-  public AipoMessageFileHandler() {
+  public AipoMessageFileHandler(StorageService storageService,
+      MessageService messageService) {
+    this.storageService = storageService;
+    this.messageService = messageService;
   }
 
   /**
@@ -42,14 +59,49 @@ public class AipoMessageFileHandler {
    *
    * @param request
    * @return
+   * @throws ProtocolException
    */
   @Operation(httpMethods = "GET")
-  public Future<?> get(SocialRequestItem request) {
-    /*-
-    {
-      files : [ { fileId: 1, fileName : "sample.jpg", fileSize : 11223 }, { fileId: 2, fileName : "sample.pdf", fileSize : 123123 } ]
+  public StreamContent get(SocialRequestItem request) throws ProtocolException {
+    String fileId = request.getParameter("fileId");
+    Set<UserId> userIds = request.getUsers();
+
+    // Preconditions
+    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+    HandlerPreconditions.requireSingular(
+      userIds,
+      "Only one userId must be specified");
+
+    CollectionOptions options = new CollectionOptions(request);
+
+    Future<ALFile> file =
+      messageService.getMessageFiles(
+        userIds.iterator().next(),
+        options,
+        request.getFields(),
+        fileId,
+        request.getToken());
+    if (file == null) {
+      throw new ProtocolException(
+        501,
+        null,
+        new UnsupportedOperationException());
     }
-     */
-    throw new UnsupportedOperationException();
+
+    try {
+      InputStream stream =
+        storageService.getFile(file.get(), request.getToken());
+      if (stream == null) {
+        throw new ProtocolException(
+          501,
+          null,
+          new UnsupportedOperationException());
+      }
+      return new StreamContent("image/jpeg", stream);
+    } catch (Exception e) {
+      // ignore
+    }
+
+    throw new ProtocolException(501, null, new UnsupportedOperationException());
   }
 }
