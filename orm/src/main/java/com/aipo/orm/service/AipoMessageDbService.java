@@ -19,8 +19,6 @@
 
 package com.aipo.orm.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -667,5 +665,29 @@ public class AipoMessageDbService implements MessageDbService {
     }
 
     return new ByteArrayInputStream(photo);
+  }
+
+  @Override
+  public boolean isJoinRoom(int roomId, String username) {
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      return false;
+    }
+    Integer userId = turbineUser.getUserId();
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
+      return isJoinRoom(room, userId);
+    }
+    return false;
+  }
+
+  /**
+   *
+   * @param fileId
+   * @return
+   */
+  @Override
+  public EipTMessageFile findMessageFile(int fileId) {
+    return Database.get(EipTMessageFile.class, fileId);
   }
 }

@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.DateUtil;
 import org.apache.shindig.common.util.ImmediateFuture;
@@ -40,16 +42,23 @@ import com.aipo.orm.service.MessageDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
+import com.aipo.social.core.model.ALFileImpl;
 import com.aipo.social.core.model.ALMessageFileImpl;
 import com.aipo.social.core.model.ALMessageImpl;
 import com.aipo.social.core.model.ALMessageRoomImpl;
+import com.aipo.social.opensocial.model.ALFile;
 import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageFile;
 import com.aipo.social.opensocial.model.ALMessageRoom;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class AipoMessageService extends AbstractService implements
     MessageService {
+
+  @Inject
+  @Named("aipo.message.categorykey")
+  private String MESSAGE_CATEGORY_KEY;
 
   private final MessageDbService messageDbService;
 
@@ -504,5 +513,111 @@ public class AipoMessageService extends AbstractService implements
       return null;
     }
     return roomIcon;
+  }
+
+  /**
+   * @param userId
+   * @param options
+   * @param fields
+   * @param roomId
+   * @param messageId
+   * @param token
+   * @return
+   */
+  @Override
+  public Future<ALFile> getMessageFiles(UserId userId,
+      CollectionOptions options, Set<String> fields, String fileId,
+      SecurityToken token) {
+
+    // TODO: FIELDS
+
+    setUp(token);
+
+    Integer fileIdInt = null;
+
+    // File
+    try {
+      fileIdInt = Integer.valueOf(fileId);
+    } catch (Throwable ignore) {
+      //
+    }
+
+    // /messages/rooms/\(userId)/\(groupId)
+    // {userId} が所属しているルームを取得
+    checkSameViewer(userId, token);
+    EipTMessageFile model = null;
+    if (fileIdInt != null) {
+      // ファイル
+      model = messageDbService.findMessageFile(fileIdInt);
+    } else {
+      // ダイレクトメッセージ
+    }
+    if (model != null) {
+      // roomメンバーチェック
+      checkSameRoomMember(userId, token, model.getRoomId());
+    } else {
+      // ダイレクトメッセージ
+    }
+
+    ALFile result = new ALFileImpl();
+    result = assignFile(model);
+
+    return ImmediateFuture.newInstance(result);
+  }
+
+  /**
+   * @param room
+   * @param fields
+   * @param token
+   * @return
+   */
+  private ALFile assignFile(EipTMessageFile model) {
+    ALFile file = new ALFileImpl();
+
+    file.setFileId(model.getFileId());
+    file.setFileName(model.getFileName());
+    file.setFilePath(model.getFilePath());
+    file.setCategoryKey(MESSAGE_CATEGORY_KEY);
+    file.setUserId(String.valueOf(model.getOwnerId()));
+
+    return file;
+  }
+
+  /**
+   *
+   * @param userId
+   * @param token
+   * @throws ProtocolException
+   */
+  protected void checkSameRoomMember(UserId userId, SecurityToken token,
+      String roomId) throws ProtocolException {
+
+    Integer roomIdInt = null;
+    try {
+      roomIdInt = Integer.valueOf(roomId);
+      checkSameRoomMember(userId, token, roomIdInt);
+    } catch (Throwable ignore) {
+      //
+    }
+  }
+
+  /**
+   *
+   * @param userId
+   * @param token
+   * @throws ProtocolException
+   */
+  protected void checkSameRoomMember(UserId userId, SecurityToken token,
+      Integer roomId) throws ProtocolException {
+
+    String username = getUserId(userId, token);
+    if (roomId != null && username != null && !"".equals(username)) {
+      boolean isJoinRoom = messageDbService.isJoinRoom(roomId, username);
+      if (!isJoinRoom) {
+        throw new ProtocolException(
+          HttpServletResponse.SC_BAD_REQUEST,
+          "Access not dennied.");
+      }
+    }
   }
 }

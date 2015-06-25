@@ -37,6 +37,7 @@ import com.aipo.social.core.oauth.AipoAuthenticationHandlerProvider;
 import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.aipo.social.opensocial.service.AipoHandler;
+import com.aipo.social.opensocial.service.AipoMessageFileHandler;
 import com.aipo.social.opensocial.service.AipoMessageHandler;
 import com.aipo.social.opensocial.service.AipoMessageRoomHandler;
 import com.aipo.social.opensocial.service.AipoPersonHandler;
@@ -96,6 +97,7 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoGroupHandler.class,
       AipoMessageRoomHandler.class,
       AipoMessageHandler.class,
-      AipoPersonIconHandler.class);
+      AipoPersonIconHandler.class,
+      AipoMessageFileHandler.class);
   }
 }
