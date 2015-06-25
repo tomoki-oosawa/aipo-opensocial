@@ -53,6 +53,8 @@ public class AipoOAuth2Service implements OAuth2Service {
 
   private final long accessTokenExpires;
 
+  private final long refreshTokenExpires;
+
   // validators
   private final OAuth2RequestValidator accessTokenValidator;
 
@@ -65,11 +67,13 @@ public class AipoOAuth2Service implements OAuth2Service {
       TurbineUserDbService turbineUserDbService, OAuth2TokenDbService db,
 
       @Named("shindig.oauth2.authCodeExpiration") long authCodeExpires,
-      @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
+      @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires,
+      @Named("shindig.oauth2.refreshTokenExpiration") long refreshTokenExpires) {
     this.store = store;
 
     this.authCodeExpires = authCodeExpires;
     this.accessTokenExpires = accessTokenExpires;
+    this.refreshTokenExpires = refreshTokenExpires;
 
     authCodeValidator = new AuthorizationCodeRequestValidator(store);
     accessTokenValidator =
@@ -259,7 +263,32 @@ public class AipoOAuth2Service implements OAuth2Service {
    */
   @Override
   public OAuth2Code generateRefreshToken(OAuth2NormalizedRequest req) {
-    throw new RuntimeException("not yet implemented");
-  }
+    // generate token value
+    AipoOAuth2Code refreshToken = new AipoOAuth2Code();
+    refreshToken.setType(CodeType.REFRESH_TOKEN);
+    refreshToken.setValue(UUID.randomUUID().toString());
+    refreshToken
+      .setExpiration(System.currentTimeMillis() + refreshTokenExpires);
+    refreshToken.setUserId((String) req.get("orgId")
+      + ":"
+      + (String) req.get("username"));
+    if (req.getRedirectURI() != null) {
+      refreshToken.setRedirectURI(req.getRedirectURI());
+    } else {
+      refreshToken.setRedirectURI(store
+        .getClient(req.getClientId())
+        .getRedirectURI());
+    }
 
+    // associate with existing authorization code, if an auth code exists.
+    if (req.getAuthorizationCode() != null) {
+      OAuth2Code accessToken = store.getAccessToken(req.getAccessToken());
+      refreshToken.setRelatedAccessToken(accessToken);
+      refreshToken.setClient(accessToken.getClient());
+      if (accessToken.getScope() != null) {
+        refreshToken.setScope(new ArrayList<String>(accessToken.getScope()));
+      }
+    }
+    return refreshToken;
+  }
 }

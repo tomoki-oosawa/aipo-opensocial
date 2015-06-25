@@ -72,10 +72,12 @@ public class OAuth2TokenHandler {
       service.authenticateClient(normalizedReq);
       service.validateRequestForAccessToken(normalizedReq);
       OAuth2Code accessToken = service.grantAccessToken(normalizedReq);
+      OAuth2Code refreshToken = service.grantRefreshToken(normalizedReq);
 
       // send response
       OAuth2NormalizedResponse normalizedResp = new OAuth2NormalizedResponse();
       normalizedResp.setAccessToken(accessToken.getValue());
+      normalizedResp.setRefreshToken(refreshToken.getValue());
       normalizedResp.setTokenType(TokenFormat.BEARER.toString());
       normalizedResp.setExpiresIn((accessToken.getExpiration()
         - System.currentTimeMillis() + ""));
