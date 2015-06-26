@@ -52,15 +52,22 @@ import com.google.inject.name.Named;
 public class AipoStorageService extends AbstractService implements
     StorageService {
 
-  @Inject
-  @Named("aipo.filedir")
-  private String FILE_DIR;
+  private final String fireDir;
 
-  @Inject
-  @Named("aipo.tmp.fileupload.attachment.directory")
-  private String FOLDER_TMP_FOR_ATTACHMENT_FILES;
+  private final String tmpFileuploadAttachmentDir;
 
   private final String EXT_FILENAME = ".txt";
+
+  /**
+  *
+  */
+  @Inject
+  public AipoStorageService(
+      @Named("aipo.filedir") String fireDir,
+      @Named("aipo.tmp.fileupload.attachment.directory") String tmpFileuploadAttachmentDir) {
+    this.fireDir = fireDir;
+    this.tmpFileuploadAttachmentDir = tmpFileuploadAttachmentDir;
+  }
 
   @Override
   public void saveFile(InputStream is, String folderPath, String filename,
@@ -201,7 +208,7 @@ public class AipoStorageService extends AbstractService implements
       throws ProtocolException {
 
     File path =
-      new File(getAbsolutePath(FOLDER_TMP_FOR_ATTACHMENT_FILES)
+      new File(getAbsolutePath(tmpFileuploadAttachmentDir)
         + separator()
         + Database.getDomainName()
         + separator()
@@ -489,7 +496,7 @@ public class AipoStorageService extends AbstractService implements
 
     String documentPath =
       getSaveDirPath(
-        FILE_DIR,
+        fireDir,
         file.getCategoryKey(),
         file.getUserId(),
         paramSecurityToken);
@@ -710,7 +717,7 @@ public class AipoStorageService extends AbstractService implements
 
     String documentPath =
       getSaveDirPath(
-        FILE_DIR,
+        fireDir,
         file.getCategoryKey(),
         file.getUserId(),
         paramSecurityToken);
@@ -742,9 +749,10 @@ public class AipoStorageService extends AbstractService implements
   @Override
   public long getTmpFolderSize(int uid, String dir,
       SecurityToken paramSecurityToken) throws ProtocolException {
-    return getFolderSize(FOLDER_TMP_FOR_ATTACHMENT_FILES, uid
-      + separator()
-      + dir, paramSecurityToken);
+    return getFolderSize(
+      tmpFileuploadAttachmentDir,
+      uid + separator() + dir,
+      paramSecurityToken);
   }
 
   /**
@@ -762,7 +770,7 @@ public class AipoStorageService extends AbstractService implements
       String destRootPath, String destDir, String destFileName,
       SecurityToken paramSecurityToken) throws ProtocolException {
     return copyFile(
-      FOLDER_TMP_FOR_ATTACHMENT_FILES,
+      tmpFileuploadAttachmentDir,
       uid + separator() + srcDir,
       srcFileName,
       destRootPath,
@@ -780,9 +788,10 @@ public class AipoStorageService extends AbstractService implements
   @Override
   public boolean deleteTmpFolder(int uid, String dir,
       SecurityToken paramSecurityToken) throws ProtocolException {
-    return deleteFolder(FOLDER_TMP_FOR_ATTACHMENT_FILES, uid
-      + separator()
-      + dir, paramSecurityToken);
+    return deleteFolder(
+      tmpFileuploadAttachmentDir,
+      uid + separator() + dir,
+      paramSecurityToken);
   }
 
   /**
@@ -797,8 +806,10 @@ public class AipoStorageService extends AbstractService implements
   public InputStream getTmpFile(int uid, String folderName, String finename,
       SecurityToken paramSecurityToken) throws FileNotFoundException,
       ProtocolException {
-    return getFile(FOLDER_TMP_FOR_ATTACHMENT_FILES, uid
-      + separator()
-      + folderName, finename, paramSecurityToken);
+    return getFile(
+      tmpFileuploadAttachmentDir,
+      uid + separator() + folderName,
+      finename,
+      paramSecurityToken);
   }
 }
