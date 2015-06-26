@@ -501,9 +501,7 @@ public class AipoStorageService extends AbstractService implements
         file.getUserId(),
         paramSecurityToken);
 
-    return getFile(
-      documentPath + separator() + file.getFilePath(),
-      paramSecurityToken);
+    return getFile(documentPath + file.getFilePath(), paramSecurityToken);
   }
 
   /**
