@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 
+ *
  */
 public class ContainerFilter implements Filter {
 
@@ -41,6 +41,7 @@ public class ContainerFilter implements Filter {
    * @param filterConfig
    * @throws ServletException
    */
+  @Override
   public void init(FilterConfig filterConfig) throws ServletException {
     this.filterConfig = filterConfig;
   }
@@ -52,6 +53,7 @@ public class ContainerFilter implements Filter {
    * @throws IOException
    * @throws ServletException
    */
+  @Override
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain chain) throws IOException, ServletException {
     ServletContext prevServletContext = ServletContextLocator.get();
@@ -62,7 +64,8 @@ public class ContainerFilter implements Filter {
       ServletContextLocator.set(filterConfig.getServletContext());
       HttpServletRequestLocator.set((HttpServletRequest) request);
       HttpServletResponseLocator.set((HttpServletResponse) response);
-      chain.doFilter(request, response);
+      chain.doFilter(new BufferedServletRequestWrapper(
+        (HttpServletRequest) request), response);
     } finally {
       ServletContextLocator.set(prevServletContext);
       HttpServletRequestLocator.set(prevHttpServletRequest);
@@ -71,8 +74,9 @@ public class ContainerFilter implements Filter {
   }
 
   /**
-   * 
+   *
    */
+  @Override
   public void destroy() {
   }
 

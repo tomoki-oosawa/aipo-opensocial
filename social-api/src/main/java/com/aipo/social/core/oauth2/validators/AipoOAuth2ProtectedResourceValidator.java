@@ -18,6 +18,8 @@
  */
 package com.aipo.social.core.oauth2.validators;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
@@ -47,29 +49,26 @@ public class AipoOAuth2ProtectedResourceValidator implements
 
   }
 
-  /**
-   * TODO (Matt): implement scope handling.
-   */
   @Override
   public void validateRequestForResource(OAuth2NormalizedRequest req,
       Object resourceRequest) throws OAuth2Exception {
 
     OAuth2Code token = store.getAccessToken(req.getAccessToken());
     if (token == null) {
-      throwAccessDenied("Access token is invalid.");
+      throwAccessDenied("Invalid or expired token");
     }
-    if (token.getExpiration() > -1
+    if (token.getExpiration() > 0
       && token.getExpiration() < System.currentTimeMillis()) {
-      throwAccessDenied("Access token has expired.");
+      throwAccessDenied("Invalid or expired token");
+      Date d = new Date();
+      d.setTime(token.getExpiration());
+      throwAccessDenied(d.toString());
     }
     if (resourceRequest != null) {
-      // TODO (Matt): validate that requested resource is within scope
-      // XXX: Scopeは未実装のため確認しなくて良い
+      // TODO: Scope の検証
     }
   }
 
-  // TODO(plindner): change this into a constructor or .create() on
-  // OAuth2Exception
   private void throwAccessDenied(String msg) throws OAuth2Exception {
     OAuth2NormalizedResponse resp = new OAuth2NormalizedResponse();
     resp.setError(ErrorType.ACCESS_DENIED.toString());

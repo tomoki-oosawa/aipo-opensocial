@@ -104,6 +104,7 @@ public class AipoOAuth2Service implements OAuth2Service {
   @Override
   public void authenticateClient(OAuth2NormalizedRequest req)
       throws OAuth2Exception {
+    // TODO: client の検証
     /*-
     OAuth2Client client = store.getClient(req.getClientId());
     if (client == null) {

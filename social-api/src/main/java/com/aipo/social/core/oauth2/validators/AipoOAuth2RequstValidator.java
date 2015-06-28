@@ -52,6 +52,7 @@ public class AipoOAuth2RequstValidator implements OAuth2RequestValidator {
     // grantValidators.add(new AuthCodeGrantValidator(store));
     // grantValidators.add(new ClientCredentialsGrantValidator(store));
     grantValidators.add(new PasswordGrantValidator(turbineUserDbService));
+    grantValidators.add(new RefreshTokenGrantValidator(store));
     this.store = store;
   }
 
@@ -61,7 +62,8 @@ public class AipoOAuth2RequstValidator implements OAuth2RequestValidator {
    */
   @Override
   public void validateRequest(OAuth2NormalizedRequest req)
-      throws OAuth2Exception {
+
+  throws OAuth2Exception {
     if (req.getGrantType() != null) {
       for (OAuth2GrantValidator validator : grantValidators) {
         if (validator.getGrantType().equals(req.getGrantType())) {

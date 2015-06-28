@@ -32,6 +32,8 @@ import org.apache.shindig.social.core.oauth2.OAuth2NormalizedRequest;
 import org.apache.shindig.social.core.oauth2.OAuth2NormalizedResponse;
 import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.core.oauth2.OAuth2TokenHandler;
+import org.apache.shindig.social.core.oauth2.OAuth2Types.ErrorType;
+import org.apache.shindig.social.core.oauth2.OAuth2Types.GrantType;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.TokenFormat;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -81,12 +83,19 @@ public class AipoOAuth2TokenHandler {
       service.authenticateClient(normalizedReq);
       service.validateRequestForAccessToken(normalizedReq);
       OAuth2Code accessToken = service.grantAccessToken(normalizedReq);
-      OAuth2Code refreshToken = service.grantRefreshToken(normalizedReq);
 
       // send response
       OAuth2NormalizedResponse normalizedResp = new OAuth2NormalizedResponse();
       normalizedResp.setAccessToken(accessToken.getValue());
-      normalizedResp.setRefreshToken(refreshToken.getValue());
+      if (normalizedReq.getGrantType().equals(
+        GrantType.REFRESH_TOKEN.toString())) {
+        normalizedResp.setRefreshToken(normalizedReq
+          .get("refresh_token")
+          .toString());
+      } else {
+        OAuth2Code refreshToken = service.grantRefreshToken(normalizedReq);
+        normalizedResp.setRefreshToken(refreshToken.getValue());
+      }
       normalizedResp.setTokenType(TokenFormat.BEARER.toString());
       normalizedResp.setExpiresIn((accessTokenExpires / 1000) + "");
       normalizedResp.setScope(listToString(accessToken.getScope()));
@@ -98,6 +107,14 @@ public class AipoOAuth2TokenHandler {
       return normalizedResp;
     } catch (OAuth2Exception oae) {
       return oae.getNormalizedResponse();
+    } catch (Throwable t) {
+      t.printStackTrace();
+      OAuth2NormalizedResponse error = new OAuth2NormalizedResponse();
+      error.setError(ErrorType.SERVER_ERROR.toString());
+      error.setErrorDescription("Server error occurred");
+      error.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      error.setBodyReturned(true);
+      return error;
     }
   }
 

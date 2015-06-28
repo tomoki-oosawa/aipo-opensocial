@@ -21,25 +21,24 @@ package com.aipo.social.core.oauth2.validators;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shindig.social.core.oauth2.AipoOAuth2Code;
+import org.apache.shindig.social.core.oauth2.OAuth2Code;
+import org.apache.shindig.social.core.oauth2.OAuth2DataService;
 import org.apache.shindig.social.core.oauth2.OAuth2Exception;
 import org.apache.shindig.social.core.oauth2.OAuth2NormalizedRequest;
 import org.apache.shindig.social.core.oauth2.OAuth2NormalizedResponse;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.ErrorType;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2GrantValidator;
 
-import com.aipo.orm.Database;
-import com.aipo.orm.model.security.TurbineUser;
-import com.aipo.orm.service.TurbineUserDbService;
-
 /**
  *
  */
-public class PasswordGrantValidator implements OAuth2GrantValidator {
+public class RefreshTokenGrantValidator implements OAuth2GrantValidator {
 
-  private final TurbineUserDbService turbineUserDbService;
+  private final OAuth2DataService store;
 
-  public PasswordGrantValidator(TurbineUserDbService turbineUserDbService) {
-    this.turbineUserDbService = turbineUserDbService;
+  public RefreshTokenGrantValidator(OAuth2DataService store) {
+    this.store = store;
 
   }
 
@@ -50,19 +49,28 @@ public class PasswordGrantValidator implements OAuth2GrantValidator {
   @Override
   public void validateRequest(OAuth2NormalizedRequest req)
       throws OAuth2Exception {
-    String username = (String) req.get("username");
-    String password = (String) req.get("password");
-    if (username == null || password == null) {
-      throwError(
-        ErrorType.INVALID_REQUEST,
-        "username and password are required");
+    String refreshToken = (String) req.get("refresh_token");
+    if (refreshToken == null) {
+      throwError(ErrorType.INVALID_REQUEST, "refresh_token is required");
     }
-    TurbineUser user = turbineUserDbService.auth(username, password);
-    if (user == null) {
-      throwError(ErrorType.INVALID_GRANT, "Bad username or password");
+    OAuth2Code code = store.getRefreshToken(refreshToken);
+    if (code == null) {
+      throwError(ErrorType.INVALID_GRANT, "Invalid or expired token");
     }
-    req.put("orgId", Database.getDomainName());
-    req.put("username", user.getLoginName());
+    if (code.getExpiration() > 0
+      && code.getExpiration() < System.currentTimeMillis()) {
+      throwError(ErrorType.INVALID_GRANT, "Invalid or expired token");
+    }
+    if (code instanceof AipoOAuth2Code) {
+      AipoOAuth2Code oauth2Code = (AipoOAuth2Code) code;
+      String userId = oauth2Code.getUserId();
+      String[] split = userId.split(":");
+      req.put("orgId", split[0]);
+      req.put("username", split[1]);
+    } else {
+      throwError(ErrorType.INVALID_GRANT, "Invalid or expired token");
+    }
+
   }
 
   /**
@@ -70,7 +78,7 @@ public class PasswordGrantValidator implements OAuth2GrantValidator {
    */
   @Override
   public String getGrantType() {
-    return "password";
+    return "refresh_token";
   }
 
   private void throwError(ErrorType errorType, String msg)

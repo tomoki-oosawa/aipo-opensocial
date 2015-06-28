@@ -95,7 +95,7 @@ public class AipoMessageHandler {
    * @return
    * @return
    */
-  @Operation(httpMethods = "POST", bodyParam = "body")
+  @Operation(httpMethods = "POST")
   public Future<ALMessage> create(SocialRequestItem request) {
 
     // エラーが出ているため一旦該当部分をコメントアウト
