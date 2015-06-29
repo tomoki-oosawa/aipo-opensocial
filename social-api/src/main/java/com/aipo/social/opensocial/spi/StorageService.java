@@ -105,4 +105,10 @@ public interface StorageService {
 
   public String getContentType(String filePath, SecurityToken paramSecurityToken)
       throws ProtocolException, FileNotFoundException;
+
+  public String getFileTypeName(String fileName,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public boolean isImage(String fileName, SecurityToken paramSecurityToken)
+      throws ProtocolException;
 }

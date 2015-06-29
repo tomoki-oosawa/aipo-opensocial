@@ -36,6 +36,7 @@ import java.util.Calendar;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.shindig.auth.SecurityToken;
@@ -736,6 +737,57 @@ public class AipoStorageService extends AbstractService implements
       contenType = hData.getContentType();
     }
     return contenType;
+  }
+
+  /**
+   * Java1.5：BMP, bmp, jpeg, wbmp, gif, png, JPG, jpg, WBMP, JPEG
+   *
+   * @param fileType
+   * @return
+   */
+  @Override
+  public boolean isImage(String fileName, SecurityToken paramSecurityToken)
+      throws ProtocolException {
+    if (fileName == null || "".equals(fileName)) {
+      return false;
+    }
+
+    int index = fileName.lastIndexOf(".");
+    if (index < 1) {
+      return false;
+    }
+
+    String fileType = getFileTypeName(fileName, paramSecurityToken);
+
+    String[] format = ImageIO.getWriterFormatNames();
+    int len = format.length;
+    for (int i = 0; i < len; i++) {
+      if (format[i].equals(fileType)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * ファイル名からファイルの拡張子を取得する。
+   *
+   * @param fileName
+   * @return
+   */
+  @Override
+  public String getFileTypeName(String fileName,
+      SecurityToken paramSecurityToken) throws ProtocolException {
+    if (fileName == null || "".equals(fileName)) {
+      return null;
+    }
+
+    int index = fileName.lastIndexOf(".");
+    if (index < 1) {
+      return null;
+    }
+
+    return fileName.substring(index + 1, fileName.length());
   }
 
   /**
