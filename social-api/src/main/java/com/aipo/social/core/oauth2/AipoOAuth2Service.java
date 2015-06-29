@@ -268,8 +268,10 @@ public class AipoOAuth2Service implements OAuth2Service {
     AipoOAuth2Code refreshToken = new AipoOAuth2Code();
     refreshToken.setType(CodeType.REFRESH_TOKEN);
     refreshToken.setValue(UUID.randomUUID().toString());
-    refreshToken
-      .setExpiration(System.currentTimeMillis() + refreshTokenExpires);
+    if (refreshTokenExpires > 0) {
+      refreshToken.setExpiration(System.currentTimeMillis()
+        + refreshTokenExpires);
+    }
     refreshToken.setUserId((String) req.get("orgId")
       + ":"
       + (String) req.get("username"));

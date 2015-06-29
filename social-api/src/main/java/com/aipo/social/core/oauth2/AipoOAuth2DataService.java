@@ -218,7 +218,9 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     }
     AipoOAuth2Code code = new AipoOAuth2Code();
     code.setUserId(token.getUserId());
-    code.setExpiration(token.getExpireTime().getTime());
+    if (token.getExpireTime() != null) {
+      code.setExpiration(token.getExpireTime().getTime());
+    }
     code.setType(CodeType.REFRESH_TOKEN);
     code.setValue(token.getToken());
     String scopes = token.getScope();
@@ -248,7 +250,9 @@ public class AipoOAuth2DataService implements OAuth2DataService {
       throw new UnsupportedOperationException();
     }
     token.setCreateDate(new Date());
-    token.setExpireTime(new Date(refreshToken.getExpiration()));
+    if (refreshToken.getExpiration() > 0) {
+      token.setExpireTime(new Date(refreshToken.getExpiration()));
+    }
     StringBuilder scopes = new StringBuilder();
     if (refreshToken.getScope() != null) {
       for (String scope : refreshToken.getScope()) {
