@@ -42,6 +42,7 @@ import com.aipo.social.opensocial.service.AipoMessageHandler;
 import com.aipo.social.opensocial.service.AipoMessageRoomHandler;
 import com.aipo.social.opensocial.service.AipoPersonHandler;
 import com.aipo.social.opensocial.service.AipoPersonIconHandler;
+import com.aipo.social.opensocial.service.AipoRoomIconHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -98,6 +99,7 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoMessageRoomHandler.class,
       AipoMessageHandler.class,
       AipoPersonIconHandler.class,
+      AipoRoomIconHandler.class,
       AipoMessageFileHandler.class);
   }
 }
