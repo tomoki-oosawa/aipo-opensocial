@@ -87,6 +87,7 @@ public class BufferedServletRequestWrapper extends HttpServletRequestWrapper {
     StringBuffer buffer = new StringBuffer();
     BufferedReader reader = request.getReader();
     String line;
+    // while (reader.ready() && (line = reader.readLine()) != null) {
     while ((line = reader.readLine()) != null) {
       buffer.append(line);
     }
