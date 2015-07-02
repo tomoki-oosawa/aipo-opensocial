@@ -36,6 +36,10 @@ public interface ALMessage {
 
   public void setUserId(String paramString);
 
+  public String getTargetUserId();
+
+  public void setTargetUserId(String paramString);
+
   public int getUnreadCount();
 
   public void setUnreadCount(int count);
@@ -65,10 +69,10 @@ public interface ALMessage {
   public void setFiles(List<ALMessageFile> files);
 
   public static enum Field {
-    MESSAGE_ID("messageId"), ROOM_ID("roomId"), USER_ID("userId"), UNREAD_COUNT(
-        "unreadCount"), MEMBER_COUNT("memberCount"), MESSAGE("message"), READ_MEMBERS(
-        "readMembers"), CREATEDATE("createDate"), TRANSACTION_ID(
-        "transactionId"), FILES("files");
+    MESSAGE_ID("messageId"), ROOM_ID("roomId"), USER_ID("userId"), TARGET_USER_ID(
+        "targetUserId"), UNREAD_COUNT("unreadCount"), MEMBER_COUNT(
+        "memberCount"), MESSAGE("message"), READ_MEMBERS("readMembers"), CREATEDATE(
+        "createDate"), TRANSACTION_ID("transactionId"), FILES("files");
 
     private final String jsonString;
 
