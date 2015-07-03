@@ -20,8 +20,10 @@ package com.aipo.social.opensocial.spi;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -38,6 +40,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
+import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.service.MessageDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
@@ -62,12 +65,16 @@ public class AipoMessageService extends AbstractService implements
 
   private final MessageDbService messageDbService;
 
+  private final PushService pushService;
+
   /**
    *
    */
   @Inject
-  public AipoMessageService(MessageDbService turbineUserSercice) {
+  public AipoMessageService(MessageDbService turbineUserSercice,
+      PushService pushService) {
     this.messageDbService = turbineUserSercice;
+    this.pushService = pushService;
   }
 
   /**
@@ -428,6 +435,7 @@ public class AipoMessageService extends AbstractService implements
         message,
         fields);
 
+    push(username, model);
     messageIdInt = model.getMessageId();
 
     ALMessage result = new ALMessageImpl();
@@ -624,4 +632,29 @@ public class AipoMessageService extends AbstractService implements
       }
     }
   }
+
+  /**
+   *
+   * @param userId
+   * @param token
+   * @throws ProtocolException
+   */
+  protected void push(String username, EipTMessage message)
+      throws ProtocolException {
+
+    List<EipTMessageRoomMember> members =
+      messageDbService.getOtherRoomMember(message.getRoomId(), username);
+
+    List<String> recipients = new ArrayList<String>();
+    for (EipTMessageRoomMember member : members) {
+      recipients.add(member.getLoginName());
+    }
+
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("roomId", String.valueOf(message.getRoomId()));
+    params.put("messageId", String.valueOf(message.getMessageId()));
+
+    pushService.pushAsync("messagev2", params, recipients);
+  }
+
 }
