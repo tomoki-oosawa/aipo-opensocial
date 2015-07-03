@@ -420,11 +420,11 @@ public class AipoMessageService extends AbstractService implements
     EipTMessageRoom room = null;
     if (roomIdInt != null) {
       room = messageDbService.findRoom(roomIdInt, username);
+      if (room == null) {
+        throw new ProtocolException(400, "Access denied");
+      }
     } else {
       room = messageDbService.findRoom(username, targetUsername);
-    }
-    if (room == null) {
-      throw new ProtocolException(400, "Access denied");
     }
 
     EipTMessage model =
@@ -434,9 +434,12 @@ public class AipoMessageService extends AbstractService implements
         targetUsername,
         message,
         fields);
-
     push(username, model);
     messageIdInt = model.getMessageId();
+
+    if (room == null) {
+      room = messageDbService.findRoom(username, targetUsername);
+    }
 
     ALMessage result = new ALMessageImpl();
     result = assignMessage(model, room, fields, token, messageIdInt);
