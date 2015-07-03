@@ -47,8 +47,7 @@ public interface MessageService {
       String name, List<String> memberList, SecurityToken token);
 
   public Future<ALMessage> postMessage(UserId userId, Set<String> fields,
-      String roomId, String targetUserId, String message, SecurityToken token,
-      String transactionId);
+      String roomId, String message, SecurityToken token, String transactionId);
 
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, String roomId, SecurityToken token);

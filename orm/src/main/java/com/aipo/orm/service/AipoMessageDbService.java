@@ -487,8 +487,8 @@ public class AipoMessageDbService implements MessageDbService {
 
           Database.commit();
 
-          roomId = room.getRoomId();
         }
+        roomId = room.getRoomId();
       }
 
       EipTMessageRoom room =

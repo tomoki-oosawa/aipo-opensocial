@@ -118,7 +118,6 @@ public class AipoMessageHandler {
       userIds.iterator().next(),
       request.getFields(),
       roomId,
-      "",
       message,
       request.getToken(),
       transactionId);

@@ -389,26 +389,21 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<ALMessage> postMessage(UserId userId, Set<String> fields,
-      String roomId, String targetUserId, String message, SecurityToken token,
-      String transactionId) {
+      String roomId, String message, SecurityToken token, String transactionId) {
     // TODO: FIELDS
 
     setUp(token);
 
     Integer roomIdInt = null;
+    String targetUsername = null;
     Integer messageIdInt = 0;
 
     // Room
     try {
-      if (roomId != null && !"".equals(roomId)) {
-        roomIdInt = Integer.valueOf(roomId);
-      }
+      roomIdInt = Integer.valueOf(roomId);
     } catch (Throwable ignore) {
-    }
-
-    String targetUsername = null;
-    if (targetUserId != null && !"".equals(targetUserId)) {
-      targetUsername = getUserId(targetUserId, token);
+      // ダイレクト
+      targetUsername = getUserId(roomId, token);
     }
 
     // 自分(Viewer)のルームのみ取得可能
