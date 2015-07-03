@@ -489,12 +489,6 @@ public class AipoMessageDbService implements MessageDbService {
 
       return model;
 
-      // TODO:プッシュ通知機能の追加
-      // Map<String, String> params = new HashMap<String, String>();
-      // params.put("roomId", String.valueOf(room.getRoomId()));
-      // params.put("messageId", String.valueOf(model.getMessageId()));
-      // ALPushService.pushAsync("messagev2", params, recipients);
-
     } catch (Exception ex) {
       Database.rollback();
       return null;
@@ -691,5 +685,29 @@ public class AipoMessageDbService implements MessageDbService {
   @Override
   public EipTMessageFile findMessageFile(int fileId) {
     return Database.get(EipTMessageFile.class, fileId);
+  }
+
+  @Override
+  public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
+      String username) {
+    List<EipTMessageRoomMember> list = new ArrayList<EipTMessageRoomMember>();
+    List<EipTMessageRoomMember> members =
+      new ArrayList<EipTMessageRoomMember>();
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      return members;
+    }
+    Integer userId = turbineUser.getUserId();
+
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
+      list = room.getEipTMessageRoomMember();
+      for (EipTMessageRoomMember member : list) {
+        if (member.getUserId().intValue() != userId) {
+          members.add(member);
+        }
+      }
+    }
+    return members;
   }
 }
