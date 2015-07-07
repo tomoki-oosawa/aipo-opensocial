@@ -141,6 +141,8 @@ public class AipoMessageDbService implements MessageDbService {
     select.append(" t2.last_message, ");
     select.append(" last_update_date, ");
     select
+      .append(" (select message_id from eip_t_message t4 where t4.room_id = t2.room_id order by t4.create_date desc limit 1) as last_message_id, ");
+    select
       .append(" (select count(*) from eip_t_message_read t3 where t3.room_id = t2.room_id and t3.user_id = #bind($user_id) and t3.is_read ='F') as unread ");
 
     StringBuilder count = new StringBuilder();
@@ -205,8 +207,17 @@ public class AipoMessageDbService implements MessageDbService {
       String loginName = (String) row.get("login_name");
       String lastName = (String) row.get("last_name");
       String firstName = (String) row.get("first_name");
-      String hasPhoto = (String) row.get("user_has_photo");
-      Date photoModified = (Date) row.get("user_photo_modified");
+      String userHasPhoto = (String) row.get("user_has_photo");
+      Date userPhotoModified = (Date) row.get("user_photo_modified");
+      Long lastMessageId = null;
+      try {
+        lastMessageId = (Long) row.get("last_message_id");
+      } catch (ClassCastException ignore) {
+        Integer lastMessageIdInt = (Integer) row.get("last_message_id");
+        if (lastMessageIdInt != null) {
+          lastMessageId = lastMessageIdInt.longValue();
+        }
+      }
 
       EipTMessageRoom object =
         Database.objectFromRowData(row, EipTMessageRoom.class);
@@ -222,9 +233,12 @@ public class AipoMessageDbService implements MessageDbService {
         }
         object.setRoomMembers(roomMembersStr);
       }
-      object.setUserHasPhoto(hasPhoto);
-      if (photoModified != null) {
-        object.setUserPhotoModified(photoModified.getTime());
+      if (lastMessageId != null && lastMessageId.longValue() > 0) {
+        object.setLastMessageId(lastMessageId.intValue());
+      }
+      object.setUserHasPhoto(userHasPhoto);
+      if (userPhotoModified != null) {
+        object.setUserPhotoModified(userPhotoModified);
       }
       list.add(object);
     }

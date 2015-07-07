@@ -163,8 +163,21 @@ public class AipoMessageService extends AbstractService implements
     }
     room.setUnreadCount(model.getUnreadCount());
     room.setIsDirect("O".equals(model.getRoomType()));
+    room.setLastMessage(model.getLastMessage());
+    if (room.getIsDirect()) {
+      if (model.getUserPhotoModified() != null) {
+        room.setPhotoModified(model.getUserPhotoModified());
+      }
+    } else {
+      if (model.getPhotoModified() != null) {
+        room.setPhotoModified(model.getPhotoModified());
+      }
+    }
+    if (model.getLastMessageId() != null) {
+      room.setLastMessageId(model.getLastMessageId());
+    }
     room.setIsAutoName("T".equals(model.getAutoName()));
-    room.setUpdateDate(DateUtil.formatIso8601Date(model.getLastUpdateDate()));
+    room.setUpdateDate(model.getLastUpdateDate());
     if (roomIdInt == 0) {
       // ルーム一覧の場合
       return room;
