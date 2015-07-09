@@ -64,19 +64,26 @@ public class BufferedServletRequestWrapper extends HttpServletRequestWrapper {
     }
 
     ServletInputStream sis = new ServletInputStream() {
+
+      ByteArrayInputStream inputStream = new ByteArrayInputStream(reqBytes);
+
       private int i;
 
       @Override
       public int read() throws IOException {
-        byte b;
-        if (reqBytes.length > i) {
-          b = reqBytes[i++];
-        } else {
-          b = -1;
-        }
-
-        return b;
+        return inputStream.read();
       }
+
+      @Override
+      public int read(byte[] b, int off, int len) throws IOException {
+        return inputStream.read(b, off, len);
+      }
+
+      @Override
+      public int available() throws IOException {
+        return inputStream.available();
+      }
+
     };
 
     return sis;
@@ -84,13 +91,12 @@ public class BufferedServletRequestWrapper extends HttpServletRequestWrapper {
 
   private void firstTime() throws IOException {
     firstTime = false;
-    StringBuffer buffer = new StringBuffer();
-    BufferedReader reader = request.getReader();
-    String line;
-    // while (reader.ready() && (line = reader.readLine()) != null) {
-    while ((line = reader.readLine()) != null) {
-      buffer.append(line);
-    }
-    reqBytes = buffer.toString().getBytes();
+
+    ServletInputStream is = request.getInputStream();
+    int length = request.getContentLength();
+    reqBytes = new byte[length];
+
+    is.read(reqBytes, 0, length);
+
   }
 }

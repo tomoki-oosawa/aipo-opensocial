@@ -28,6 +28,7 @@ import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
+import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
@@ -78,6 +79,8 @@ public class AipoRoomIconHandler {
     String name = request.getParameter("name");
     List<String> memberList = request.getListParameter("member_to");
 
+    FormDataItem roomIcon = request.getFormMimePart("roomIcon");
+
     AipoCollectionOptions options = new AipoCollectionOptions(request);
 
     // Preconditions
@@ -89,6 +92,8 @@ public class AipoRoomIconHandler {
     HandlerPreconditions.requirePlural(
       memberList,
       "More than one member_to must be specified");
+
+    String body = request.getParameter("body");
 
     return service.postRoom(
       userIds.iterator().next(),

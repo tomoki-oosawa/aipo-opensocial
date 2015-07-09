@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
@@ -213,11 +214,7 @@ public class AipoDataServiceServlet extends ApiServlet {
     Reader bodyReader = null;
     if (!servletRequest.getMethod().equals("GET")
       && !servletRequest.getMethod().equals("HEAD")) {
-      try {
-        bodyReader = servletRequest.getReader();
-      } catch (Throwable ignore) {
-        // ignore
-      }
+      bodyReader = servletRequest.getReader();
     }
 
     // Execute the request
@@ -390,26 +387,26 @@ public class AipoDataServiceServlet extends ApiServlet {
         List<FileItem> items = null;
         try {
           items = upload.parseRequest(servletRequest);
-          for (FileItem val : items) {
-            FileItem item = val;
-            if (item.isFormField()) {
-              String value = new String(item.get());
-              String key = item.getFieldName();
-
-              String[] valueArray = { value };
-              if (parameterMap.containsKey(key)) {
-                String[] preValue = parameterMap.get(key);
-                valueArray = Arrays.copyOf(preValue, preValue.length + 1);
-                valueArray[preValue.length] = value;
-              }
-              parameterMap.put(key, valueArray);
-            } else {
-              // file found!
-            }
-          }
-        } catch (Throwable ignore) {
+        } catch (FileUploadException e) {
         }
+        for (FileItem val : items) {
+          FileItem item = val;
+          if (item.isFormField()) {
+            String value = new String(item.get());
+            String key = item.getFieldName();
 
+            String[] valueArray = { value };
+            if (parameterMap.containsKey(key)) {
+              String[] preValue = parameterMap.get(key);
+              valueArray = Arrays.copyOf(preValue, preValue.length + 1);
+              valueArray[preValue.length] = value;
+            }
+            parameterMap.put(key, valueArray);
+          } else {
+            // file found!
+
+          }
+        }
 
       }
 
