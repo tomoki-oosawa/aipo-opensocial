@@ -25,12 +25,19 @@ import java.util.Set;
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
+import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.service.request.SearchOptions;
 
 public interface MessageDbService {
 
-  public List<EipTMessageRoom> findMessageRoom(int roomId, String username,
-      SearchOptions options);
+  public EipTMessageRoom findRoom(String username, String targetUsername);
+
+  public EipTMessageRoom findRoom(int roomId, String username);
+
+  public List<EipTMessageRoom> findRoom(String username, SearchOptions options);
+
+  public List<EipTMessageRoom> findRoom(int roomId, String username,
+      String targetUsername, SearchOptions options);
 
   public List<EipTMessage> findMessage(int roomId, int messageId,
       SearchOptions options);
@@ -49,4 +56,7 @@ public interface MessageDbService {
   public EipTMessageFile findMessageFile(int fileId);
 
   public boolean isJoinRoom(int roomId, String username);
+
+  public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
+      String username);
 }

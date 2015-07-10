@@ -18,6 +18,7 @@
  */
 package com.aipo.social.core.model;
 
+import java.util.Date;
 import java.util.List;
 
 import com.aipo.social.opensocial.model.ALMessageRoom;
@@ -39,9 +40,15 @@ public class ALMessageRoomImpl implements ALMessageRoom {
 
   private boolean isAutoName;
 
+  private Date photoModified;
+
+  private String lastMessage;
+
+  private Integer lastMessageId;
+
   private List<String> members;
 
-  private String updateDate;
+  private Date updateDate;
 
   /**
    * @return
@@ -159,16 +166,64 @@ public class ALMessageRoomImpl implements ALMessageRoom {
    * @return
    */
   @Override
-  public String getUpdateDate() {
+  public Date getUpdateDate() {
     return updateDate;
   }
 
   /**
-   * @param paramString
+   * @param date
    */
   @Override
-  public void setUpdateDate(String paramString) {
-    this.updateDate = paramString;
+  public void setUpdateDate(Date date) {
+    this.updateDate = date;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public String getLastMessage() {
+    return lastMessage;
+  }
+
+  /**
+   * @param lastMessage
+   */
+  @Override
+  public void setLastMessage(String lastMessage) {
+    this.lastMessage = lastMessage;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public Date getPhotoModified() {
+    return photoModified;
+  }
+
+  /**
+   * @param photoModified
+   */
+  @Override
+  public void setPhotoModified(Date photoModified) {
+    this.photoModified = photoModified;
+  }
+
+  /**
+   * @param messageId
+   */
+  @Override
+  public void setLastMessageId(Integer messageId) {
+    this.lastMessageId = messageId;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public Integer getLastMessageId() {
+    return lastMessageId;
   }
 
 }

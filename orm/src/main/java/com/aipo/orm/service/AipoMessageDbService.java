@@ -56,17 +56,59 @@ public class AipoMessageDbService implements MessageDbService {
     this.turbineUserDbService = turbineUserDbService;
   }
 
+  @Override
+  public EipTMessageRoom findRoom(String username, String targetUsername) {
+    List<EipTMessageRoom> rooms =
+      findRoom(0, username, targetUsername, SearchOptions.build());
+    if (rooms != null && rooms.size() > 0) {
+      return rooms.get(0);
+    }
+    return null;
+  }
+
+  @Override
+  public EipTMessageRoom findRoom(int roomId, String username) {
+    List<EipTMessageRoom> rooms =
+      findRoom(roomId, username, null, SearchOptions.build());
+    if (rooms != null && rooms.size() > 0) {
+      return rooms.get(0);
+    }
+    return null;
+  }
+
+  @Override
+  public List<EipTMessageRoom> findRoom(String username, SearchOptions options) {
+    return findRoom(0, username, null, options);
+  }
+
   /**
+   *
+   * @param roomId
    * @param username
+   * @param targetUsername
    * @param options
    * @return
    */
   @Override
-  public List<EipTMessageRoom> findMessageRoom(int roomId, String username,
-      SearchOptions options) {
+  public List<EipTMessageRoom> findRoom(int roomId, String username,
+      String targetUsername, SearchOptions options) {
     TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
     if (turbineUser == null) {
       return new ArrayList<EipTMessageRoom>();
+    }
+    if (targetUsername != null) {
+      TurbineUser targetTurbineUser =
+        turbineUserDbService.findByUsername(targetUsername);
+      if (targetTurbineUser == null) {
+        return new ArrayList<EipTMessageRoom>();
+      }
+      EipTMessageRoom room =
+        getRoom(turbineUser.getUserId(), targetTurbineUser.getUserId());
+      if (room != null) {
+        roomId = room.getRoomId();
+      } else {
+        return new ArrayList<EipTMessageRoom>();
+      }
     }
 
     // Filter
@@ -98,6 +140,8 @@ public class AipoMessageDbService implements MessageDbService {
 
     select.append(" t2.last_message, ");
     select.append(" last_update_date, ");
+    select
+      .append(" (select message_id from eip_t_message t4 where t4.room_id = t2.room_id order by t4.create_date desc limit 1) as last_message_id, ");
     select
       .append(" (select count(*) from eip_t_message_read t3 where t3.room_id = t2.room_id and t3.user_id = #bind($user_id) and t3.is_read ='F') as unread ");
 
@@ -163,8 +207,17 @@ public class AipoMessageDbService implements MessageDbService {
       String loginName = (String) row.get("login_name");
       String lastName = (String) row.get("last_name");
       String firstName = (String) row.get("first_name");
-      String hasPhoto = (String) row.get("user_has_photo");
-      Date photoModified = (Date) row.get("user_photo_modified");
+      String userHasPhoto = (String) row.get("user_has_photo");
+      Date userPhotoModified = (Date) row.get("user_photo_modified");
+      Long lastMessageId = null;
+      try {
+        lastMessageId = (Long) row.get("last_message_id");
+      } catch (ClassCastException ignore) {
+        Integer lastMessageIdInt = (Integer) row.get("last_message_id");
+        if (lastMessageIdInt != null) {
+          lastMessageId = lastMessageIdInt.longValue();
+        }
+      }
 
       EipTMessageRoom object =
         Database.objectFromRowData(row, EipTMessageRoom.class);
@@ -180,9 +233,12 @@ public class AipoMessageDbService implements MessageDbService {
         }
         object.setRoomMembers(roomMembersStr);
       }
-      object.setUserHasPhoto(hasPhoto);
-      if (photoModified != null) {
-        object.setUserPhotoModified(photoModified.getTime());
+      if (lastMessageId != null && lastMessageId.longValue() > 0) {
+        object.setLastMessageId(lastMessageId.intValue());
+      }
+      object.setUserHasPhoto(userHasPhoto);
+      if (userPhotoModified != null) {
+        object.setUserPhotoModified(userPhotoModified);
       }
       list.add(object);
     }
@@ -416,39 +472,39 @@ public class AipoMessageDbService implements MessageDbService {
       Date now = new Date();
 
       if (roomId == null && targetUsername != null) {
-        // int userId = (int) login_user.getUserId().getValue();
-        // int targetUserId = (int) targetUser.getUserId().getValue();
-        // room = MessageUtils.getRoom(userId, targetUserId);
-        // if (room == null) {
-        // room = Database.create(EipTMessageRoom.class);
-        //
-        // EipTMessageRoomMember map1 =
-        // Database.create(EipTMessageRoomMember.class);
-        // map1.setEipTMessageRoom(room);
-        // map1.setUserId((int) login_user.getUserId().getValue());
-        // map1.setTargetUserId((int) targetUser.getUserId().getValue());
-        // map1.setLoginName(login_user.getName().getValue());
-        //
-        // EipTMessageRoomMember map2 =
-        // Database.create(EipTMessageRoomMember.class);
-        // map2.setEipTMessageRoom(room);
-        // map2.setTargetUserId((int) login_user.getUserId().getValue());
-        // map2.setUserId((int) targetUser.getUserId().getValue());
-        // map2.setLoginName(targetUser.getName().getValue());
-        //
-        // room.setAutoName("T");
-        // room.setRoomType("O");
-        // room.setLastUpdateDate(now);
-        // room.setCreateDate(now);
-        // room.setCreateUserId((int) login_user.getUserId().getValue());
-        // room.setUpdateDate(now);
-        //
-        // Database.commit();
-        // }
+        int userId = turbineUser.getUserId().intValue();
+        int targetUserId = targetUser.getUserId().intValue();
+        EipTMessageRoom room = getRoom(userId, targetUserId);
+        if (room == null) {
+          room = Database.create(EipTMessageRoom.class);
+
+          EipTMessageRoomMember map1 =
+            Database.create(EipTMessageRoomMember.class);
+          map1.setEipTMessageRoom(room);
+          map1.setUserId(userId);
+          map1.setTargetUserId(targetUserId);
+          map1.setLoginName(turbineUser.getLoginName());
+
+          EipTMessageRoomMember map2 =
+            Database.create(EipTMessageRoomMember.class);
+          map2.setEipTMessageRoom(room);
+          map2.setTargetUserId(userId);
+          map2.setUserId(targetUserId);
+          map2.setLoginName(targetUser.getLoginName());
+
+          room.setAutoName("T");
+          room.setRoomType("O");
+          room.setLastUpdateDate(now);
+          room.setCreateDate(now);
+          room.setCreateUserId(userId);
+          room.setUpdateDate(now);
+
+          Database.commit();
+
+        }
+        roomId = room.getRoomId();
       }
-      // if (room == null) {
-      // throw new IllegalArgumentException("room may not be null. ");
-      // }
+
       EipTMessageRoom room =
         Database.get(EipTMessageRoom.class, roomId.longValue());
       List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
@@ -488,12 +544,6 @@ public class AipoMessageDbService implements MessageDbService {
       Database.commit();
 
       return model;
-
-      // TODO:プッシュ通知機能の追加
-      // Map<String, String> params = new HashMap<String, String>();
-      // params.put("roomId", String.valueOf(room.getRoomId()));
-      // params.put("messageId", String.valueOf(model.getMessageId()));
-      // ALPushService.pushAsync("messagev2", params, recipients);
 
     } catch (Exception ex) {
       Database.rollback();
@@ -691,5 +741,43 @@ public class AipoMessageDbService implements MessageDbService {
   @Override
   public EipTMessageFile findMessageFile(int fileId) {
     return Database.get(EipTMessageFile.class, fileId);
+  }
+
+  @Override
+  public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
+      String username) {
+    List<EipTMessageRoomMember> list = new ArrayList<EipTMessageRoomMember>();
+    List<EipTMessageRoomMember> members =
+      new ArrayList<EipTMessageRoomMember>();
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      return members;
+    }
+    Integer userId = turbineUser.getUserId();
+
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
+      list = room.getEipTMessageRoomMember();
+      for (EipTMessageRoomMember member : list) {
+        if (member.getUserId().intValue() != userId) {
+          members.add(member);
+        }
+      }
+    }
+    return members;
+  }
+
+  private EipTMessageRoom getRoom(int userId, int targetUserId) {
+    EipTMessageRoomMember model =
+      Database.query(EipTMessageRoomMember.class).where(
+        Operations.eq(EipTMessageRoomMember.USER_ID_PROPERTY, userId)).where(
+        Operations.eq(
+          EipTMessageRoomMember.TARGET_USER_ID_PROPERTY,
+          targetUserId)).fetchSingle();
+    if (model != null) {
+      return model.getEipTMessageRoom();
+    } else {
+      return null;
+    }
   }
 }

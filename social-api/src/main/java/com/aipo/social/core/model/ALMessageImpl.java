@@ -33,6 +33,8 @@ public class ALMessageImpl implements ALMessage {
 
   private String userId;
 
+  private String targetUserId;
+
   private int unreadCount;
 
   private int memberCount;
@@ -159,4 +161,19 @@ public class ALMessageImpl implements ALMessage {
     this.files = files;
   }
 
+  /**
+   * @return
+   */
+  @Override
+  public String getTargetUserId() {
+    return targetUserId;
+  }
+
+  /**
+   * @param paramString
+   */
+  @Override
+  public void setTargetUserId(String paramString) {
+    this.targetUserId = paramString;
+  }
 }

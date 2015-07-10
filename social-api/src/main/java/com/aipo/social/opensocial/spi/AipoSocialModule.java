@@ -60,6 +60,7 @@ public class AipoSocialModule extends AbstractModule {
     bind(StorageService.class)
       .to(AipoStorageService.class)
       .in(Scopes.SINGLETON);
+    bind(PushService.class).to(AipoPushService.class).in(Scopes.SINGLETON);
     // bind(MessageService.class).to(JsonDbOpensocialService.class);
     bind(OAuthDataStore.class).to(AipoOAuthDataStore.class);
     bind(OAuth2Service.class).to(AipoOAuth2Service.class);

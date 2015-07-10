@@ -20,8 +20,10 @@ package com.aipo.social.opensocial.spi;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -38,6 +40,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
+import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.service.MessageDbService;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
@@ -62,12 +65,16 @@ public class AipoMessageService extends AbstractService implements
 
   private final MessageDbService messageDbService;
 
+  private final PushService pushService;
+
   /**
    *
    */
   @Inject
-  public AipoMessageService(MessageDbService turbineUserSercice) {
+  public AipoMessageService(MessageDbService turbineUserSercice,
+      PushService pushService) {
     this.messageDbService = turbineUserSercice;
+    this.pushService = pushService;
   }
 
   /**
@@ -121,8 +128,8 @@ public class AipoMessageService extends AbstractService implements
 
     List<EipTMessageRoom> list = null;
 
-    list = messageDbService.findMessageRoom(roomIdInt, username, options);
-    if (list.size() == 0) {
+    list = messageDbService.findRoom(roomIdInt, username, null, options);
+    if (roomIdInt > 0 && list.size() == 0) {
       throw new ProtocolException(400, "Access denied");
     }
 
@@ -156,8 +163,21 @@ public class AipoMessageService extends AbstractService implements
     }
     room.setUnreadCount(model.getUnreadCount());
     room.setIsDirect("O".equals(model.getRoomType()));
+    room.setLastMessage(model.getLastMessage());
+    if (room.getIsDirect()) {
+      if (model.getUserPhotoModified() != null) {
+        room.setPhotoModified(model.getUserPhotoModified());
+      }
+    } else {
+      if (model.getPhotoModified() != null) {
+        room.setPhotoModified(model.getPhotoModified());
+      }
+    }
+    if (model.getLastMessageId() != null) {
+      room.setLastMessageId(model.getLastMessageId());
+    }
     room.setIsAutoName("T".equals(model.getAutoName()));
-    room.setUpdateDate(DateUtil.formatIso8601Date(model.getLastUpdateDate()));
+    room.setUpdateDate(model.getLastUpdateDate());
     if (roomIdInt == 0) {
       // ルーム一覧の場合
       return room;
@@ -239,11 +259,17 @@ public class AipoMessageService extends AbstractService implements
     setUp(token);
 
     Integer roomIdInt = null;
+    String targetUsername = null;
     Integer messageIdInt = 0;
 
     // Room
     try {
       roomIdInt = Integer.valueOf(roomId);
+    } catch (Throwable ignore) {
+      // ダイレクト
+      targetUsername = getUserId(roomId, token);
+    }
+    try {
       if (messageId != null && !"".equals(messageId)) {
         messageIdInt = Integer.valueOf(messageId);
       }
@@ -271,29 +297,30 @@ public class AipoMessageService extends AbstractService implements
             : SortOrder.valueOf(collectionOptions.getSortOrder().toString()))
         .withParameters(collectionOptions.getParameters());
 
-    List<EipTMessage> list = null;
-
     // 自分(Viewer)のルームのみ取得可能
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
+
+    EipTMessageRoom room = null;
     if (roomIdInt != null) {
-      if (messageDbService.findMessageRoom(roomIdInt, username, options).size() == 0) {
-        throw new ProtocolException(400, "Access denied");
-      }
+      room = messageDbService.findRoom(roomIdInt, username);
+    } else {
+      room = messageDbService.findRoom(username, targetUsername);
+    }
+    if (room == null) {
+      throw new ProtocolException(400, "Access denied");
     }
 
     // /messages/rooms/\(userId)/\(groupId)
     // {userId} が所属しているルームを取得
 
-    if (roomIdInt != null) {
-      // ルーム
-      list = messageDbService.findMessage(roomIdInt, messageIdInt, options);
-    } else {
-      // ダイレクトメッセージ
-    }
+    // ルーム
+    List<EipTMessage> list =
+      messageDbService.findMessage(room.getRoomId(), messageIdInt, options);
+
     List<ALMessage> result = new ArrayList<ALMessage>(list.size());
     for (EipTMessage message : list) {
-      result.add(assignMessage(message, fields, token, messageIdInt));
+      result.add(assignMessage(message, room, fields, token, messageIdInt));
     }
 
     int totalResults = result.size();
@@ -313,8 +340,8 @@ public class AipoMessageService extends AbstractService implements
    * @param token
    * @return
    */
-  private ALMessage assignMessage(EipTMessage model, Set<String> fields,
-      SecurityToken token, Integer messageIdInt) {
+  private ALMessage assignMessage(EipTMessage model, EipTMessageRoom room,
+      Set<String> fields, SecurityToken token, Integer messageIdInt) {
     ALMessage message = new ALMessageImpl();
     String orgId = getOrgId(token);
 
@@ -325,6 +352,10 @@ public class AipoMessageService extends AbstractService implements
     message.setMemberCount(model.getMemberCount());
     message.setMessage(model.getMessage());
     message.setCreateDate(DateUtil.formatIso8601Date(model.getCreateDate()));
+
+    if ("O".equals(room.getRoomType())) {
+      message.setTargetUserId(orgId + ":" + room.getLoginName());
+    }
 
     if (model.getMessageFiles() != null) {
       List<ALMessageFile> files = new ArrayList<ALMessageFile>();
@@ -378,57 +409,53 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<ALMessage> postMessage(UserId userId, Set<String> fields,
-      String roomId, String targetUserId, String message, SecurityToken token,
-      String transactionId) {
+      String roomId, String message, SecurityToken token, String transactionId) {
     // TODO: FIELDS
 
     setUp(token);
 
     Integer roomIdInt = null;
+    String targetUsername = null;
     Integer messageIdInt = 0;
 
     // Room
     try {
-      if (roomId != null && !"".equals(roomId)) {
-        roomIdInt = Integer.valueOf(roomId);
-      }
+      roomIdInt = Integer.valueOf(roomId);
     } catch (Throwable ignore) {
-    }
-
-    String targetUsername = null;
-    if (targetUserId != null && !"".equals(targetUserId)) {
-      targetUsername = getUserId(targetUserId, token);
+      // ダイレクト
+      targetUsername = getUserId(roomId, token);
     }
 
     // 自分(Viewer)のルームのみ取得可能
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
+
+    EipTMessageRoom room = null;
     if (roomIdInt != null) {
-      SearchOptions dummy = SearchOptions.build();
-      if (messageDbService.findMessageRoom(roomIdInt, username, dummy).size() == 0) {
+      room = messageDbService.findRoom(roomIdInt, username);
+      if (room == null) {
         throw new ProtocolException(400, "Access denied");
       }
-    }
-
-    EipTMessage model = null;
-    if (roomIdInt != null
-      || !("".equals(targetUsername) || targetUsername == null)) {
-      // ルーム
-      model =
-        messageDbService.createMessage(
-          username,
-          roomIdInt,
-          targetUsername,
-          message,
-          fields);
     } else {
-      // ダイレクトメッセージ
+      room = messageDbService.findRoom(username, targetUsername);
     }
 
+    EipTMessage model =
+      messageDbService.createMessage(
+        username,
+        roomIdInt,
+        targetUsername,
+        message,
+        fields);
+    push(username, model);
     messageIdInt = model.getMessageId();
 
+    if (room == null) {
+      room = messageDbService.findRoom(username, targetUsername);
+    }
+
     ALMessage result = new ALMessageImpl();
-    result = assignMessage(model, fields, token, messageIdInt);
+    result = assignMessage(model, room, fields, token, messageIdInt);
     result.setTransactionId(transactionId);
 
     return ImmediateFuture.newInstance(result);
@@ -473,11 +500,12 @@ public class AipoMessageService extends AbstractService implements
     if (!memberNameList.contains(username)) {
       throw new ProtocolException(400, "member_to should contain userId");
     }
+    EipTMessageRoom room = null;
     if (roomIdInt != null) {
-      SearchOptions dummy = SearchOptions.build();
-      if (messageDbService.findMessageRoom(roomIdInt, username, dummy).size() == 0) {
-        throw new ProtocolException(400, "Access denied");
-      }
+      room = messageDbService.findRoom(roomIdInt, username);
+    }
+    if (room == null) {
+      throw new ProtocolException(400, "Access denied");
     }
 
     EipTMessageRoom model = null;
@@ -620,4 +648,29 @@ public class AipoMessageService extends AbstractService implements
       }
     }
   }
+
+  /**
+   *
+   * @param userId
+   * @param token
+   * @throws ProtocolException
+   */
+  protected void push(String username, EipTMessage message)
+      throws ProtocolException {
+
+    List<EipTMessageRoomMember> members =
+      messageDbService.getOtherRoomMember(message.getRoomId(), username);
+
+    List<String> recipients = new ArrayList<String>();
+    for (EipTMessageRoomMember member : members) {
+      recipients.add(member.getLoginName());
+    }
+
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("roomId", String.valueOf(message.getRoomId()));
+    params.put("messageId", String.valueOf(message.getMessageId()));
+
+    pushService.pushAsync("messagev2", params, recipients);
+  }
+
 }

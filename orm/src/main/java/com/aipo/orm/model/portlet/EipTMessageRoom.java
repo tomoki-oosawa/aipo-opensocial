@@ -1,5 +1,6 @@
 package com.aipo.orm.model.portlet;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.cayenne.ObjectId;
@@ -18,11 +19,13 @@ public class EipTMessageRoom extends _EipTMessageRoom {
 
   private String lastName = null;
 
-  private String hasPhoto = null;
+  private String userHasPhoto = null;
 
-  private Long photoModified = null;
+  private Date userPhotoModified = null;
 
   private List<String> roomMembers = null;
+
+  private Integer lastMessageId = null;
 
   public Integer getRoomId() {
     if (getObjectId() != null && !getObjectId().isTemporary()) {
@@ -104,29 +107,29 @@ public class EipTMessageRoom extends _EipTMessageRoom {
    *          セットする hasPhoto
    */
   public void setUserHasPhoto(String hasPhoto) {
-    this.hasPhoto = hasPhoto;
+    this.userHasPhoto = hasPhoto;
   }
 
   /**
    * @return hasPhoto
    */
   public String getUserHasPhoto() {
-    return hasPhoto;
+    return userHasPhoto;
   }
 
   /**
    * @param photoModified
    *          セットする photoModified
    */
-  public void setUserPhotoModified(Long photoModified) {
-    this.photoModified = photoModified;
+  public void setUserPhotoModified(Date userPhotoModified) {
+    this.userPhotoModified = userPhotoModified;
   }
 
   /**
    * @return photoModified
    */
-  public Long getUserPhotoModified() {
-    return photoModified;
+  public Date getUserPhotoModified() {
+    return userPhotoModified;
   }
 
   /**
@@ -159,4 +162,14 @@ public class EipTMessageRoom extends _EipTMessageRoom {
     return roomMembers;
   }
 
+  public void setLastMessageId(int lastMessageId) {
+    this.lastMessageId = lastMessageId;
+  }
+
+  /**
+   * @return lastMessageId
+   */
+  public Integer getLastMessageId() {
+    return lastMessageId;
+  }
 }
