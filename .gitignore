@@ -17,6 +17,7 @@ local.properties
 .loadpath
 .sass-cache/
 sass-twitter-bootstrap-master/
+work
 
 # External tool builders
 .externalToolBuilders/

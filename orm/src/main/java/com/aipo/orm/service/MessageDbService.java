@@ -51,7 +51,7 @@ public interface MessageDbService {
   public EipTMessageRoom updateRoom(Integer roomId, String username,
       String name, List<String> memberNameList);
 
-  public InputStream getPhoto(String roomId);
+  public InputStream getPhoto(int roomId);
 
   public EipTMessageFile findMessageFile(int fileId);
 

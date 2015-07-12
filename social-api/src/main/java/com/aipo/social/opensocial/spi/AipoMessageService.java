@@ -536,7 +536,16 @@ public class AipoMessageService extends AbstractService implements
 
     setUp(token);
 
-    InputStream roomIcon = messageDbService.getPhoto(roomId);
+    Integer roomIdInt = null;
+    try {
+      roomIdInt = Integer.valueOf(roomId);
+    } catch (Throwable t) {
+
+    }
+    if (roomIdInt == null) {
+      return null;
+    }
+    InputStream roomIcon = messageDbService.getPhoto(roomIdInt.intValue());
     if (roomIcon == null) {
       return null;
     }

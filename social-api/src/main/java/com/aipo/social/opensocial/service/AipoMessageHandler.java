@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.service;
 
+import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.Future;
 
@@ -26,111 +27,286 @@ import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
-import org.apache.shindig.social.opensocial.spi.GroupId;
+import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoProtocolException;
+import com.aipo.container.protocol.StreamContent;
+import com.aipo.social.opensocial.model.ALFile;
 import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.MessageService;
+import com.aipo.social.opensocial.spi.StorageService;
 import com.google.inject.Inject;
 
 /**
- * Message API
+ * RPC/REST handler for Messages API
  */
-@Service(name = "messages", path = "/{userId}+/{groupId}/{roomId}/{messageId}+")
+@Service(name = "messages")
 public class AipoMessageHandler {
 
-  private final MessageService service;
+  private final StorageService storageService;
+
+  private final MessageService messageService;
 
   @Inject
-  public AipoMessageHandler(MessageService service) {
-    this.service = service;
+  public AipoMessageHandler(StorageService storageService,
+      MessageService messageService) {
+    this.storageService = storageService;
+    this.messageService = messageService;
   }
 
   /**
-   * メッセージ一覧 GET /messages/@viewer/@self/1/
-   *
-   * メッセージ詳細 GET /messages/@viewer/@self/1/1
+   * メッセージ一覧 <br>
+   * <code>
+   * GET /messages/:roomId
+   * </code><br>
+   * <code>
+   * osapi.messages.get( { roomId: :roomId })
+   * </code>
    *
    * @param request
    * @return
    */
-  @Operation(httpMethods = "GET")
+  @Operation(httpMethods = "GET", path = "/{roomId}")
   public Future<?> get(SocialRequestItem request) {
-
-    Set<UserId> userIds = request.getUsers();
-    GroupId groupId = request.getGroup();
-
-    String roomId = request.getParameter("roomId");
-    String messageId = request.getParameter("messageId");
-
-    AipoCollectionOptions options = new AipoCollectionOptions(request);
-
-    // Preconditions
-    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    HandlerPreconditions.requireSingular(
-      userIds,
-      "Only one userId must be specified");
-
-    return service.getMessages(userIds.iterator().next(), options, request
-      .getFields(), roomId, messageId, request.getToken());
-
+    return getPosts(request);
   }
 
   /**
-   * メッセージ更新 PUT /messages/@viewer/@self/1
+   * メッセージ詳細 <br>
+   * <code>
+   * GET /messages/:roomId/posts/:messageId
+   * </code><br>
+   * <code>
+   * osapi.messages.get( { roomId: :roomId, messageId: messageId })
+   * osapi.messages.posts.get( { roomId: :roomId, messageId: messageId })
+   * </code>
    *
    * @param request
    * @return
    */
-  @Operation(httpMethods = "PUT", bodyParam = "body")
-  public Future<?> update(SocialRequestItem request) {
-    throw new ProtocolException(501, null, new UnsupportedOperationException());
+  @Operation(httpMethods = "GET", name = "posts.get", path = "/{roomId}/posts/{messageId}")
+  public Future<?> getPosts(SocialRequestItem request) {
+    try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+      String messageId = request.getParameter("messageId");
+
+      AipoCollectionOptions options = new AipoCollectionOptions(request);
+
+      // Preconditions
+      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+      HandlerPreconditions.requireSingular(
+        userIds,
+        "Only one userId must be specified");
+
+      return messageService.getMessages(
+        userIds.iterator().next(),
+        options,
+        request.getFields(),
+        roomId,
+        messageId,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 
   /**
-   * メッセージ作成 POST /messages/@viewer/@self/1
+   * メッセージ作成<br>
+   * <code>
+   * POST /messages/:roomId
+   * </code><br>
+   * <code>
+   * osapi.messages.create( { roomId: :roomId })
+   * </code>
    *
    * @param request
    * @return
-   * @return
    */
-  @Operation(httpMethods = "POST")
+  @Operation(httpMethods = "POST", path = "/{roomId}")
   public Future<ALMessage> create(SocialRequestItem request) {
+    try {
+      Set<UserId> userIds = request.getUsers();
 
-    // エラーが出ているため一旦該当部分をコメントアウト
-    Set<UserId> userIds = request.getUsers();
-    GroupId groupId = request.getGroup();
+      String transactionId = request.getParameter("transactionId");
+      String roomId = request.getParameter("roomId");
+      String message = request.getParameter("message");
 
-    String transactionId = request.getParameter("transactionId");
-    String roomId = request.getParameter("roomId");
-    String message = request.getParameter("message");
+      AipoCollectionOptions options = new AipoCollectionOptions(request);
 
-    AipoCollectionOptions options = new AipoCollectionOptions(request);
+      // Preconditions
+      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+      HandlerPreconditions.requireSingular(
+        userIds,
+        "Only one userId must be specified");
 
-    // Preconditions
-    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    HandlerPreconditions.requireSingular(
-      userIds,
-      "Only one userId must be specified");
-
-    return service.postMessage(
-      userIds.iterator().next(),
-      request.getFields(),
-      roomId,
-      message,
-      request.getToken(),
-      transactionId);
+      return messageService.postMessage(userIds.iterator().next(), request
+        .getFields(), roomId, message, request.getToken(), transactionId);
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 
   /**
-   * メッセージ削除 DELETE /messages/@viewer/@self/1
+   * メッセージ更新 <br>
+   * <code>
+   * PUT /messages/:roomId/posts/:messageId
+   * </code><br>
+   * <code>
+   * osapi.messages.put( { roomId: :roomId, messageId: messageId })
+   * </code>
    *
    * @param request
    * @return
    */
-  @Operation(httpMethods = "DELETE")
+  @Operation(httpMethods = "PUT", path = "/{roomId}/posts/{messageId}")
+  public Future<?> update(SocialRequestItem request) {
+    try {
+      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
+
+  /**
+   * メッセージ削除 <br>
+   * <code>
+   * DELETE /messages/:roomId/posts/:messageId
+   * </code><br>
+   * <code>
+   * osapi.messages['delete']( { roomId: :roomId, messageId: messageId })
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "DELETE", path = "/{roomId}/posts/{messageId}")
   public Future<?> delete(SocialRequestItem request) {
-    throw new ProtocolException(501, null, new UnsupportedOperationException());
+    try {
+      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
+
+  /**
+   * 既読 <br>
+   * <code>
+   * PUT /messages/:roomId/read
+   * </code><br>
+   * <code>
+   * osapi.messages.read.update( { roomId: :roomId })
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "PUT", name = "read.update", path = "/{roomId}/read")
+  public Future<?> read(SocialRequestItem request) {
+    try {
+      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
+
+  /**
+   * ファイル情報 <br>
+   * <code>
+   * GET /messages/:roomId/files/info/:fileId
+   * </code><br>
+   * <code>
+   * osapi.messages.files.info( { roomId: :roomId, fileId: fileId })
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "GET", name = "files.info", path = "/{roomId}/files/info/{fileId}")
+  public Future<?> getFilesInfo(SocialRequestItem request) {
+    try {
+      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
+
+  /**
+   * ファイルダウンロード <br>
+   * <code>
+   * GET /messages/:roomId/files/download/:fileId
+   * </code><br>
+   * <code>
+   * osapi.messages.files.download( { roomId: :roomId, fileId: fileId })
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "GET", name = "files.download", path = "/{roomId}/files/download/{fileId}")
+  public StreamContent getFiles(SocialRequestItem request) {
+    try {
+      String fileId = request.getParameter("fileId");
+      Set<UserId> userIds = request.getUsers();
+
+      // Preconditions
+      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+      HandlerPreconditions.requireSingular(
+        userIds,
+        "Only one userId must be specified");
+
+      CollectionOptions options = new CollectionOptions(request);
+
+      Future<ALFile> file =
+        messageService.getMessageFiles(
+          userIds.iterator().next(),
+          options,
+          request.getFields(),
+          fileId,
+          request.getToken());
+      if (file == null) {
+        throw new ProtocolException(
+          501,
+          null,
+          new UnsupportedOperationException());
+      }
+
+      InputStream stream =
+        storageService.getFile(file.get(), request.getToken());
+      if (stream == null) {
+        throw new ProtocolException(
+          501,
+          null,
+          new UnsupportedOperationException());
+      }
+      String contentType =
+        storageService.getContentType(file.get(), request.getToken());
+      if (contentType == null) {
+        throw new ProtocolException(
+          501,
+          null,
+          new UnsupportedOperationException());
+      }
+      return new StreamContent(contentType, stream);
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 }
