@@ -19,6 +19,7 @@
 package com.aipo.container.protocol;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +29,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,10 +44,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
@@ -62,9 +60,14 @@ import org.apache.shindig.protocol.ResponseItem;
 import org.apache.shindig.protocol.RestHandler;
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.protocol.conversion.BeanConverter;
+import org.apache.shindig.protocol.multipart.FormDataItem;
+import org.apache.shindig.protocol.multipart.MultipartFormParser;
+import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 /**
  * @see DataServiceServlet
@@ -86,6 +89,13 @@ public class AipoDataServiceServlet extends ApiServlet {
 
   protected static final String X_HTTP_METHOD_OVERRIDE =
     "X-HTTP-Method-Override";
+
+  private MultipartFormParser formParser;
+
+  @Inject
+  void setMultipartFormParser(MultipartFormParser formParser) {
+    this.formParser = formParser;
+  }
 
   @Override
   protected void doGet(HttpServletRequest servletRequest,
@@ -155,6 +165,7 @@ public class AipoDataServiceServlet extends ApiServlet {
       ResponseItem responseItem) throws IOException {
     String errorMessage = responseItem.getErrorMessage();
     int errorCode = responseItem.getErrorCode();
+    Object response = responseItem.getResponse();
     if (errorCode < 0) {
       // Map JSON-RPC error codes into HTTP error codes as best we can
       // TODO: Augment the error message (if missing) with a default
@@ -177,7 +188,57 @@ public class AipoDataServiceServlet extends ApiServlet {
       }
     }
 
-    servletResponse.sendError(errorCode, errorMessage);
+    String json = "{}";
+    if (response != null && response instanceof JSONObject) {
+      json = response.toString();
+    } else {
+      switch (errorCode) {
+        case 403:
+          json = AipoErrorCode.BAD_REQUEST.responseJSON().toString();
+          break;
+        case 404:
+          json = AipoErrorCode.NOT_FOUND.responseJSON().toString();
+          break;
+        case 500:
+          json = AipoErrorCode.INTERNAL_ERROR.responseJSON().toString();
+          break;
+        case 501:
+          json = AipoErrorCode.NOT_IMPLEMENTED.responseJSON().toString();
+          break;
+        case 502:
+          json = AipoErrorCode.BAD_GATEWAY.responseJSON().toString();
+          break;
+        case 503:
+          json = AipoErrorCode.SERVICE_UNAVAILABLE.responseJSON().toString();
+          break;
+        case 504:
+          json = AipoErrorCode.GATEWAY_TIMEOUT.responseJSON().toString();
+          break;
+        default:
+          json = AipoErrorCode.INTERNAL_ERROR.responseJSON().toString();
+          errorCode = 500;
+          break;
+      }
+    }
+
+    servletResponse.setStatus(errorCode);
+    servletResponse.setContentType("application/json; charset=utf8");
+    OutputStream out = null;
+    InputStream in = null;
+    try {
+      out = servletResponse.getOutputStream();
+      in = new ByteArrayInputStream(json.getBytes("UTF-8"));
+      int b;
+      while ((b = in.read()) != -1) {
+        out.write(b);
+      }
+      out.flush();
+    } catch (Throwable t) {
+      LOG.log(Level.WARNING, t.getMessage(), t);
+    } finally {
+      IOUtils.closeQuietly(out);
+      IOUtils.closeQuietly(in);
+    }
   }
 
   /**
@@ -218,9 +279,11 @@ public class AipoDataServiceServlet extends ApiServlet {
     }
 
     // Execute the request
-    Map<String, String[]> parameterMap = loadParameters(servletRequest);
+    Map<String, FormDataItem> formItems = Maps.newHashMap();
+    Map<String, String[]> parameterMap =
+      loadParameters(servletRequest, formItems);
     Future<?> future =
-      handler.execute(parameterMap, bodyReader, token, requestConverter);
+      handler.execute(parameterMap, formItems, token, requestConverter);
     ResponseItem responseItem = getResponseItem(future);
 
     servletResponse.setContentType(responseConverter.getContentType());
@@ -362,7 +425,8 @@ public class AipoDataServiceServlet extends ApiServlet {
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  private Map<String, String[]> loadParameters(HttpServletRequest servletRequest) {
+  private Map<String, String[]> loadParameters(
+      HttpServletRequest servletRequest, Map<String, FormDataItem> formItems) {
     Map<String, String[]> parameterMap = new HashMap<String, String[]>();
 
     // requestParameterを取り出す処理
@@ -382,31 +446,33 @@ public class AipoDataServiceServlet extends ApiServlet {
       // Content-typeがmultipart/form-dataの場合にパラメータを取り出す処理
       if (ContentTypes.MULTIPART_FORM_CONTENT_TYPE.equals(ContentTypes
         .extractMimePart(servletRequest.getContentType()))) {
-        ServletFileUpload upload =
-          new ServletFileUpload(new DiskFileItemFactory());
-        List<FileItem> items = null;
-        try {
-          items = upload.parseRequest(servletRequest);
-        } catch (FileUploadException e) {
-        }
+        if (formParser.isMultipartContent(servletRequest)) {
+          Collection<FormDataItem> items = null;
+          try {
+            items = formParser.parse(servletRequest);
+          } catch (IOException e) {
+            // ignore
+          }
+          if (items != null) {
+            for (FormDataItem item : items) {
+              if (item.isFormField()) {
+                String value = item.getAsString();
+                String key = item.getFieldName();
 
-        for (FileItem val : items) {
-          FileItem item = val;
-          if (item.isFormField()) {
-            String value = new String(item.get());
-            String key = item.getFieldName();
-
-            String[] valueArray = { value };
-            if (parameterMap.containsKey(key)) {
-              String[] preValue = parameterMap.get(key);
-              valueArray = Arrays.copyOf(preValue, preValue.length + 1);
-              valueArray[preValue.length] = value;
+                String[] valueArray = { value };
+                if (parameterMap.containsKey(key)) {
+                  String[] preValue = parameterMap.get(key);
+                  valueArray = Arrays.copyOf(preValue, preValue.length + 1);
+                  valueArray[preValue.length] = value;
+                }
+                parameterMap.put(key, valueArray);
+              } else {
+                formItems.put(item.getFieldName(), item);
+              }
             }
-            parameterMap.put(key, valueArray);
-          } else {
-            // file found!
           }
         }
+
       }
 
       // Content-typeがapplication/x-www-form-urlencodedの場合にパラメータを取り出す処理

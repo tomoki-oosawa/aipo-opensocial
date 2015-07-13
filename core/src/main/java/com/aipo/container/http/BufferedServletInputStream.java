@@ -16,33 +16,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aipo.social.core.oauth;
 
-import java.util.List;
+package com.aipo.container.http;
 
-import org.apache.shindig.auth.AuthenticationHandler;
-import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
-import com.aipo.social.core.oauth2.AipoOAuth2AuthenticationHandler;
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import javax.servlet.ServletInputStream;
 
 /**
- * @see AuthenticationHandlerProvider
+ *
  */
-public class AipoAuthenticationHandlerProvider implements
-    Provider<List<AuthenticationHandler>> {
-  protected List<AuthenticationHandler> handlers;
+public class BufferedServletInputStream extends ServletInputStream {
 
-  @Inject
-  public AipoAuthenticationHandlerProvider(
-      AipoOAuth2AuthenticationHandler oauth2Handler) {
-    handlers = Lists.newArrayList(oauth2Handler);
+  private final ByteArrayInputStream inputStream;
+
+  public BufferedServletInputStream(byte[] buffer) {
+    this.inputStream = new ByteArrayInputStream(buffer);
   }
 
   @Override
-  public List<AuthenticationHandler> get() {
-    return handlers;
+  public int available() throws IOException {
+    return inputStream.available();
+  }
+
+  @Override
+  public int read() throws IOException {
+    return inputStream.read();
+  }
+
+  @Override
+  public int read(byte[] b, int off, int len) throws IOException {
+    return inputStream.read(b, off, len);
   }
 }

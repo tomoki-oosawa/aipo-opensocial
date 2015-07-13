@@ -21,6 +21,7 @@ package com.aipo.social.core.config;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.shindig.auth.AipoSecurityTokenAuthenticationHandler;
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.common.servlet.ParameterFetcher;
@@ -34,15 +35,14 @@ import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.service.AppDataHandler;
 
 import com.aipo.social.core.oauth.AipoAuthenticationHandlerProvider;
+import com.aipo.social.core.oauth.AipoSecurityTokenAuthenticationHandlerProvider;
 import com.aipo.social.opensocial.service.AipoActivityHandler;
 import com.aipo.social.opensocial.service.AipoGroupHandler;
 import com.aipo.social.opensocial.service.AipoHandler;
-import com.aipo.social.opensocial.service.AipoMessageFileHandler;
+import com.aipo.social.opensocial.service.AipoIconsHandler;
 import com.aipo.social.opensocial.service.AipoMessageHandler;
 import com.aipo.social.opensocial.service.AipoMessageRoomHandler;
 import com.aipo.social.opensocial.service.AipoPersonHandler;
-import com.aipo.social.opensocial.service.AipoPersonIconHandler;
-import com.aipo.social.opensocial.service.AipoRoomIconHandler;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -77,6 +77,9 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
     bind(new TypeLiteral<List<AuthenticationHandler>>() {
     }).toProvider(AipoAuthenticationHandlerProvider.class);
 
+    bind(new TypeLiteral<List<AipoSecurityTokenAuthenticationHandler>>() {
+    }).toProvider(AipoSecurityTokenAuthenticationHandlerProvider.class);
+
     Multibinder<Object> handlerBinder =
       Multibinder.newSetBinder(binder(), Object.class, Names
         .named("org.apache.shindig.handlers"));
@@ -98,8 +101,6 @@ public class AipoSocialApiGuiceModule extends AbstractModule {
       AipoGroupHandler.class,
       AipoMessageRoomHandler.class,
       AipoMessageHandler.class,
-      AipoPersonIconHandler.class,
-      AipoRoomIconHandler.class,
-      AipoMessageFileHandler.class);
+      AipoIconsHandler.class);
   }
 }

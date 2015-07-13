@@ -689,10 +689,7 @@ public class AipoMessageDbService implements MessageDbService {
    * @return
    */
   @Override
-  public InputStream getPhoto(String roomId) {
-    if (roomId == null) {
-      return null;
-    }
+  public InputStream getPhoto(int roomId) {
 
     StringBuilder select = new StringBuilder();
     select.append(" select t1.room_id, t1.photo_smartphone ");

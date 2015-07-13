@@ -82,7 +82,7 @@ public class AipoServiceFetcher {
 
   /**
    * Returns the services, keyed by endpoint for the given container.
-   * 
+   *
    * @param container
    *          The particular container whose services we want.
    * @return Map endpoints and their serviceMethod list
@@ -116,9 +116,8 @@ public class AipoServiceFetcher {
       if (endpoint.startsWith("//")) {
         endpoint = request.getScheme() + ":" + endpoint;
       }
-      endpointServices.putAll(endpoint, retrieveServices(endpoint.replace(
-        "%host%",
-        "127.0.0.1:" + request.getServerPort())));
+      Set<String> merge = endpointServices.get("gadgets.rpc");
+      endpointServices.putAll(endpoint, merge);
     }
 
     return ImmutableMultimap.copyOf(endpointServices);

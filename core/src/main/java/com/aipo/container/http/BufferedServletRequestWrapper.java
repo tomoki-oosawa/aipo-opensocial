@@ -20,8 +20,9 @@
 package com.aipo.container.http;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.servlet.ServletInputStream;
@@ -33,63 +34,31 @@ import javax.servlet.http.HttpServletRequestWrapper;
  */
 public class BufferedServletRequestWrapper extends HttpServletRequestWrapper {
 
-  private final HttpServletRequest request;
+  private final byte[] buffer;
 
-  private byte[] reqBytes;
-
-  private boolean firstTime = true;
-
-  public BufferedServletRequestWrapper(HttpServletRequest request) {
+  public BufferedServletRequestWrapper(HttpServletRequest request)
+      throws IOException {
     super(request);
-    this.request = request;
-  }
 
-  @Override
-  public BufferedReader getReader() throws IOException {
-
-    if (firstTime) {
-      firstTime();
+    InputStream is = request.getInputStream();
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    byte buff[] = new byte[1024];
+    int read;
+    while ((read = is.read(buff)) > 0) {
+      baos.write(buff, 0, read);
     }
 
-    InputStreamReader isr =
-      new InputStreamReader(new ByteArrayInputStream(reqBytes));
-    return new BufferedReader(isr);
+    this.buffer = baos.toByteArray();
   }
 
   @Override
   public ServletInputStream getInputStream() throws IOException {
-
-    if (firstTime) {
-      firstTime();
-    }
-
-    ServletInputStream sis = new ServletInputStream() {
-      private int i;
-
-      @Override
-      public int read() throws IOException {
-        byte b;
-        if (reqBytes.length > i) {
-          b = reqBytes[i++];
-        } else {
-          b = -1;
-        }
-
-        return b;
-      }
-    };
-
-    return sis;
+    return new BufferedServletInputStream(this.buffer);
   }
 
-  private void firstTime() throws IOException {
-    firstTime = false;
-    StringBuffer buffer = new StringBuffer();
-    BufferedReader reader = request.getReader();
-    String line;
-    while ((line = reader.readLine()) != null) {
-      buffer.append(line);
-    }
-    reqBytes = buffer.toString().getBytes();
+  @Override
+  public BufferedReader getReader() throws IOException {
+    return new BufferedReader(new InputStreamReader(
+      new BufferedServletInputStream(this.buffer)));
   }
 }
