@@ -21,23 +21,21 @@ package com.aipo.social.opensocial.service;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
+import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.GroupService;
 import com.google.inject.Inject;
 
 /**
- * RPC/REST handler for groups requests
- *
- * @since 2.0.0
+ * RPC/REST handler for Groups API
  */
 @Service(name = "groups", path = "/{userId}")
 public class AipoGroupHandler {
@@ -53,13 +51,11 @@ public class AipoGroupHandler {
   public Future<?> get(SocialRequestItem request) throws ProtocolException {
     try {
       Set<UserId> userIds = request.getUsers();
-      CollectionOptions options = new CollectionOptions(request);
+      AipoCollectionOptions options = new AipoCollectionOptions(request);
 
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      HandlerPreconditions.requireSingular(
-        userIds,
-        "Only one userId must be specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
       return service.getGroups(userIds.iterator().next(), options, request
         .getFields(), request.getToken());

@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.conversion.BeanConverter;
@@ -120,10 +118,7 @@ public class BaseRequestItem implements RequestItem {
       this.converter = converter;
       this.formItems = formItems;
     } catch (JSONException je) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-        je.getMessage(),
-        je);
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
     }
     this.jsonConverter = jsonConverter;
   }
@@ -256,8 +251,8 @@ public class BaseRequestItem implements RequestItem {
         dataTypeClass);
     } catch (RuntimeException e) {
       if (e.getCause() instanceof JSONException) {
-        throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, e
-          .getMessage());
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+          .customMessage(e.getMessage()));
       }
       throw e;
     }
@@ -270,8 +265,8 @@ public class BaseRequestItem implements RequestItem {
         .toString(), dataTypeClass);
     } catch (RuntimeException e) {
       if (e.getCause() instanceof JSONException) {
-        throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, e
-          .getMessage());
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+          .customMessage(e.getMessage()));
       }
       throw e;
     }
@@ -326,8 +321,8 @@ public class BaseRequestItem implements RequestItem {
         }
         return returnVal;
       } catch (JSONException je) {
-        throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, je
-          .getMessage(), je);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+          .customMessage(je.getMessage()));
       }
     } else {
       // Allow up-conversion of non-array to array params.

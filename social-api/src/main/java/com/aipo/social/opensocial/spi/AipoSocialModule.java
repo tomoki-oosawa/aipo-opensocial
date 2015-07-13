@@ -47,8 +47,6 @@ public class AipoSocialModule extends AbstractModule {
   protected void configure() {
     bind(ActivityService.class).to(AipoActivityService.class).in(
       Scopes.SINGLETON);
-    // bind(AlbumService.class).to(JsonDbOpensocialService.class);
-    // bind(MediaItemService.class).to(JsonDbOpensocialService.class);
     bind(AppDataService.class)
       .to(AipoAppDataService.class)
       .in(Scopes.SINGLETON);
@@ -61,7 +59,6 @@ public class AipoSocialModule extends AbstractModule {
       .to(AipoStorageService.class)
       .in(Scopes.SINGLETON);
     bind(PushService.class).to(AipoPushService.class).in(Scopes.SINGLETON);
-    // bind(MessageService.class).to(JsonDbOpensocialService.class);
     bind(OAuthDataStore.class).to(AipoOAuthDataStore.class);
     bind(OAuth2Service.class).to(AipoOAuth2Service.class);
     bind(OAuth2DataService.class).to(AipoOAuth2DataService.class);

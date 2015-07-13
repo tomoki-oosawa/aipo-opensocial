@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
@@ -31,6 +30,7 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.container.protocol.StreamContent;
 import com.aipo.social.opensocial.model.ALFile;
@@ -97,10 +97,9 @@ public class AipoMessageHandler {
       AipoCollectionOptions options = new AipoCollectionOptions(request);
 
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      HandlerPreconditions.requireSingular(
-        userIds,
-        "Only one userId must be specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
 
       return messageService.getMessages(
         userIds.iterator().next(),
@@ -132,18 +131,15 @@ public class AipoMessageHandler {
   public Future<ALMessage> create(SocialRequestItem request) {
     try {
       Set<UserId> userIds = request.getUsers();
-
-      String transactionId = request.getParameter("transactionId");
       String roomId = request.getParameter("roomId");
       String message = request.getParameter("message");
-
-      AipoCollectionOptions options = new AipoCollectionOptions(request);
+      String transactionId = request.getParameter("transactionId");
 
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      HandlerPreconditions.requireSingular(
-        userIds,
-        "Only one userId must be specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      AipoPreconditions.required("message", message);
 
       return messageService.postMessage(userIds.iterator().next(), request
         .getFields(), roomId, message, request.getToken(), transactionId);
@@ -169,6 +165,16 @@ public class AipoMessageHandler {
   @Operation(httpMethods = "PUT", path = "/{roomId}/posts/{messageId}")
   public Future<?> update(SocialRequestItem request) {
     try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+      String messageId = request.getParameter("messageId");
+
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      AipoPreconditions.required("messageId", messageId);
+
       throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
     } catch (ProtocolException e) {
       throw e;
@@ -192,6 +198,16 @@ public class AipoMessageHandler {
   @Operation(httpMethods = "DELETE", path = "/{roomId}/posts/{messageId}")
   public Future<?> delete(SocialRequestItem request) {
     try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+      String messageId = request.getParameter("messageId");
+
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      AipoPreconditions.required("messageId", messageId);
+
       throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
     } catch (ProtocolException e) {
       throw e;
@@ -215,6 +231,14 @@ public class AipoMessageHandler {
   @Operation(httpMethods = "PUT", name = "read.update", path = "/{roomId}/read")
   public Future<?> read(SocialRequestItem request) {
     try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+
       throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
     } catch (ProtocolException e) {
       throw e;
@@ -238,6 +262,16 @@ public class AipoMessageHandler {
   @Operation(httpMethods = "GET", name = "files.info", path = "/{roomId}/files/info/{fileId}")
   public Future<?> getFilesInfo(SocialRequestItem request) {
     try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+      String fileId = request.getParameter("fileId");
+
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      AipoPreconditions.required("fileId", fileId);
+
       throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
     } catch (ProtocolException e) {
       throw e;
@@ -261,14 +295,15 @@ public class AipoMessageHandler {
   @Operation(httpMethods = "GET", name = "files.download", path = "/{roomId}/files/download/{fileId}")
   public StreamContent getFiles(SocialRequestItem request) {
     try {
-      String fileId = request.getParameter("fileId");
       Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+      String fileId = request.getParameter("fileId");
 
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      HandlerPreconditions.requireSingular(
-        userIds,
-        "Only one userId must be specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      AipoPreconditions.required("fileId", fileId);
 
       CollectionOptions options = new CollectionOptions(request);
 
@@ -280,27 +315,18 @@ public class AipoMessageHandler {
           fileId,
           request.getToken());
       if (file == null) {
-        throw new ProtocolException(
-          501,
-          null,
-          new UnsupportedOperationException());
+        throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
       }
 
       InputStream stream =
         storageService.getFile(file.get(), request.getToken());
       if (stream == null) {
-        throw new ProtocolException(
-          501,
-          null,
-          new UnsupportedOperationException());
+        throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
       }
       String contentType =
         storageService.getContentType(file.get(), request.getToken());
       if (contentType == null) {
-        throw new ProtocolException(
-          501,
-          null,
-          new UnsupportedOperationException());
+        throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
       }
       return new StreamContent(contentType, stream);
     } catch (ProtocolException e) {

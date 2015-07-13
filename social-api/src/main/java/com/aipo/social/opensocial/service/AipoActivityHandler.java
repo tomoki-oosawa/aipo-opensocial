@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.apache.shindig.config.ContainerConfig;
-import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RequestItem;
@@ -31,6 +30,9 @@ import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoPreconditions;
+import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.social.opensocial.model.ALActivity;
 import com.aipo.social.opensocial.spi.ActivityService;
 import com.aipo.social.opensocial.spi.AipoCollectionOptions;
@@ -40,7 +42,7 @@ import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 /**
- * Rest/RPC handler for all activites related requests
+ * RPC/REST handler for Activities API
  */
 @Service(name = "activities", path = "/{userId}+/{groupId}/{appId}/{activityId}+")
 public class AipoActivityHandler {
@@ -62,18 +64,26 @@ public class AipoActivityHandler {
    */
   @Operation(httpMethods = "DELETE")
   public Future<?> delete(SocialRequestItem request) throws ProtocolException {
-    Set<UserId> userIds = request.getUsers();
-    Set<String> activityIds =
-      ImmutableSet.copyOf(request.getListParameter("activityId"));
+    try {
+      Set<UserId> userIds = request.getUsers();
+      Set<String> activityIds =
+        ImmutableSet.copyOf(request.getListParameter("activityId"));
 
-    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    HandlerPreconditions.requireSingular(
-      userIds,
-      "Multiple userIds not supported");
-    // Throws exceptions if userIds contains more than one element or zero
-    // elements
-    return service.deleteActivities(Iterables.getOnlyElement(userIds), request
-      .getGroup(), request.getAppId(), activityIds, request.getToken());
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+
+      return service.deleteActivities(
+        Iterables.getOnlyElement(userIds),
+        request.getGroup(),
+        request.getAppId(),
+        activityIds,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 
   /**
@@ -93,23 +103,21 @@ public class AipoActivityHandler {
    */
   @Operation(httpMethods = "POST", bodyParam = "activity")
   public Future<?> create(SocialRequestItem request) throws ProtocolException {
+    try {
+      Set<UserId> userIds = request.getUsers();
 
-    Set<UserId> userIds = request.getUsers();
-    List<String> activityIds = request.getListParameter("activityId");
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
-    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    HandlerPreconditions.requireSingular(
-      userIds,
-      "Multiple userIds not supported");
-    // TODO(lryan) This seems reasonable to allow on PUT but we don't have an
-    // update verb.
-    HandlerPreconditions.requireEmpty(
-      activityIds,
-      "Cannot specify activityId in create");
-
-    return service.createActivity(Iterables.getOnlyElement(userIds), request
-      .getGroup(), request.getAppId(), request.getFields(), request
-      .getTypedParameter("activity", ALActivity.class), request.getToken());
+      return service.createActivity(Iterables.getOnlyElement(userIds), request
+        .getGroup(), request.getAppId(), request.getFields(), request
+        .getTypedParameter("activity", ALActivity.class), request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 
   /**
@@ -121,59 +129,67 @@ public class AipoActivityHandler {
    */
   @Operation(httpMethods = "GET")
   public Future<?> get(SocialRequestItem request) throws ProtocolException {
-    Set<UserId> userIds = request.getUsers();
-    Set<String> optionalActivityIds =
-      ImmutableSet.copyOf(request.getListParameter("activityId"));
+    try {
+      Set<UserId> userIds = request.getUsers();
+      Set<String> optionalActivityIds =
+        ImmutableSet.copyOf(request.getListParameter("activityId"));
 
-    AipoCollectionOptions options = new AipoCollectionOptions(request);
+      AipoCollectionOptions options = new AipoCollectionOptions(request);
 
-    // Preconditions
-    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    if (userIds.size() > 1 && !optionalActivityIds.isEmpty()) {
-      throw new IllegalArgumentException(
-        "Cannot fetch same activityIds for multiple userIds");
-    }
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
-    if (!optionalActivityIds.isEmpty()) {
-      if (optionalActivityIds.size() == 1) {
-        return service.getActivity(
-          userIds.iterator().next(),
-          request.getGroup(),
-          request.getAppId(),
-          request.getFields(),
-          optionalActivityIds.iterator().next(),
-          request.getToken());
-      } else {
-        return service.getActivities(
-          userIds.iterator().next(),
-          request.getGroup(),
-          request.getAppId(),
-          request.getFields(),
-          options,
-          optionalActivityIds,
-          request.getToken());
+      if (!optionalActivityIds.isEmpty()) {
+        if (optionalActivityIds.size() == 1) {
+          return service.getActivity(
+            userIds.iterator().next(),
+            request.getGroup(),
+            request.getAppId(),
+            request.getFields(),
+            optionalActivityIds.iterator().next(),
+            request.getToken());
+        } else {
+          return service.getActivities(
+            userIds.iterator().next(),
+            request.getGroup(),
+            request.getAppId(),
+            request.getFields(),
+            options,
+            optionalActivityIds,
+            request.getToken());
+        }
       }
-    }
 
-    return service.getActivities(
-      userIds.iterator().next(),
-      request.getGroup(),
-      request.getAppId(),
-      request.getFields(),
-      options,
-      null,
-      request.getToken());
+      return service.getActivities(
+        userIds.iterator().next(),
+        request.getGroup(),
+        request.getAppId(),
+        request.getFields(),
+        options,
+        null,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 
   @Operation(httpMethods = "GET", path = "/@supportedFields")
   public List<Object> supportedFields(RequestItem request) {
-    // TODO: Would be nice if name in config matched name of service.
-    String container =
-      Objects.firstNonNull(
-        request.getToken().getContainer(),
-        ContainerConfig.DEFAULT_CONTAINER);
-    return config.getList(
-      container,
-      "${Cur['gadgets.features'].opensocial.supportedFields.activity}");
+    try {
+      String container =
+        Objects.firstNonNull(
+          request.getToken().getContainer(),
+          ContainerConfig.DEFAULT_CONTAINER);
+      return config.getList(
+        container,
+        "${Cur['gadgets.features'].opensocial.supportedFields.activity}");
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 }

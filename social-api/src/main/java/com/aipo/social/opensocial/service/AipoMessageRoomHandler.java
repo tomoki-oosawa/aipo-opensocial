@@ -23,20 +23,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
-import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.container.protocol.StreamContent;
-import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
 
@@ -71,14 +69,11 @@ public class AipoMessageRoomHandler {
     try {
       Set<UserId> userIds = request.getUsers();
       String roomId = request.getParameter("roomId");
-
       CollectionOptions options = new CollectionOptions(request);
 
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      HandlerPreconditions.requireSingular(
-        userIds,
-        "Only one userId must be specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
       return service.getRooms(userIds.iterator().next(), options, request
         .getFields(), roomId, request.getToken());
@@ -105,22 +100,14 @@ public class AipoMessageRoomHandler {
   public Future<?> create(SocialRequestItem request) {
     try {
       Set<UserId> userIds = request.getUsers();
-
       String name = request.getParameter("name");
       List<String> memberList = request.getListParameter("member_to");
 
-      AipoCollectionOptions options = new AipoCollectionOptions(request);
-
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      HandlerPreconditions.requireSingular(
-        userIds,
-        "Only one userId must be specified");
-      HandlerPreconditions
-        .requireNotEmpty(memberList, "No member_to specified");
-      HandlerPreconditions.requirePlural(
-        memberList,
-        "More than one member_to must be specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("member_to", memberList);
+      AipoPreconditions.multiple("member_to", memberList);
 
       return service.postRoom(
         userIds.iterator().next(),
@@ -151,33 +138,22 @@ public class AipoMessageRoomHandler {
   public Future<?> update(SocialRequestItem request) {
     try {
       Set<UserId> userIds = request.getUsers();
-
-      List<String> roomId = request.getListParameter("roomId");
       String name = request.getParameter("name");
       List<String> memberList = request.getListParameter("member_to");
-
-      AipoCollectionOptions options = new AipoCollectionOptions(request);
+      String roomId = request.getParameter("roomId");
 
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      HandlerPreconditions.requireSingular(
-        userIds,
-        "Only one userId must be specified");
-      HandlerPreconditions.requireNotEmpty(roomId, "No roomId specified");
-      HandlerPreconditions.requireSingular(
-        roomId,
-        "Only one roomId must be specified");
-      HandlerPreconditions
-        .requireNotEmpty(memberList, "No member_to specified");
-      HandlerPreconditions.requirePlural(
-        memberList,
-        "More than one member_to must be specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("member_to", memberList);
+      AipoPreconditions.multiple("member_to", memberList);
+      AipoPreconditions.required("roomId", roomId);
 
       return service.putRoom(
         userIds.iterator().next(),
         name,
         memberList,
-        roomId.iterator().next(),
+        roomId,
         request.getToken());
     } catch (ProtocolException e) {
       throw e;
@@ -225,11 +201,17 @@ public class AipoMessageRoomHandler {
   public StreamContent getIcon(SocialRequestItem request)
       throws ProtocolException {
     try {
+      Set<UserId> userIds = request.getUsers();
       String roomId = request.getParameter("roomId");
 
-      CollectionOptions options = new CollectionOptions(request);
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
 
-      InputStream roomIcon = service.getRoomIcon(roomId, request.getToken());
+      InputStream roomIcon =
+        service.getRoomIcon(userIds.iterator().next(), roomId, request
+          .getToken());
 
       return new StreamContent("image/jpeg", roomIcon);
     } catch (ProtocolException e) {
@@ -256,25 +238,14 @@ public class AipoMessageRoomHandler {
       throws ProtocolException {
     try {
       Set<UserId> userIds = request.getUsers();
-      GroupId groupId = request.getGroup();
-      List<String> roomId = request.getListParameter("roomId");
+      String roomId = request.getParameter("roomId");
       FormDataItem roomIcon = request.getFormMimePart("roomIcon");
 
-      AipoCollectionOptions options = new AipoCollectionOptions(request);
-
       // Preconditions
-
-      // userId
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      HandlerPreconditions.requireSingular(
-        userIds,
-        "Only one userId must be specified");
-
-      // roomId
-      HandlerPreconditions.requireNotEmpty(roomId, "No roomId specified");
-      HandlerPreconditions.requireSingular(
-        roomId,
-        "Only one roomId must be specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      AipoPreconditions.required("roomIcon", roomIcon);
 
       return null;
     } catch (ProtocolException e) {

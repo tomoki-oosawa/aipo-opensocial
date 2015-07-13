@@ -52,8 +52,8 @@ public interface MessageService {
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, String roomId, SecurityToken token);
 
-  public InputStream getRoomIcon(String roomId, SecurityToken token)
-      throws ProtocolException;
+  public InputStream getRoomIcon(UserId userId, String roomId,
+      SecurityToken token) throws ProtocolException;
 
   public Future<ALFile> getMessageFiles(UserId userId,
       CollectionOptions options, Set<String> fields, String fileId,

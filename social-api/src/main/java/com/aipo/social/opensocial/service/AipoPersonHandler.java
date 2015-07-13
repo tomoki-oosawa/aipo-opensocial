@@ -24,7 +24,6 @@ import java.util.concurrent.Future;
 
 import org.apache.shindig.common.util.FutureUtil;
 import org.apache.shindig.config.ContainerConfig;
-import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RequestItem;
@@ -36,6 +35,7 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.social.opensocial.model.ALPerson;
 import com.aipo.social.opensocial.spi.PersonService;
@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 
 /**
- *
+ * RPC/REST handler for People API
  */
 @Service(name = "people", path = "/{userId}+/{groupId}/{personId}+")
 public class AipoPersonHandler {
@@ -68,20 +68,16 @@ public class AipoPersonHandler {
   @Operation(httpMethods = "GET")
   public Future<?> get(SocialRequestItem request) throws ProtocolException {
     try {
+      Set<UserId> userIds = request.getUsers();
       GroupId groupId = request.getGroup();
       Set<String> optionalPersonId =
         ImmutableSet.copyOf(request.getListParameter("personId"));
       Set<String> fields = request.getFields(ALPerson.Field.DEFAULT_FIELDS);
-      Set<UserId> userIds = request.getUsers();
+      CollectionOptions options = new CollectionOptions(request);
 
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-      if (userIds.size() > 1 && !optionalPersonId.isEmpty()) {
-        throw new IllegalArgumentException(
-          "Cannot fetch personIds for multiple userIds");
-      }
-
-      CollectionOptions options = new CollectionOptions(request);
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
       if (userIds.size() == 1) {
         if (optionalPersonId.isEmpty()) {
@@ -149,7 +145,6 @@ public class AipoPersonHandler {
   @Operation(httpMethods = "GET", path = "/@supportedFields")
   public List<Object> supportedFields(RequestItem request) {
     try {
-      // TODO: Would be nice if name in config matched name of service.
       String container =
         Objects.firstNonNull(request.getToken().getContainer(), "default");
       return config.getList(

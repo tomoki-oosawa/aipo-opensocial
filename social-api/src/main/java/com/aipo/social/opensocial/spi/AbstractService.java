@@ -34,7 +34,6 @@ import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.cayenne.access.DataContext;
 import org.apache.shindig.auth.SecurityToken;
@@ -42,6 +41,8 @@ import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.TurbineUserDbService;
@@ -79,9 +80,7 @@ public abstract class AbstractService {
 
       selectDataDomain(orgId);
     } catch (Throwable t) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "Org ID not recognized");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
 
     checkViewerExists(token);
@@ -94,10 +93,9 @@ public abstract class AbstractService {
       DataContext dataContext = Database.createDataContext(orgId);
       DataContext.bindThreadObjectContext(dataContext);
     } else if (currentOrgId.equals(orgId)) {
-      // Validate OK.
       return;
     } else {
-      throw new RuntimeException();
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
   }
 
@@ -154,9 +152,7 @@ public abstract class AbstractService {
         return;
       }
     }
-    throw new ProtocolException(
-      HttpServletResponse.SC_BAD_REQUEST,
-      "Org ID not recognized");
+    throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
   }
 
   /**
@@ -176,9 +172,7 @@ public abstract class AbstractService {
       result = false;
     }
     if (!result) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "Viewer ID not recognized");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
   }
 
@@ -192,9 +186,7 @@ public abstract class AbstractService {
   protected void checkSameViewer(UserId userId, SecurityToken token)
       throws ProtocolException {
     if (!getViewerId(token).equals(getUserId(userId, token))) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "Access not dennied.");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
   }
 
@@ -210,24 +202,18 @@ public abstract class AbstractService {
         return;
       }
     }
-    throw new ProtocolException(
-      HttpServletResponse.SC_BAD_REQUEST,
-      "Access not dennied.");
+    throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
   }
 
   protected void checkInputRange(String input, int min, int max) {
     if (input == null || (input.length() < min) || (input.length() > max)) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "Validate error.");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR);
     }
   }
 
   protected void checkInputByte(String input, int min, int max) {
     if (input == null || (byteLength(input) < min) || (byteLength(input) > max)) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "Validate error.");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR);
     }
   }
 
@@ -272,9 +258,7 @@ public abstract class AbstractService {
         }
       }
       if (ext == null) {
-        throw new ProtocolException(
-          HttpServletResponse.SC_BAD_REQUEST,
-          "Validate error.");
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_FORMAT);
       }
 
       byte[] imageInBytes = formDataItem.get();
@@ -296,9 +280,7 @@ public abstract class AbstractService {
         fixed = isFixOrgImage;
       }
       if (bufferdImage == null) {
-        throw new ProtocolException(
-          HttpServletResponse.SC_BAD_REQUEST,
-          "Validate error.");
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_FORMAT);
       }
 
       BufferedImage shrinkImage =
@@ -327,9 +309,7 @@ public abstract class AbstractService {
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "Validate error.");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_FORMAT);
     }
 
     return new ShrinkImageSet(result, fixed ? fixResult : null);
@@ -340,7 +320,7 @@ public abstract class AbstractService {
     int iwidth = imgfile.getWidth();
     int iheight = imgfile.getHeight();
     if (iwidth < validate_width || iheight < validate_height) {
-      return null;
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_SIZE_200);
     }
 
     double ratio =
@@ -420,10 +400,10 @@ public abstract class AbstractService {
       int height = jpegDirectory.getImageHeight();
 
       return new ImageInformation(orientation, width, height);
+    } catch (ProtocolException e) {
+      throw e;
     } catch (Throwable t) {
-      throw new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "Validate error.");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_FORMAT);
     }
   }
 

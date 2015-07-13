@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.DateUtil;
 import org.apache.shindig.common.util.ImmediateFuture;
@@ -37,6 +35,8 @@ import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
@@ -130,7 +130,7 @@ public class AipoMessageService extends AbstractService implements
 
     list = messageDbService.findRoom(roomIdInt, username, null, options);
     if (roomIdInt > 0 && list.size() == 0) {
-      throw new ProtocolException(400, "Access denied");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
 
     List<ALMessageRoom> result = new ArrayList<ALMessageRoom>(list.size());
@@ -219,7 +219,8 @@ public class AipoMessageService extends AbstractService implements
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
     if (!memberNameList.contains(username)) {
-      throw new ProtocolException(400, "member_to should contain userId");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter member_to should contain userId."));
     }
 
     EipTMessageRoom model = null;
@@ -308,7 +309,7 @@ public class AipoMessageService extends AbstractService implements
       room = messageDbService.findRoom(username, targetUsername);
     }
     if (room == null) {
-      throw new ProtocolException(400, "Access denied");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
 
     // /messages/rooms/\(userId)/\(groupId)
@@ -434,7 +435,8 @@ public class AipoMessageService extends AbstractService implements
     if (roomIdInt != null) {
       room = messageDbService.findRoom(roomIdInt, username);
       if (room == null) {
-        throw new ProtocolException(400, "Access denied");
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
       }
     } else {
       room = messageDbService.findRoom(username, targetUsername);
@@ -498,14 +500,15 @@ public class AipoMessageService extends AbstractService implements
     String username = getUserId(userId, token);
 
     if (!memberNameList.contains(username)) {
-      throw new ProtocolException(400, "member_to should contain userId");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter member_to should contain userId."));
     }
     EipTMessageRoom room = null;
     if (roomIdInt != null) {
       room = messageDbService.findRoom(roomIdInt, username);
     }
     if (room == null) {
-      throw new ProtocolException(400, "Access denied");
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
 
     EipTMessageRoom model = null;
@@ -531,8 +534,8 @@ public class AipoMessageService extends AbstractService implements
    * @throws ProtocolException
    */
   @Override
-  public InputStream getRoomIcon(String roomId, SecurityToken token)
-      throws ProtocolException {
+  public InputStream getRoomIcon(UserId userId, String roomId,
+      SecurityToken token) throws ProtocolException {
 
     setUp(token);
 
@@ -543,11 +546,14 @@ public class AipoMessageService extends AbstractService implements
 
     }
     if (roomIdInt == null) {
-      return null;
+      throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
     }
+
+    // TODO: ルームのアクセス権限があるかどうかチェック
+
     InputStream roomIcon = messageDbService.getPhoto(roomIdInt.intValue());
     if (roomIcon == null) {
-      return null;
+      throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
     }
     return roomIcon;
   }
@@ -651,9 +657,8 @@ public class AipoMessageService extends AbstractService implements
     if (roomId != null && username != null && !"".equals(username)) {
       boolean isJoinRoom = messageDbService.isJoinRoom(roomId, username);
       if (!isJoinRoom) {
-        throw new ProtocolException(
-          HttpServletResponse.SC_BAD_REQUEST,
-          "Access not dennied.");
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
       }
     }
   }
@@ -679,7 +684,9 @@ public class AipoMessageService extends AbstractService implements
     params.put("roomId", String.valueOf(message.getRoomId()));
     params.put("messageId", String.valueOf(message.getMessageId()));
 
-    pushService.pushAsync("messagev2", params, recipients);
+    if (recipients.size() > 0) {
+      pushService.pushAsync("messagev2", params, recipients);
+    }
   }
 
 }

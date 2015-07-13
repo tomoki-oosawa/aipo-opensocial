@@ -18,6 +18,8 @@
  */
 package com.aipo.container.protocol;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,7 +38,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 403;
+      return HttpServletResponse.SC_BAD_REQUEST;
     }
   },
 
@@ -53,7 +55,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 404;
+      return HttpServletResponse.SC_NOT_FOUND;
     }
   },
 
@@ -70,7 +72,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 500;
+      return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
     }
   },
 
@@ -87,7 +89,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 501;
+      return HttpServletResponse.SC_NOT_IMPLEMENTED;
     }
   },
 
@@ -104,7 +106,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 502;
+      return HttpServletResponse.SC_BAD_GATEWAY;
     }
   },
 
@@ -121,7 +123,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 503;
+      return HttpServletResponse.SC_SERVICE_UNAVAILABLE;
     }
   },
 
@@ -138,7 +140,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 504;
+      return HttpServletResponse.SC_GATEWAY_TIMEOUT;
     }
   },
 
@@ -155,7 +157,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 401;
+      return HttpServletResponse.SC_UNAUTHORIZED;
     }
   },
 
@@ -172,7 +174,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 403;
+      return HttpServletResponse.SC_BAD_REQUEST;
     }
   },
 
@@ -189,7 +191,7 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 501;
+      return HttpServletResponse.SC_NOT_IMPLEMENTED;
     }
   },
 
@@ -206,7 +208,92 @@ public enum AipoErrorCode {
 
     @Override
     int getStatus() {
-      return 404;
+      return HttpServletResponse.SC_NOT_FOUND;
+    }
+  },
+
+  ICON_NOT_FOUND {
+    @Override
+    int getCode() {
+      return 1005;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Icon not found.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_NOT_FOUND;
+    }
+  },
+
+  VALIDATE_IMAGE_SIZE_200 {
+    @Override
+    int getCode() {
+      return 1006;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Upload image must be more than 200x200.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_BAD_REQUEST;
+    }
+  },
+
+  VALIDATE_IMAGE_FORMAT {
+    @Override
+    int getCode() {
+      return 1007;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Upload image is not valid.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_BAD_REQUEST;
+    }
+  },
+
+  VALIDATE_ACCESS_NOT_DENIED {
+    @Override
+    int getCode() {
+      return 1008;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Access not dennied.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_BAD_REQUEST;
+    }
+  },
+
+  FILE_NOT_FOUND {
+    @Override
+    int getCode() {
+      return 1009;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "File not found.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_NOT_FOUND;
     }
   };
 

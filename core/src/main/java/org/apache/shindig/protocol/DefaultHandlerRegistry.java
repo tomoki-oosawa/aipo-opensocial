@@ -30,8 +30,6 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
@@ -41,6 +39,8 @@ import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoProtocolException;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -134,15 +134,15 @@ public class DefaultHandlerRegistry implements HandlerRegistry {
       String key = rpc.getString("method");
       RpcInvocationHandler rpcHandler = rpcOperations.get(key);
       if (rpcHandler == null) {
-        return new ErrorRpcHandler(new ProtocolException(
-          HttpServletResponse.SC_NOT_IMPLEMENTED,
-          "The method " + key + " is not implemented"));
+        return new ErrorRpcHandler(new AipoProtocolException(
+          AipoErrorCode.NOT_IMPLEMENTED.customMessage("The method "
+            + key
+            + " is not implemented")));
       }
       return new RpcInvocationWrapper(rpcHandler, rpc);
     } catch (JSONException je) {
-      return new ErrorRpcHandler(new ProtocolException(
-        HttpServletResponse.SC_BAD_REQUEST,
-        "No method requested in RPC"));
+      return new ErrorRpcHandler(new AipoProtocolException(
+        AipoErrorCode.BAD_REQUEST.customMessage("No method requested in RPC")));
     }
   }
 
@@ -171,9 +171,9 @@ public class DefaultHandlerRegistry implements HandlerRegistry {
         }
       }
     }
-    return new ErrorRestHandler(new ProtocolException(
-      HttpServletResponse.SC_NOT_IMPLEMENTED,
-      "No service defined for path " + path));
+    return new ErrorRestHandler(new AipoProtocolException(
+      AipoErrorCode.NOT_IMPLEMENTED
+        .customMessage("No service defined for path " + path)));
   }
 
   @Override
@@ -732,14 +732,13 @@ public class DefaultHandlerRegistry implements HandlerRegistry {
       for (int i = 0; i < Math.min(requestPathParts.length, parts.size()); i++) {
         if (parts.get(i).type == PartType.SINGULAR_PARAM) {
           if (requestPathParts[i].indexOf(',') != -1) {
-            throw new ProtocolException(
-              HttpServletResponse.SC_BAD_REQUEST,
-              "Cannot expect plural value "
+            throw new AipoProtocolException(AipoErrorCode.BAD_REQUEST
+              .customMessage("Cannot expect plural value "
                 + requestPathParts[i]
                 + " for singular field "
                 + parts.get(i)
                 + " for path "
-                + operationPath);
+                + operationPath));
           }
           parsedParams.put(
             parts.get(i).partName,

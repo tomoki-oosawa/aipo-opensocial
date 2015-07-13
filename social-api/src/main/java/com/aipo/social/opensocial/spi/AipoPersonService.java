@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
@@ -36,6 +34,8 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.service.TurbineUserDbService;
 import com.aipo.orm.service.request.SearchOptions;
@@ -131,9 +131,8 @@ public class AipoPersonService extends AbstractService implements PersonService 
         totalResults = 1;
         break;
       default:
-        throw new ProtocolException(
-          HttpServletResponse.SC_BAD_REQUEST,
-          "Group ID not recognized");
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
 
     List<ALPerson> result = new ArrayList<ALPerson>(list.size());
@@ -207,16 +206,15 @@ public class AipoPersonService extends AbstractService implements PersonService 
   public InputStream getIcon(UserId id, SecurityToken token)
       throws ProtocolException {
 
-    // TODO: FIELDS
-
     setUp(token);
 
     String userId = getUserId(id, token);
 
     InputStream userIcon = turbineUserDbService.getPhoto(userId);
     if (userIcon == null) {
-      return null;
+      throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
     }
+
     return userIcon;
   }
 

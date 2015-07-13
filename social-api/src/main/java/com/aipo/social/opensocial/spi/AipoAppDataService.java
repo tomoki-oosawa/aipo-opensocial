@@ -26,8 +26,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.DataCollection;
@@ -36,6 +34,8 @@ import org.apache.shindig.social.opensocial.spi.AppDataService;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.orm.model.security.TurbineUser;
 import com.aipo.orm.model.social.AppData;
 import com.aipo.orm.service.AppDataDbService;
@@ -46,7 +46,7 @@ import com.google.inject.Inject;
 import com.google.inject.internal.Sets;
 
 /**
- * 
+ *
  */
 public class AipoAppDataService extends AbstractService implements
     AppDataService {
@@ -56,7 +56,7 @@ public class AipoAppDataService extends AbstractService implements
   private final AppDataDbService appDataDbService;
 
   /**
-   * 
+   *
    */
   @Inject
   public AipoAppDataService(TurbineUserDbService turbineUserDbService,
@@ -74,6 +74,7 @@ public class AipoAppDataService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<Void> updatePersonData(UserId userId, GroupId groupId,
       String appId, Set<String> fields, Map<String, String> values,
       SecurityToken token) throws ProtocolException {
@@ -119,6 +120,7 @@ public class AipoAppDataService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<Void> deletePersonData(UserId userId, GroupId groupId,
       String appId, Set<String> fields, SecurityToken token)
       throws ProtocolException {
@@ -153,6 +155,7 @@ public class AipoAppDataService extends AbstractService implements
    * @return
    * @throws ProtocolException
    */
+  @Override
   public Future<DataCollection> getPersonData(Set<UserId> userIds,
       GroupId groupId, String appId, Set<String> fields, SecurityToken token)
       throws ProtocolException {
@@ -204,9 +207,8 @@ public class AipoAppDataService extends AbstractService implements
         list = turbineUserDbService.findByUsername(users);
         break;
       default:
-        throw new ProtocolException(
-          HttpServletResponse.SC_BAD_REQUEST,
-          "Group ID not recognized");
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
     Set<String> usernames = Sets.newHashSet();
     if (list != null) {

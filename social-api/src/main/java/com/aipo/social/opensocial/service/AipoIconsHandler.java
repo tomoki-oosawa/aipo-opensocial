@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
@@ -30,9 +29,9 @@ import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.container.protocol.StreamContent;
-import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.PersonService;
 import com.google.inject.Inject;
 
@@ -65,10 +64,10 @@ public class AipoIconsHandler {
   public StreamContent get(SocialRequestItem request) throws ProtocolException {
     try {
       Set<UserId> userIds = request.getUsers();
-      AipoCollectionOptions options = new AipoCollectionOptions(request);
 
       // Preconditions
-      HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
       InputStream userIcon =
         personService.getIcon(userIds.iterator().next(), request.getToken());
@@ -98,6 +97,12 @@ public class AipoIconsHandler {
   @Operation(httpMethods = { "PUT", "POST" }, path = "/{userId}+")
   public Future<?> update(SocialRequestItem request) throws ProtocolException {
     try {
+      Set<UserId> userIds = request.getUsers();
+
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+
       throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
     } catch (ProtocolException e) {
       throw e;
@@ -121,6 +126,12 @@ public class AipoIconsHandler {
   @Operation(httpMethods = "DELETE", path = "/{userId}+")
   public Future<?> delete(SocialRequestItem request) throws ProtocolException {
     try {
+      Set<UserId> userIds = request.getUsers();
+
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+
       throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
     } catch (ProtocolException e) {
       throw e;
