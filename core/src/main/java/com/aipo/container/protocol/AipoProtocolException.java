@@ -26,17 +26,13 @@ public class AipoProtocolException extends ProtocolException {
 
   private static final long serialVersionUID = 2778407272109027809L;
 
-  private final int statusCode;
+  private final AipoErrorCode errorCode;
 
   private final JSONObject response;
 
   public AipoProtocolException(AipoErrorCode errorCode) {
-    this(errorCode, null);
-  }
-
-  public AipoProtocolException(AipoErrorCode errorCode, String optionalMessage) {
-    super(errorCode.getStatus(), optionalMessage);
-    this.statusCode = errorCode.getStatus();
+    super(errorCode.getStatus(), errorCode.getMessage());
+    this.errorCode = errorCode;
     this.response = new JSONObject();
     JSONObject error = new JSONObject();
     String errorMessage = errorCode.getMessage();
@@ -52,11 +48,16 @@ public class AipoProtocolException extends ProtocolException {
 
   @Override
   public int getCode() {
-    return statusCode;
+    return errorCode.getStatus();
   }
 
   @Override
   public Object getResponse() {
     return response;
+  }
+
+  @Override
+  public String getMessage() {
+    return errorCode.getMessage();
   }
 }

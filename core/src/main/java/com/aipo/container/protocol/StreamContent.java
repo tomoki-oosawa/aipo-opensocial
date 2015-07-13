@@ -21,6 +21,7 @@ package com.aipo.container.protocol;
 import java.io.InputStream;
 
 public class StreamContent {
+
   private InputStream inputStream;
 
   private String contentType;
