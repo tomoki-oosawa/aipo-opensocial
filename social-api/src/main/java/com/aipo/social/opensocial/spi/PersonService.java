@@ -25,6 +25,7 @@ import java.util.concurrent.Future;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
@@ -42,5 +43,11 @@ public interface PersonService {
       SecurityToken paramSecurityToken) throws ProtocolException;
 
   public InputStream getIcon(UserId paramUserId,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public Future<Void> putIcon(UserId paramUserId, FormDataItem icon,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public Future<Void> deleteIcon(UserId paramUserId,
       SecurityToken paramSecurityToken) throws ProtocolException;
 }

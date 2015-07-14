@@ -102,7 +102,8 @@ public abstract class AbstractService {
       String[] split = viewer.split(":");
 
       if (split.length != 2) {
-        throw new RuntimeException();
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
       }
 
       orgId = split[0];
@@ -154,7 +155,7 @@ public abstract class AbstractService {
     String[] split = userId.split(":");
 
     if (split.length != 2) {
-      throw new RuntimeException();
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
 
     String currentOrgId = split[0];

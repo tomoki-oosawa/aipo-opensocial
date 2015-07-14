@@ -141,8 +141,12 @@ public class AipoMessageHandler {
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("message", message);
 
-      return messageService.postMessage(userIds.iterator().next(), request
-        .getFields(), roomId, message, request.getToken(), transactionId);
+      return messageService.postMessage(
+        userIds.iterator().next(),
+        roomId,
+        message,
+        transactionId,
+        request.getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {

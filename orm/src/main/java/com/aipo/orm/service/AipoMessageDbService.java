@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.cayenne.DataRow;
 
@@ -385,7 +384,7 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom createRoom(String username, String name,
-      List<String> memberNameList, Set<String> fields) {
+      List<String> memberNameList) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
@@ -449,9 +448,9 @@ public class AipoMessageDbService implements MessageDbService {
 
       return model;
 
-    } catch (Exception ex) {
+    } catch (Throwable t) {
       Database.rollback();
-      return null;
+      throw new RuntimeException(t);
     }
   }
 
@@ -464,7 +463,7 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessage createMessage(String username, Integer roomId,
-      String targetUsername, String message, Set<String> fields) {
+      String targetUsername, String message) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       TurbineUser targetUser =
@@ -545,9 +544,9 @@ public class AipoMessageDbService implements MessageDbService {
 
       return model;
 
-    } catch (Exception ex) {
+    } catch (Throwable t) {
       Database.rollback();
-      return null;
+      throw new RuntimeException(t);
     }
   }
 
@@ -645,7 +644,7 @@ public class AipoMessageDbService implements MessageDbService {
 
     } catch (Throwable t) {
       Database.rollback();
-      return null;
+      throw new RuntimeException(t);
     }
   }
 
@@ -673,8 +672,7 @@ public class AipoMessageDbService implements MessageDbService {
     return query.fetchList();
   }
 
-  public static boolean isJoinRoom(EipTMessageRoom room, int userId) {
-    @SuppressWarnings("unchecked")
+  public boolean isJoinRoom(EipTMessageRoom room, int userId) {
     List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
     for (EipTMessageRoomMember member : list) {
       if (member.getUserId().intValue() == userId) {
@@ -719,14 +717,26 @@ public class AipoMessageDbService implements MessageDbService {
   }
 
   /**
+   *
    * @param roomId
    * @return
    */
   @Override
   public InputStream getPhoto(int roomId) {
+    return getPhoto(roomId, IconSize.NORMAL);
+  }
+
+  /**
+   *
+   * @param roomId
+   * @param size
+   * @return
+   */
+  @Override
+  public InputStream getPhoto(int roomId, IconSize size) {
 
     StringBuilder select = new StringBuilder();
-    select.append(" select t1.room_id, t1.photo_smartphone ");
+    select.append(" select t1.room_id, t1.photo, t1.photo_smartphone ");
     select.append(" from eip_t_message_room as t1 ");
     select.append(" where t1.room_id = #bind($roomId) ");
 
@@ -742,9 +752,29 @@ public class AipoMessageDbService implements MessageDbService {
       return null;
     }
 
-    byte[] photo = room.getPhotoSmartphone();
-    if (photo == null) {
-      return null;
+    String hasPhoto = room.getHasPhoto();
+    byte[] photo = null;
+    if ("N".equals(hasPhoto)) {
+      if (IconSize.LARGE.equals(size)) {
+        // getPhoto() で 200x200 をダウンロード
+        photo = room.getPhoto();
+        if (photo == null) {
+          return null;
+        }
+      } else {
+        // getPhotoSmartphone() で 100x100 をダウンロード
+        photo = room.getPhotoSmartphone();
+        if (photo == null) {
+          return null;
+        }
+      }
+      // 旧仕様（HAS_PHOTO=T）の場合
+    } else {
+      // すべて getPhoto() で 86x86 をダウンロード
+      photo = room.getPhoto();
+      if (photo == null) {
+        return null;
+      }
     }
 
     return new ByteArrayInputStream(photo);

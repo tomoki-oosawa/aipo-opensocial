@@ -28,6 +28,7 @@ import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.core.model.NameImpl;
 import org.apache.shindig.social.opensocial.model.Name;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
@@ -44,6 +45,7 @@ import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.aipo.social.core.model.ALPersonImpl;
 import com.aipo.social.opensocial.model.ALPerson;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 
 /**
@@ -216,6 +218,34 @@ public class AipoPersonService extends AbstractService implements PersonService 
     }
 
     return userIcon;
+  }
+
+  /**
+   *
+   * @param userId
+   * @param icon
+   * @param securityToken
+   * @return
+   * @throws ProtocolException
+   */
+  @Override
+  public Future<Void> putIcon(UserId userId, FormDataItem icon,
+      SecurityToken securityToken) throws ProtocolException {
+    return Futures.immediateFuture(null);
+  }
+
+  /**
+   *
+   *
+   * @param userId
+   * @param securityToken
+   * @return
+   * @throws ProtocolException
+   */
+  @Override
+  public Future<Void> deleteIcon(UserId userId, SecurityToken securityToken)
+      throws ProtocolException {
+    return Futures.immediateFuture(null);
   }
 
 }

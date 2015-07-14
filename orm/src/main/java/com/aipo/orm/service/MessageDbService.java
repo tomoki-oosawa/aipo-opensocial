@@ -20,7 +20,6 @@ package com.aipo.orm.service;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
@@ -43,15 +42,17 @@ public interface MessageDbService {
       SearchOptions options);
 
   public EipTMessageRoom createRoom(String username, String name,
-      List<String> memberNameList, Set<String> fields);
+      List<String> memberNameList);
 
   public EipTMessage createMessage(String username, Integer roomId,
-      String targetUsername, String message, Set<String> fields);
+      String targetUsername, String message);
 
   public EipTMessageRoom updateRoom(Integer roomId, String username,
       String name, List<String> memberNameList);
 
   public InputStream getPhoto(int roomId);
+
+  public InputStream getPhoto(int roomId, IconSize size);
 
   public void setPhoto(int roomId, byte[] roomIcon, byte[] roomIconSmartPhone);
 
@@ -62,4 +63,7 @@ public interface MessageDbService {
   public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
       String username);
 
+  public enum IconSize {
+    NORMAL, LARGE;
+  }
 }

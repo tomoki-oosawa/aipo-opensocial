@@ -111,7 +111,6 @@ public class AipoMessageRoomHandler {
 
       return service.postRoom(
         userIds.iterator().next(),
-        request.getFields(),
         name,
         memberList,
         request.getToken());
@@ -203,6 +202,7 @@ public class AipoMessageRoomHandler {
     try {
       Set<UserId> userIds = request.getUsers();
       String roomId = request.getParameter("roomId");
+      String size = request.getParameter("size");
 
       // Preconditions
       AipoPreconditions.required("userId", userIds);
@@ -210,7 +210,7 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.required("roomId", roomId);
 
       InputStream roomIcon =
-        service.getRoomIcon(userIds.iterator().next(), roomId, request
+        service.getRoomIcon(userIds.iterator().next(), roomId, size, request
           .getToken());
 
       return new StreamContent("image/jpeg", roomIcon);
@@ -224,7 +224,7 @@ public class AipoMessageRoomHandler {
   /**
    * ルームアイコン更新 <br>
    * <code>
-   * POST /rooms/:roomId/icon
+   * POST/PUT /rooms/:roomId/icon
    * </code><br>
    * <code>
    * osapi.rooms.icon.get( { roomId: :roomId } )
@@ -233,25 +233,7 @@ public class AipoMessageRoomHandler {
    * @param request
    * @return
    */
-  @Operation(httpMethods = "POST", name = "icon.update", path = "/{roomId}/icon")
-  public Future<?> createIcon(SocialRequestItem request)
-      throws ProtocolException {
-    return updateIcon(request);
-  }
-
-  /**
-   * ルームアイコン更新 <br>
-   * <code>
-   * PUT /rooms/:roomId/icon
-   * </code><br>
-   * <code>
-   * osapi.rooms.icon.get( { roomId: :roomId } )
-   * </code>
-   *
-   * @param request
-   * @return
-   */
-  @Operation(httpMethods = "PUT", name = "icon.update", path = "/{roomId}/icon")
+  @Operation(httpMethods = { "PUT", "POST" }, name = "icon.update", path = "/{roomId}/icon")
   public Future<?> updateIcon(SocialRequestItem request)
       throws ProtocolException {
     try {
@@ -278,4 +260,37 @@ public class AipoMessageRoomHandler {
     }
   }
 
+  /**
+   * ルームアイコン削除 <br>
+   * <code>
+   * DELETE /rooms/:roomId/icon
+   * </code><br>
+   * <code>
+   * osapi.rooms.icon["delete"]( { roomId: :roomId } )
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "DELETE", name = "icon.delete", path = "/{roomId}/icon")
+  public Future<?> deleteIcon(SocialRequestItem request)
+      throws ProtocolException {
+    try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+
+      return service.deleteRoomIcon(userIds.iterator().next(), roomId, request
+        .getToken());
+
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
 }

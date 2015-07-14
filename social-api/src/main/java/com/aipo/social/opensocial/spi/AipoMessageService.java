@@ -43,6 +43,7 @@ import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
 import com.aipo.orm.model.portlet.EipTMessageRoomMember;
 import com.aipo.orm.service.MessageDbService;
+import com.aipo.orm.service.MessageDbService.IconSize;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
 import com.aipo.orm.service.request.SearchOptions.SortOrder;
@@ -89,7 +90,7 @@ public class AipoMessageService extends AbstractService implements
   @Override
   public Future<RestfulCollection<ALMessageRoom>> getRooms(UserId userId,
       CollectionOptions collectionOptions, Set<String> fields, String roomId,
-      SecurityToken token) {
+      SecurityToken token) throws ProtocolException {
 
     // TODO: FIELDS
 
@@ -203,9 +204,8 @@ public class AipoMessageService extends AbstractService implements
    * @param token
    */
   @Override
-  public Future<ALMessageRoom> postRoom(UserId userId, Set<String> fields,
-      String name, List<String> memberList, SecurityToken token) {
-    // TODO: FIELDS
+  public Future<ALMessageRoom> postRoom(UserId userId, String name,
+      List<String> memberList, SecurityToken token) throws ProtocolException {
 
     setUp(token);
 
@@ -228,8 +228,7 @@ public class AipoMessageService extends AbstractService implements
     EipTMessageRoom model = null;
     if (memberNameList.size() != 0) {
       // ルーム
-      model =
-        messageDbService.createRoom(username, name, memberNameList, fields);
+      model = messageDbService.createRoom(username, name, memberNameList);
     } else {
       // ダイレクトメッセージ
     }
@@ -255,7 +254,8 @@ public class AipoMessageService extends AbstractService implements
   @Override
   public Future<RestfulCollection<ALMessage>> getMessages(UserId userId,
       AipoCollectionOptions collectionOptions, Set<String> fields,
-      String roomId, String messageId, SecurityToken token) {
+      String roomId, String messageId, SecurityToken token)
+      throws ProtocolException {
 
     // TODO: FIELDS
 
@@ -323,7 +323,7 @@ public class AipoMessageService extends AbstractService implements
 
     List<ALMessage> result = new ArrayList<ALMessage>(list.size());
     for (EipTMessage message : list) {
-      result.add(assignMessage(message, room, fields, token, messageIdInt));
+      result.add(assignMessage(message, room, token, messageIdInt));
     }
 
     int totalResults = result.size();
@@ -344,7 +344,7 @@ public class AipoMessageService extends AbstractService implements
    * @return
    */
   private ALMessage assignMessage(EipTMessage model, EipTMessageRoom room,
-      Set<String> fields, SecurityToken token, Integer messageIdInt) {
+      SecurityToken token, Integer messageIdInt) {
     ALMessage message = new ALMessageImpl();
     String orgId = getOrgId(token);
 
@@ -411,9 +411,9 @@ public class AipoMessageService extends AbstractService implements
    * @return
    */
   @Override
-  public Future<ALMessage> postMessage(UserId userId, Set<String> fields,
-      String roomId, String message, SecurityToken token, String transactionId) {
-    // TODO: FIELDS
+  public Future<ALMessage> postMessage(UserId userId, String roomId,
+      String message, String transactionId, SecurityToken token)
+      throws ProtocolException {
 
     setUp(token);
 
@@ -449,8 +449,7 @@ public class AipoMessageService extends AbstractService implements
         username,
         roomIdInt,
         targetUsername,
-        message,
-        fields);
+        message);
     push(username, model);
     messageIdInt = model.getMessageId();
 
@@ -459,7 +458,7 @@ public class AipoMessageService extends AbstractService implements
     }
 
     ALMessage result = new ALMessageImpl();
-    result = assignMessage(model, room, fields, token, messageIdInt);
+    result = assignMessage(model, room, token, messageIdInt);
     result.setTransactionId(transactionId);
 
     return ImmediateFuture.newInstance(result);
@@ -475,8 +474,8 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
-      List<String> memberList, String roomId, SecurityToken token) {
-    // TODO: FIELDS
+      List<String> memberList, String roomId, SecurityToken token)
+      throws ProtocolException {
 
     setUp(token);
 
@@ -536,7 +535,7 @@ public class AipoMessageService extends AbstractService implements
    * @throws ProtocolException
    */
   @Override
-  public InputStream getRoomIcon(UserId userId, String roomId,
+  public InputStream getRoomIcon(UserId userId, String roomId, String size,
       SecurityToken token) throws ProtocolException {
 
     setUp(token);
@@ -551,6 +550,11 @@ public class AipoMessageService extends AbstractService implements
       throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
     }
 
+    IconSize iconSize = IconSize.NORMAL;
+    if ("large".equals(size)) {
+      iconSize = IconSize.LARGE;
+    }
+
     // 自分(Viewer)を含むルームのみ設定可能
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
@@ -562,7 +566,8 @@ public class AipoMessageService extends AbstractService implements
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
 
-    InputStream roomIcon = messageDbService.getPhoto(roomIdInt.intValue());
+    InputStream roomIcon =
+      messageDbService.getPhoto(roomIdInt.intValue(), iconSize);
     if (roomIcon == null) {
       throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
     }
@@ -577,7 +582,7 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<Void> putRoomIcon(UserId userId, String roomId,
-      FormDataItem roomIconItem, SecurityToken token) {
+      FormDataItem roomIconItem, SecurityToken token) throws ProtocolException {
     setUp(token);
 
     Integer roomIdInt = null;
@@ -622,6 +627,18 @@ public class AipoMessageService extends AbstractService implements
       roomIcon,
       roomIconSmartPhone);
 
+    return Futures.immediateFuture(null);
+  }
+
+  /**
+   * @param next
+   * @param roomId
+   * @param token
+   * @return
+   */
+  @Override
+  public Future<Void> deleteRoomIcon(UserId next, String roomId,
+      SecurityToken token) throws ProtocolException {
     return Futures.immediateFuture(null);
   }
 

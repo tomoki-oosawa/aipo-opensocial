@@ -38,29 +38,34 @@ public interface MessageService {
 
   public Future<RestfulCollection<ALMessageRoom>> getRooms(UserId userId,
       CollectionOptions options, Set<String> fields, String roomId,
-      SecurityToken token);
+      SecurityToken token) throws ProtocolException;
 
   public Future<RestfulCollection<ALMessage>> getMessages(UserId userId,
       AipoCollectionOptions options, Set<String> fields, String roomId,
-      String messageId, SecurityToken token);
+      String messageId, SecurityToken token) throws ProtocolException;
 
-  public Future<ALMessageRoom> postRoom(UserId userId, Set<String> fields,
-      String name, List<String> memberList, SecurityToken token);
-
-  public Future<ALMessage> postMessage(UserId userId, Set<String> fields,
-      String roomId, String message, SecurityToken token, String transactionId);
-
-  public Future<ALMessageRoom> putRoom(UserId userId, String name,
-      List<String> memberList, String roomId, SecurityToken token);
-
-  public InputStream getRoomIcon(UserId userId, String roomId,
+  public InputStream getRoomIcon(UserId userId, String roomId, String size,
       SecurityToken token) throws ProtocolException;
 
+  public Future<ALMessageRoom> postRoom(UserId userId, String name,
+      List<String> memberList, SecurityToken token) throws ProtocolException;
+
+  public Future<ALMessageRoom> putRoom(UserId userId, String name,
+      List<String> memberList, String roomId, SecurityToken token)
+      throws ProtocolException;
+
+  public Future<ALMessage> postMessage(UserId userId, String roomId,
+      String message, String transactionId, SecurityToken token)
+      throws ProtocolException;
+
   public Future<Void> putRoomIcon(UserId userId, String roomId,
-      FormDataItem roomIcon, SecurityToken token);
+      FormDataItem roomIcon, SecurityToken token) throws ProtocolException;
+
+  public Future<Void> deleteRoomIcon(UserId next, String roomId,
+      SecurityToken token) throws ProtocolException;
 
   public Future<ALFile> getMessageFiles(UserId userId,
       CollectionOptions options, Set<String> fields, String fileId,
-      SecurityToken token);
+      SecurityToken token) throws ProtocolException;
 
 }
