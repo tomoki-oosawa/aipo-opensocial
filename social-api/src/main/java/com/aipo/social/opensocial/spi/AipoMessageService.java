@@ -550,7 +550,16 @@ public class AipoMessageService extends AbstractService implements
       throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
     }
 
-    // TODO: ルームのアクセス権限があるかどうかチェック
+    // 自分(Viewer)を含むルームのみ設定可能
+    checkSameViewer(userId, token);
+    String username = getUserId(userId, token);
+    EipTMessageRoom room = null;
+    if (roomIdInt != null) {
+      room = messageDbService.findRoom(roomIdInt, username);
+    }
+    if (room == null) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+    }
 
     InputStream roomIcon = messageDbService.getPhoto(roomIdInt.intValue());
     if (roomIcon == null) {
@@ -566,7 +575,7 @@ public class AipoMessageService extends AbstractService implements
    * @return
    */
   @Override
-  public InputStream putRoomIcon(UserId next, String roomId,
+  public InputStream putRoomIcon(UserId userId, String roomId,
       FormDataItem roomIconItem, SecurityToken token) {
     setUp(token);
 
@@ -597,7 +606,15 @@ public class AipoMessageService extends AbstractService implements
         1,
         1).getShrinkImage();
 
-    // TODO: ルームのアクセス権限があるかどうかチェック
+    checkSameViewer(userId, token);
+    String username = getUserId(userId, token);
+    EipTMessageRoom room = null;
+    if (roomIdInt != null) {
+      room = messageDbService.findRoom(roomIdInt, username);
+    }
+    if (room == null) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+    }
 
     InputStream roomIconStream =
       messageDbService.setPhoto(
