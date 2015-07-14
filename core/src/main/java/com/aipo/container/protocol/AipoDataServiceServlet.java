@@ -30,7 +30,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -317,13 +316,6 @@ public class AipoDataServiceServlet extends ApiServlet {
         out.close();
         is.close();
         return;
-      }
-
-      // responseの中身が空だった場合404を返す
-      if (response == Collections.EMPTY_MAP) {
-        ResponseItem notFoundResponse =
-          new ResponseItem(404, "Not Found", null);
-        sendError(servletResponse, notFoundResponse);
       }
 
       // TODO: ugliness resulting from not using RestfulItem

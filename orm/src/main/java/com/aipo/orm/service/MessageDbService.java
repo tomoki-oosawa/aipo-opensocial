@@ -53,8 +53,7 @@ public interface MessageDbService {
 
   public InputStream getPhoto(int roomId);
 
-  public InputStream setPhoto(int roomId, byte[] roomIcon,
-      byte[] roomIconSmartPhone);
+  public void setPhoto(int roomId, byte[] roomIcon, byte[] roomIconSmartPhone);
 
   public EipTMessageFile findMessageFile(int fileId);
 

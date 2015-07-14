@@ -54,6 +54,7 @@ import com.aipo.social.opensocial.model.ALFile;
 import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageFile;
 import com.aipo.social.opensocial.model.ALMessageRoom;
+import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -575,7 +576,7 @@ public class AipoMessageService extends AbstractService implements
    * @return
    */
   @Override
-  public InputStream putRoomIcon(UserId userId, String roomId,
+  public Future<Void> putRoomIcon(UserId userId, String roomId,
       FormDataItem roomIconItem, SecurityToken token) {
     setUp(token);
 
@@ -586,25 +587,25 @@ public class AipoMessageService extends AbstractService implements
 
     }
     if (roomIdInt == null) {
-      throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
     byte[] roomIcon =
       getBytesShrink(
         roomIconItem,
-        DEF_THUMBNAIL_WIDTH,
-        DEF_THUMBNAIL_HEIGHT,
+        DEF_LARGE_THUMBNAIL_WIDTH,
+        DEF_LARGE_THUMBNAIL_HEIGHT,
         false,
-        1,
-        1).getShrinkImage();
+        DEF_VALIDATE_WIDTH,
+        DEF_VALIDATE_HEIGHT).getShrinkImage();
 
     byte[] roomIconSmartPhone =
       getBytesShrink(
         roomIconItem,
-        DEF_THUMBNAIL_WIDTH_SMARTPHONE,
-        DEF_THUMBNAIL_HEIGHT_SMARTPHONE,
+        DEF_NORMAL_THUMBNAIL_WIDTH,
+        DEF_NORMAL_THUMBNAIL_HEIGHT,
         false,
-        1,
-        1).getShrinkImage();
+        DEF_VALIDATE_WIDTH,
+        DEF_VALIDATE_HEIGHT).getShrinkImage();
 
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
@@ -616,15 +617,12 @@ public class AipoMessageService extends AbstractService implements
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
     }
 
-    InputStream roomIconStream =
-      messageDbService.setPhoto(
-        roomIdInt.intValue(),
-        roomIcon,
-        roomIconSmartPhone);
-    if (roomIconStream == null) {
-      throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
-    }
-    return roomIconStream;
+    messageDbService.setPhoto(
+      roomIdInt.intValue(),
+      roomIcon,
+      roomIconSmartPhone);
+
+    return Futures.immediateFuture(null);
   }
 
   /**

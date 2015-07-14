@@ -56,7 +56,7 @@ public interface MessageService {
   public InputStream getRoomIcon(UserId userId, String roomId,
       SecurityToken token) throws ProtocolException;
 
-  public InputStream putRoomIcon(UserId userId, String roomId,
+  public Future<Void> putRoomIcon(UserId userId, String roomId,
       FormDataItem roomIcon, SecurityToken token);
 
   public Future<ALFile> getMessageFiles(UserId userId,

@@ -689,30 +689,31 @@ public class AipoMessageDbService implements MessageDbService {
    * @return
    */
   @Override
-  public InputStream setPhoto(int roomId, byte[] roomIcon,
-      byte[] roomIconSmartPhone) {
-    EipTMessageRoom model = Database.get(EipTMessageRoom.class, roomId);
+  public void setPhoto(int roomId, byte[] roomIcon, byte[] roomIconSmartPhone) {
+    try {
+      EipTMessageRoom model = Database.get(EipTMessageRoom.class, roomId);
 
-    if (model == null) {
-      return null;
-    }
+      if (model == null) {
+        return;
+      }
 
-    model.setPhotoSmartphone(roomIcon);
-
-    if (roomIcon != null && roomIconSmartPhone != null) {
-      model.setPhoto(roomIcon);
-      model.setPhotoSmartphone(roomIconSmartPhone);
-      model.setPhotoModified(new Date());
-      model.setHasPhoto("T");
-      Database.commit();
-      return new ByteArrayInputStream(roomIcon);
-    } else {
-      model.setPhoto(null);
-      model.setPhotoSmartphone(null);
-      model.setPhotoModified(null);
-      model.setHasPhoto("F");
-      Database.commit();
-      return null;
+      if (roomIcon != null && roomIconSmartPhone != null) {
+        model.setPhoto(roomIcon);
+        model.setPhotoSmartphone(roomIconSmartPhone);
+        model.setPhotoModified(new Date());
+        // 新仕様:N、旧仕様:F
+        model.setHasPhoto("N");
+        Database.commit();
+      } else {
+        model.setPhoto(null);
+        model.setPhotoSmartphone(null);
+        model.setPhotoModified(null);
+        model.setHasPhoto("F");
+        Database.commit();
+      }
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
     }
 
   }
