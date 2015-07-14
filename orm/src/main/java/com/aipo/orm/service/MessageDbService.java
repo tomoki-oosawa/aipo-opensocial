@@ -53,10 +53,14 @@ public interface MessageDbService {
 
   public InputStream getPhoto(int roomId);
 
+  public InputStream setPhoto(int intValue, byte[] roomIcon,
+      byte[] roomIconSmartPhone);
+
   public EipTMessageFile findMessageFile(int fileId);
 
   public boolean isJoinRoom(int roomId, String username);
 
   public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
       String username);
+
 }

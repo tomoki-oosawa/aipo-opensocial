@@ -32,6 +32,7 @@ import org.apache.shindig.common.util.DateUtil;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
@@ -556,6 +557,57 @@ public class AipoMessageService extends AbstractService implements
       throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
     }
     return roomIcon;
+  }
+
+  /**
+   * @param roomId
+   * @param roomIcon
+   * @param token
+   * @return
+   */
+  @Override
+  public InputStream putRoomIcon(UserId next, String roomId,
+      FormDataItem roomIconItem, SecurityToken token) {
+    setUp(token);
+
+    Integer roomIdInt = null;
+    try {
+      roomIdInt = Integer.valueOf(roomId);
+    } catch (Throwable t) {
+
+    }
+    if (roomIdInt == null) {
+      throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
+    }
+    byte[] roomIcon =
+      getBytesShrink(
+        roomIconItem,
+        DEF_THUMBNAIL_WIDTH,
+        DEF_THUMBNAIL_HEIGHT,
+        false,
+        1,
+        1).getShrinkImage();
+
+    byte[] roomIconSmartPhone =
+      getBytesShrink(
+        roomIconItem,
+        DEF_THUMBNAIL_WIDTH_SMARTPHONE,
+        DEF_THUMBNAIL_HEIGHT_SMARTPHONE,
+        false,
+        1,
+        1).getShrinkImage();
+
+    // TODO: ルームのアクセス権限があるかどうかチェック
+
+    InputStream roomIconStream =
+      messageDbService.setPhoto(
+        roomIdInt.intValue(),
+        roomIcon,
+        roomIconSmartPhone);
+    if (roomIconStream == null) {
+      throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
+    }
+    return roomIconStream;
   }
 
   /**
