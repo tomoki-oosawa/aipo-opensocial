@@ -26,6 +26,7 @@ import java.util.concurrent.Future;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
@@ -54,6 +55,9 @@ public interface MessageService {
 
   public InputStream getRoomIcon(UserId userId, String roomId,
       SecurityToken token) throws ProtocolException;
+
+  public InputStream putRoomIcon(UserId userId, String roomId,
+      FormDataItem roomIcon, SecurityToken token);
 
   public Future<ALFile> getMessageFiles(UserId userId,
       CollectionOptions options, Set<String> fields, String fileId,

@@ -234,7 +234,7 @@ public class AipoMessageRoomHandler {
    * @return
    */
   @Operation(httpMethods = "PUT", name = "icon.update", path = "/{roomId}/icon")
-  public Future<?> updateIcon(SocialRequestItem request)
+  public StreamContent updateIcon(SocialRequestItem request)
       throws ProtocolException {
     try {
       Set<UserId> userIds = request.getUsers();
@@ -247,11 +247,36 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("roomIcon", roomIcon);
 
-      return null;
+      InputStream roomIconStream =
+        service.putRoomIcon(
+          userIds.iterator().next(),
+          roomId,
+          roomIcon,
+          request.getToken());
+
+      return new StreamContent("image/jpeg", roomIconStream);
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
       throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
     }
+  }
+
+  /**
+   * ルームアイコン更新 <br>
+   * <code>
+   * GET /rooms/:roomId/icon
+   * </code><br>
+   * <code>
+   * osapi.rooms.icon.get( { roomId: :roomId } )
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "POST", name = "icon.update", path = "/{roomId}/icon")
+  public StreamContent createIcon(SocialRequestItem request)
+      throws ProtocolException {
+    return updateIcon(request);
   }
 }

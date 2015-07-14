@@ -65,6 +65,18 @@ public abstract class AbstractService {
 
   private String viewerId;
 
+  /** 画像サムネイルのサイズ（横幅） */
+  public static final int DEF_THUMBNAIL_WIDTH = 86;
+
+  /** 画像サムネイルのサイズ（縦幅） */
+  public static final int DEF_THUMBNAIL_HEIGHT = 86;
+
+  /** スマートフォンの画像サムネイルのサイズ（横幅） */
+  public static final int DEF_THUMBNAIL_WIDTH_SMARTPHONE = 64;
+
+  /** スマートフォンの画像サムネイルのサイズ（縦幅） */
+  public static final int DEF_THUMBNAIL_HEIGHT_SMARTPHONE = 64;
+
   protected void setUp(SecurityToken token) {
 
     try {
@@ -262,23 +274,24 @@ public abstract class AbstractService {
       }
 
       byte[] imageInBytes = formDataItem.get();
-      ImageInformation readImageInformation =
-        readImageInformation(new ByteArrayInputStream(imageInBytes));
+
       BufferedImage bufferdImage =
         ImageIO.read(new ByteArrayInputStream(imageInBytes));
-      if (readImageInformation != null) {
-        bufferdImage =
-          transformImage(
-            bufferdImage,
-            getExifTransformation(readImageInformation),
-            readImageInformation.orientation >= 5
-              ? bufferdImage.getHeight()
-              : bufferdImage.getWidth(),
-            readImageInformation.orientation >= 5
-              ? bufferdImage.getWidth()
-              : bufferdImage.getHeight());
-        fixed = isFixOrgImage;
-      }
+      // ImageInformation readImageInformation =
+      // readImageInformation(new ByteArrayInputStream(imageInBytes));
+      // if (readImageInformation != null) {
+      // bufferdImage =
+      // transformImage(
+      // bufferdImage,
+      // getExifTransformation(readImageInformation),
+      // readImageInformation.orientation >= 5
+      // ? bufferdImage.getHeight()
+      // : bufferdImage.getWidth(),
+      // readImageInformation.orientation >= 5
+      // ? bufferdImage.getWidth()
+      // : bufferdImage.getHeight());
+      // fixed = isFixOrgImage;
+      // }
       if (bufferdImage == null) {
         throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_FORMAT);
       }
