@@ -261,4 +261,22 @@ public class AipoMessageRoomHandler {
       throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
     }
   }
+
+  /**
+   * ルームアイコン更新 <br>
+   * <code>
+   * GET /rooms/:roomId/icon
+   * </code><br>
+   * <code>
+   * osapi.rooms.icon.get( { roomId: :roomId } )
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "POST", name = "icon.update", path = "/{roomId}/icon")
+  public StreamContent createIcon(SocialRequestItem request)
+      throws ProtocolException {
+    return updateIcon(request);
+  }
 }
