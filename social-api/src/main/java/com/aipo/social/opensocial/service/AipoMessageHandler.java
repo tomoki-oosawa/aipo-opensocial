@@ -26,7 +26,6 @@ import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
@@ -94,19 +93,19 @@ public class AipoMessageHandler {
       String roomId = request.getParameter("roomId");
       String messageId = request.getParameter("messageId");
 
-      AipoCollectionOptions options = new AipoCollectionOptions(request);
-
       // Preconditions
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
+      int messageIdInt =
+        AipoPreconditions.isIntegerOrNull("messageId", messageId);
 
       return messageService.getMessages(
         userIds.iterator().next(),
-        options,
+        new AipoCollectionOptions(request),
         request.getFields(),
         roomId,
-        messageId,
+        messageIdInt,
         request.getToken());
     } catch (ProtocolException e) {
       throw e;
@@ -178,6 +177,7 @@ public class AipoMessageHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("messageId", messageId);
+      int messageIdInt = AipoPreconditions.isInteger("messageId", messageId);
 
       throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
     } catch (ProtocolException e) {
@@ -211,8 +211,13 @@ public class AipoMessageHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("messageId", messageId);
+      int messageIdInt = AipoPreconditions.isInteger("messageId", messageId);
 
-      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+      return messageService.deleteMessage(
+        userIds.iterator().next(),
+        roomId,
+        messageIdInt,
+        request.getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
@@ -223,7 +228,7 @@ public class AipoMessageHandler {
   /**
    * 既読 <br>
    * <code>
-   * PUT /messages/:roomId/read
+   * PUT /messages/:roomId/read/:messageId
    * </code><br>
    * <code>
    * osapi.messages.read.update( { roomId: :roomId })
@@ -232,18 +237,24 @@ public class AipoMessageHandler {
    * @param request
    * @return
    */
-  @Operation(httpMethods = "PUT", name = "read.update", path = "/{roomId}/read")
+  @Operation(httpMethods = "PUT", name = "read.update", path = "/{roomId}/read/{messageId}")
   public Future<?> read(SocialRequestItem request) {
     try {
       Set<UserId> userIds = request.getUsers();
       String roomId = request.getParameter("roomId");
-
+      String messageId = request.getParameter("messageId");
       // Preconditions
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
+      AipoPreconditions.required("messageId", messageId);
+      int messageIdInt = AipoPreconditions.isInteger("messageId", messageId);
 
-      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+      return messageService.read(
+        userIds.iterator().next(),
+        roomId,
+        messageIdInt,
+        request.getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
@@ -275,8 +286,12 @@ public class AipoMessageHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("fileId", fileId);
+      int fileIdInt = AipoPreconditions.isInteger("fileId", fileId);
 
-      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+      return messageService.getMessageFilesInfo(
+        userIds.iterator().next(),
+        fileIdInt,
+        request.getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
@@ -308,15 +323,12 @@ public class AipoMessageHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("fileId", fileId);
-
-      CollectionOptions options = new CollectionOptions(request);
+      int fileIdInt = AipoPreconditions.isInteger("fileId", fileId);
 
       Future<ALFile> file =
         messageService.getMessageFiles(
           userIds.iterator().next(),
-          options,
-          request.getFields(),
-          fileId,
+          fileIdInt,
           request.getToken());
       if (file == null) {
         throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);

@@ -18,7 +18,6 @@
  */
 package com.aipo.social.opensocial.service;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -28,13 +27,13 @@ import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
 import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.container.protocol.StreamContent;
+import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.aipo.social.opensocial.spi.MessageService;
 import com.google.inject.Inject;
 
@@ -69,14 +68,17 @@ public class AipoMessageRoomHandler {
     try {
       Set<UserId> userIds = request.getUsers();
       String roomId = request.getParameter("roomId");
-      CollectionOptions options = new CollectionOptions(request);
 
       // Preconditions
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
 
-      return service.getRooms(userIds.iterator().next(), options, request
-        .getFields(), roomId, request.getToken());
+      return service.getRooms(
+        userIds.iterator().next(),
+        new AipoCollectionOptions(request),
+        request.getFields(),
+        roomId,
+        request.getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
@@ -176,7 +178,17 @@ public class AipoMessageRoomHandler {
   @Operation(httpMethods = "DELETE", path = "/{roomId}")
   public Future<?> delete(SocialRequestItem request) {
     try {
-      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+
+      // Preconditions
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
+
+      return service.deleteRoom(userIds.iterator().next(), roomIdInt, request
+        .getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
@@ -208,12 +220,11 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
+      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
 
-      InputStream roomIcon =
-        service.getRoomIcon(userIds.iterator().next(), roomId, size, request
-          .getToken());
-
-      return new StreamContent("image/jpeg", roomIcon);
+      return new StreamContent("image/jpeg", service.getRoomIcon(userIds
+        .iterator()
+        .next(), roomIdInt, size, request.getToken()));
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
@@ -246,10 +257,11 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("roomIcon", roomIcon);
+      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
 
       return service.putRoomIcon(
         userIds.iterator().next(),
-        roomId,
+        roomIdInt,
         roomIcon,
         request.getToken());
 
@@ -283,10 +295,12 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
+      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
 
-      return service.deleteRoomIcon(userIds.iterator().next(), roomId, request
-        .getToken());
-
+      return service.deleteRoomIcon(
+        userIds.iterator().next(),
+        roomIdInt,
+        request.getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {

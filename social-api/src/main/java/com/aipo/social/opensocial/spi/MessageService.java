@@ -40,11 +40,14 @@ public interface MessageService {
       CollectionOptions options, Set<String> fields, String roomId,
       SecurityToken token) throws ProtocolException;
 
+  public Future<Void> deleteRoom(UserId userId, int roomId, SecurityToken token)
+      throws ProtocolException;
+
   public Future<RestfulCollection<ALMessage>> getMessages(UserId userId,
       AipoCollectionOptions options, Set<String> fields, String roomId,
-      String messageId, SecurityToken token) throws ProtocolException;
+      int messageId, SecurityToken token) throws ProtocolException;
 
-  public InputStream getRoomIcon(UserId userId, String roomId, String size,
+  public InputStream getRoomIcon(UserId userId, int roomId, String size,
       SecurityToken token) throws ProtocolException;
 
   public Future<ALMessageRoom> postRoom(UserId userId, String name,
@@ -54,18 +57,26 @@ public interface MessageService {
       List<String> memberList, String roomId, SecurityToken token)
       throws ProtocolException;
 
-  public Future<ALMessage> postMessage(UserId userId, String roomId,
+  public Future<ALMessage> postMessage(UserId userId, String roomIdOrUsername,
       String message, String transactionId, SecurityToken token)
       throws ProtocolException;
 
-  public Future<Void> putRoomIcon(UserId userId, String roomId,
+  public Future<Void> deleteMessage(UserId userId, String roomIdOrUsername,
+      int messageId, SecurityToken token) throws ProtocolException;
+
+  public Future<Void> read(UserId userId, String roomIdOrUsername,
+      int messageId, SecurityToken token) throws ProtocolException;
+
+  public Future<Void> putRoomIcon(UserId userId, int roomId,
       FormDataItem roomIcon, SecurityToken token) throws ProtocolException;
 
-  public Future<Void> deleteRoomIcon(UserId next, String roomId,
+  public Future<Void> deleteRoomIcon(UserId userId, int roomId,
       SecurityToken token) throws ProtocolException;
 
-  public Future<ALFile> getMessageFiles(UserId userId,
-      CollectionOptions options, Set<String> fields, String fileId,
+  public Future<ALFile> getMessageFiles(UserId userId, int fileId,
+      SecurityToken token) throws ProtocolException;
+
+  public Future<ALFile> getMessageFilesInfo(UserId userId, int fileId,
       SecurityToken token) throws ProtocolException;
 
 }

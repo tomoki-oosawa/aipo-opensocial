@@ -38,8 +38,12 @@ public interface MessageDbService {
   public List<EipTMessageRoom> findRoom(int roomId, String username,
       String targetUsername, SearchOptions options);
 
+  public void deleteRoom(int roomId);
+
   public List<EipTMessage> findMessage(int roomId, int messageId,
       SearchOptions options);
+
+  public void deleteMessage(int messageId);
 
   public EipTMessageRoom createRoom(String username, String name,
       List<String> memberNameList);
@@ -62,6 +66,16 @@ public interface MessageDbService {
 
   public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
       String username);
+
+  public void read(String username, String targetUsername, int lastMessageId);
+
+  public void read(String username, int roomId, int lastMessageId);
+
+  public boolean isOwnMessage(int messageId, String username);
+
+  public List<EipTMessageFile> getMessageFiles(List<Integer> messageIds);
+
+  public List<EipTMessageFile> getMessageFilesByRoom(int roomId);
 
   public enum IconSize {
     NORMAL, LARGE;

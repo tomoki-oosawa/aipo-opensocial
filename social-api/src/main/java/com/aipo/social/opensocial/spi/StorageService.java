@@ -21,6 +21,7 @@ package com.aipo.social.opensocial.spi;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
@@ -62,6 +63,9 @@ public interface StorageService {
   public long getFileSize(String rootPath, String dir, String filename,
       SecurityToken paramSecurityToken) throws ProtocolException;
 
+  public long getFileSize(String categoryKey, int userId, String filename,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
   public boolean copyFile(String srcRootPath, String srcDir,
       String srcFileName, String destRootPath, String destDir,
       String destFileName, SecurityToken paramSecurityToken)
@@ -97,8 +101,8 @@ public interface StorageService {
   public void createNewFile(InputStream inputStream, String filepath,
       SecurityToken paramSecurityToken) throws ProtocolException;
 
-  public String getSaveDirPath(String rootPath, String categoryKey,
-      String userId, SecurityToken paramSecurityToken) throws ProtocolException;
+  public String getSaveDirPath(String rootPath, String categoryKey, int userId,
+      SecurityToken paramSecurityToken) throws ProtocolException;
 
   public String getContentType(ALFile file, SecurityToken paramSecurityToken)
       throws ProtocolException, FileNotFoundException;
@@ -111,4 +115,7 @@ public interface StorageService {
 
   public boolean isImage(String fileName, SecurityToken paramSecurityToken)
       throws ProtocolException;
+
+  public void deleteFiles(String categoryKey, List<?> files,
+      SecurityToken paramSecurityToken) throws ProtocolException;
 }

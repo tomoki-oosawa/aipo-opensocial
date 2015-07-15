@@ -24,9 +24,10 @@ import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageFile;
 
 /**
- * @see org.apache.shindig. social.core.model.GroupImpl
+ *
  */
 public class ALMessageImpl implements ALMessage {
+
   private long messageId;
 
   private long roomId;

@@ -111,7 +111,8 @@ public class AipoDataServiceServlet extends ApiServlet {
     } catch (ContentTypes.InvalidContentTypeException icte) {
       sendError(servletResponse, new ResponseItem(
         HttpServletResponse.SC_BAD_REQUEST,
-        icte.getMessage()));
+        icte.getMessage(),
+        AipoErrorCode.BAD_REQUEST.responseJSON()));
     }
   }
 
@@ -130,7 +131,8 @@ public class AipoDataServiceServlet extends ApiServlet {
     } catch (ContentTypes.InvalidContentTypeException icte) {
       sendError(servletResponse, new ResponseItem(
         HttpServletResponse.SC_BAD_REQUEST,
-        icte.getMessage()));
+        icte.getMessage(),
+        AipoErrorCode.BAD_REQUEST.responseJSON()));
     }
   }
 

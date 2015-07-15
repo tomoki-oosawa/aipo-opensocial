@@ -24,7 +24,7 @@ import java.util.List;
 import com.aipo.social.opensocial.model.ALMessageRoom;
 
 /**
- * @see org.apache.shindig. social.core.model.GroupImpl
+ *
  */
 public class ALMessageRoomImpl implements ALMessageRoom {
 

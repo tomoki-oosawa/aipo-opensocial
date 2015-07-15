@@ -22,6 +22,7 @@ package com.aipo.orm.service;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -648,6 +649,60 @@ public class AipoMessageDbService implements MessageDbService {
     }
   }
 
+  /**
+   * @param roomId
+   */
+  @Override
+  public void deleteRoom(int roomId) {
+    try {
+      EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+      if (room == null) {
+        return;
+      }
+
+      List<EipTMessageFile> files = getMessageFilesByRoom(roomId);
+
+      // messageを削除
+      Database.delete(room);
+      if (files.size() > 0) {
+        // messageの添付ファイルを削除
+        Database.deleteAll(files);
+      }
+
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
+  /**
+   * @param messageId
+   */
+  @Override
+  public void deleteMessage(int messageId) {
+    try {
+      EipTMessage message = Database.get(EipTMessage.class, messageId);
+      if (message == null) {
+        return;
+      }
+
+      List<EipTMessageFile> files = getMessageFiles(Arrays.asList(messageId));
+
+      // messageを削除
+      Database.delete(message);
+      if (files.size() > 0) {
+        // messageの添付ファイルを削除
+        Database.deleteAll(files);
+      }
+
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
   protected List<TurbineUser> getReadUserList(int messageId) {
     StringBuilder sql = new StringBuilder();
     sql
@@ -661,7 +716,8 @@ public class AipoMessageDbService implements MessageDbService {
     return query.fetchList();
   }
 
-  protected List<EipTMessageFile> getMessageFiles(List<Integer> messageIds) {
+  @Override
+  public List<EipTMessageFile> getMessageFiles(List<Integer> messageIds) {
     SelectQuery<EipTMessageFile> query = Database.query(EipTMessageFile.class);
     query.where(Operations.in(EipTMessageFile.MESSAGE_ID_PROPERTY, messageIds));
 
@@ -670,6 +726,12 @@ public class AipoMessageDbService implements MessageDbService {
     query.orderAscending(EipTMessageFile.FILE_PATH_PROPERTY);
 
     return query.fetchList();
+  }
+
+  @Override
+  public List<EipTMessageFile> getMessageFilesByRoom(int roomId) {
+    return Database.query(EipTMessageFile.class).where(
+      Operations.eq(EipTMessageFile.ROOM_ID_PROPERTY, roomId)).fetchList();
   }
 
   public boolean isJoinRoom(EipTMessageRoom room, int userId) {
@@ -705,7 +767,7 @@ public class AipoMessageDbService implements MessageDbService {
       } else {
         model.setPhoto(null);
         model.setPhotoSmartphone(null);
-        model.setPhotoModified(null);
+        model.setPhotoModified(new Date());
         model.setHasPhoto("F");
         Database.commit();
       }
@@ -794,6 +856,26 @@ public class AipoMessageDbService implements MessageDbService {
     return false;
   }
 
+  @Override
+  public boolean isOwnMessage(int messageId, String username) {
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      return false;
+    }
+    EipTMessage message = Database.get(EipTMessage.class, messageId);
+    if (message == null) {
+      return false;
+    }
+    return isOwnMessage(message, turbineUser.getUserId().intValue());
+  }
+
+  protected boolean isOwnMessage(EipTMessage message, int userId) {
+    if (message == null) {
+      return false;
+    }
+    return userId == message.getUserId().intValue();
+  }
+
   /**
    *
    * @param fileId
@@ -828,6 +910,68 @@ public class AipoMessageDbService implements MessageDbService {
     return members;
   }
 
+  @Override
+  public void read(String username, int roomId, int lastMessageId) {
+    read(username, roomId, null, lastMessageId);
+  }
+
+  @Override
+  public void read(String username, String targetUserName, int lastMessageId) {
+    read(username, null, targetUserName, lastMessageId);
+  }
+
+  protected void read(String username, Integer roomId, String targetUsername,
+      int lastMessageId) {
+    try {
+      TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+      TurbineUser targetUser =
+        turbineUserDbService.findByUsername(targetUsername);
+
+      EipTMessageRoom room = null;
+      int userId = turbineUser.getUserId().intValue();
+      if (roomId == null && targetUsername != null) {
+        int targetUserId = targetUser.getUserId().intValue();
+        room = getRoom(userId, targetUserId);
+      } else {
+        room = Database.get(EipTMessageRoom.class, roomId.longValue());
+      }
+      if (room == null) {
+        return;
+      }
+
+      SQLTemplate<EipTMessageRead> countQuery =
+        Database
+          .sql(
+            EipTMessageRead.class,
+            "select count(*) as c from eip_t_message_read where room_id = #bind($room_id) and user_id = #bind($user_id) and is_read = 'F' and message_id <= #bind($message_id)")
+          .param("room_id", Integer.valueOf(room.getRoomId()))
+          .param("user_id", Integer.valueOf(userId))
+          .param("message_id", Integer.valueOf(lastMessageId));
+
+      int countValue = 0;
+      List<DataRow> fetchCount = countQuery.fetchListAsDataRow();
+
+      for (DataRow row : fetchCount) {
+        countValue = ((Long) row.get("c")).intValue();
+      }
+      if (countValue > 0) {
+        String sql =
+          "update eip_t_message_read set is_read = 'T' where room_id = #bind($room_id) and user_id = #bind($user_id) and is_read = 'F' and message_id <= #bind($message_id)";
+        Database.sql(EipTMessageRead.class, sql).param(
+          "room_id",
+          Integer.valueOf(room.getRoomId())).param(
+          "user_id",
+          Integer.valueOf(userId)).param(
+          "message_id",
+          Integer.valueOf(lastMessageId)).execute();
+      }
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+
+  }
+
   private EipTMessageRoom getRoom(int userId, int targetUserId) {
     EipTMessageRoomMember model =
       Database.query(EipTMessageRoomMember.class).where(
@@ -841,4 +985,5 @@ public class AipoMessageDbService implements MessageDbService {
       return null;
     }
   }
+
 }

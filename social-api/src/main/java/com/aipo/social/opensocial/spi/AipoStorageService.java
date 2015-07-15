@@ -33,6 +33,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -43,6 +44,7 @@ import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
 
 import com.aipo.orm.Database;
+import com.aipo.orm.model.portlet.IEipTFile;
 import com.aipo.social.opensocial.model.ALFile;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -53,7 +55,7 @@ import com.google.inject.name.Named;
 public class AipoStorageService extends AbstractService implements
     StorageService {
 
-  private final String fireDir;
+  private final String fileDir;
 
   private final String tmpFileuploadAttachmentDir;
 
@@ -66,7 +68,7 @@ public class AipoStorageService extends AbstractService implements
   public AipoStorageService(
       @Named("aipo.filedir") String fireDir,
       @Named("aipo.tmp.fileupload.attachment.directory") String tmpFileuploadAttachmentDir) {
-    this.fireDir = fireDir;
+    this.fileDir = fireDir;
     this.tmpFileuploadAttachmentDir = tmpFileuploadAttachmentDir;
   }
 
@@ -385,12 +387,12 @@ public class AipoStorageService extends AbstractService implements
   /**
    * @param rootPath
    * @param dir
-   * @param filename
+   * @param filePath
    * @return
    * @throws ProtocolException
    */
   @Override
-  public long getFileSize(String rootPath, String dir, String filename,
+  public long getFileSize(String rootPath, String dir, String filePath,
       SecurityToken paramSecurityToken) throws ProtocolException {
     return getFileSize(new File(getAbsolutePath(rootPath)
       + separator()
@@ -398,7 +400,20 @@ public class AipoStorageService extends AbstractService implements
       + separator()
       + dir
       + separator()
-      + filename));
+      + filePath));
+  }
+
+  @Override
+  public long getFileSize(String categoryKey, int userId, String filePath,
+      SecurityToken paramSecurityToken) throws ProtocolException {
+    return getFileSize(new File(getAbsolutePath(fileDir)
+      + separator()
+      + Database.getDomainName()
+      + separator()
+      + categoryKey
+      + separator()
+      + userId
+      + filePath));
   }
 
   protected int getFileSize(File file) {
@@ -497,7 +512,7 @@ public class AipoStorageService extends AbstractService implements
 
     String documentPath =
       getSaveDirPath(
-        fireDir,
+        fileDir,
         file.getCategoryKey(),
         file.getUserId(),
         paramSecurityToken);
@@ -512,8 +527,8 @@ public class AipoStorageService extends AbstractService implements
    * @return
    */
   @Override
-  public String getSaveDirPath(String rootPath, String categoryKey,
-      String userId, SecurityToken paramSecurityToken) {
+  public String getSaveDirPath(String rootPath, String categoryKey, int userId,
+      SecurityToken paramSecurityToken) {
     return getDocumentPath(
       rootPath,
       categoryKey + separator() + userId,
@@ -716,7 +731,7 @@ public class AipoStorageService extends AbstractService implements
 
     String documentPath =
       getSaveDirPath(
-        fireDir,
+        fileDir,
         file.getCategoryKey(),
         file.getUserId(),
         paramSecurityToken);
@@ -859,5 +874,19 @@ public class AipoStorageService extends AbstractService implements
       uid + separator() + folderName,
       finename,
       paramSecurityToken);
+  }
+
+  @Override
+  public void deleteFiles(String categoryKey, List<?> files,
+      SecurityToken paramSecurityToken) throws ProtocolException {
+    for (Object file : files) {
+      if (file instanceof IEipTFile) {
+        IEipTFile ifile = (IEipTFile) file;
+        deleteFile(getDocumentPath(fileDir, categoryKey
+          + separator()
+          + ifile.getOwnerId().intValue(), paramSecurityToken)
+          + ifile.getFilePath(), paramSecurityToken);
+      }
+    }
   }
 }

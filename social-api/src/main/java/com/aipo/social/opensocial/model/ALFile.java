@@ -22,6 +22,7 @@ import org.apache.shindig.protocol.model.Exportablebean;
 
 @Exportablebean
 public interface ALFile {
+
   public long getFileId();
 
   public void setFileId(long fileId);
@@ -34,17 +35,13 @@ public interface ALFile {
 
   public void setFilePath(String filePath);
 
-  public String getUserId();
+  public Integer getUserId();
 
-  public void setUserId(String userId);
+  public void setUserId(Integer userId);
 
-  public int getFileSize();
+  public Long getFileSize();
 
-  public void setFileSize(int fileSize);
-
-  public boolean getIsImage();
-
-  public void setIsImage(boolean isImage);
+  public void setFileSize(Long fileSize);
 
   public String getContentType();
 
@@ -55,7 +52,7 @@ public interface ALFile {
   public void setCategoryKey(String categoryKey);
 
   public static enum Field {
-    FILE_ID("fileId"), FILE_NAME("fileName");
+    FILE_ID("fileId"), FILE_NAME("fileName"), FILE_SIZE("fileSize");
 
     private final String jsonString;
 

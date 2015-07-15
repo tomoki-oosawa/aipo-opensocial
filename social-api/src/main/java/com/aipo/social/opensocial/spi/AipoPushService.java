@@ -36,7 +36,7 @@ public class AipoPushService extends AbstractService implements PushService {
    * @throws ProtocolException
    */
   @Override
-  public void pushAsync(String type, Map<String, String> params,
+  public void pushAsync(PushType type, Map<String, String> params,
       List<String> recipients) throws ProtocolException {
     // TODO
   }

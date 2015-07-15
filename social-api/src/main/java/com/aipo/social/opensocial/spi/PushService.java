@@ -28,6 +28,23 @@ import org.apache.shindig.protocol.ProtocolException;
  */
 public interface PushService {
 
-  public void pushAsync(String type, Map<String, String> params,
+  public void pushAsync(PushType type, Map<String, String> params,
       List<String> recipients) throws ProtocolException;
+
+  enum PushType {
+    MESSAGE("messagev2"), MESSAGE_READ("messagev2_read"), MESSAGE_DELETE(
+        "messagev2_delete"), MESSAGE_ROOM("messagev2_room"), MESSAGE_ROOM_DELETE(
+        "messagev2_room_delete");
+
+    private final String value;
+
+    private PushType(String value) {
+      this.value = value;
+    }
+
+    @Override
+    public String toString() {
+      return value;
+    }
+  }
 }

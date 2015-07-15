@@ -31,11 +31,9 @@ public class ALFileImpl implements ALFile {
 
   private String filePath;
 
-  private String userId;
+  private Integer userId;
 
-  private int fileSize;
-
-  private boolean isImage;
+  private Long fileSize;
 
   private String contentType;
 
@@ -93,7 +91,7 @@ public class ALFileImpl implements ALFile {
    * @return
    */
   @Override
-  public int getFileSize() {
+  public Long getFileSize() {
     return fileSize;
   }
 
@@ -101,24 +99,8 @@ public class ALFileImpl implements ALFile {
    * @param fileSize
    */
   @Override
-  public void setFileSize(int fileSize) {
+  public void setFileSize(Long fileSize) {
     this.fileSize = fileSize;
-  }
-
-  /**
-   * @return
-   */
-  @Override
-  public boolean getIsImage() {
-    return isImage;
-  }
-
-  /**
-   * @param isImage
-   */
-  @Override
-  public void setIsImage(boolean isImage) {
-    this.isImage = isImage;
   }
 
   /**
@@ -157,7 +139,7 @@ public class ALFileImpl implements ALFile {
    * @return
    */
   @Override
-  public String getUserId() {
+  public Integer getUserId() {
     return userId;
   }
 
@@ -165,7 +147,7 @@ public class ALFileImpl implements ALFile {
    * @param userId
    */
   @Override
-  public void setUserId(String userId) {
+  public void setUserId(Integer userId) {
     this.userId = userId;
   }
 }

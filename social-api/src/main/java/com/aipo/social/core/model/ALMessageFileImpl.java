@@ -21,7 +21,7 @@ package com.aipo.social.core.model;
 import com.aipo.social.opensocial.model.ALMessageFile;
 
 /**
- * @see org.apache.shindig. social.core.model.GroupImpl
+ *
  */
 public class ALMessageFileImpl implements ALMessageFile {
 

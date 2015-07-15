@@ -31,7 +31,7 @@ public class AipoPreconditions {
   public static void required(String name, String value)
       throws AipoProtocolException {
     if (value == null || value.length() == 0) {
-      new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter " + name + " is required."));
     }
   }
@@ -39,7 +39,7 @@ public class AipoPreconditions {
   public static void required(String name, Collection<?> value)
       throws AipoProtocolException {
     if (value == null || value.size() == 0) {
-      new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter " + name + " is required."));
     }
   }
@@ -52,18 +52,41 @@ public class AipoPreconditions {
     }
   }
 
+  public static int isIntegerOrNull(String name, String value)
+      throws AipoProtocolException {
+    if (value == null) {
+      return 0;
+    }
+    try {
+      return Integer.valueOf(value).intValue();
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter " + name + " is not integer."));
+    }
+  }
+
+  public static int isInteger(String name, String value)
+      throws AipoProtocolException {
+    try {
+      return Integer.valueOf(value).intValue();
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter " + name + " is not integer."));
+    }
+  }
+
   public static void multiple(String name, Collection<?> value)
       throws AipoProtocolException {
     if (value == null || value.size() <= 1) {
-      new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter " + name + " must specify multiple values."));
     }
   }
 
   public static void notMultiple(String name, Collection<?> value)
       throws AipoProtocolException {
-    if (value != null && value.size() > 0) {
-      new AipoProtocolException(
+    if (value != null && value.size() > 1) {
+      throw new AipoProtocolException(
         AipoErrorCode.VALIDATE_ERROR.customMessage("Parameter "
           + name
           + " cannot specify multiple values."));
