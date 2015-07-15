@@ -911,17 +911,17 @@ public class AipoMessageDbService implements MessageDbService {
   }
 
   @Override
-  public void read(String username, int roomId, int lastMessageId) {
-    read(username, roomId, null, lastMessageId);
+  public boolean read(String username, int roomId, int lastMessageId) {
+    return read(username, roomId, null, lastMessageId);
   }
 
   @Override
-  public void read(String username, String targetUserName, int lastMessageId) {
-    read(username, null, targetUserName, lastMessageId);
+  public boolean read(String username, String targetUserName, int lastMessageId) {
+    return read(username, null, targetUserName, lastMessageId);
   }
 
-  protected void read(String username, Integer roomId, String targetUsername,
-      int lastMessageId) {
+  protected boolean read(String username, Integer roomId,
+      String targetUsername, int lastMessageId) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       TurbineUser targetUser =
@@ -936,7 +936,7 @@ public class AipoMessageDbService implements MessageDbService {
         room = Database.get(EipTMessageRoom.class, roomId.longValue());
       }
       if (room == null) {
-        return;
+        return false;
       }
 
       SQLTemplate<EipTMessageRead> countQuery =
@@ -964,6 +964,9 @@ public class AipoMessageDbService implements MessageDbService {
           Integer.valueOf(userId)).param(
           "message_id",
           Integer.valueOf(lastMessageId)).execute();
+        return true;
+      } else {
+        return false;
       }
     } catch (Throwable t) {
       Database.rollback();

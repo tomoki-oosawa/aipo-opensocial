@@ -499,6 +499,27 @@ public class AipoMessageService extends AbstractService implements
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
 
+    Integer roomId = null;
+    String targetUsername = null;
+
+    try {
+      // Room
+      roomId = Integer.valueOf(roomIdOrUsername);
+    } catch (Throwable ignore) {
+      // ダイレクト
+      targetUsername = getUserId(roomIdOrUsername, token);
+    }
+
+    EipTMessageRoom room = null;
+    if (roomId != null) {
+      room = messageDbService.findRoom(roomId, username);
+    } else {
+      room = messageDbService.findRoom(username, targetUsername);
+    }
+    if (room == null) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+    }
+
     if (messageDbService.isOwnMessage(messageId, username)) {
       List<EipTMessageFile> files =
         messageDbService.getMessageFiles(Arrays.asList(messageId));
@@ -506,6 +527,10 @@ public class AipoMessageService extends AbstractService implements
       messageDbService.deleteMessage(messageId);
     } else {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+    }
+
+    if (room != null) {
+      push(PushType.MESSAGE_DELETE, username, room.getRoomId(), messageId);
     }
 
     return Futures.immediateFuture(null);
@@ -540,21 +565,22 @@ public class AipoMessageService extends AbstractService implements
     String username = getUserId(userId, token);
 
     EipTMessageRoom room = null;
+    boolean updated = false;
     if (roomId != null) {
       room = messageDbService.findRoom(roomId, username);
       if (room == null) {
         throw new AipoProtocolException(
           AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
       }
-      messageDbService.read(username, roomId, messageId);
+      updated = messageDbService.read(username, roomId, messageId);
     } else {
       room = messageDbService.findRoom(username, targetUsername);
       if (room != null) {
-        messageDbService.read(username, targetUsername, messageId);
+        updated = messageDbService.read(username, targetUsername, messageId);
       }
     }
 
-    if (room != null) {
+    if (updated && room != null) {
       push(PushType.MESSAGE_READ, username, room.getRoomId());
     }
 

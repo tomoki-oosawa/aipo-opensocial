@@ -67,9 +67,9 @@ public interface MessageDbService {
   public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
       String username);
 
-  public void read(String username, String targetUsername, int lastMessageId);
+  public boolean read(String username, String targetUsername, int lastMessageId);
 
-  public void read(String username, int roomId, int lastMessageId);
+  public boolean read(String username, int roomId, int lastMessageId);
 
   public boolean isOwnMessage(int messageId, String username);
 
