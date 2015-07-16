@@ -1,5 +1,8 @@
 package com.aipo.orm.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.access.DataContext;
 
@@ -79,6 +82,30 @@ public class AipoOAuth2TokenDbService implements OAuth2TokenDbService {
       }
       Database.delete(model);
       Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
+  @Override
+  public void removeExpired() {
+    try {
+      selectDefaultDataDomain();
+      List<com.aipo.orm.model.social.OAuth2Token> tokens =
+        Database.query(com.aipo.orm.model.social.OAuth2Token.class).where(
+          Operations.le(
+            com.aipo.orm.model.social.OAuth2Token.EXPIRE_TIME_PROPERTY,
+            new Date())).fetchList();
+      for (com.aipo.orm.model.social.OAuth2Token token : tokens) {
+        try {
+          Database.delete(token);
+          Database.commit();
+        } catch (Throwable t) {
+          Database.rollback();
+        }
+      }
+
     } catch (Throwable t) {
       Database.rollback();
       throw new RuntimeException(t);

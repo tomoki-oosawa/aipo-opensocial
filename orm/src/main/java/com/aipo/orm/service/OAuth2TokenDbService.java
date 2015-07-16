@@ -11,4 +11,6 @@ public interface OAuth2TokenDbService {
 
   public void put(OAuth2Token oAuthToken);
 
+  public void removeExpired();
+
 }
