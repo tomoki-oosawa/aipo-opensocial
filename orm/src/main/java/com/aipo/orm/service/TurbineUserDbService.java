@@ -43,4 +43,7 @@ public interface TurbineUserDbService {
   public TurbineUser auth(String username, String password);
 
   public InputStream getPhoto(String username);
+
+  public void setPhoto(String username, byte[] profileIcon,
+      byte[] profileIconSmartPhone);
 }

@@ -230,7 +230,32 @@ public class AipoPersonService extends AbstractService implements PersonService 
    */
   @Override
   public Future<Void> putIcon(UserId userId, FormDataItem icon,
-      SecurityToken securityToken) throws ProtocolException {
+      SecurityToken token) throws ProtocolException {
+    setUp(token);
+    checkSameViewer(userId, token);
+
+    String username = getUserId(userId, token);
+
+    byte[] profileIcon =
+      getBytesShrink(
+        icon,
+        DEF_LARGE_THUMBNAIL_WIDTH,
+        DEF_LARGE_THUMBNAIL_HEIGHT,
+        false,
+        DEF_VALIDATE_WIDTH,
+        DEF_VALIDATE_HEIGHT).getShrinkImage();
+
+    byte[] profileIconSmartPhone =
+      getBytesShrink(
+        icon,
+        DEF_NORMAL_THUMBNAIL_WIDTH,
+        DEF_NORMAL_THUMBNAIL_HEIGHT,
+        false,
+        DEF_VALIDATE_WIDTH,
+        DEF_VALIDATE_HEIGHT).getShrinkImage();
+
+    turbineUserDbService.setPhoto(username, profileIcon, profileIconSmartPhone);
+
     return Futures.immediateFuture(null);
   }
 
@@ -243,8 +268,15 @@ public class AipoPersonService extends AbstractService implements PersonService 
    * @throws ProtocolException
    */
   @Override
-  public Future<Void> deleteIcon(UserId userId, SecurityToken securityToken)
+  public Future<Void> deleteIcon(UserId userId, SecurityToken token)
       throws ProtocolException {
+    setUp(token);
+    checkSameViewer(userId, token);
+
+    String username = getUserId(userId, token);
+
+    turbineUserDbService.setPhoto(username, null, null);
+
     return Futures.immediateFuture(null);
   }
 

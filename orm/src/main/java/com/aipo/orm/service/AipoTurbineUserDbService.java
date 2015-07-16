@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import org.apache.cayenne.access.DataContext;
 
 import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.query.Operations;
 import com.aipo.orm.query.SQLTemplate;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
@@ -438,5 +440,48 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     }
 
     return new ByteArrayInputStream(photo);
+  }
+
+  /**
+   * @param userId
+   * @param profileIcon
+   * @param profileIconSmartPhone
+   */
+  @Override
+  public void setPhoto(String username, byte[] profileIcon,
+      byte[] profileIconSmartPhone) {
+    try {
+      TurbineUser user =
+        Database
+          .query(TurbineUser.class)
+          .where(Operations.eq(TurbineUser.LOGIN_NAME_PROPERTY, username))
+          .fetchSingle();
+
+      if (user == null) {
+        return;
+      }
+
+      if (profileIcon != null && profileIconSmartPhone != null) {
+        // 顔写真を登録する．
+        user.setPhotoSmartphone(profileIconSmartPhone);
+        user.setHasPhotoSmartphone("N");
+        user.setPhotoModifiedSmartphone(new Date());
+        user.setPhoto(profileIcon);
+        user.setHasPhoto("N");
+        user.setPhotoModified(new Date());
+      } else {
+        user.setPhotoSmartphone(null);
+        user.setHasPhotoSmartphone("F");
+        user.setPhotoModifiedSmartphone(new Date());
+        user.setPhoto(null);
+        user.setHasPhoto("F");
+        user.setPhotoModified(new Date());
+      }
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+
   }
 }
