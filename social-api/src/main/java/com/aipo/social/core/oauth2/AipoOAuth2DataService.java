@@ -188,6 +188,17 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     token.setScope(scopes.toString());
     token.setTokenType(TokenFormat.BEARER.toString());
     store.put(token);
+
+    // AccessToken作成後に期限切れのAccessTokenを削除する
+    Runnable removeExpired = new Runnable() {
+      @Override
+      public void run() {
+        store.removeExpired();
+      }
+    };
+    Thread thread = new Thread(removeExpired);
+    thread.start();
+
   }
 
   /**
