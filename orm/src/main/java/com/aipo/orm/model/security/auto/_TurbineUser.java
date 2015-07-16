@@ -31,6 +31,8 @@ public abstract class _TurbineUser extends CayenneDataObject {
     public static final String EMAIL_PROPERTY = "email";
     public static final String FIRST_NAME_PROPERTY = "firstName";
     public static final String FIRST_NAME_KANA_PROPERTY = "firstNameKana";
+    public static final String HAS_PHOTO_PROPERTY = "hasPhoto";
+    public static final String HAS_PHOTO_SMARTPHONE_PROPERTY = "hasPhotoSmartphone";
     public static final String IN_TELEPHONE_PROPERTY = "inTelephone";
     public static final String LAST_LOGIN_PROPERTY = "lastLogin";
     public static final String LAST_NAME_PROPERTY = "lastName";
@@ -44,6 +46,8 @@ public abstract class _TurbineUser extends CayenneDataObject {
     public static final String PASSWORD_VALUE_PROPERTY = "passwordValue";
     public static final String PHOTO_PROPERTY = "photo";
     public static final String PHOTO_MODIFIED_PROPERTY = "photoModified";
+    public static final String PHOTO_MODIFIED_SMARTPHONE_PROPERTY = "photoModifiedSmartphone";
+    public static final String PHOTO_SMARTPHONE_PROPERTY = "photoSmartphone";
     public static final String POSITION_ID_PROPERTY = "positionId";
     public static final String UPDATED_USER_ID_PROPERTY = "updatedUserId";
     public static final String EIP_MUSER_POSITION_PROPERTY = "eipMUserPosition";
@@ -130,6 +134,20 @@ public abstract class _TurbineUser extends CayenneDataObject {
     }
     public String getFirstNameKana() {
         return (String)readProperty("firstNameKana");
+    }
+
+    public void setHasPhoto(String hasPhoto) {
+        writeProperty("hasPhoto", hasPhoto);
+    }
+    public String getHasPhoto() {
+        return (String)readProperty("hasPhoto");
+    }
+
+    public void setHasPhotoSmartphone(String hasPhotoSmartphone) {
+        writeProperty("hasPhotoSmartphone", hasPhotoSmartphone);
+    }
+    public String getHasPhotoSmartphone() {
+        return (String)readProperty("hasPhotoSmartphone");
     }
 
     public void setInTelephone(String inTelephone) {
@@ -221,6 +239,20 @@ public abstract class _TurbineUser extends CayenneDataObject {
     }
     public Date getPhotoModified() {
         return (Date)readProperty("photoModified");
+    }
+
+    public void setPhotoModifiedSmartphone(Date photoModifiedSmartphone) {
+        writeProperty("photoModifiedSmartphone", photoModifiedSmartphone);
+    }
+    public Date getPhotoModifiedSmartphone() {
+        return (Date)readProperty("photoModifiedSmartphone");
+    }
+
+    public void setPhotoSmartphone(byte[] photoSmartphone) {
+        writeProperty("photoSmartphone", photoSmartphone);
+    }
+    public byte[] getPhotoSmartphone() {
+        return (byte[])readProperty("photoSmartphone");
     }
 
     public void setPositionId(Integer positionId) {

@@ -25,6 +25,7 @@ import java.util.concurrent.Future;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
+import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
@@ -98,12 +99,17 @@ public class AipoIconsHandler {
   public Future<?> update(SocialRequestItem request) throws ProtocolException {
     try {
       Set<UserId> userIds = request.getUsers();
+      FormDataItem profileIcon = request.getFormMimePart("profileIcon");
 
       // Preconditions
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("profileIcon", profileIcon);
 
-      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+      return personService.putIcon(
+        userIds.iterator().next(),
+        profileIcon,
+        request.getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
@@ -132,7 +138,8 @@ public class AipoIconsHandler {
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
 
-      throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
+      return personService.deleteIcon(userIds.iterator().next(), request
+        .getToken());
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
