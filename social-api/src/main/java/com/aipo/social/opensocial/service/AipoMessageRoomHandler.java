@@ -309,12 +309,12 @@ public class AipoMessageRoomHandler {
   }
 
   /**
-   * 添付ファイル <br>
+   * 添付ファイル サムネイル画像<br>
    * <code>
-   * GET /rooms/:roomId/icon
+   * GET  /rooms/:roomId/file/thumbnail/:fileId
    * </code><br>
    * <code>
-   * osapi.rooms.icon.get( { roomId: :roomId } )
+   * osapi.rooms.thumbnail.get( { roomId: :roomId, fileId: fileId })
    * </code>
    *
    * @param request

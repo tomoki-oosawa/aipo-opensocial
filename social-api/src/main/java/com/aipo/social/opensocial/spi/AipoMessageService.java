@@ -800,7 +800,6 @@ public class AipoMessageService extends AbstractService implements
 
   /**
    * @param userId
-   * @param roomId
    * @param fileId
    * @param token
    * @return
