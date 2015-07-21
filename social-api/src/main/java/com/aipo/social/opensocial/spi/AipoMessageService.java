@@ -18,6 +18,7 @@
  */
 package com.aipo.social.opensocial.spi;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -795,6 +796,35 @@ public class AipoMessageService extends AbstractService implements
     result = assignFileInfo(model, fileSize);
 
     return ImmediateFuture.newInstance(result);
+  }
+
+  /**
+   * @param userId
+   * @param fileId
+   * @param token
+   * @return
+   */
+  @Override
+  public InputStream getMessageFilesThumbnail(UserId userId, int fileId,
+      SecurityToken token) {
+    setUp(token);
+
+    setUp(token);
+
+    checkSameViewer(userId, token);
+    EipTMessageFile model = messageDbService.findMessageFile(fileId);
+    if (model == null) {
+      throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
+    }
+    checkSameRoomMember(userId, token, model.getRoomId());
+
+    byte[] thumbnail = null;
+    thumbnail = model.getFileThumbnail();
+    if (thumbnail == null) {
+      throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
+    }
+
+    return new ByteArrayInputStream(thumbnail);
   }
 
   /**

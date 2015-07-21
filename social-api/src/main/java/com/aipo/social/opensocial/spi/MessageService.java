@@ -79,4 +79,7 @@ public interface MessageService {
   public Future<ALFile> getMessageFilesInfo(UserId userId, int fileId,
       SecurityToken token) throws ProtocolException;
 
+  public InputStream getMessageFilesThumbnail(UserId userId, int fileId,
+      SecurityToken token);
+
 }
