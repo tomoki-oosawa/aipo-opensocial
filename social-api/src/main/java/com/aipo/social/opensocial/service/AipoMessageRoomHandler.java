@@ -332,7 +332,6 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
-      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
       AipoPreconditions.required("fileId", fileId);
       int fileIdInt = AipoPreconditions.isInteger("fileId", fileId);
 
