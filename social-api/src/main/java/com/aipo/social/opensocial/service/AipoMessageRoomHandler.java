@@ -308,43 +308,4 @@ public class AipoMessageRoomHandler {
     }
   }
 
-  /**
-   * 添付ファイル サムネイル画像<br>
-   * <code>
-   * GET  /rooms/:roomId/file/thumbnail/:fileId
-   * </code><br>
-   * <code>
-   * osapi.rooms.thumbnail.get( { roomId: :roomId, fileId: fileId })
-   * </code>
-   *
-   * @param request
-   * @return
-   */
-  @Operation(httpMethods = "GET", name = "thumbnail.get", path = "/{roomId}/file/thumbnail/{fileId}")
-  public StreamContent getThumbnail(SocialRequestItem request)
-      throws ProtocolException {
-    try {
-      Set<UserId> userIds = request.getUsers();
-      String roomId = request.getParameter("roomId");
-      String fileId = request.getParameter("fileId");
-
-      // Preconditions
-      AipoPreconditions.required("userId", userIds);
-      AipoPreconditions.notMultiple("userId", userIds);
-      AipoPreconditions.required("roomId", roomId);
-      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
-      AipoPreconditions.required("fileId", fileId);
-      int fileIdInt = AipoPreconditions.isInteger("fileId", fileId);
-
-      return new StreamContent("image/jpeg", service.getMessageFilesThumbnail(
-        userIds.iterator().next(),
-        fileIdInt,
-        request.getToken()));
-    } catch (ProtocolException e) {
-      throw e;
-    } catch (Throwable t) {
-      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
-    }
-  }
-
 }
