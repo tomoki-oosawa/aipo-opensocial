@@ -237,7 +237,7 @@ public class AipoMessageHandler {
    * @param request
    * @return
    */
-  @Operation(httpMethods = "PUT", name = "read.update", path = "/{roomId}/read/{messageId}")
+  @Operation(httpMethods = { "PUT", "POST" }, name = "read.update", path = "/{roomId}/read/{messageId}")
   public Future<?> read(SocialRequestItem request) {
     try {
       Set<UserId> userIds = request.getUsers();
