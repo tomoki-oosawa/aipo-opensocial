@@ -209,7 +209,7 @@ public class AipoOAuth2Service implements OAuth2Service {
    */
   @Override
   public OAuth2Code generateAuthorizationCode(OAuth2NormalizedRequest req) {
-    OAuth2Code authCode = new OAuth2Code();
+    AipoOAuth2Code authCode = new AipoOAuth2Code();
     authCode.setValue(UUID.randomUUID().toString());
     authCode.setExpiration(System.currentTimeMillis() + authCodeExpires);
     OAuth2Client client = store.getClient(req.getClientId());
