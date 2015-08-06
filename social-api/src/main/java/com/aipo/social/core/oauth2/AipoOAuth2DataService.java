@@ -89,7 +89,6 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public void registerAuthorizationCode(String clientId, OAuth2Code authCode) {
-    // TODO: clientId を永続化
     if (authCode == null) {
       return;
     }
@@ -114,6 +113,7 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     }
     token.setScope(scopes.toString());
     token.setTokenType(TokenFormat.BEARER.toString());
+    token.setClientId(clientId);
     store.put(token);
   }
 
@@ -162,7 +162,6 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public void registerAccessToken(String clientId, OAuth2Code accessToken) {
-    // TODO: clientId を永続化
     if (accessToken == null) {
       return;
     }
@@ -187,6 +186,7 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     }
     token.setScope(scopes.toString());
     token.setTokenType(TokenFormat.BEARER.toString());
+    token.setClientId(clientId);
     store.put(token);
 
     // AccessToken作成後に期限切れのAccessTokenを削除する
@@ -248,7 +248,6 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public void registerRefreshToken(String clientId, OAuth2Code refreshToken) {
-    // TODO: clientId を永続化
     if (refreshToken == null) {
       return;
     }
@@ -275,6 +274,7 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     }
     token.setScope(scopes.toString());
     token.setTokenType(TokenFormat.BEARER.toString());
+    token.setClientId(clientId);
     store.put(token);
   }
 

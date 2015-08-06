@@ -21,6 +21,8 @@ public class OAuth2Token implements Serializable {
 
   private String codeType;
 
+  private String clientId;
+
   /**
    * @return userId
    */
@@ -124,6 +126,21 @@ public class OAuth2Token implements Serializable {
    */
   public void setCodeType(String codeType) {
     this.codeType = codeType;
+  }
+
+  /**
+   * @return clientId
+   */
+  public String getClientId() {
+    return clientId;
+  }
+
+  /**
+   * @param clientId
+   *          セットする clientId
+   */
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
   }
 
 }
