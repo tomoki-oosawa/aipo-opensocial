@@ -22,15 +22,20 @@ package com.aipo.social.core.oauth2;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shindig.social.core.oauth2.AipoOAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2Client;
+import org.apache.shindig.social.core.oauth2.OAuth2Client.ClientType;
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2DataService;
 import org.apache.shindig.social.core.oauth2.OAuth2Exception;
 import org.apache.shindig.social.core.oauth2.OAuth2NormalizedRequest;
+import org.apache.shindig.social.core.oauth2.OAuth2NormalizedResponse;
 import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.core.oauth2.OAuth2ServiceImpl;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.CodeType;
+import org.apache.shindig.social.core.oauth2.OAuth2Types.ErrorType;
 import org.apache.shindig.social.core.oauth2.validators.AuthorizationCodeRequestValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2ProtectedResourceValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
@@ -104,8 +109,6 @@ public class AipoOAuth2Service implements OAuth2Service {
   @Override
   public void authenticateClient(OAuth2NormalizedRequest req)
       throws OAuth2Exception {
-    // TODO: client の検証
-    /*-
     OAuth2Client client = store.getClient(req.getClientId());
     if (client == null) {
       OAuth2NormalizedResponse resp = new OAuth2NormalizedResponse();
@@ -131,7 +134,6 @@ public class AipoOAuth2Service implements OAuth2Service {
         throw new OAuth2Exception(resp);
       }
     }
-     */
   }
 
   /**

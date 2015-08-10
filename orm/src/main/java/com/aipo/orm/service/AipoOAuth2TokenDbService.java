@@ -37,6 +37,7 @@ public class AipoOAuth2TokenDbService implements OAuth2TokenDbService {
       oAuth2Token.setScope(model.getScope());
       oAuth2Token.setTokenType(model.getTokenType());
       oAuth2Token.setCodeType(model.getCodeType());
+      oAuth2Token.setClientId(model.getClientId());
       return oAuth2Token;
     }
     return null;
@@ -58,6 +59,7 @@ public class AipoOAuth2TokenDbService implements OAuth2TokenDbService {
       model.setScope(oAuth2Token.getScope());
       model.setTokenType(oAuth2Token.getTokenType());
       model.setCodeType(oAuth2Token.getCodeType());
+      model.setClientId(oAuth2Token.getClientId());
       Database.commit();
     } catch (Throwable t) {
       Database.rollback();

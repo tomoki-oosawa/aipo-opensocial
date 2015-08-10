@@ -3,8 +3,10 @@ package com.aipo.orm.service.bean;
 import java.io.Serializable;
 import java.util.Date;
 
-// TODO:
 public class OAuth2Token implements Serializable {
+
+  private static final long serialVersionUID = -6007791100248311156L;
+
   public static final String CODE_TYPE_ACCESS_TOKEN = "ACCESS_TOKEN";
 
   private String userId;

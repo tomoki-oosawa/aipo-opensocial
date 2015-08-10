@@ -12,28 +12,29 @@ import org.apache.cayenne.CayenneDataObject;
  */
 public abstract class _OAuth2Token extends CayenneDataObject {
 
-    public static final String USER_ID_PROPERTY = "userId";
-    public static final String TOKEN_PROPERTY = "token";
+    public static final String CLIENT_ID_PROPERTY = "clientId";
+    public static final String CODE_TYPE_PROPERTY = "codeType";
     public static final String CREATE_DATE_PROPERTY = "createDate";
     public static final String EXPIRE_TIME_PROPERTY = "expireTime";
     public static final String SCOPE_PROPERTY = "scope";
+    public static final String TOKEN_PROPERTY = "token";
     public static final String TOKEN_TYPE_PROPERTY = "tokenType";
-    public static final String CODE_TYPE_PROPERTY = "codeType";
+    public static final String USER_ID_PROPERTY = "userId";
 
     public static final String TOKEN_ID_PK_COLUMN = "TOKEN_ID";
 
-    public void setUserId(String userId) {
-        writeProperty("userId", userId);
+    public void setClientId(String clientId) {
+        writeProperty("clientId", clientId);
     }
-    public String getUserId() {
-        return (String)readProperty("userId");
+    public String getClientId() {
+        return (String)readProperty("clientId");
     }
 
-    public void setToken(String token) {
-        writeProperty("token", token);
+    public void setCodeType(String codeType) {
+        writeProperty("codeType", codeType);
     }
-    public String getToken() {
-        return (String)readProperty("token");
+    public String getCodeType() {
+        return (String)readProperty("codeType");
     }
 
     public void setCreateDate(Date createDate) {
@@ -57,6 +58,13 @@ public abstract class _OAuth2Token extends CayenneDataObject {
         return (String)readProperty("scope");
     }
 
+    public void setToken(String token) {
+        writeProperty("token", token);
+    }
+    public String getToken() {
+        return (String)readProperty("token");
+    }
+
     public void setTokenType(String tokenType) {
         writeProperty("tokenType", tokenType);
     }
@@ -64,12 +72,11 @@ public abstract class _OAuth2Token extends CayenneDataObject {
         return (String)readProperty("tokenType");
     }
 
-    public void setCodeType(String codeType) {
-        writeProperty("codeType", codeType);
+    public void setUserId(String userId) {
+        writeProperty("userId", userId);
     }
-
-    public String getCodeType() {
-        return (String)readProperty("codeType");
+    public String getUserId() {
+        return (String)readProperty("userId");
     }
 
 }

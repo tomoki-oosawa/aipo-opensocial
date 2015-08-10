@@ -24,12 +24,14 @@ import java.util.Date;
 
 import org.apache.shindig.social.core.oauth2.AipoOAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2Client;
+import org.apache.shindig.social.core.oauth2.OAuth2Client.ClientType;
 import org.apache.shindig.social.core.oauth2.OAuth2Code;
 import org.apache.shindig.social.core.oauth2.OAuth2DataService;
 import org.apache.shindig.social.core.oauth2.OAuth2DataServiceImpl;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.CodeType;
 import org.apache.shindig.social.core.oauth2.OAuth2Types.TokenFormat;
 
+import com.aipo.orm.service.OAuth2ClientDbService;
 import com.aipo.orm.service.OAuth2TokenDbService;
 import com.aipo.orm.service.bean.OAuth2Token;
 import com.google.inject.Inject;
@@ -41,9 +43,13 @@ public class AipoOAuth2DataService implements OAuth2DataService {
 
   private OAuth2TokenDbService store = null;
 
+  private OAuth2ClientDbService client = null;
+
   @Inject
-  public AipoOAuth2DataService(OAuth2TokenDbService store) throws Exception {
+  public AipoOAuth2DataService(OAuth2TokenDbService store,
+      OAuth2ClientDbService client) throws Exception {
     this.store = store;
+    this.client = client;
   }
 
   /**
@@ -52,7 +58,29 @@ public class AipoOAuth2DataService implements OAuth2DataService {
    */
   @Override
   public OAuth2Client getClient(String clientId) {
-    return new OAuth2Client();
+    com.aipo.orm.service.bean.OAuth2Client oauth2Cient = client.get(clientId);
+    if (oauth2Cient == null) {
+      return null;
+    }
+    OAuth2Client client = new OAuth2Client();
+    if (oauth2Cient.getFlow() != null) {
+      client.setFlow(oauth2Cient.getFlow().toString());
+    }
+    client.setId(oauth2Cient.getId());
+    client.setSecret(oauth2Cient.getSecret());
+    if (oauth2Cient.getType() != null) {
+      client.setType(oauth2Cient.getType().toString().equals(
+        ClientType.PUBLIC.toString())
+        ? ClientType.PUBLIC
+        : ClientType.CONFIDENTIAL);
+    }
+    if (oauth2Cient.getFlow() != null) {
+      client.setFlow(oauth2Cient.getFlow().toString());
+    }
+    client.setIconUrl(oauth2Cient.getIconUrl());
+    client.setRedirectURI(oauth2Cient.getRedirectURI());
+    client.setTitle(oauth2Cient.getTitle());
+    return client;
   }
 
   /**
