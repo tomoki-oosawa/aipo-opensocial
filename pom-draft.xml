@@ -270,13 +270,13 @@
     </plugins>
   </build>
 
-  <modules>
+  <!-- modules>
     <module>orm</module>
     <module>core</module>
     <module>social-api</module>
     <module>features</module>
     <module>war</module>
-  </modules>
+  </modules -->
 
   <dependencies>
     <dependency>
