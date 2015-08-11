@@ -183,7 +183,7 @@
     <dependency>
       <groupId>com.aipo</groupId>
       <artifactId>aipo-orm</artifactId>
-      <version>8.0.1</version>
+      <version>${aipo.version}</version>
     </dependency>
   </dependencies>
 
