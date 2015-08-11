@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.aipo.container</groupId>
+    <artifactId>aipo-container</artifactId>
+    <version>8.0.1-draft</version>
+    <relativePath>../pom-draft.xml</relativePath>
+  </parent>
+
+  <groupId>com.aipo.container</groupId>
+  <artifactId>war</artifactId>
+  <packaging>war</packaging>
+
+  <name>Aipo OpenSocial Container Web App</name>
+
+   <build>
+    <finalName>container</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>net.sf.alchim</groupId>
+          <artifactId>yuicompressor-maven-plugin</artifactId>
+          <version>0.7.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>net.sf.alchim</groupId>
+        <artifactId>yuicompressor-maven-plugin</artifactId>
+        <version>0.7.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compress</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <suffix>.opt</suffix>
+          <encoding>UTF-8</encoding>
+          <excludes>
+            <exclude>**/*.xml</exclude>
+            <exclude>**/*.properties</exclude>
+            <exclude>aipo/container.js</exclude>
+          </excludes>
+          <jswarn>false</jswarn>
+          <statistics>false</statistics>
+          <force>true</force>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.aipo.container</groupId>
+      <artifactId>aipo-container-core</artifactId>
+      <version>${aipo.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.aipo</groupId>
+      <artifactId>aipo-social-api</artifactId>
+      <version>${aipo.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>
