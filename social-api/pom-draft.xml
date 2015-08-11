@@ -52,6 +52,11 @@
       <version>${aipo.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.aipo</groupId>
+      <artifactId>aipo-orm</artifactId>
+      <version>${aipo.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-common</artifactId>
       <version>${shindig.version}</version>
