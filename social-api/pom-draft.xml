@@ -52,11 +52,6 @@
       <version>${aipo.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.aipo</groupId>
-      <artifactId>aipo-orm</artifactId>
-      <version>${aipo.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-common</artifactId>
       <version>${shindig.version}</version>
@@ -179,7 +174,7 @@
     <dependency>
       <groupId>com.aipo</groupId>
       <artifactId>aipo-orm</artifactId>
-      <version>8.0.1</version>
+      <version>${aipo.version}</version>
     </dependency>
     <dependency>
       <groupId>com.drewnoakes</groupId>
