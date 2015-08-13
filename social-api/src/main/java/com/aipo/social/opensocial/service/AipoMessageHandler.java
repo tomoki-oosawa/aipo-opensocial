@@ -139,6 +139,7 @@ public class AipoMessageHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("message", message);
+      AipoPreconditions.maxLength("message", message, 10000);
 
       return messageService.postMessage(
         userIds.iterator().next(),
