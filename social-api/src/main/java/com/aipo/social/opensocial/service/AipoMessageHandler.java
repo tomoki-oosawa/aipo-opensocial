@@ -140,6 +140,7 @@ public class AipoMessageHandler {
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("message", message);
       AipoPreconditions.maxLength("message", message, 10000);
+      AipoPreconditions.isUTF8("message", message);
 
       return messageService.postMessage(
         userIds.iterator().next(),
