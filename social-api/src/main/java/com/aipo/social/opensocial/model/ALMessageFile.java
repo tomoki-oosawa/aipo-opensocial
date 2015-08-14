@@ -30,8 +30,12 @@ public interface ALMessageFile {
 
   public void setFileName(String fileName);
 
+  public long getFileSize();
+
+  public void setFileSize(long fileSize);
+
   public static enum Field {
-    FILE_ID("fileId"), FILE_NAME("fileName");
+    FILE_ID("fileId"), FILE_NAME("fileName"), FILE_SIZE("fileSize");
 
     private final String jsonString;
 

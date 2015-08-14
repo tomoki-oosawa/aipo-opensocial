@@ -29,6 +29,8 @@ public class ALMessageFileImpl implements ALMessageFile {
 
   private String fileName;
 
+  private long fileSize;
+
   /**
    * @return
    */
@@ -59,5 +61,21 @@ public class ALMessageFileImpl implements ALMessageFile {
   @Override
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  public long getFileSize() {
+    return fileSize;
+  }
+
+  /**
+   * @param fileSize
+   */
+  @Override
+  public void setFileSize(long fileSize) {
+    this.fileSize = fileSize;
   }
 }

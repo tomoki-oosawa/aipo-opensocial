@@ -387,7 +387,11 @@ public class AipoMessageService extends AbstractService implements
     if (model.getMessageFiles() != null) {
       List<ALMessageFile> files = new ArrayList<ALMessageFile>();
       for (EipTMessageFile file : model.getMessageFiles()) {
-        ALMessageFile messageFile = assignMessageFile(file);
+        long fileSize =
+          storageService.getFileSize(messageCategoryKey, file
+            .getOwnerId()
+            .intValue(), file.getFilePath(), token);
+        ALMessageFile messageFile = assignMessageFile(file, fileSize);
         files.add(messageFile);
       }
       message.setFiles(files);
@@ -411,16 +415,18 @@ public class AipoMessageService extends AbstractService implements
   }
 
   /**
+   * @param fileSize
    * @param room
    * @param fields
    * @param token
    * @return
    */
-  private ALMessageFile assignMessageFile(EipTMessageFile model) {
+  private ALMessageFile assignMessageFile(EipTMessageFile model, long fileSize) {
     ALMessageFile file = new ALMessageFileImpl();
 
     file.setFileId(model.getFileId());
     file.setFileName(model.getFileName());
+    file.setFileSize(fileSize);
 
     return file;
   }
