@@ -20,6 +20,8 @@
 package com.aipo.container.protocol;
 
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.shindig.protocol.multipart.FormDataItem;
 
@@ -84,6 +86,16 @@ public class AipoPreconditions {
     } catch (Throwable t) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter " + name + " is not integer."));
+    }
+  }
+
+  public static void isUTF8(String name, String value)
+      throws AipoProtocolException {
+    Pattern PATTERN = Pattern.compile("[\\u0000-\\uFFFF]*");
+    Matcher m = PATTERN.matcher(value);
+    if (!m.matches()) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter " + name + " is not proper UTF-8."));
     }
   }
 
