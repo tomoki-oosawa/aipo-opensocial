@@ -21,6 +21,8 @@ package com.aipo.container.protocol;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.shindig.auth.AipoOAuth2SecurityToken;
 import org.apache.shindig.auth.SecurityToken;
@@ -55,6 +57,18 @@ public class AipoPreconditions {
     }
   }
 
+  public static void maxLength(String name, String value, int maxLength)
+      throws AipoProtocolException {
+    if (value == null || value.length() == 0 || value.length() > maxLength) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter "
+          + name
+          + "'s maximum length is "
+          + maxLength
+          + "."));
+    }
+  }
+
   public static int isIntegerOrNull(String name, String value)
       throws AipoProtocolException {
     if (value == null) {
@@ -75,6 +89,16 @@ public class AipoPreconditions {
     } catch (Throwable t) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter " + name + " is not integer."));
+    }
+  }
+
+  public static void isUTF8(String name, String value)
+      throws AipoProtocolException {
+    Pattern PATTERN = Pattern.compile("[\\u0000-\\uFFFF]*");
+    Matcher m = PATTERN.matcher(value);
+    if (!m.matches()) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter " + name + " is not proper UTF-8."));
     }
   }
 
