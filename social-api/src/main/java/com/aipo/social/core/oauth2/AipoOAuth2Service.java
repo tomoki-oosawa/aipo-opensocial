@@ -20,6 +20,7 @@
 package com.aipo.social.core.oauth2;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +41,7 @@ import org.apache.shindig.social.core.oauth2.validators.AuthorizationCodeRequest
 import org.apache.shindig.social.core.oauth2.validators.OAuth2ProtectedResourceValidator;
 import org.apache.shindig.social.core.oauth2.validators.OAuth2RequestValidator;
 
+import com.aipo.container.protocol.AipoScope;
 import com.aipo.orm.service.OAuth2TokenDbService;
 import com.aipo.orm.service.TurbineUserDbService;
 import com.aipo.social.core.oauth2.validators.AipoOAuth2ProtectedResourceValidator;
@@ -221,6 +223,20 @@ public class AipoOAuth2Service implements OAuth2Service {
     } else {
       authCode.setRedirectURI(client.getRedirectURI());
     }
+    if (req.getScope() != null) {
+      List<String> scopes = new ArrayList<String>();
+      String scope = req.getScope();
+      String[] split = scope.split("[, ]");
+      for (String value : split) {
+        AipoScope aipoScope = AipoScope.getScope(value);
+        if (aipoScope != null) {
+          scopes.add(aipoScope.toString());
+        }
+      }
+      if (scopes.size() > 0) {
+        authCode.setScope(scopes);
+      }
+    }
     return authCode;
   }
 
@@ -244,6 +260,20 @@ public class AipoOAuth2Service implements OAuth2Service {
       accessToken.setRedirectURI(store
         .getClient(req.getClientId())
         .getRedirectURI());
+    }
+    if (req.getScope() != null) {
+      List<String> scopes = new ArrayList<String>();
+      String scope = req.getScope();
+      String[] split = scope.split("[, ]");
+      for (String value : split) {
+        AipoScope aipoScope = AipoScope.getScope(value);
+        if (aipoScope != null) {
+          scopes.add(aipoScope.toString());
+        }
+      }
+      if (scopes.size() > 0) {
+        accessToken.setScope(scopes);
+      }
     }
 
     // associate with existing authorization code, if an auth code exists.
@@ -283,6 +313,20 @@ public class AipoOAuth2Service implements OAuth2Service {
       refreshToken.setRedirectURI(store
         .getClient(req.getClientId())
         .getRedirectURI());
+    }
+    if (req.getScope() != null) {
+      List<String> scopes = new ArrayList<String>();
+      String scope = req.getScope();
+      String[] split = scope.split("[, ]");
+      for (String value : split) {
+        AipoScope aipoScope = AipoScope.getScope(value);
+        if (aipoScope != null) {
+          scopes.add(aipoScope.toString());
+        }
+      }
+      if (scopes.size() > 0) {
+        refreshToken.setScope(scopes);
+      }
     }
 
     // associate with existing authorization code, if an auth code exists.

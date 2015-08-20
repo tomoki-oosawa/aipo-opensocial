@@ -1,18 +1,33 @@
 package org.apache.shindig.auth;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.shindig.config.ContainerConfig;
 
 public class AipoOAuth2SecurityToken implements SecurityToken {
+
   private final String ownerId;
 
   private final String viewerId;
 
   private final String container;
 
+  private final List<String> scope;
+
   public AipoOAuth2SecurityToken(String ownerId, String viewerId) {
     this.ownerId = ownerId;
     this.viewerId = viewerId;
     this.container = ContainerConfig.DEFAULT_CONTAINER;
+    this.scope = new ArrayList<String>();
+  }
+
+  public AipoOAuth2SecurityToken(String ownerId, String viewerId,
+      List<String> scope) {
+    this.ownerId = ownerId;
+    this.viewerId = viewerId;
+    this.container = ContainerConfig.DEFAULT_CONTAINER;
+    this.scope = scope;
   }
 
   /**
@@ -125,6 +140,10 @@ public class AipoOAuth2SecurityToken implements SecurityToken {
   @Override
   public String getActiveUrl() {
     throw new UnsupportedOperationException();
+  }
+
+  public List<String> getScope() {
+    return scope;
   }
 
 }

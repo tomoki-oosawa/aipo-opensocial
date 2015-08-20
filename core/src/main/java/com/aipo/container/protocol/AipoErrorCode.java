@@ -295,6 +295,7 @@ public enum AipoErrorCode {
     int getStatus() {
       return HttpServletResponse.SC_NOT_FOUND;
     }
+
   };
 
   private String message = null;

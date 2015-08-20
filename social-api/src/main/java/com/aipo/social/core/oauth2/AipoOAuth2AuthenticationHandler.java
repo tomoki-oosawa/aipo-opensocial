@@ -116,7 +116,7 @@ public class AipoOAuth2AuthenticationHandler implements AuthenticationHandler {
       if (code instanceof AipoOAuth2Code) {
         AipoOAuth2Code aipoCode = (AipoOAuth2Code) code;
         return new AipoOAuth2SecurityToken(aipoCode.getUserId(), aipoCode
-          .getUserId());
+          .getUserId(), code.getScope());
       } else {
         throw new UnsupportedOperationException();
       }

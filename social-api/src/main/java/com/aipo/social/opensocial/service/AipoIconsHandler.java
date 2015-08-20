@@ -32,6 +32,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.container.protocol.AipoErrorCode;
 import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
+import com.aipo.container.protocol.AipoScope;
 import com.aipo.container.protocol.StreamContent;
 import com.aipo.social.opensocial.spi.PersonService;
 import com.google.inject.Inject;
@@ -67,6 +68,7 @@ public class AipoIconsHandler {
       Set<UserId> userIds = request.getUsers();
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
 
@@ -102,6 +104,7 @@ public class AipoIconsHandler {
       FormDataItem profileIcon = request.getFormMimePart("profileIcon");
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("profileIcon", profileIcon);
@@ -135,6 +138,7 @@ public class AipoIconsHandler {
       Set<UserId> userIds = request.getUsers();
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
 

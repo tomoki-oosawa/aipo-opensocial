@@ -33,6 +33,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.container.protocol.AipoErrorCode;
 import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
+import com.aipo.container.protocol.AipoScope;
 import com.aipo.social.opensocial.model.ALActivity;
 import com.aipo.social.opensocial.spi.ActivityService;
 import com.aipo.social.opensocial.spi.AipoCollectionOptions;
@@ -70,6 +71,7 @@ public class AipoActivityHandler {
         ImmutableSet.copyOf(request.getListParameter("activityId"));
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
 
@@ -107,6 +109,7 @@ public class AipoActivityHandler {
       Set<UserId> userIds = request.getUsers();
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
 
@@ -137,6 +140,7 @@ public class AipoActivityHandler {
       AipoCollectionOptions options = new AipoCollectionOptions(request);
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
 

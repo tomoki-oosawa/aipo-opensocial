@@ -20,7 +20,10 @@
 package com.aipo.container.protocol;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.apache.shindig.auth.AipoOAuth2SecurityToken;
+import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.multipart.FormDataItem;
 
 /**
@@ -91,5 +94,32 @@ public class AipoPreconditions {
           + name
           + " cannot specify multiple values."));
     }
+  }
+
+  public static void validateScope(SecurityToken token, AipoScope... scopes)
+      throws AipoProtocolException {
+    // OAuth2 RESTful API の場合
+    if (token instanceof AipoOAuth2SecurityToken) {
+      boolean result = true;
+      List<String> tokenScopes = ((AipoOAuth2SecurityToken) token).getScope();
+      if (tokenScopes != null && tokenScopes.size() > 0) {
+        for (String tokenScope : tokenScopes) {
+          for (AipoScope requireScope : scopes) {
+            if (requireScope.toString().equals(tokenScope)) {
+              result = false;
+              break;
+            }
+            if (!result) {
+              break;
+            }
+          }
+        }
+      }
+      if (result) {
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      }
+    }
+    // JavaScript API の場合は Scope を検証しない
   }
 }

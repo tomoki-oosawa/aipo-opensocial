@@ -67,6 +67,19 @@ public class RefreshTokenGrantValidator implements OAuth2GrantValidator {
       String[] split = userId.split(":");
       req.put("orgId", split[0]);
       req.put("username", split[1]);
+      StringBuilder scopes = new StringBuilder();
+      if (oauth2Code.getScope() != null && oauth2Code.getScope().size() > 0) {
+        boolean isFirst = true;
+        for (String scope : oauth2Code.getScope()) {
+          if (!isFirst) {
+            scopes.append(" ");
+          } else {
+            isFirst = false;
+          }
+          scopes.append(scope);
+        }
+        req.put("scope", scopes.toString());
+      }
     } else {
       throwError(ErrorType.INVALID_GRANT, "Invalid or expired token");
     }

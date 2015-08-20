@@ -31,6 +31,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.container.protocol.AipoErrorCode;
 import com.aipo.container.protocol.AipoPreconditions;
 import com.aipo.container.protocol.AipoProtocolException;
+import com.aipo.container.protocol.AipoScope;
 import com.aipo.container.protocol.StreamContent;
 import com.aipo.social.opensocial.model.ALFile;
 import com.aipo.social.opensocial.model.ALMessage;
@@ -94,6 +95,7 @@ public class AipoMessageHandler {
       String messageId = request.getParameter("messageId");
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
@@ -135,6 +137,7 @@ public class AipoMessageHandler {
       String transactionId = request.getParameter("transactionId");
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
@@ -173,6 +176,7 @@ public class AipoMessageHandler {
       String messageId = request.getParameter("messageId");
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
@@ -207,6 +211,7 @@ public class AipoMessageHandler {
       String messageId = request.getParameter("messageId");
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
@@ -243,7 +248,9 @@ public class AipoMessageHandler {
       Set<UserId> userIds = request.getUsers();
       String roomId = request.getParameter("roomId");
       String messageId = request.getParameter("messageId");
+
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
@@ -282,6 +289,7 @@ public class AipoMessageHandler {
       String fileId = request.getParameter("fileId");
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
@@ -319,6 +327,7 @@ public class AipoMessageHandler {
       String fileId = request.getParameter("fileId");
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
@@ -373,6 +382,7 @@ public class AipoMessageHandler {
       String fileId = request.getParameter("fileId");
 
       // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);

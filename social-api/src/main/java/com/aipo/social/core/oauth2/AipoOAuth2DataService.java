@@ -132,12 +132,15 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     token.setExpireTime(new Date(authCode.getExpiration()));
     StringBuilder scopes = new StringBuilder();
     if (authCode.getScope() != null) {
+      boolean isFirst = true;
       for (String scope : authCode.getScope()) {
-        scopes.append(scope).append(", ");
+        if (!isFirst) {
+          scopes.append(" ");
+        } else {
+          isFirst = false;
+        }
+        scopes.append(scope);
       }
-    }
-    if (scopes.length() > 2) {
-      scopes.setLength(scopes.length() - 2);
     }
     token.setScope(scopes.toString());
     token.setTokenType(TokenFormat.BEARER.toString());
@@ -205,12 +208,15 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     token.setExpireTime(new Date(accessToken.getExpiration()));
     StringBuilder scopes = new StringBuilder();
     if (accessToken.getScope() != null) {
+      boolean isFirst = true;
       for (String scope : accessToken.getScope()) {
-        scopes.append(scope).append(", ");
+        if (!isFirst) {
+          scopes.append(" ");
+        } else {
+          isFirst = false;
+        }
+        scopes.append(scope);
       }
-    }
-    if (scopes.length() > 2) {
-      scopes.setLength(scopes.length() - 2);
     }
     token.setScope(scopes.toString());
     token.setTokenType(TokenFormat.BEARER.toString());
@@ -293,12 +299,15 @@ public class AipoOAuth2DataService implements OAuth2DataService {
     }
     StringBuilder scopes = new StringBuilder();
     if (refreshToken.getScope() != null) {
+      boolean isFirst = true;
       for (String scope : refreshToken.getScope()) {
-        scopes.append(scope).append(" ");
+        if (!isFirst) {
+          scopes.append(" ");
+        } else {
+          isFirst = false;
+        }
+        scopes.append(scope);
       }
-    }
-    if (scopes.length() > 2) {
-      scopes.setLength(scopes.length() - 2);
     }
     token.setScope(scopes.toString());
     token.setTokenType(TokenFormat.BEARER.toString());

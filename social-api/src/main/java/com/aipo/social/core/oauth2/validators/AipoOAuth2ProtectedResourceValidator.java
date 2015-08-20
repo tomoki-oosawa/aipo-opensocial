@@ -64,9 +64,6 @@ public class AipoOAuth2ProtectedResourceValidator implements
       d.setTime(token.getExpiration());
       throwAccessDenied(d.toString());
     }
-    if (resourceRequest != null) {
-      // TODO: Scope の検証
-    }
   }
 
   private void throwAccessDenied(String msg) throws OAuth2Exception {
