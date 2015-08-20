@@ -336,11 +336,9 @@ public class AipoMessageHandler {
       AipoPreconditions.required("fileId", fileId);
       int fileIdInt = AipoPreconditions.isInteger("fileId", fileId);
 
+      UserId userId = userIds.iterator().next();
       Future<ALFile> file =
-        messageService.getMessageFiles(
-          userIds.iterator().next(),
-          fileIdInt,
-          request.getToken());
+        messageService.getMessageFiles(userId, fileIdInt, request.getToken());
       if (file == null) {
         throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
       }
@@ -355,7 +353,13 @@ public class AipoMessageHandler {
       if (contentType == null) {
         throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
       }
-      return new StreamContent(contentType, stream);
+
+      Future<ALFile> fileInfo =
+        messageService.getMessageFilesInfo(userId, fileIdInt, request
+          .getToken());
+      int fileSize = fileInfo.get().getFileSize().intValue();
+
+      return new StreamContent(contentType, stream, fileSize);
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {

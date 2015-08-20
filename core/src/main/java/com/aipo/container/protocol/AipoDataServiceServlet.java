@@ -288,6 +288,7 @@ public class AipoDataServiceServlet extends ApiServlet {
     ResponseItem responseItem = getResponseItem(future);
 
     servletResponse.setContentType(responseConverter.getContentType());
+
     if (responseItem.getErrorCode() >= 200 && responseItem.getErrorCode() < 400) {
       Object response = responseItem.getResponse();
 
@@ -297,6 +298,9 @@ public class AipoDataServiceServlet extends ApiServlet {
         try {
           StreamContent content = (StreamContent) response;
           servletResponse.setContentType(content.getContentType());
+          if (content.getContentLength() != 0) {
+            servletResponse.setContentLength(content.getContentLength());
+          }
           is = content.getInputStream();
           out = servletResponse.getOutputStream();
           int b;

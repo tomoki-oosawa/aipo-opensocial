@@ -26,7 +26,12 @@ public class StreamContent {
 
   private String contentType;
 
-  public StreamContent() {
+  private int contentLength;
+
+  public StreamContent(String contentType, InputStream is, int contentLength) {
+    this.contentType = contentType;
+    this.inputStream = is;
+    this.contentLength = contentLength;
   }
 
   public StreamContent(String contentType, InputStream is) {
@@ -42,11 +47,19 @@ public class StreamContent {
     return this.contentType;
   }
 
+  public int getContentLength() {
+    return this.contentLength;
+  }
+
   public void setInputStream(InputStream is) {
     this.inputStream = is;
   }
 
   public void setContentType(String contentType) {
     this.contentType = contentType;
+  }
+
+  public void setContentLength(int contentLength) {
+    this.contentLength = contentLength;
   }
 }
