@@ -25,6 +25,7 @@ import java.util.concurrent.Future;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.Service;
+import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
@@ -263,6 +264,46 @@ public class AipoMessageHandler {
         userIds.iterator().next(),
         roomId,
         messageIdInt,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
+
+  /**
+   * ファイルアップロード <br>
+   * <code>
+   * POST/PUT /messages/:roomId/files/download/:messageId
+   * </code><br>
+   * <code>
+   * osapi.messages.files.upload( { roomId: :roomId, messageId: messageId })
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = { "PUT", "POST" }, name = "files.download", path = "/{roomId}/files/download/{messageId}")
+  public Future<?> updateFiles(SocialRequestItem request) {
+    try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+      String messageId = request.getParameter("messageId");
+      FormDataItem file = request.getFormMimePart("file");
+
+      // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      AipoPreconditions.required("messageId", messageId);
+      int messageIdInt = AipoPreconditions.isInteger("messageId", messageId);
+
+      return messageService.putMessageFiles(
+        userIds.iterator().next(),
+        messageIdInt,
+        file,
         request.getToken());
     } catch (ProtocolException e) {
       throw e;

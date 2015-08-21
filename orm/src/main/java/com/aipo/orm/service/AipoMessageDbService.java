@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -877,6 +878,64 @@ public class AipoMessageDbService implements MessageDbService {
   }
 
   /**
+   * @param username
+   * @param messageIdInt
+   * @param file
+   * @param fileThumbnail
+   */
+  @Override
+  public EipTMessageFile insertMessageFiles(String username, int messageIdInt,
+      String fileName, byte[] shrinkImage) {
+    try {
+      EipTMessage message = Database.get(EipTMessage.class, messageIdInt);
+      if (message == null) {
+        return null;
+      }
+
+      TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+      if (turbineUser == null) {
+        return null;
+      }
+      Integer userId = turbineUser.getUserId();
+
+      // messageの投稿者だけが添付ファイルを追加できるようにValidate
+      if (message.getUserId() != userId) {
+        return null;
+      }
+
+      String filename = "0_" + String.valueOf(System.nanoTime());
+
+      EipTMessageFile model = Database.create(EipTMessageFile.class);
+      model.setOwnerId(userId);
+      model.setFileName(fileName);
+      model.setFilePath(getRelativePath(filename));
+      if (shrinkImage != null) {
+        model.setFileThumbnail(shrinkImage);
+      }
+      model.setEipTMessage(message);
+      model.setRoomId(message.getEipTMessageRoom().getRoomId());
+      model.setCreateDate(Calendar.getInstance().getTime());
+      model.setUpdateDate(Calendar.getInstance().getTime());
+
+      Database.commit();
+
+      return model;
+
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
+  /**
+   * @param filename
+   * @return
+   */
+  private String getRelativePath(String fileName) {
+    return new StringBuffer().append("/").append(fileName).toString();
+  }
+
+  /**
    *
    * @param fileId
    * @return
@@ -988,5 +1047,4 @@ public class AipoMessageDbService implements MessageDbService {
       return null;
     }
   }
-
 }

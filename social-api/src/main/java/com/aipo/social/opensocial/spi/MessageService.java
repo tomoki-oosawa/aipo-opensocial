@@ -73,6 +73,9 @@ public interface MessageService {
   public Future<Void> deleteRoomIcon(UserId userId, int roomId,
       SecurityToken token) throws ProtocolException;
 
+  public Future<?> putMessageFiles(UserId userId, int messageIdInt,
+      FormDataItem file, SecurityToken token);
+
   public Future<ALFile> getMessageFiles(UserId userId, int fileId,
       SecurityToken token) throws ProtocolException;
 
