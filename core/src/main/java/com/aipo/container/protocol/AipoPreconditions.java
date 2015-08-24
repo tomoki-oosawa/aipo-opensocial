@@ -97,6 +97,9 @@ public class AipoPreconditions {
 
   public static void isUTF8(String name, String value)
       throws AipoProtocolException {
+    if (value == null) {
+      return;
+    }
     Pattern PATTERN = Pattern.compile("[\\u0000-\\uFFFF]*");
     Matcher m = PATTERN.matcher(value);
     if (!m.matches()) {
