@@ -889,4 +889,16 @@ public class AipoStorageService extends AbstractService implements
       }
     }
   }
+
+  @Override
+  public void createNewFile(InputStream is, String categoryKey, IEipTFile file,
+      SecurityToken paramSecurityToken) throws ProtocolException {
+
+    IEipTFile ifile = file;
+    createNewFile(is, getDocumentPath(fileDir, categoryKey
+      + separator()
+      + ifile.getOwnerId().intValue(), paramSecurityToken)
+      + ifile.getFilePath(), paramSecurityToken);
+
+  }
 }

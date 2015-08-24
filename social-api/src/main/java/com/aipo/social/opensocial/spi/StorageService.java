@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
 
+import com.aipo.orm.model.portlet.IEipTFile;
 import com.aipo.social.opensocial.model.ALFile;
 
 /**
@@ -117,5 +118,8 @@ public interface StorageService {
       throws ProtocolException;
 
   public void deleteFiles(String categoryKey, List<?> files,
+      SecurityToken paramSecurityToken) throws ProtocolException;
+
+  public void createNewFile(InputStream is, String categoryKey, IEipTFile file,
       SecurityToken paramSecurityToken) throws ProtocolException;
 }

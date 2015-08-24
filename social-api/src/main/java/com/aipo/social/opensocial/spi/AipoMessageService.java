@@ -748,6 +748,43 @@ public class AipoMessageService extends AbstractService implements
 
   /**
    * @param userId
+   * @param messageIdInt
+   * @param token
+   * @return
+   */
+  @Override
+  public Future<?> putMessageFiles(UserId userId, int messageIdInt,
+      FormDataItem file, SecurityToken token) {
+    setUp(token);
+
+    checkSameViewer(userId, token);
+
+    String username = getUserId(userId, token);
+
+    byte[] shrinkImage =
+      getBytesShrink(
+        file,
+        DEF_THUMBNAIL_WIDTH,
+        DEF_THUMBNAIL_HEIGHT,
+        true,
+        0,
+        0).getShrinkImage();
+
+    EipTMessageFile messageFile =
+      messageDbService.insertMessageFiles(username, messageIdInt, file
+        .getName(), shrinkImage);
+
+    storageService.createNewFile(
+      new ByteArrayInputStream(file.get()),
+      messageCategoryKey,
+      messageFile,
+      token);
+
+    return Futures.immediateFuture(null);
+  }
+
+  /**
+   * @param userId
    * @param options
    * @param fields
    * @param roomId

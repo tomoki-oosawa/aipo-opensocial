@@ -73,6 +73,9 @@ public interface MessageDbService {
 
   public boolean isOwnMessage(int messageId, String username);
 
+  public EipTMessageFile insertMessageFiles(String username, int messageIdInt,
+      String fileName, byte[] shrinkImage);
+
   public List<EipTMessageFile> getMessageFiles(List<Integer> messageIds);
 
   public List<EipTMessageFile> getMessageFilesByRoom(int roomId);
