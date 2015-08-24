@@ -59,7 +59,10 @@ public class AipoPreconditions {
 
   public static void maxLength(String name, String value, int maxLength)
       throws AipoProtocolException {
-    if (value == null || value.length() == 0 || value.length() > maxLength) {
+    if (value == null) {
+      return;
+    }
+    if (value.length() > maxLength) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter "
           + name
