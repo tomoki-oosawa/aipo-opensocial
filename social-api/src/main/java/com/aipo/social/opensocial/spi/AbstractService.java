@@ -351,8 +351,10 @@ public abstract class AbstractService {
       int height, int validate_width, int validate_height) {
     int iwidth = imgfile.getWidth();
     int iheight = imgfile.getHeight();
-    if (iwidth < validate_width || iheight < validate_height) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_SIZE_200);
+    if (validate_width > 0 && validate_height > 0) {
+      if (iwidth < validate_width || iheight < validate_height) {
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_SIZE_200);
+      }
     }
 
     double ratio =

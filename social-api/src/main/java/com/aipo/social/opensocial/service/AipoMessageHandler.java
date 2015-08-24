@@ -275,7 +275,7 @@ public class AipoMessageHandler {
   /**
    * ファイルアップロード <br>
    * <code>
-   * POST/PUT /messages/:roomId/files/download/:messageId
+   * POST/PUT /messages/:roomId/files/upload/:messageId
    * </code><br>
    * <code>
    * osapi.messages.files.upload( { roomId: :roomId, messageId: messageId })
@@ -284,7 +284,7 @@ public class AipoMessageHandler {
    * @param request
    * @return
    */
-  @Operation(httpMethods = { "PUT", "POST" }, name = "files.download", path = "/{roomId}/files/download/{messageId}")
+  @Operation(httpMethods = { "PUT", "POST" }, name = "files.upload", path = "/{roomId}/files/upload/{messageId}")
   public Future<?> updateFiles(SocialRequestItem request) {
     try {
       Set<UserId> userIds = request.getUsers();

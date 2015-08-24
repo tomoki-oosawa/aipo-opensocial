@@ -764,11 +764,11 @@ public class AipoMessageService extends AbstractService implements
     byte[] shrinkImage =
       getBytesShrink(
         file,
-        DEF_LARGE_THUMBNAIL_WIDTH,
-        DEF_LARGE_THUMBNAIL_HEIGHT,
+        DEF_THUMBNAIL_WIDTH,
+        DEF_THUMBNAIL_HEIGHT,
         true,
-        DEF_VALIDATE_WIDTH,
-        DEF_VALIDATE_HEIGHT).getShrinkImage();
+        0,
+        0).getShrinkImage();
 
     EipTMessageFile messageFile =
       messageDbService.insertMessageFiles(username, messageIdInt, file
