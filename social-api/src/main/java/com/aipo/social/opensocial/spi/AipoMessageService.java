@@ -197,6 +197,7 @@ public class AipoMessageService extends AbstractService implements
       members.add(orgId + ":" + member);
     }
     room.setMembers(members);
+    // room.setHasPhoto("T".equals(model.getHasPhoto()));
 
     // ルーム詳細の場合
     return room;
