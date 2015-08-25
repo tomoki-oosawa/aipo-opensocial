@@ -69,11 +69,16 @@ public interface ALMessageRoom {
 
   public void setPhotoModified(Date date);
 
+  public boolean getHasPhoto();
+
+  public void setHasPhoto(boolean hasPhoto);
+
   public static enum Field {
     ROOM_ID("roomId"), NAME("name"), USER_ID("userId"), UNREAD_COUNT(
         "unreadCount"), IS_DIRECT("isDirect"), IS_AUTO_NAME("isAutoName"), PHOTO_MODIFIED(
         "photoModified"), LAST_MESSAGE("lastMessage"), LAST_MESSAGE_ID(
-        "lastMessageId"), MEMBERS("members"), UPDATE_DATE("updateDate");
+        "lastMessageId"), MEMBERS("members"), UPDATE_DATE("updateDate"), HAS_PHOTO(
+        "hasPhoto");
 
     private final String jsonString;
 

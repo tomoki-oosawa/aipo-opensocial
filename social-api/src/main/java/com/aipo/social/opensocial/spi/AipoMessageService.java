@@ -172,6 +172,10 @@ public class AipoMessageService extends AbstractService implements
     }
     room.setUnreadCount(model.getUnreadCount());
     room.setIsDirect("O".equals(model.getRoomType()));
+    room.setHasPhoto(room.getIsDirect()
+      ? ("T".equals(model.getUserHasPhoto()) || "N".equals(model
+        .getUserHasPhoto()))
+      : ("T".equals(model.getHasPhoto()) || "N".equals(model.getHasPhoto())));
     room.setLastMessage(model.getLastMessage());
     if (room.getIsDirect()) {
       if (model.getUserPhotoModified() != null) {

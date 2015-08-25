@@ -50,6 +50,8 @@ public class ALMessageRoomImpl implements ALMessageRoom {
 
   private Date updateDate;
 
+  private boolean hasPhoto;
+
   /**
    * @return
    */
@@ -226,4 +228,19 @@ public class ALMessageRoomImpl implements ALMessageRoom {
     return lastMessageId;
   }
 
+  /**
+   * @return
+   */
+  @Override
+  public boolean getHasPhoto() {
+    return hasPhoto;
+  }
+
+  /**
+   * @param isDirect
+   */
+  @Override
+  public void setHasPhoto(boolean hasPhoto) {
+    this.hasPhoto = hasPhoto;
+  }
 }
