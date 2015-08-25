@@ -34,6 +34,8 @@ public class ALPersonImpl extends
 
   private Date photoModified;
 
+  private boolean hasPhoto;
+
   /**
    * @param userId
    * @param displayName
@@ -82,4 +84,21 @@ public class ALPersonImpl extends
   public void setPhotoModified(Date photoModified) {
     this.photoModified = photoModified;
   }
+
+  /**
+   * @return
+   */
+  @Override
+  public boolean getHasPhoto() {
+    return hasPhoto;
+  }
+
+  /**
+   * @param hasPhoto
+   */
+  @Override
+  public void setHasPhoto(boolean hasPhoto) {
+    this.hasPhoto = hasPhoto;
+  }
+
 }
