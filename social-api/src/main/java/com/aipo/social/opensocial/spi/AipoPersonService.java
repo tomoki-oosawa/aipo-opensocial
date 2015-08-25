@@ -194,6 +194,8 @@ public class AipoPersonService extends AbstractService implements PersonService 
     nameKana.setGivenName(user.getFirstNameKana());
     ALPerson person = new ALPersonImpl(userId, displayName, name, nameKana);
     person.setPhotoModified(user.getPhotoModified());
+    person.setHasPhoto("T".equals(user.getHasPhoto())
+      || "N".equals(user.getHasPhoto()));
     return person;
   }
 

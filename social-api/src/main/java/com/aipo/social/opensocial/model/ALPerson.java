@@ -238,4 +238,14 @@ public interface ALPerson extends
    * @param photoModified
    */
   void setPhotoModified(Date photoModified);
+
+  /**
+   * @return
+   */
+  boolean getHasPhoto();
+
+  /**
+   * @param hasPhoto
+   */
+  void setHasPhoto(boolean hasPhoto);
 }
