@@ -194,6 +194,9 @@ public class AipoDataServiceServlet extends ApiServlet {
       json = response.toString();
     } else {
       switch (errorCode) {
+        case 401:
+          json = AipoErrorCode.TOKEN_EXPIRED.responseJSON().toString();
+          break;
         case 403:
           json = AipoErrorCode.BAD_REQUEST.responseJSON().toString();
           break;
