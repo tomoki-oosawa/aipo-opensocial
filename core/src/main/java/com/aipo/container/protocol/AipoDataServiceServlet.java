@@ -139,7 +139,7 @@ public class AipoDataServiceServlet extends ApiServlet {
   /**
    * Actual dispatch handling for servlet requests
    */
-  void executeRequest(HttpServletRequest servletRequest,
+  protected void executeRequest(HttpServletRequest servletRequest,
       HttpServletResponse servletResponse) throws IOException {
     if (LOG.isLoggable(Level.FINEST)) {
       LOG
@@ -248,7 +248,7 @@ public class AipoDataServiceServlet extends ApiServlet {
   /**
    * Handler for non-batch requests.
    */
-  private void handleSingleRequest(HttpServletRequest servletRequest,
+  protected void handleSingleRequest(HttpServletRequest servletRequest,
       HttpServletResponse servletResponse, SecurityToken token)
       throws IOException {
 
