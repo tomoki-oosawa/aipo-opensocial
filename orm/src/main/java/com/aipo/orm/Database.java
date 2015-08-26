@@ -20,12 +20,16 @@ package com.aipo.orm;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import org.apache.cayenne.BaseContext;
+import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.CayenneException;
 import org.apache.cayenne.DataObject;
 import org.apache.cayenne.DataObjectUtils;
@@ -42,6 +46,10 @@ import org.apache.cayenne.conf.DBCPDataSourceFactory;
 import org.apache.cayenne.conf.DataSourceFactoryDelegate;
 import org.apache.cayenne.dba.AutoAdapter;
 import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.map.DbAttribute;
+import org.apache.cayenne.map.DbEntity;
+import org.apache.cayenne.map.ObjAttribute;
+import org.apache.cayenne.map.ObjEntity;
 import org.apache.log4j.Logger;
 
 import com.aipo.orm.query.SQLTemplate;
@@ -487,5 +495,87 @@ public class Database {
 
   private Database() {
 
+  }
+
+  /**
+   *
+   * @param dataRow
+   * @param rootClass
+   * @return
+   */
+  public static <M> M objectFromRowData(DataRow dataRow, Class<M> rootClass) {
+    try {
+      M model = rootClass.newInstance();
+      CayenneDataObject obj = (CayenneDataObject) model;
+
+      ObjEntity objEntity =
+        DataContext.getThreadDataContext().getEntityResolver().lookupObjEntity(
+          obj);
+
+      ObjectId objId =
+        createObjectId(objEntity.getName(), dataRow, objEntity.getDbEntity());
+      if (objId != null) {
+        obj.setObjectId(objId);
+      }
+
+      @SuppressWarnings("unchecked")
+      Iterator<ObjAttribute> iterator = objEntity.getAttributes().iterator();
+      while (iterator.hasNext()) {
+        ObjAttribute objAttribute = iterator.next();
+        DbAttribute dbAttribute = objAttribute.getDbAttribute();
+        Object value = getFromDataRow(dataRow, dbAttribute.getName());
+        if (value != null) {
+          obj.writeProperty(objAttribute.getName(), value);
+        }
+      }
+      return model;
+    } catch (InstantiationException ignore) {
+      // ignore
+    } catch (IllegalAccessException ignore) {
+      // ignore
+    }
+    return null;
+  }
+
+  /**
+   * @param name
+   * @param dataRow
+   * @param dbEntity
+   * @return
+   */
+  public static ObjectId createObjectId(String entityName, DataRow dataRow,
+      DbEntity entity) {
+
+    @SuppressWarnings("unchecked")
+    List<DbAttribute> pk = entity.getPrimaryKey();
+    if (pk.size() == 1) {
+      DbAttribute attribute = pk.get(0);
+
+      String key = attribute.getName();
+
+      Object val = getFromDataRow(dataRow, key);
+      if (val == null) {
+        return null;
+      } else {
+        return new ObjectId(entityName, attribute.getName(), val);
+      }
+    }
+
+    Map<String, Object> idMap = new HashMap<String, Object>(pk.size() * 2);
+    DbAttribute attribute;
+    Object val;
+    for (Iterator<DbAttribute> it = pk.iterator(); it.hasNext(); idMap.put(
+      attribute.getName(),
+      val)) {
+      attribute = it.next();
+      String key = attribute.getName();
+
+      val = getFromDataRow(dataRow, key);
+      if (val == null) {
+        return null;
+      }
+    }
+
+    return new ObjectId(entityName, idMap);
   }
 }

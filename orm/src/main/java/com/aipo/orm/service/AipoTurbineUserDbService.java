@@ -18,14 +18,24 @@
  */
 package com.aipo.orm.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.mail.internet.MimeUtility;
+
 import org.apache.cayenne.DataRow;
+import org.apache.cayenne.access.DataContext;
 
 import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.query.Operations;
 import com.aipo.orm.query.SQLTemplate;
 import com.aipo.orm.service.request.SearchOptions;
 import com.aipo.orm.service.request.SearchOptions.FilterOperation;
@@ -37,6 +47,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
 
   public static int MAX_LIMIT = 1000;
 
+  @Override
   public int getCountByGroupname(String groupname, SearchOptions options) {
     List<DataRow> dataRows =
       queryByGroupname(groupname, options, true).fetchListAsDataRow();
@@ -51,6 +62,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     return 0;
   }
 
+  @Override
   public List<TurbineUser> findByGroupname(String groupname,
       SearchOptions options) {
     SQLTemplate<TurbineUser> selectBySql =
@@ -61,13 +73,15 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     return selectBySql.fetchList();
   }
 
+  @Override
   public TurbineUser findByUsername(String username) {
     if (username == null) {
       return null;
     }
 
     StringBuilder b = new StringBuilder();
-    b.append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME ");
+    b
+      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, B.PHOTO_MODIFIED, B.PASSWORD_VALUE, B.HAS_PHOTO ");
     b.append(" FROM turbine_user AS B ");
     b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
     b.append(" AND B.LOGIN_NAME = #bind($username) ");
@@ -80,13 +94,15 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchSingle();
   }
 
+  @Override
   public List<TurbineUser> findByUsername(Set<String> username) {
     if (username == null || username.size() == 0) {
       return null;
     }
 
     StringBuilder b = new StringBuilder();
-    b.append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME ");
+    b
+      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.PHOTO_MODIFIED, B.HAS_PHOTO");
     b.append(" FROM turbine_user AS B ");
     b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
     b.append(" AND B.LOGIN_NAME IN(#bind($username)) ");
@@ -99,13 +115,15 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchList();
   }
 
+  @Override
   public List<TurbineUser> find(SearchOptions options) {
     return buildQuery(
-      " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ",
+      " B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, B.PHOTO_MODIFIED, D.POSITION, B.HAS_PHOTO ",
       options,
       false).fetchList();
   }
 
+  @Override
   public int getCount(SearchOptions options) {
     List<DataRow> dataRows =
       buildQuery(" COUNT(*) ", options, true).fetchListAsDataRow();
@@ -239,7 +257,7 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       b.append(" SELECT COUNT(*) ");
     } else {
       b
-        .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, D.POSITION ");
+        .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, B.PHOTO_MODIFIED, D.POSITION, B.HAS_PHOTO ");
     }
     b.append(" FROM turbine_user_group_role AS A ");
     b.append(" LEFT JOIN turbine_user AS B ");
@@ -335,5 +353,135 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
     }
 
     return sqlTemplate;
+  }
+
+  /**
+   * @param username
+   * @param password
+   * @return
+   */
+  @Override
+  public TurbineUser auth(String username, String password) {
+    return auth("org001", username, password);
+  }
+
+  protected TurbineUser auth(String orgId, String username, String password) {
+
+    DataContext dataContext = null;
+    try {
+      dataContext = Database.createDataContext(orgId);
+      DataContext.bindThreadObjectContext(dataContext);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
+
+    TurbineUser user = findByUsername(username);
+    if (user == null) {
+      return null;
+    }
+    String encodedPassword = null;
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA");
+      // We need to use unicode here, to be independent of platform's
+      // default encoding. Thanks to SGawin for spotting this.
+      byte[] digest = md.digest(password.getBytes("UTF-8"));
+      ByteArrayOutputStream bas =
+        new ByteArrayOutputStream(digest.length + digest.length / 3 + 1);
+      OutputStream encodedStream = MimeUtility.encode(bas, "base64");
+      encodedStream.write(digest);
+      encodedStream.flush();
+      encodedStream.close();
+      encodedPassword = bas.toString();
+    } catch (Throwable ignore) {
+      // ignore
+    }
+    if (encodedPassword == null) {
+      return null;
+    }
+    if (encodedPassword.equals(user.getPasswordValue())) {
+      return user;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * @param username
+   * @return
+   */
+  @Override
+  public InputStream getPhoto(String username) {
+    if (username == null) {
+      return null;
+    }
+
+    StringBuilder b = new StringBuilder();
+    b
+      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, B.PASSWORD_VALUE, B.PHOTO ");
+    b.append(" FROM turbine_user AS B ");
+    b.append(" WHERE B.USER_ID > 3 AND B.DISABLED = 'F' ");
+    b.append(" AND B.LOGIN_NAME = #bind($username) ");
+
+    String query = b.toString();
+
+    TurbineUser tuser =
+      Database
+        .sql(TurbineUser.class, query)
+        .param("username", username)
+        .fetchSingle();
+
+    if (tuser == null) {
+      return null;
+    }
+
+    byte[] photo = tuser.getPhoto();
+    if (photo == null) {
+      return null;
+    }
+
+    return new ByteArrayInputStream(photo);
+  }
+
+  /**
+   * @param userId
+   * @param profileIcon
+   * @param profileIconSmartPhone
+   */
+  @Override
+  public void setPhoto(String username, byte[] profileIcon,
+      byte[] profileIconSmartPhone) {
+    try {
+      TurbineUser user =
+        Database
+          .query(TurbineUser.class)
+          .where(Operations.eq(TurbineUser.LOGIN_NAME_PROPERTY, username))
+          .fetchSingle();
+
+      if (user == null) {
+        return;
+      }
+
+      if (profileIcon != null && profileIconSmartPhone != null) {
+        // 顔写真を登録する．
+        user.setPhotoSmartphone(profileIconSmartPhone);
+        user.setHasPhotoSmartphone("N");
+        user.setPhotoModifiedSmartphone(new Date());
+        user.setPhoto(profileIcon);
+        user.setHasPhoto("N");
+        user.setPhotoModified(new Date());
+      } else {
+        user.setPhotoSmartphone(null);
+        user.setHasPhotoSmartphone("F");
+        user.setPhotoModifiedSmartphone(new Date());
+        user.setPhoto(null);
+        user.setHasPhoto("F");
+        user.setPhotoModified(new Date());
+      }
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+
   }
 }

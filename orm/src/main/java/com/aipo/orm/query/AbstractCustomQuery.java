@@ -27,7 +27,7 @@ import org.apache.cayenne.query.SQLActionVisitor;
 import com.aipo.orm.access.jdbc.CustomSelectAction;
 
 /**
- * 
+ *
  */
 public abstract class AbstractCustomQuery extends
     org.apache.cayenne.query.SelectQuery {
@@ -57,24 +57,17 @@ public abstract class AbstractCustomQuery extends
       String customScript = getCustomScript();
       ColumnDescriptor[] columns = getCustomColumnDescriptor();
       String[] columnNames = getCustomColumnNames();
-      int limit = getFetchLimit();
-      int offset = getFetchOffset();
-      if (customScript != null || offset > 0 || limit > 0) {
-        return new CustomSelectAction(
-          this,
-          builder.getAdapter(),
-          builder.getEntityResolver(),
-          customScript,
-          columns,
-          columnNames,
-          limit,
-          offset);
-      }
+      int limit = getLimit();
+      int offset = getOffset();
+      return new CustomSelectAction(this, builder.getAdapter(), builder
+        .getEntityResolver(), customScript, columns, columnNames, limit, offset);
     }
     return super.createSQLAction(visitor);
   }
 
-  // protected abstract int getFetchOffset();
+  protected abstract int getOffset();
+
+  protected abstract int getLimit();
 
   protected abstract String getCustomScript();
 

@@ -58,6 +58,8 @@
 		<db-attribute name="EMAIL" type="VARCHAR" length="99"/>
 		<db-attribute name="FIRST_NAME" type="VARCHAR" isMandatory="true" length="99"/>
 		<db-attribute name="FIRST_NAME_KANA" type="VARCHAR" length="99"/>
+		<db-attribute name="HAS_PHOTO" type="CHAR" length="1"/>
+		<db-attribute name="HAS_PHOTO_SMARTPHONE" type="CHAR" length="1"/>
 		<db-attribute name="IN_TELEPHONE" type="VARCHAR" length="15"/>
 		<db-attribute name="LAST_LOGIN" type="TIMESTAMP"/>
 		<db-attribute name="LAST_NAME" type="VARCHAR" isMandatory="true" length="99"/>
@@ -70,6 +72,9 @@
 		<db-attribute name="PASSWORD_CHANGED" type="TIMESTAMP"/>
 		<db-attribute name="PASSWORD_VALUE" type="VARCHAR" isMandatory="true" length="200"/>
 		<db-attribute name="PHOTO" type="LONGVARBINARY"/>
+		<db-attribute name="PHOTO_MODIFIED" type="TIMESTAMP"/>
+		<db-attribute name="PHOTO_MODIFIED_SMARTPHONE" type="TIMESTAMP"/>
+		<db-attribute name="PHOTO_SMARTPHONE" type="LONGVARBINARY"/>
 		<db-attribute name="POSITION_ID" type="INTEGER"/>
 		<db-attribute name="UPDATED_USER_ID" type="INTEGER"/>
 		<db-attribute name="USER_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
@@ -109,17 +114,23 @@
 		<obj-attribute name="email" type="java.lang.String" db-attribute-path="EMAIL"/>
 		<obj-attribute name="firstName" type="java.lang.String" db-attribute-path="FIRST_NAME"/>
 		<obj-attribute name="firstNameKana" type="java.lang.String" db-attribute-path="FIRST_NAME_KANA"/>
+		<obj-attribute name="hasPhoto" type="java.lang.String" db-attribute-path="HAS_PHOTO"/>
+		<obj-attribute name="hasPhotoSmartphone" type="java.lang.String" db-attribute-path="HAS_PHOTO_SMARTPHONE"/>
 		<obj-attribute name="inTelephone" type="java.lang.String" db-attribute-path="IN_TELEPHONE"/>
 		<obj-attribute name="lastLogin" type="java.util.Date" db-attribute-path="LAST_LOGIN"/>
 		<obj-attribute name="lastName" type="java.lang.String" db-attribute-path="LAST_NAME"/>
 		<obj-attribute name="lastNameKana" type="java.lang.String" db-attribute-path="LAST_NAME_KANA"/>
 		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
+		<obj-attribute name="migrateVersion" type="java.lang.Integer" db-attribute-path="MIGRATE_VERSION"/>
 		<obj-attribute name="modified" type="java.util.Date" db-attribute-path="MODIFIED"/>
 		<obj-attribute name="objectdata" type="byte[]" db-attribute-path="OBJECTDATA"/>
 		<obj-attribute name="outTelephone" type="java.lang.String" db-attribute-path="OUT_TELEPHONE"/>
 		<obj-attribute name="passwordChanged" type="java.util.Date" db-attribute-path="PASSWORD_CHANGED"/>
 		<obj-attribute name="passwordValue" type="java.lang.String" db-attribute-path="PASSWORD_VALUE"/>
 		<obj-attribute name="photo" type="byte[]" db-attribute-path="PHOTO"/>
+		<obj-attribute name="photoModified" type="java.util.Date" db-attribute-path="PHOTO_MODIFIED"/>
+		<obj-attribute name="photoModifiedSmartphone" type="java.util.Date" db-attribute-path="PHOTO_MODIFIED_SMARTPHONE"/>
+		<obj-attribute name="photoSmartphone" type="byte[]" db-attribute-path="PHOTO_SMARTPHONE"/>
 		<obj-attribute name="positionId" type="java.lang.Integer" db-attribute-path="POSITION_ID"/>
 		<obj-attribute name="updatedUserId" type="java.lang.Integer" db-attribute-path="UPDATED_USER_ID"/>
 	</obj-entity>

@@ -18,12 +18,21 @@
  */
 package com.aipo.orm.service;
 
+import java.util.List;
 import java.util.Map;
 
+import com.aipo.orm.model.social.Activity;
+import com.aipo.orm.service.request.SearchOptions;
+
 /**
- * 
+ *
  */
 public interface ActivityDbService {
+
+  public List<Activity> find(String username, String appId,
+      SearchOptions options);
+
+  public int getCount(String username, String appId, SearchOptions options);
 
   public void create(String username, String appId, Map<String, Object> values);
 }

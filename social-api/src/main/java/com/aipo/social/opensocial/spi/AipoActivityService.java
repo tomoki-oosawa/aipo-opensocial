@@ -18,22 +18,31 @@
  */
 package com.aipo.social.opensocial.spi;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RestfulCollection;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.model.social.Activity;
 import com.aipo.orm.model.social.Application;
 import com.aipo.orm.service.ActivityDbService;
 import com.aipo.orm.service.ApplicationDbService;
+import com.aipo.orm.service.TurbineUserDbService;
+import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.orm.service.request.SearchOptions.FilterOperation;
+import com.aipo.orm.service.request.SearchOptions.SortOrder;
+import com.aipo.social.core.model.ALActivityImpl;
 import com.aipo.social.opensocial.model.ALActivity;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -47,6 +56,8 @@ public class AipoActivityService extends AbstractService implements
 
   private final ActivityDbService activityDbService;
 
+  private final TurbineUserDbService turbineUserDbService;
+
   private final ApplicationDbService applicationDbService;
 
   /**
@@ -54,26 +65,11 @@ public class AipoActivityService extends AbstractService implements
    */
   @Inject
   public AipoActivityService(ActivityDbService activityDbService,
+      TurbineUserDbService turbineUserDbService,
       ApplicationDbService applicationDbService) {
     this.activityDbService = activityDbService;
+    this.turbineUserDbService = turbineUserDbService;
     this.applicationDbService = applicationDbService;
-  }
-
-  /**
-   * @param userIds
-   * @param groupId
-   * @param appId
-   * @param fields
-   * @param options
-   * @param token
-   * @throws ProtocolException
-   */
-  @Override
-  public Future<RestfulCollection<ALActivity>> getActivities(
-      Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields,
-      CollectionOptions options, SecurityToken token) throws ProtocolException {
-    // NOT SUPPORTED
-    return ImmediateFuture.newInstance(null);
   }
 
   /**
@@ -90,10 +86,52 @@ public class AipoActivityService extends AbstractService implements
   @Override
   public Future<RestfulCollection<ALActivity>> getActivities(UserId userId,
       GroupId groupId, String appId, Set<String> fields,
-      CollectionOptions options, Set<String> activityIds, SecurityToken token)
-      throws ProtocolException {
-    // NOT SUPPORTED
-    return ImmediateFuture.newInstance(null);
+      AipoCollectionOptions collectionOptions, Set<String> activityIds,
+      SecurityToken token) throws ProtocolException {
+
+    setUp(token);
+    // 自分（Viewer）の Activity のみ取得可能
+    checkSameViewer(userId, token);
+
+    String username = getUserId(userId, token);
+
+    // 検索オプション
+    SearchOptions options =
+      SearchOptions
+        .build()
+        .withRange(collectionOptions.getMax(), collectionOptions.getFirst())
+        .withFilter(
+          collectionOptions.getFilter(),
+          collectionOptions.getFilterOperation() == null
+            ? FilterOperation.equals
+            : FilterOperation.valueOf(collectionOptions
+              .getFilterOperation()
+              .toString()),
+          collectionOptions.getFilterValue())
+        .withSort(
+          collectionOptions.getSortBy(),
+          collectionOptions.getSortOrder() == null
+            ? SortOrder.ascending
+            : SortOrder.valueOf(collectionOptions.getSortOrder().toString()))
+        .withParameters(collectionOptions.getParameters());
+
+    List<Activity> list = activityDbService.find(username, appId, options);
+    int totalResults = activityDbService.getCount(username, appId, options);
+
+    List<ALActivity> result = new ArrayList<ALActivity>(list.size());
+    Map<String, TurbineUser> users = new HashMap<String, TurbineUser>();
+    for (Activity activity : list) {
+      result.add(assignActivity(activity, fields, token, users));
+    }
+
+    RestfulCollection<ALActivity> restCollection =
+      new RestfulCollection<ALActivity>(
+        result,
+        collectionOptions.getFirst(),
+        totalResults,
+        collectionOptions.getMax());
+
+    return ImmediateFuture.newInstance(restCollection);
   }
 
   /**
@@ -182,5 +220,47 @@ public class AipoActivityService extends AbstractService implements
 
     // TODO: Generate された Activity ID を返却する
     return ImmediateFuture.newInstance(null);
+  }
+
+  private ALActivity assignActivity(Activity model, Set<String> fields,
+      SecurityToken token, Map<String, TurbineUser> users) {
+    ALActivity activity = new ALActivityImpl();
+    activity.setId(String.valueOf(model.getId()));
+    activity.setAppId(model.getAppId());
+    activity.setTitle(model.getTitle());
+    activity.setPriority(model.getPriority());
+    activity.setExternalId(model.getExternalId());
+    activity.setUpdated(model.getUpdateDate());
+    if (!StringUtils.isEmpty(model.getPortletParams())) {
+      activity.setPortletParams(model.getPortletParams());
+    }
+    if (!StringUtils.isEmpty(model.getIcon())) {
+      activity.setIcon(model.getIcon());
+    }
+
+    String userId = model.getLoginName();
+    try {
+      TurbineUser tuserCache = users.get(userId);
+      if (tuserCache != null) {
+        activity.setDisplayName(tuserCache.getLastName()
+          + " "
+          + tuserCache.getFirstName());
+        activity.setUserId(userId);
+      } else {
+        TurbineUser tuser = turbineUserDbService.findByUsername(userId);
+        if (tuser != null) {
+          activity.setDisplayName(tuser.getLastName()
+            + " "
+            + tuser.getFirstName());
+          activity.setUserId(userId);
+          users.put(userId, tuser);
+        } else {
+          activity.setDisplayName(model.getLoginName());
+        }
+      }
+    } catch (Throwable ignore) {
+
+    }
+    return activity;
   }
 }

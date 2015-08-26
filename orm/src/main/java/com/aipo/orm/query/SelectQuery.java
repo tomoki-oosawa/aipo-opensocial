@@ -32,9 +32,7 @@ import org.apache.cayenne.query.SortOrder;
 
 public class SelectQuery<M> extends AbstractQuery<M> {
 
-  private static final long serialVersionUID = 5404111688862773398L;
-
-  protected org.apache.cayenne.query.SelectQuery delegate;
+  protected CustomSelectQuery delegate;
 
   protected CountQuery countQuery;
 
@@ -42,7 +40,7 @@ public class SelectQuery<M> extends AbstractQuery<M> {
 
   public SelectQuery(Class<M> rootClass) {
     super(rootClass);
-    delegate = new org.apache.cayenne.query.SelectQuery(rootClass);
+    delegate = new CustomSelectQuery(rootClass);
     countQuery = new CountQuery(rootClass);
     dataContext = (DataContext) BaseContext.getThreadObjectContext();
   }
@@ -50,7 +48,7 @@ public class SelectQuery<M> extends AbstractQuery<M> {
   public SelectQuery(DataContext dataContext, Class<M> rootClass) {
     super(dataContext, rootClass);
     this.rootClass = rootClass;
-    delegate = new org.apache.cayenne.query.SelectQuery(rootClass);
+    delegate = new CustomSelectQuery(rootClass);
     countQuery = new CountQuery(rootClass);
     this.dataContext = dataContext;
   }
@@ -59,7 +57,7 @@ public class SelectQuery<M> extends AbstractQuery<M> {
     super(rootClass);
 
     this.rootClass = rootClass;
-    delegate = new org.apache.cayenne.query.SelectQuery(rootClass, qualifier);
+    delegate = new CustomSelectQuery(rootClass, qualifier);
     countQuery = new CountQuery(rootClass);
     dataContext = (DataContext) BaseContext.getThreadObjectContext();
   }
@@ -68,7 +66,7 @@ public class SelectQuery<M> extends AbstractQuery<M> {
       Expression qualifier) {
     super(dataContext, rootClass);
     this.rootClass = rootClass;
-    delegate = new org.apache.cayenne.query.SelectQuery(rootClass, qualifier);
+    delegate = new CustomSelectQuery(rootClass, qualifier);
     countQuery = new CountQuery(rootClass);
     this.dataContext = dataContext;
   }
@@ -180,24 +178,24 @@ public class SelectQuery<M> extends AbstractQuery<M> {
   }
 
   public SelectQuery<M> limit(int limit) {
-    delegate.setFetchLimit(limit);
+    delegate.setLimit(limit);
     return this;
   }
 
   public SelectQuery<M> offset(int offset) {
-    delegate.setFetchOffset(offset);
+    delegate.setOffset(offset);
     return this;
   }
 
   public SelectQuery<M> select(String column) {
-    // delegate.addCustomColumn(column);
+    delegate.addCustomColumn(column);
     delegate.setFetchingDataRows(true);
     // delegate.addCustomDbAttribute(column);
     return this;
   }
 
   public SelectQuery<M> select(String... columns) {
-    // delegate.addCustomColumns(columns);
+    delegate.addCustomColumns(columns);
     delegate.setFetchingDataRows(true);
     // delegate.addCustomDbAttributes(Arrays.asList(columns));
     return this;

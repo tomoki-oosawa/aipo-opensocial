@@ -73,6 +73,29 @@
 	<db-entity name="module_id">
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
 	</db-entity>
+	<db-entity name="oauth2_client">
+		<db-attribute name="CLIENT_ID" type="VARCHAR" isMandatory="true" length="255"/>
+		<db-attribute name="CLIENT_SECRET" type="VARCHAR" length="255"/>
+		<db-attribute name="CLIENT_TYPE" type="VARCHAR" length="32"/>
+		<db-attribute name="CREATE_DATE" type="DATE"/>
+		<db-attribute name="FLOW" type="VARCHAR" length="32"/>
+		<db-attribute name="ICON_URL" type="VARCHAR" length="255"/>
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="REDIRECT_URI" type="VARCHAR" length="255"/>
+		<db-attribute name="TITLE" type="VARCHAR" length="255"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP"/>
+	</db-entity>
+	<db-entity name="oauth2_token">
+		<db-attribute name="CLIENT_ID" type="VARCHAR" length="255"/>
+		<db-attribute name="CODE_TYPE" type="VARCHAR" length="255"/>
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="EXPIRE_TIME" type="TIMESTAMP"/>
+		<db-attribute name="SCOPE" type="VARCHAR" length="255"/>
+		<db-attribute name="TOKEN" type="VARCHAR" length="255"/>
+		<db-attribute name="TOKEN_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="TOKEN_TYPE" type="VARCHAR" length="255"/>
+		<db-attribute name="USER_ID" type="VARCHAR" length="255"/>
+	</db-entity>
 	<db-entity name="oauth_consumer">
 		<db-attribute name="APP_ID" type="INTEGER"/>
 		<db-attribute name="CONSUMER_KEY" type="VARCHAR" length="255"/>
@@ -149,6 +172,27 @@
 		<obj-attribute name="value" type="java.lang.String" db-attribute-path="VALUE"/>
 	</obj-entity>
 	<obj-entity name="ModuleId" className="com.aipo.orm.model.social.ModuleId" dbEntityName="module_id">
+	</obj-entity>
+	<obj-entity name="OAuth2Client" className="com.aipo.orm.model.social.OAuth2Client" dbEntityName="oauth2_client">
+		<obj-attribute name="clientId" type="java.lang.String" db-attribute-path="CLIENT_ID"/>
+		<obj-attribute name="clientSecret" type="java.lang.String" db-attribute-path="CLIENT_SECRET"/>
+		<obj-attribute name="clientType" type="java.lang.String" db-attribute-path="CLIENT_TYPE"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="flow" type="java.lang.String" db-attribute-path="FLOW"/>
+		<obj-attribute name="iconUrl" type="java.lang.String" db-attribute-path="ICON_URL"/>
+		<obj-attribute name="redirectUri" type="java.lang.String" db-attribute-path="REDIRECT_URI"/>
+		<obj-attribute name="title" type="java.lang.String" db-attribute-path="TITLE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="OAuth2Token" className="com.aipo.orm.model.social.OAuth2Token" dbEntityName="oauth2_token">
+		<obj-attribute name="clientId" type="java.lang.String" db-attribute-path="CLIENT_ID"/>
+		<obj-attribute name="codeType" type="java.lang.String" db-attribute-path="CODE_TYPE"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="expireTime" type="java.util.Date" db-attribute-path="EXPIRE_TIME"/>
+		<obj-attribute name="scope" type="java.lang.String" db-attribute-path="SCOPE"/>
+		<obj-attribute name="token" type="java.lang.String" db-attribute-path="TOKEN"/>
+		<obj-attribute name="tokenType" type="java.lang.String" db-attribute-path="TOKEN_TYPE"/>
+		<obj-attribute name="userId" type="java.lang.String" db-attribute-path="USER_ID"/>
 	</obj-entity>
 	<obj-entity name="OAuthConsumer" className="com.aipo.orm.model.social.OAuthConsumer" dbEntityName="oauth_consumer">
 		<obj-attribute name="consumerKey" type="java.lang.String" db-attribute-path="CONSUMER_KEY"/>

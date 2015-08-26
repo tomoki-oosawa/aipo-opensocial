@@ -18,8 +18,11 @@
  */
 package com.aipo.orm.service.request;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * 
+ *
  */
 public class SearchOptions {
 
@@ -44,6 +47,8 @@ public class SearchOptions {
   private FilterOperation filterOperation = FilterOperation.equals;
 
   private String filterValue;
+
+  private final Map<String, String> map = new HashMap<String, String>();
 
   public static SearchOptions build() {
     return new SearchOptions();
@@ -182,6 +187,42 @@ public class SearchOptions {
    */
   public void setFilterValue(String filterValue) {
     this.filterValue = filterValue;
+  }
+
+  /**
+   *
+   * @param key
+   * @return
+   */
+  public String getParameter(String key) {
+    return map.get(key);
+  }
+
+  public Integer getParameterInt(String key) {
+    try {
+      return Integer.valueOf(map.get(key));
+    } catch (Throwable ignore) {
+      //
+    }
+    return null;
+  }
+
+  /**
+   *
+   * @param map
+   */
+  public void setParameters(Map<String, String> map) {
+    this.map.putAll(map);
+  }
+
+  /**
+   *
+   * @param map
+   * @return
+   */
+  public SearchOptions withParameters(Map<String, String> map) {
+    setParameters(map);
+    return this;
   }
 
 }

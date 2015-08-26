@@ -25,13 +25,17 @@ import org.apache.cayenne.access.jdbc.ColumnDescriptor;
 import org.apache.cayenne.exp.Expression;
 
 /**
- * 
+ *
  */
 public class CustomSelectQuery extends AbstractCustomQuery {
 
   private static final long serialVersionUID = -3136415467464119829L;
 
   private final List<String> fetchColumns = new ArrayList<String>();
+
+  private int limit = 0;
+
+  private int offset = 0;
 
   public CustomSelectQuery() {
     super();
@@ -88,6 +92,30 @@ public class CustomSelectQuery extends AbstractCustomQuery {
     for (String column : columns) {
       fetchColumns.add(column);
     }
+  }
+
+  public void setLimit(int limit) {
+    this.limit = limit;
+  }
+
+  public void setOffset(int offset) {
+    this.offset = offset;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  protected int getOffset() {
+    return offset;
+  }
+
+  /**
+   * @return
+   */
+  @Override
+  protected int getLimit() {
+    return limit;
   }
 
 }

@@ -23,24 +23,27 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.apache.shindig.config.ContainerConfig;
-import org.apache.shindig.protocol.HandlerPreconditions;
 import org.apache.shindig.protocol.Operation;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.RequestItem;
 import org.apache.shindig.protocol.Service;
 import org.apache.shindig.social.opensocial.service.SocialRequestItem;
-import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import com.aipo.container.protocol.AipoErrorCode;
+import com.aipo.container.protocol.AipoPreconditions;
+import com.aipo.container.protocol.AipoProtocolException;
+import com.aipo.container.protocol.AipoScope;
 import com.aipo.social.opensocial.model.ALActivity;
 import com.aipo.social.opensocial.spi.ActivityService;
+import com.aipo.social.opensocial.spi.AipoCollectionOptions;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
 
 /**
- * Rest/RPC handler for all activites related requests
+ * RPC/REST handler for Activities API
  */
 @Service(name = "activities", path = "/{userId}+/{groupId}/{appId}/{activityId}+")
 public class AipoActivityHandler {
@@ -57,29 +60,37 @@ public class AipoActivityHandler {
 
   /**
    * Allowed end-points /activities/{userId}/@self/{actvityId}+
-   * 
+   *
    * examples: /activities/john.doe/@self/1
    */
   @Operation(httpMethods = "DELETE")
   public Future<?> delete(SocialRequestItem request) throws ProtocolException {
+    try {
+      Set<UserId> userIds = request.getUsers();
+      Set<String> activityIds =
+        ImmutableSet.copyOf(request.getListParameter("activityId"));
 
-    Set<UserId> userIds = request.getUsers();
-    Set<String> activityIds =
-      ImmutableSet.copyOf(request.getListParameter("activityId"));
+      // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
-    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    HandlerPreconditions.requireSingular(
-      userIds,
-      "Multiple userIds not supported");
-    // Throws exceptions if userIds contains more than one element or zero
-    // elements
-    return service.deleteActivities(Iterables.getOnlyElement(userIds), request
-      .getGroup(), request.getAppId(), activityIds, request.getToken());
+      return service.deleteActivities(
+        Iterables.getOnlyElement(userIds),
+        request.getGroup(),
+        request.getAppId(),
+        activityIds,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 
   /**
    * Allowed end-points /activities/{userId}/@self
-   * 
+   *
    * examples: /activities/john.doe/@self - postBody is an activity object
    */
   @Operation(httpMethods = "PUT", bodyParam = "activity")
@@ -89,92 +100,100 @@ public class AipoActivityHandler {
 
   /**
    * Allowed end-points /activities/{userId}/@self
-   * 
+   *
    * examples: /activities/john.doe/@self - postBody is an activity object
    */
   @Operation(httpMethods = "POST", bodyParam = "activity")
   public Future<?> create(SocialRequestItem request) throws ProtocolException {
+    try {
+      Set<UserId> userIds = request.getUsers();
 
-    Set<UserId> userIds = request.getUsers();
-    List<String> activityIds = request.getListParameter("activityId");
+      // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
-    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    HandlerPreconditions.requireSingular(
-      userIds,
-      "Multiple userIds not supported");
-    // TODO(lryan) This seems reasonable to allow on PUT but we don't have an
-    // update verb.
-    HandlerPreconditions.requireEmpty(
-      activityIds,
-      "Cannot specify activityId in create");
-
-    return service.createActivity(Iterables.getOnlyElement(userIds), request
-      .getGroup(), request.getAppId(), request.getFields(), request
-      .getTypedParameter("activity", ALActivity.class), request.getToken());
+      return service.createActivity(Iterables.getOnlyElement(userIds), request
+        .getGroup(), request.getAppId(), request.getFields(), request
+        .getTypedParameter("activity", ALActivity.class), request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 
   /**
    * Allowed end-points /activities/{userId}/{groupId}/{optionalActvityId}+
    * /activities/{userId}+/{groupId}
-   * 
+   *
    * examples: /activities/john.doe/@self/1 /activities/john.doe/@self
    * /activities/john.doe,jane.doe/@friends
    */
   @Operation(httpMethods = "GET")
   public Future<?> get(SocialRequestItem request) throws ProtocolException {
-    Set<UserId> userIds = request.getUsers();
-    Set<String> optionalActivityIds =
-      ImmutableSet.copyOf(request.getListParameter("activityId"));
+    try {
+      Set<UserId> userIds = request.getUsers();
+      Set<String> optionalActivityIds =
+        ImmutableSet.copyOf(request.getListParameter("activityId"));
 
-    CollectionOptions options = new CollectionOptions(request);
+      AipoCollectionOptions options = new AipoCollectionOptions(request);
 
-    // Preconditions
-    HandlerPreconditions.requireNotEmpty(userIds, "No userId specified");
-    if (userIds.size() > 1 && !optionalActivityIds.isEmpty()) {
-      throw new IllegalArgumentException(
-        "Cannot fetch same activityIds for multiple userIds");
-    }
+      // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
 
-    if (!optionalActivityIds.isEmpty()) {
-      if (optionalActivityIds.size() == 1) {
-        return service.getActivity(
-          userIds.iterator().next(),
-          request.getGroup(),
-          request.getAppId(),
-          request.getFields(),
-          optionalActivityIds.iterator().next(),
-          request.getToken());
-      } else {
-        return service.getActivities(
-          userIds.iterator().next(),
-          request.getGroup(),
-          request.getAppId(),
-          request.getFields(),
-          options,
-          optionalActivityIds,
-          request.getToken());
+      if (!optionalActivityIds.isEmpty()) {
+        if (optionalActivityIds.size() == 1) {
+          return service.getActivity(
+            userIds.iterator().next(),
+            request.getGroup(),
+            request.getAppId(),
+            request.getFields(),
+            optionalActivityIds.iterator().next(),
+            request.getToken());
+        } else {
+          return service.getActivities(
+            userIds.iterator().next(),
+            request.getGroup(),
+            request.getAppId(),
+            request.getFields(),
+            options,
+            optionalActivityIds,
+            request.getToken());
+        }
       }
-    }
 
-    return service.getActivities(userIds, request.getGroup(), request
-      .getAppId(),
-    // TODO: add pagination and sorting support
-    // getSortBy(params), getFilterBy(params), getStartIndex(params),
-    // getCount(params),
-      request.getFields(),
-      options,
-      request.getToken());
+      return service.getActivities(
+        userIds.iterator().next(),
+        request.getGroup(),
+        request.getAppId(),
+        request.getFields(),
+        options,
+        null,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 
   @Operation(httpMethods = "GET", path = "/@supportedFields")
   public List<Object> supportedFields(RequestItem request) {
-    // TODO: Would be nice if name in config matched name of service.
-    String container =
-      Objects.firstNonNull(
-        request.getToken().getContainer(),
-        ContainerConfig.DEFAULT_CONTAINER);
-    return config.getList(
-      container,
-      "${Cur['gadgets.features'].opensocial.supportedFields.activity}");
+    try {
+      String container =
+        Objects.firstNonNull(
+          request.getToken().getContainer(),
+          ContainerConfig.DEFAULT_CONTAINER);
+      return config.getList(
+        container,
+        "${Cur['gadgets.features'].opensocial.supportedFields.activity}");
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
   }
 }

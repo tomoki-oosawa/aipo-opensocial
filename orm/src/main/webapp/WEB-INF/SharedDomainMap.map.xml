@@ -312,6 +312,55 @@
 		<db-attribute name="OWNER_ID" type="INTEGER" isMandatory="true" length="4"/>
 		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
 	</db-entity>
+	<db-entity name="eip_t_message">
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="MEMBER_COUNT" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="MESSAGE" type="CLOB"/>
+		<db-attribute name="MESSAGE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="ROOM_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_message_file">
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="FILE_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="FILE_NAME" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="FILE_PATH" type="CLOB" isMandatory="true"/>
+		<db-attribute name="FILE_THUMBNAIL" type="LONGVARBINARY"/>
+		<db-attribute name="MESSAGE_ID" type="INTEGER" length="4"/>
+		<db-attribute name="OWNER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="ROOM_ID" type="INTEGER" length="4"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_message_read">
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="IS_READ" type="VARCHAR" length="1"/>
+		<db-attribute name="MESSAGE_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="ROOM_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
+	<db-entity name="eip_t_message_room">
+		<db-attribute name="AUTO_NAME" type="VARCHAR" length="1"/>
+		<db-attribute name="CREATE_DATE" type="TIMESTAMP" length="8"/>
+		<db-attribute name="CREATE_USER_ID" type="INTEGER" length="4"/>
+		<db-attribute name="HAS_PHOTO" type="CHAR" length="1"/>
+		<db-attribute name="LAST_MESSAGE" type="CLOB"/>
+		<db-attribute name="LAST_UPDATE_DATE" type="TIMESTAMP"/>
+		<db-attribute name="NAME" type="VARCHAR" length="255"/>
+		<db-attribute name="PHOTO" type="LONGVARBINARY"/>
+		<db-attribute name="PHOTO_MODIFIED" type="TIMESTAMP"/>
+		<db-attribute name="PHOTO_SMARTPHONE" type="LONGVARBINARY"/>
+		<db-attribute name="ROOM_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true"/>
+		<db-attribute name="ROOM_TYPE" type="VARCHAR" length="1"/>
+		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
+	</db-entity>
+	<db-entity name="eip_t_message_room_member">
+		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
+		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
+		<db-attribute name="ROOM_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="TARGET_USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
+	</db-entity>
 	<db-entity name="eip_t_msgboard_category">
 		<db-attribute name="CATEGORY_ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
 		<db-attribute name="CATEGORY_NAME" type="VARCHAR" length="99"/>
@@ -752,6 +801,47 @@
 		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
 		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
 	</obj-entity>
+	<obj-entity name="EipTMessage" className="com.aipo.orm.model.portlet.EipTMessage" dbEntityName="eip_t_message">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="memberCount" type="java.lang.Integer" db-attribute-path="MEMBER_COUNT"/>
+		<obj-attribute name="message" type="java.lang.String" db-attribute-path="MESSAGE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTMessageFile" className="com.aipo.orm.model.portlet.EipTMessageFile" dbEntityName="eip_t_message_file">
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="fileName" type="java.lang.String" db-attribute-path="FILE_NAME"/>
+		<obj-attribute name="filePath" type="java.lang.String" db-attribute-path="FILE_PATH"/>
+		<obj-attribute name="fileThumbnail" type="byte[]" db-attribute-path="FILE_THUMBNAIL"/>
+		<obj-attribute name="messageId" type="java.lang.Integer" db-attribute-path="MESSAGE_ID"/>
+		<obj-attribute name="ownerId" type="java.lang.Integer" db-attribute-path="OWNER_ID"/>
+		<obj-attribute name="roomId" type="java.lang.Integer" db-attribute-path="ROOM_ID"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTMessageRead" className="com.aipo.orm.model.portlet.EipTMessageRead" dbEntityName="eip_t_message_read">
+		<obj-attribute name="isRead" type="java.lang.String" db-attribute-path="IS_READ"/>
+		<obj-attribute name="roomId" type="java.lang.Integer" db-attribute-path="ROOM_ID"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
+	<obj-entity name="EipTMessageRoom" className="com.aipo.orm.model.portlet.EipTMessageRoom" dbEntityName="eip_t_message_room">
+		<obj-attribute name="autoName" type="java.lang.String" db-attribute-path="AUTO_NAME"/>
+		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
+		<obj-attribute name="createUserId" type="java.lang.Integer" db-attribute-path="CREATE_USER_ID"/>
+		<obj-attribute name="hasPhoto" type="java.lang.String" db-attribute-path="HAS_PHOTO"/>
+		<obj-attribute name="lastMessage" type="java.lang.String" db-attribute-path="LAST_MESSAGE"/>
+		<obj-attribute name="lastUpdateDate" type="java.util.Date" db-attribute-path="LAST_UPDATE_DATE"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="NAME"/>
+		<obj-attribute name="photo" type="byte[]" db-attribute-path="PHOTO"/>
+		<obj-attribute name="photoModified" type="java.util.Date" db-attribute-path="PHOTO_MODIFIED"/>
+		<obj-attribute name="photoSmartphone" type="byte[]" db-attribute-path="PHOTO_SMARTPHONE"/>
+		<obj-attribute name="roomType" type="java.lang.String" db-attribute-path="ROOM_TYPE"/>
+		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
+	</obj-entity>
+	<obj-entity name="EipTMessageRoomMember" className="com.aipo.orm.model.portlet.EipTMessageRoomMember" dbEntityName="eip_t_message_room_member">
+		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
+		<obj-attribute name="targetUserId" type="java.lang.Integer" db-attribute-path="TARGET_USER_ID"/>
+		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
+	</obj-entity>
 	<obj-entity name="EipTMsgboardCategory" className="com.aipo.orm.model.portlet.EipTMsgboardCategory" dbEntityName="eip_t_msgboard_category">
 		<obj-attribute name="categoryName" type="java.lang.String" db-attribute-path="CATEGORY_NAME"/>
 		<obj-attribute name="createDate" type="java.util.Date" db-attribute-path="CREATE_DATE"/>
@@ -1016,6 +1106,30 @@
 	<db-relationship name="eipTMailFilters" source="eip_t_mail_folder" target="eip_t_mail_filter" toMany="true">
 		<db-attribute-pair source="FOLDER_ID" target="DST_FOLDER_ID"/>
 	</db-relationship>
+	<db-relationship name="eipTMessageFiles" source="eip_t_message" target="eip_t_message_file" toMany="true">
+		<db-attribute-pair source="MESSAGE_ID" target="MESSAGE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMessageRead" source="eip_t_message" target="eip_t_message_read" toMany="true">
+		<db-attribute-pair source="MESSAGE_ID" target="MESSAGE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMessageRoom" source="eip_t_message" target="eip_t_message_room" toMany="false">
+		<db-attribute-pair source="ROOM_ID" target="ROOM_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMessage" source="eip_t_message_file" target="eip_t_message" toMany="false">
+		<db-attribute-pair source="MESSAGE_ID" target="MESSAGE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMessage" source="eip_t_message_read" target="eip_t_message" toMany="false">
+		<db-attribute-pair source="MESSAGE_ID" target="MESSAGE_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMessageRoomMembers" source="eip_t_message_room" target="eip_t_message_room_member" toMany="true">
+		<db-attribute-pair source="ROOM_ID" target="ROOM_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMessages" source="eip_t_message_room" target="eip_t_message" toMany="true">
+		<db-attribute-pair source="ROOM_ID" target="ROOM_ID"/>
+	</db-relationship>
+	<db-relationship name="eipTMessageRoom" source="eip_t_message_room_member" target="eip_t_message_room" toMany="false">
+		<db-attribute-pair source="ROOM_ID" target="ROOM_ID"/>
+	</db-relationship>
 	<db-relationship name="eipTMsgboardCategoryMaps" source="eip_t_msgboard_category" target="eip_t_msgboard_category_map" toMany="true">
 		<db-attribute-pair source="CATEGORY_ID" target="CATEGORY_ID"/>
 	</db-relationship>
@@ -1123,6 +1237,14 @@
 	<obj-relationship name="eipMMailAccount" source="EipTMailFilter" target="EipMMailAccount" db-relationship-path="eipMMailAccount"/>
 	<obj-relationship name="eipTMailFolder" source="EipTMailFilter" target="EipTMailFolder" db-relationship-path="eipTMailFolder"/>
 	<obj-relationship name="eipMMailAccount" source="EipTMailFolder" target="EipMMailAccount" db-relationship-path="eipMMailAccount"/>
+	<obj-relationship name="eipTMessageFiles" source="EipTMessage" target="EipTMessageFile" db-relationship-path="eipTMessageFiles"/>
+	<obj-relationship name="eipTMessageRead" source="EipTMessage" target="EipTMessageRead" db-relationship-path="eipTMessageRead"/>
+	<obj-relationship name="eipTMessageRoom" source="EipTMessage" target="EipTMessageRoom" db-relationship-path="eipTMessageRoom"/>
+	<obj-relationship name="eipTMessage" source="EipTMessageFile" target="EipTMessage" db-relationship-path="eipTMessage"/>
+	<obj-relationship name="eipTMessage" source="EipTMessageRead" target="EipTMessage" db-relationship-path="eipTMessage"/>
+	<obj-relationship name="eipTMessageRoomMember" source="EipTMessageRoom" target="EipTMessageRoomMember" db-relationship-path="eipTMessageRoomMembers"/>
+	<obj-relationship name="eipTMessages" source="EipTMessageRoom" target="EipTMessage" db-relationship-path="eipTMessages"/>
+	<obj-relationship name="eipTMessageRoom" source="EipTMessageRoomMember" target="EipTMessageRoom" db-relationship-path="eipTMessageRoom"/>
 	<obj-relationship name="eipTMsgboardCategoryMaps" source="EipTMsgboardCategory" target="EipTMsgboardCategoryMap" db-relationship-path="eipTMsgboardCategoryMaps"/>
 	<obj-relationship name="eipTMsgboardTopics" source="EipTMsgboardCategory" target="EipTMsgboardTopic" db-relationship-path="eipTMsgboardTopics"/>
 	<obj-relationship name="turbineUser" source="EipTMsgboardCategory" target="TurbineUser" db-relationship-path="turbineUser"/>

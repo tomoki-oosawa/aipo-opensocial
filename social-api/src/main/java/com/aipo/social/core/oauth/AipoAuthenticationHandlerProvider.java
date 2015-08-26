@@ -20,11 +20,10 @@ package com.aipo.social.core.oauth;
 
 import java.util.List;
 
-import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
-import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
 import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
 
+import com.aipo.social.core.oauth2.AipoOAuth2AuthenticationHandler;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -38,12 +37,11 @@ public class AipoAuthenticationHandlerProvider implements
 
   @Inject
   public AipoAuthenticationHandlerProvider(
-      UrlParameterAuthenticationHandler urlParam,
-      AipoOAuthAuthenticationHandler threeLeggedOAuth,
-      AnonymousAuthenticationHandler anonymous) {
-    handlers = Lists.newArrayList(urlParam, threeLeggedOAuth, anonymous);
+      AipoOAuth2AuthenticationHandler oauth2Handler) {
+    handlers = Lists.newArrayList(oauth2Handler);
   }
 
+  @Override
   public List<AuthenticationHandler> get() {
     return handlers;
   }

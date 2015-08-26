@@ -25,6 +25,9 @@ import org.apache.shindig.protocol.Service;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+/**
+ * RPC/REST handler for Aipo API
+ */
 @Service(name = "aipo")
 public class AipoHandler {
 
