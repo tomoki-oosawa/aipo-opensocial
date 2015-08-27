@@ -196,6 +196,17 @@ public class AipoPersonService extends AbstractService implements PersonService 
     person.setPhotoModified(user.getPhotoModified());
     person.setHasPhoto("T".equals(user.getHasPhoto())
       || "N".equals(user.getHasPhoto()));
+    if (isRestfulAPI(token)) {
+      // ALPosition position = new ALPositionImpl();
+
+      // List<ALPost> post = new ArrayList<ALPost>();
+
+      person.setEmail(user.getEmail());
+      person.setTelephone(user.getOutTelephone());
+      person.setExtension(user.getInTelephone());
+      person.setTelephoneMobile(user.getCellularPhone());
+      person.setEmailMobile(user.getCellularMail());
+    }
     return person;
   }
 

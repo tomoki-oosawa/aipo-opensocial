@@ -20,6 +20,7 @@ package com.aipo.social.opensocial.model;
 
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -229,23 +230,39 @@ public interface ALPerson extends
 
   void setNameKana(Name nameKana);
 
-  /**
-   * @return
-   */
+  String getEmail();
+
+  void setEmail(String email);
+
+  String getTelephone();
+
+  void setTelephone(String telephone);
+
+  String getExtension();
+
+  void setExtension(String extension);
+
+  String getTelephoneMobile();
+
+  void setTelephoneMobile(String telephoeMobile);
+
+  String getEmailMobile();
+
+  void setEmailMobile(String emailMobile);
+
   Date getPhotoModified();
 
-  /**
-   * @param photoModified
-   */
   void setPhotoModified(Date photoModified);
 
-  /**
-   * @return
-   */
   boolean getHasPhoto();
 
-  /**
-   * @param hasPhoto
-   */
   void setHasPhoto(boolean hasPhoto);
+
+  ALPosition getPosition();
+
+  void setPosition(ALPosition position);
+
+  List<ALPost> getPost();
+
+  void setPost(List<ALPost> post);
 }
