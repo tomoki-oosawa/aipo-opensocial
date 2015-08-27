@@ -36,6 +36,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.apache.cayenne.access.DataContext;
+import org.apache.shindig.auth.AipoOAuth2SecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.protocol.ProtocolException;
 import org.apache.shindig.protocol.multipart.FormDataItem;
@@ -234,6 +235,16 @@ public abstract class AbstractService {
       }
     }
     throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+  }
+
+  /**
+   * Restful API 経由か判定
+   *
+   * @param token
+   * @return
+   */
+  protected boolean isRestfulAPI(SecurityToken token) {
+    return token instanceof AipoOAuth2SecurityToken;
   }
 
   protected void checkInputRange(String input, int min, int max) {
