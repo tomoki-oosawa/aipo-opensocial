@@ -18,17 +18,12 @@
  */
 package com.aipo.social.core.oauth;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.oauth.OAuth;
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthMessage;
 import net.oauth.OAuthProblemException;
-import net.oauth.server.OAuthServlet;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.auth.AipoSecurityTokenAuthenticationHandler;
-import org.apache.shindig.auth.OAuthConstants;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
 import org.apache.shindig.social.core.oauth.OAuthSecurityToken;
@@ -74,27 +69,6 @@ public class AipoOAuthAuthenticationHandler extends OAuthAuthenticationHandler
       return store.getSecurityTokenForConsumerRequest(
         authConsumer.consumerKey,
         userId);
-    }
-  }
-
-  @Override
-  public SecurityToken getSecurityTokenFromRequest(HttpServletRequest request)
-      throws InvalidAuthenticationException {
-    OAuthMessage message = OAuthServlet.getMessage(request, null);
-    if (StringUtils.isEmpty(getParameter(message, OAuth.OAUTH_SIGNATURE))) {
-      // Is not an oauth request
-      return null;
-    }
-    String bodyHash = getParameter(message, OAuthConstants.OAUTH_BODY_HASH);
-    if (!StringUtils.isEmpty(bodyHash)) {
-      verifyBodyHash(request, bodyHash);
-    }
-    try {
-      return verifyMessage(message);
-    } catch (OAuthProblemException oauthException) {
-      throw new InvalidAuthenticationException(
-        "OAuth Authentication Failure",
-        oauthException);
     }
   }
 
