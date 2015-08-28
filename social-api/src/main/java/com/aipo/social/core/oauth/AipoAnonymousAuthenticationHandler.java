@@ -16,36 +16,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.aipo.social.core.oauth;
 
-import java.util.List;
-
 import org.apache.shindig.auth.AipoSecurityTokenAuthenticationHandler;
-import org.apache.shindig.auth.AipoUrlParameterAuthenticationHandler;
-import org.apache.shindig.social.core.oauth.AuthenticationHandlerProvider;
+import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
+import com.google.inject.name.Named;
 
 /**
- * @see AuthenticationHandlerProvider
+ *
  */
-public class AipoSecurityTokenAuthenticationHandlerProvider implements
-    Provider<List<AipoSecurityTokenAuthenticationHandler>> {
-  protected List<AipoSecurityTokenAuthenticationHandler> handlers;
+public class AipoAnonymousAuthenticationHandler extends
+    AnonymousAuthenticationHandler implements
+    AipoSecurityTokenAuthenticationHandler {
 
+  /**
+   * @param allowUnauthenticated
+   */
   @Inject
-  public AipoSecurityTokenAuthenticationHandlerProvider(
-      AipoOAuthAuthenticationHandler threeLeggedOAuth,
-      AipoUrlParameterAuthenticationHandler urlParam,
-      AipoAnonymousAuthenticationHandler anonymous) {
-
-    handlers = Lists.newArrayList(urlParam, threeLeggedOAuth, anonymous);
-  }
-
-  @Override
-  public List<AipoSecurityTokenAuthenticationHandler> get() {
-    return handlers;
+  public AipoAnonymousAuthenticationHandler(
+      @Named(ALLOW_UNAUTHENTICATED) boolean allowUnauthenticated) {
+    super(allowUnauthenticated);
   }
 }
