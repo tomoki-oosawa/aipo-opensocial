@@ -440,8 +440,8 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<ALMessage> postMessage(UserId userId, String roomIdOrUsername,
-      String message, String transactionId, SecurityToken token)
-      throws ProtocolException {
+      String message, String transactionId, SecurityToken token,
+      FormDataItem file) throws ProtocolException {
 
     setUp(token);
 
@@ -473,6 +473,30 @@ public class AipoMessageService extends AbstractService implements
 
     EipTMessage model =
       messageDbService.createMessage(username, roomId, targetUsername, message);
+
+    if (file != null) {
+      byte[] shrinkImage =
+        getBytesShrink(
+          file,
+          DEF_THUMBNAIL_WIDTH,
+          DEF_THUMBNAIL_HEIGHT,
+          true,
+          0,
+          0).getShrinkImage();
+
+      EipTMessageFile messageFile =
+        messageDbService.insertMessageFiles(
+          username,
+          model.getMessageId(),
+          file.getName(),
+          shrinkImage);
+
+      storageService.createNewFile(
+        new ByteArrayInputStream(file.get()),
+        messageCategoryKey,
+        messageFile,
+        token);
+    }
 
     push(PushType.MESSAGE, username, model.getRoomId(), model.getMessageId());
 
