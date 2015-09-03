@@ -58,8 +58,8 @@ public interface MessageService {
       throws ProtocolException;
 
   public Future<ALMessage> postMessage(UserId userId, String roomIdOrUsername,
-      String message, String transactionId, SecurityToken token)
-      throws ProtocolException;
+      String message, String transactionId, SecurityToken token,
+      FormDataItem file) throws ProtocolException;
 
   public Future<Void> deleteMessage(UserId userId, String roomIdOrUsername,
       int messageId, SecurityToken token) throws ProtocolException;

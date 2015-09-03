@@ -136,6 +136,7 @@ public class AipoMessageHandler {
       String roomId = request.getParameter("roomId");
       String message = request.getParameter("message");
       String transactionId = request.getParameter("transactionId");
+      FormDataItem file = request.getFormMimePart("file");
 
       // Preconditions
       AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
@@ -151,7 +152,8 @@ public class AipoMessageHandler {
         roomId,
         message,
         transactionId,
-        request.getToken());
+        request.getToken(),
+        file);
     } catch (ProtocolException e) {
       throw e;
     } catch (Throwable t) {
