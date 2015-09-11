@@ -295,7 +295,40 @@ public enum AipoErrorCode {
     int getStatus() {
       return HttpServletResponse.SC_NOT_FOUND;
     }
+  },
 
+  INVALID_UER {
+    @Override
+    int getCode() {
+      return 1010;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Invalid user.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_FORBIDDEN;
+    }
+  },
+
+  OVER_QUOTA {
+    @Override
+    int getCode() {
+      return 1011;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Over quota.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_FORBIDDEN;
+    }
   };
 
   private String message = null;

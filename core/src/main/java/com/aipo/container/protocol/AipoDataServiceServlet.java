@@ -43,10 +43,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.cayenne.access.DataContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.shindig.auth.AipoOAuth2SecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.Nullable;
 import org.apache.shindig.common.servlet.HttpUtil;
@@ -63,6 +65,9 @@ import org.apache.shindig.protocol.multipart.FormDataItem;
 import org.apache.shindig.protocol.multipart.MultipartFormParser;
 import org.json.JSONObject;
 
+import com.aipo.orm.Database;
+import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.service.TurbineUserDbService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -91,9 +96,16 @@ public class AipoDataServiceServlet extends ApiServlet {
 
   private MultipartFormParser formParser;
 
+  protected TurbineUserDbService turbineUserDbService;
+
   @Inject
   void setMultipartFormParser(MultipartFormParser formParser) {
     this.formParser = formParser;
+  }
+
+  @Inject
+  void setTurbineUserDbService(TurbineUserDbService turbineUserDbService) {
+    this.turbineUserDbService = turbineUserDbService;
   }
 
   @Override
@@ -150,8 +162,36 @@ public class AipoDataServiceServlet extends ApiServlet {
 
     SecurityToken token = getSecurityToken(servletRequest);
     if (token == null) {
-      sendSecurityError(servletResponse);
+      sendError(servletResponse, AipoErrorCode.TOKEN_EXPIRED);
       return;
+    }
+    if (token instanceof AipoOAuth2SecurityToken) {
+      AipoOAuth2SecurityToken securityToken = (AipoOAuth2SecurityToken) token;
+      String viewerId = securityToken.getViewerId();
+      String[] split = viewerId.split(":");
+      String orgId = split[0];
+      String userId = split[1];
+
+      String currentOrgId = Database.getDomainName();
+      if (currentOrgId == null) {
+        try {
+          DataContext dataContext = Database.createDataContext(orgId);
+          DataContext.bindThreadObjectContext(dataContext);
+        } catch (Throwable t) {
+          sendError(servletResponse, AipoErrorCode.INTERNAL_ERROR);
+          return;
+        }
+      } else if (!currentOrgId.equals(orgId)) {
+        sendError(servletResponse, AipoErrorCode.INTERNAL_ERROR);
+        return;
+      }
+
+      TurbineUser tuser = turbineUserDbService.findByUsername(userId);
+      if (tuser == null) {
+        sendError(servletResponse, AipoErrorCode.INVALID_UER);
+        return;
+      }
+
     }
 
     HttpUtil.setCORSheader(servletResponse, containerConfig.<String> getList(
@@ -161,10 +201,33 @@ public class AipoDataServiceServlet extends ApiServlet {
     handleSingleRequest(servletRequest, servletResponse, token);
   }
 
+  protected void sendError(HttpServletResponse servletResponse,
+      AipoErrorCode code) throws IOException {
+    String json = code.responseJSON().toString();
+
+    servletResponse.setStatus(code.getStatus());
+    servletResponse.setContentType("application/json; charset=utf8");
+    OutputStream out = null;
+    InputStream in = null;
+    try {
+      out = servletResponse.getOutputStream();
+      in = new ByteArrayInputStream(json.getBytes("UTF-8"));
+      int b;
+      while ((b = in.read()) != -1) {
+        out.write(b);
+      }
+      out.flush();
+    } catch (Throwable t) {
+      LOG.log(Level.WARNING, t.getMessage(), t);
+    } finally {
+      IOUtils.closeQuietly(out);
+      IOUtils.closeQuietly(in);
+    }
+  }
+
   @Override
   protected void sendError(HttpServletResponse servletResponse,
       ResponseItem responseItem) throws IOException {
-    String errorMessage = responseItem.getErrorMessage();
     int errorCode = responseItem.getErrorCode();
     Object response = responseItem.getResponse();
     if (errorCode < 0) {
@@ -194,11 +257,14 @@ public class AipoDataServiceServlet extends ApiServlet {
       json = response.toString();
     } else {
       switch (errorCode) {
+        case 400:
+          json = AipoErrorCode.BAD_REQUEST.responseJSON().toString();
+          break;
         case 401:
           json = AipoErrorCode.TOKEN_EXPIRED.responseJSON().toString();
           break;
         case 403:
-          json = AipoErrorCode.BAD_REQUEST.responseJSON().toString();
+          json = AipoErrorCode.INVALID_UER.responseJSON().toString();
           break;
         case 404:
           json = AipoErrorCode.NOT_FOUND.responseJSON().toString();
