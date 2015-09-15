@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -525,7 +526,13 @@ public class AipoDataServiceServlet extends ApiServlet {
               if (item.isFormField()) {
                 String value = item.getAsString();
                 String key = item.getFieldName();
-
+                if (value != null) {
+                  try {
+                    value = new String(value.getBytes("iso-8859-1"), "utf-8");
+                  } catch (UnsupportedEncodingException e) {
+                    // ignore
+                  }
+                }
                 String[] valueArray = { value };
                 if (parameterMap.containsKey(key)) {
                   String[] preValue = parameterMap.get(key);
