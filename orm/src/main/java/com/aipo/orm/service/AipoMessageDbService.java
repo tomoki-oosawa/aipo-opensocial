@@ -524,14 +524,12 @@ public class AipoMessageDbService implements MessageDbService {
 
       List<String> recipients = new ArrayList<String>();
       for (EipTMessageRoomMember member : members) {
-        if (member.getUserId().intValue() != turbineUser.getUserId()) {
-          EipTMessageRead record = Database.create(EipTMessageRead.class);
-          record.setEipTMessage(model);
-          record.setIsRead("F");
-          record.setUserId(member.getUserId());
-          record.setRoomId(room.getRoomId());
-          recipients.add(member.getLoginName());
-        }
+        EipTMessageRead record = Database.create(EipTMessageRead.class);
+        record.setEipTMessage(model);
+        record.setIsRead("F");
+        record.setUserId(member.getUserId());
+        record.setRoomId(room.getRoomId());
+        recipients.add(member.getLoginName());
       }
 
       room.setLastMessage(CommonUtils.compressString(message, 100));
@@ -946,8 +944,7 @@ public class AipoMessageDbService implements MessageDbService {
   }
 
   @Override
-  public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
-      String username) {
+  public List<EipTMessageRoomMember> getRoomMember(int roomId, String username) {
     List<EipTMessageRoomMember> list = new ArrayList<EipTMessageRoomMember>();
     List<EipTMessageRoomMember> members =
       new ArrayList<EipTMessageRoomMember>();
@@ -961,9 +958,9 @@ public class AipoMessageDbService implements MessageDbService {
     if (room != null) {
       list = room.getEipTMessageRoomMember();
       for (EipTMessageRoomMember member : list) {
-        if (member.getUserId().intValue() != userId) {
-          members.add(member);
-        }
+
+        members.add(member);
+
       }
     }
     return members;

@@ -64,8 +64,7 @@ public interface MessageDbService {
 
   public boolean isJoinRoom(int roomId, String username);
 
-  public List<EipTMessageRoomMember> getOtherRoomMember(int roomId,
-      String username);
+  public List<EipTMessageRoomMember> getRoomMember(int roomId, String username);
 
   public boolean read(String username, String targetUsername, int lastMessageId);
 
