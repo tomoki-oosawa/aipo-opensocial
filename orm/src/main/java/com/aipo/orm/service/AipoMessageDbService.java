@@ -524,12 +524,14 @@ public class AipoMessageDbService implements MessageDbService {
 
       List<String> recipients = new ArrayList<String>();
       for (EipTMessageRoomMember member : members) {
-        EipTMessageRead record = Database.create(EipTMessageRead.class);
-        record.setEipTMessage(model);
-        record.setIsRead("F");
-        record.setUserId(member.getUserId());
-        record.setRoomId(room.getRoomId());
-        recipients.add(member.getLoginName());
+        if (member.getUserId().intValue() != turbineUser.getUserId()) {
+          EipTMessageRead record = Database.create(EipTMessageRead.class);
+          record.setEipTMessage(model);
+          record.setIsRead("F");
+          record.setUserId(member.getUserId());
+          record.setRoomId(room.getRoomId());
+          recipients.add(member.getLoginName());
+        }
       }
 
       room.setLastMessage(CommonUtils.compressString(message, 100));
