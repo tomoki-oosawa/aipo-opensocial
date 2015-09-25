@@ -382,6 +382,10 @@ public class AipoDataServiceServlet extends ApiServlet {
             if (out != null) {
               out.close();
             }
+          } catch (IOException ignore) {
+            // ignore
+          }
+          try {
             if (is != null) {
               is.close();
             }
@@ -389,8 +393,6 @@ public class AipoDataServiceServlet extends ApiServlet {
             // ignore
           }
         }
-        out.close();
-        is.close();
         return;
       }
 
