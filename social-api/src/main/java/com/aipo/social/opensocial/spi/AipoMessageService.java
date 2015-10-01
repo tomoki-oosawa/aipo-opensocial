@@ -986,6 +986,7 @@ public class AipoMessageService extends AbstractService implements
     if (!"".equals(transactionId)) {
       params.put("transactionId", transactionId);
     }
+    params.put("userId", username);
 
     if (recipients.size() > 0) {
       pushService.pushAsync(type, params, recipients);
