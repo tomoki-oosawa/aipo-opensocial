@@ -498,7 +498,12 @@ public class AipoMessageService extends AbstractService implements
         token);
     }
 
-    push(PushType.MESSAGE, username, model.getRoomId(), model.getMessageId());
+    push(
+      PushType.MESSAGE,
+      username,
+      model.getRoomId(),
+      model.getMessageId(),
+      transactionId);
 
     if (room == null) {
       room = messageDbService.findRoom(username, targetUsername);
@@ -949,6 +954,11 @@ public class AipoMessageService extends AbstractService implements
     push(type, username, roomId, 0);
   }
 
+  protected void push(PushType type, String username, int roomId, int messageId)
+      throws ProtocolException {
+    push(type, username, roomId, messageId, "");
+  }
+
   /**
    *
    * @param type
@@ -957,11 +967,11 @@ public class AipoMessageService extends AbstractService implements
    * @param messageId
    * @throws ProtocolException
    */
-  protected void push(PushType type, String username, int roomId, int messageId)
-      throws ProtocolException {
+  protected void push(PushType type, String username, int roomId,
+      int messageId, String transactionId) throws ProtocolException {
 
     List<EipTMessageRoomMember> members =
-      messageDbService.getOtherRoomMember(roomId, username);
+      messageDbService.getRoomMember(roomId, username);
 
     List<String> recipients = new ArrayList<String>();
     for (EipTMessageRoomMember member : members) {
@@ -973,6 +983,10 @@ public class AipoMessageService extends AbstractService implements
     if (messageId > 0) {
       params.put("messageId", String.valueOf(messageId));
     }
+    if (!"".equals(transactionId)) {
+      params.put("transactionId", transactionId);
+    }
+    params.put("userId", username);
 
     if (recipients.size() > 0) {
       pushService.pushAsync(type, params, recipients);
