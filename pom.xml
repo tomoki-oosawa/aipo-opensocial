@@ -21,8 +21,8 @@
   <url>http://www.aipo.com</url>
   <inceptionYear>2004</inceptionYear>
   <organization>
-    <name>Aimluck,Inc.</name>
-    <url>http://www.aimluck.com</url>
+    <name>TOWN, Inc.</name>
+    <url>http://www.town.biz</url>
   </organization>
   <licenses>
     <license>
@@ -35,7 +35,7 @@
       <id>nbeppu</id>
       <name>Nobuhiko Beppu</name>
       <url>https://github.com/nbeppu</url>
-      <organization>Aimluck,Inc.</organization>
+      <organization>TOWN, Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
@@ -57,21 +57,21 @@
       <id>yoshiteru.i</id>
       <name>Yoshiteru Iwasaki</name>
       <url>https://github.com/YoshiteruIwasaki</url>
-      <organization>Aimluck,Inc.</organization>
+      <organization>TOWN, Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>ges.jonieet</id>
       <name>Yuji Koshikawa</name>
       <url>https://github.com/alkoshikawa</url>
-      <organization>Aimluck,Inc.</organization>
+      <organization>TOWN, Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>yusuke.takase.al</id>
       <name>Yusuke Takase</name>
       <url>https://github.com/altakase</url>
-      <organization>Aimluck,Inc.</organization>
+      <organization>TOWN, Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
@@ -87,13 +87,13 @@
     <developer>
       <id>nonstop-girl</id>
       <url>https://github.com/nonstop-girl</url>
-      <organization>Aimluck,Inc.</organization>
+      <organization>TOWN, Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
       <id>haradaaa</id>
       <url>https://github.com/haradaaa</url>
-      <organization>Aimluck,Inc.</organization>
+      <organization>TOWN, Inc.</organization>
       <timezone>+9</timezone>
     </developer>
     <developer>
