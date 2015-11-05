@@ -106,6 +106,8 @@ public class AipoMessageRoomHandler {
       Set<UserId> userIds = request.getUsers();
       String name = request.getParameter("name");
       List<String> memberList = request.getListParameter("member_to");
+      List<String> memberAuthorityList =
+        request.getListParameter("member_authority_to");
 
       // Preconditions
       AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
@@ -113,6 +115,8 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("member_to", memberList);
       AipoPreconditions.multiple("member_to", memberList);
+      AipoPreconditions.required("member_authority_to", memberAuthorityList);
+      AipoPreconditions.multiple("member_authority_to", memberAuthorityList);
       AipoPreconditions.maxLength("name", name, 50);
       AipoPreconditions.isUTF8("name", name);
 
@@ -120,6 +124,7 @@ public class AipoMessageRoomHandler {
         userIds.iterator().next(),
         name,
         memberList,
+        memberAuthorityList,
         request.getToken());
     } catch (ProtocolException e) {
       throw e;
@@ -147,6 +152,8 @@ public class AipoMessageRoomHandler {
       String name = request.getParameter("name");
       List<String> memberList = request.getListParameter("member_to");
       String roomId = request.getParameter("roomId");
+      List<String> memberAuthorityList =
+        request.getListParameter("member_authority_to");
 
       // Preconditions
       AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
@@ -154,12 +161,15 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("member_to", memberList);
       AipoPreconditions.multiple("member_to", memberList);
+      AipoPreconditions.required("member_authority_to", memberAuthorityList);
+      AipoPreconditions.multiple("member_authority_to", memberAuthorityList);
       AipoPreconditions.required("roomId", roomId);
 
       return service.putRoom(
         userIds.iterator().next(),
         name,
         memberList,
+        memberAuthorityList,
         roomId,
         request.getToken());
     } catch (ProtocolException e) {

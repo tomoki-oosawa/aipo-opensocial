@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.cayenne.DataRow;
 
@@ -385,7 +386,7 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom createRoom(String username, String name,
-      List<String> memberNameList) {
+      List<String> memberNameList, Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
@@ -405,6 +406,8 @@ public class AipoMessageDbService implements MessageDbService {
         map.setTargetUserId(1);
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
+        // XXX: getLoginNameでよいか、要確認
+        map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
         if (!isFirst) {
           autoName.append(",");
         }
@@ -559,7 +562,8 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, List<String> memberNameList) {
+      String name, List<String> memberNameList,
+      Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
@@ -589,6 +593,8 @@ public class AipoMessageDbService implements MessageDbService {
         map.setTargetUserId(1);
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
+        // XXX: getLoginNameでよいか、要確認
+        map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
         if (!isFirst) {
           autoName.append(",");
         }

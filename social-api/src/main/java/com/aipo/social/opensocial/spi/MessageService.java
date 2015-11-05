@@ -51,11 +51,12 @@ public interface MessageService {
       SecurityToken token) throws ProtocolException;
 
   public Future<ALMessageRoom> postRoom(UserId userId, String name,
-      List<String> memberList, SecurityToken token) throws ProtocolException;
+      List<String> memberList, List<String> memberAuthorityList,
+      SecurityToken token) throws ProtocolException;
 
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
-      List<String> memberList, String roomId, SecurityToken token)
-      throws ProtocolException;
+      List<String> memberList, List<String> memberAuthorityList, String roomId,
+      SecurityToken token) throws ProtocolException;
 
   public Future<ALMessage> postMessage(UserId userId, String roomIdOrUsername,
       String message, String transactionId, SecurityToken token,

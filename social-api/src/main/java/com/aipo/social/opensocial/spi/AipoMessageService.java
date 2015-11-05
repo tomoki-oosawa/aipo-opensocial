@@ -215,15 +215,25 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<ALMessageRoom> postRoom(UserId userId, String name,
-      List<String> memberList, SecurityToken token) throws ProtocolException {
+      List<String> memberList, List<String> memberAuthorityList,
+      SecurityToken token) throws ProtocolException {
 
     setUp(token);
 
+    // memberの数とauthorityの数は一致する必要がある
+    if (memberList.size() != memberAuthorityList.size()) {
+      throw new AipoProtocolException(
+        AipoErrorCode.VALIDATE_ERROR
+          .customMessage("Count of member_to must be equal to that of member_authority_to."));
+    }
     List<String> memberNameList = new ArrayList<String>();
-    for (String memberId : memberList) {
+    Map<String, String> memberAuthorityMap = new HashMap<String, String>();
+    for (int i = 0; i < memberList.size(); i++) {
+      String memberId = memberList.get(i);
       if (!"".equals(memberId)) {
         String memberName = getUserId(memberId, token);
         memberNameList.add(memberName);
+        memberAuthorityMap.put(memberName, memberAuthorityList.get(i));
       }
     }
 
@@ -233,12 +243,24 @@ public class AipoMessageService extends AbstractService implements
     if (!memberNameList.contains(username)) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter member_to should contain userId."));
+    } else {
+      // 作成者は当初は「管理者」である必要がある
+      if (memberAuthorityMap.get(username) != "A") {
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ERROR
+            .customMessage("People who create a room must be Administrator of the room at first."));
+      }
     }
 
     EipTMessageRoom model = null;
     if (memberNameList.size() != 0) {
       // ルーム
-      model = messageDbService.createRoom(username, name, memberNameList);
+      model =
+        messageDbService.createRoom(
+          username,
+          name,
+          memberNameList,
+          memberAuthorityMap);
     } else {
       // ダイレクトメッセージ
     }
@@ -631,8 +653,8 @@ public class AipoMessageService extends AbstractService implements
    */
   @Override
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
-      List<String> memberList, String roomId, SecurityToken token)
-      throws ProtocolException {
+      List<String> memberList, List<String> memberAuthorityList, String roomId,
+      SecurityToken token) throws ProtocolException {
 
     setUp(token);
 
@@ -644,23 +666,39 @@ public class AipoMessageService extends AbstractService implements
     } catch (Throwable ignore) {
       //
     }
-
+    // memberの数とauthorityの数は一致する必要がある
+    if (memberList.size() != memberAuthorityList.size()) {
+      throw new AipoProtocolException(
+        AipoErrorCode.VALIDATE_ERROR
+          .customMessage("Count of member_to must be equal to that of member_authority_to."));
+    }
     List<String> memberNameList = new ArrayList<String>();
-    for (String memberId : memberList) {
+    Map<String, String> memberAuthorityMap = new HashMap<String, String>();
+    for (int i = 0; i < memberList.size(); i++) {
+      String memberId = memberList.get(i);
       if (!"".equals(memberId)) {
         String memberName = getUserId(memberId, token);
         memberNameList.add(memberName);
+        memberAuthorityMap.put(memberName, memberAuthorityList.get(i));
       }
     }
 
-    // 自分(Viewer)を含むルームのみ設定可能
+    // TODO: RoomのAdministratorであることを確認する処理を入れる
+    // 自分(Viewer)を含むルームのみ作成可能
     checkSameViewer(userId, token);
     String username = getUserId(userId, token);
-
     if (!memberNameList.contains(username)) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter member_to should contain userId."));
+    } else {
+      // 作成者は当初は「管理者」である必要がある
+      if (memberAuthorityMap.get(username) != "A") {
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ERROR
+            .customMessage("Those who create a room should be Administrator of the room at first."));
+      }
     }
+
     EipTMessageRoom room = null;
     if (roomIdInt != null) {
       room = messageDbService.findRoom(roomIdInt, username);
@@ -673,7 +711,12 @@ public class AipoMessageService extends AbstractService implements
     if (roomIdInt != null && memberNameList.size() != 0) {
       // ルーム
       model =
-        messageDbService.updateRoom(roomIdInt, username, name, memberNameList);
+        messageDbService.updateRoom(
+          roomIdInt,
+          username,
+          name,
+          memberNameList,
+          memberAuthorityMap);
     } else {
       // ダイレクトメッセージ
     }

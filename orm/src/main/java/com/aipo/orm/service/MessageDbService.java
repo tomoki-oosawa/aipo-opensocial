@@ -20,6 +20,7 @@ package com.aipo.orm.service;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
@@ -46,13 +47,14 @@ public interface MessageDbService {
   public void deleteMessage(int messageId);
 
   public EipTMessageRoom createRoom(String username, String name,
-      List<String> memberNameList);
+      List<String> memberNameList, Map<String, String> memberAuthorityMap);
 
   public EipTMessage createMessage(String username, Integer roomId,
       String targetUsername, String message);
 
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, List<String> memberNameList);
+      String name, List<String> memberNameList,
+      Map<String, String> memberAuthorityMap);
 
   public InputStream getPhoto(int roomId);
 
