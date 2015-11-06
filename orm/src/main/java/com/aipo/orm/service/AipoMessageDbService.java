@@ -750,6 +750,18 @@ public class AipoMessageDbService implements MessageDbService {
     return false;
   }
 
+  public boolean hasAuthorityRoom(EipTMessageRoom room, int userId) {
+    List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
+    for (EipTMessageRoomMember member : list) {
+      if (member.getUserId().intValue() == userId) {
+        if (AUTHORITY_TYPE_ADMIN.equals(member.getAuthority())) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   /**
    * @param roomId
    * @return
@@ -858,6 +870,20 @@ public class AipoMessageDbService implements MessageDbService {
     EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
     if (room != null) {
       return isJoinRoom(room, userId);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean hasAuthorityRoom(int roomId, String username) {
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      return false;
+    }
+    Integer userId = turbineUser.getUserId();
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
+      return hasAuthorityRoom(room, userId);
     }
     return false;
   }

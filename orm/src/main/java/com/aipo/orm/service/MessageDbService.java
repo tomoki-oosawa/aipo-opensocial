@@ -66,6 +66,8 @@ public interface MessageDbService {
 
   public boolean isJoinRoom(int roomId, String username);
 
+  public boolean hasAuthorityRoom(int roomId, String username);
+
   public List<EipTMessageRoomMember> getRoomMember(int roomId, String username);
 
   public boolean read(String username, String targetUsername, int lastMessageId);
@@ -84,4 +86,8 @@ public interface MessageDbService {
   public enum IconSize {
     NORMAL, LARGE;
   }
+
+  public final String AUTHORITY_TYPE_ADMIN = "A";
+
+  public final String AUTHORITY_TYPE_MEMBER = "M";
 }
