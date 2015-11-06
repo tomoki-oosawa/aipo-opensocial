@@ -1,6 +1,6 @@
 /*
- * Aipo is a groupware program developed by Aimluck,Inc.
- * Copyright (C) 2004-2011 Aimluck,Inc.
+ * Aipo is a groupware program developed by TOWN, Inc.
+ * Copyright (C) 2004-2011 TOWN, Inc.
  * http://www.aipo.com
  *
  * This program is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ gadgets.io = function() {
    * Internal facility to create an xhr request.
    */
   function makeXhr() {
-    var x; 
+    var x;
     if (typeof shindig != 'undefined' &&
         shindig.xhrwrapper &&
         shindig.xhrwrapper.createXHR) {
@@ -128,13 +128,13 @@ gadgets.io = function() {
    * @param {function(Object)} callback
    * @param {Object} params
    * @param {Object} xobj
-   */ 
+   */
   function processResponse(url, callback, params, xobj) {
     if (hadError(xobj, callback)) {
       return;
     }
     var txt = xobj.responseText;
-    
+
     // remove unparseable cruft used to prevent cross-site script inclusion
     var offset = txt.indexOf(UNPARSEABLE_CRUFT) + UNPARSEABLE_CRUFT.length;
 
@@ -235,7 +235,7 @@ gadgets.io = function() {
    * @param {string} proxyUrl The url to proxy through
    * @param {function()} callback The function to call once the data is fetched
    * @param {Object} paramData The params to use when processing the response
-   * @param {function(string,function(Object),Object,Object)} 
+   * @param {function(string,function(Object),Object,Object)}
    *     processResponseFunction The function that should process the
    *     response from the sever before calling the callback
    * @param {string=} opt_contentType - Optional content type defaults to
@@ -248,7 +248,7 @@ gadgets.io = function() {
     if (proxyUrl.indexOf('//') == 0) {
       proxyUrl = document.location.protocol + proxyUrl;
     }
-    
+
     xhr.open(method, proxyUrl, true);
     if (callback) {
       xhr.onreadystatechange = gadgets.util.makeClosure(
@@ -272,7 +272,7 @@ gadgets.io = function() {
    * @param {Object} postData The definition of the request to be executed by the proxy
    * @param {Object} params The params to use when processing the response
    * @param {function(Object)} callback The function to call once the data is fetched
-   * @return {boolean} true if the request can be satisfied by the preloaded 
+   * @return {boolean} true if the request can be satisfied by the preloaded
    *         content false otherwise
    */
   function respondWithPreload(postData, params, callback) {
