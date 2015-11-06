@@ -406,7 +406,6 @@ public class AipoMessageDbService implements MessageDbService {
         map.setTargetUserId(1);
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
-        // XXX: getLoginNameでよいか、要確認
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
         if (!isFirst) {
           autoName.append(",");
@@ -593,7 +592,6 @@ public class AipoMessageDbService implements MessageDbService {
         map.setTargetUserId(1);
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
-        // XXX: getLoginNameでよいか、要確認
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
         if (!isFirst) {
           autoName.append(",");
