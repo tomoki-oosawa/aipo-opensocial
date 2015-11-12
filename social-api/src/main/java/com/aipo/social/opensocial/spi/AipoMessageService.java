@@ -202,6 +202,12 @@ public class AipoMessageService extends AbstractService implements
     }
     room.setMembers(members);
 
+    List<String> adminMembers = new ArrayList<String>();
+    for (String adminMember : model.getRoomAdminMembers()) {
+      adminMembers.add(orgId + ":" + adminMember);
+    }
+    room.setAdminMembers(adminMembers);
+
     // ルーム詳細の場合
     return room;
   }
