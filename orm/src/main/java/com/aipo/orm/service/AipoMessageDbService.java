@@ -649,12 +649,17 @@ public class AipoMessageDbService implements MessageDbService {
       Database.commit();
 
       List<String> roomMembersStr = new ArrayList<String>();
+      List<String> roomAdminMembersStr = new ArrayList<String>();
       for (EipTMessageRoomMember roomMember : model.getEipTMessageRoomMember()) {
         if (!roomMembersStr.contains(roomMember.getLoginName())) {
           roomMembersStr.add(roomMember.getLoginName());
+          if ("A".equals(roomMember.getAuthority())) {
+            roomAdminMembersStr.add(roomMember.getLoginName());
+          }
         }
       }
       model.setRoomMembers(roomMembersStr);
+      model.setRoomAdminMembers(roomAdminMembersStr);
       return model;
 
     } catch (Throwable t) {
