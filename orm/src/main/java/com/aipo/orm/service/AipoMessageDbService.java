@@ -496,6 +496,7 @@ public class AipoMessageDbService implements MessageDbService {
           map1.setUserId(userId);
           map1.setTargetUserId(targetUserId);
           map1.setLoginName(turbineUser.getLoginName());
+          map1.setAuthority("A");
 
           EipTMessageRoomMember map2 =
             Database.create(EipTMessageRoomMember.class);
@@ -503,6 +504,7 @@ public class AipoMessageDbService implements MessageDbService {
           map2.setTargetUserId(userId);
           map2.setUserId(targetUserId);
           map2.setLoginName(targetUser.getLoginName());
+          map2.setAuthority("A");
 
           room.setAutoName("T");
           room.setRoomType("O");
