@@ -35,7 +35,7 @@ import com.aipo.orm.service.TurbineUserDbService;
  */
 public class PasswordGrantValidator implements OAuth2GrantValidator {
 
-  private final TurbineUserDbService turbineUserDbService;
+  protected final TurbineUserDbService turbineUserDbService;
 
   public PasswordGrantValidator(TurbineUserDbService turbineUserDbService) {
     this.turbineUserDbService = turbineUserDbService;
@@ -72,7 +72,7 @@ public class PasswordGrantValidator implements OAuth2GrantValidator {
     return "password";
   }
 
-  private void throwError(ErrorType errorType, String msg)
+  protected final void throwError(ErrorType errorType, String msg)
       throws OAuth2Exception {
     OAuth2NormalizedResponse response = new OAuth2NormalizedResponse();
     response.setError(errorType.toString());
