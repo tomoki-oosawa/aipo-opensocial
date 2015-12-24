@@ -22,7 +22,7 @@ package com.aipo.orm.service;
 /**
  *
  */
-public interface TurbineConfigDbService {
+public interface ConfigDbService {
 
   public void put(String property, String value);
 

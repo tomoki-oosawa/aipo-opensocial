@@ -28,7 +28,7 @@ import com.aipo.orm.query.Operations;
 /**
  *
  */
-public class AipoTurbineConfigDbService implements TurbineConfigDbService {
+public class AipoConfigDbService implements ConfigDbService {
 
   /**
    * @param property
