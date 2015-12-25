@@ -329,6 +329,23 @@ public enum AipoErrorCode {
     int getStatus() {
       return HttpServletResponse.SC_FORBIDDEN;
     }
+  },
+
+  ACCESS_NOT_DENIED {
+    @Override
+    int getCode() {
+      return 1012;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Your ip address is denied.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_FORBIDDEN;
+    }
   };
 
   private String message = null;
