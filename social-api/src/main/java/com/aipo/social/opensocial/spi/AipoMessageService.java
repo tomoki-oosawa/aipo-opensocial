@@ -602,12 +602,23 @@ public class AipoMessageService extends AbstractService implements
     }
 
     if (messageDbService.isOwnMessage(messageId, username)) {
+      // 自分自身のメッセージは削除可能
       List<EipTMessageFile> files =
         messageDbService.getMessageFiles(Arrays.asList(messageId));
       storageService.deleteFiles(messageCategoryKey, files, token);
       messageDbService.deleteMessage(messageId);
     } else {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      // 管理者権限を持つユーザーは削除可能（ダイレクトメッセージ以外）
+      if ("O".equals(room.getRoomType())) {
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      } else {
+        checkSameRoomAdmin(userId, token, roomId);
+        List<EipTMessageFile> files =
+          messageDbService.getMessageFiles(Arrays.asList(messageId));
+        storageService.deleteFiles(messageCategoryKey, files, token);
+        messageDbService.deleteMessage(messageId);
+      }
     }
 
     if (room != null) {
