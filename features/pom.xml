@@ -7,13 +7,13 @@
   <parent>
     <groupId>com.aipo.container</groupId>
     <artifactId>aipo-container</artifactId>
-    <version>8.0.1</version>
+    <version>8.1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <groupId>com.aipo.container</groupId>
   <artifactId>aipo-features</artifactId>
-  
+
   <name>Aipo OpenSocial Container Original Features</name>
 
   <pluginRepositories>
@@ -100,7 +100,7 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.apache.shindig</groupId>
