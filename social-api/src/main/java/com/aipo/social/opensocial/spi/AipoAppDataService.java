@@ -207,8 +207,7 @@ public class AipoAppDataService extends AbstractService implements
         list = turbineUserDbService.findByUsername(users);
         break;
       default:
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
     Set<String> usernames = Sets.newHashSet();
     if (list != null) {

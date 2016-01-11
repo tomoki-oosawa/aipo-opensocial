@@ -102,8 +102,7 @@ public abstract class AbstractService {
       String[] split = viewer.split(":");
 
       if (split.length != 2) {
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       }
 
       orgId = split[0];
@@ -111,7 +110,7 @@ public abstract class AbstractService {
 
       selectDataDomain(orgId);
     } catch (Throwable t) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     checkViewerExists(token);
@@ -126,7 +125,7 @@ public abstract class AbstractService {
     } else if (currentOrgId.equals(orgId)) {
       return;
     } else {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
   }
 
@@ -155,7 +154,7 @@ public abstract class AbstractService {
     String[] split = userId.split(":");
 
     if (split.length != 2) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     String currentOrgId = split[0];
@@ -183,7 +182,7 @@ public abstract class AbstractService {
         return;
       }
     }
-    throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+    throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
   }
 
   /**
@@ -203,7 +202,7 @@ public abstract class AbstractService {
       result = false;
     }
     if (!result) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
   }
 
@@ -217,7 +216,7 @@ public abstract class AbstractService {
   protected void checkSameViewer(UserId userId, SecurityToken token)
       throws ProtocolException {
     if (!getViewerId(token).equals(getUserId(userId, token))) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
   }
 
@@ -233,7 +232,7 @@ public abstract class AbstractService {
         return;
       }
     }
-    throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+    throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
   }
 
   protected void checkInputRange(String input, int min, int max) {
