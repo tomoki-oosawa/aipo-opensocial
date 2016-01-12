@@ -42,17 +42,23 @@ public class AipoOAuth2RequstValidator implements OAuth2RequestValidator {
 
   private OAuth2DataService store = null;
 
-  private final List<OAuth2GrantValidator> grantValidators; // grant validators
+  protected final List<OAuth2GrantValidator> grantValidators; // grant
+                                                              // validators
 
   @Inject
   public AipoOAuth2RequstValidator(OAuth2DataService store,
       TurbineUserDbService turbineUserDbService) {
     this.grantValidators = new ArrayList<OAuth2GrantValidator>();
+    this.store = store;
+    init(store, turbineUserDbService);
+  }
+
+  protected void init(OAuth2DataService store,
+      TurbineUserDbService turbineUserDbService) {
     // grantValidators.add(new AuthCodeGrantValidator(store));
     // grantValidators.add(new ClientCredentialsGrantValidator(store));
     grantValidators.add(new PasswordGrantValidator(turbineUserDbService));
     grantValidators.add(new RefreshTokenGrantValidator(store));
-    this.store = store;
   }
 
   /**

@@ -62,11 +62,11 @@ public class AipoOAuth2Service implements OAuth2Service {
   private final long refreshTokenExpires;
 
   // validators
-  private final OAuth2RequestValidator accessTokenValidator;
+  protected OAuth2RequestValidator accessTokenValidator;
 
-  private final OAuth2RequestValidator authCodeValidator;
+  protected final OAuth2RequestValidator authCodeValidator;
 
-  private final OAuth2ProtectedResourceValidator resourceReqValidator;
+  protected final OAuth2ProtectedResourceValidator resourceReqValidator;
 
   @Inject
   public AipoOAuth2Service(OAuth2DataService store,
