@@ -86,6 +86,8 @@ public class OAuth2NormalizedRequest extends HashMap<String, Object> {
     }
     normalizeClientSecret(request);
     normalizeAccessToken(request);
+    setIpAddress(request);
+
   }
 
   // --------------------------- NORMALIZED GETTERS ---------------------------
@@ -123,6 +125,10 @@ public class OAuth2NormalizedRequest extends HashMap<String, Object> {
 
   public String getScope() {
     return getString("scope");
+  }
+
+  public String getIpAddress() {
+    return getString("ip_address");
   }
 
   public ResponseType getEnumeratedResponseType() throws OAuth2Exception {
@@ -195,6 +201,11 @@ public class OAuth2NormalizedRequest extends HashMap<String, Object> {
       }
     }
     put("access_token", bearerToken);
+  }
+
+  private void setIpAddress(HttpServletRequest req) {
+    String ipAddress = req.getRemoteAddr();
+    put("ip_address", ipAddress);
   }
 
   private void normalizeClientSecret(HttpServletRequest request)

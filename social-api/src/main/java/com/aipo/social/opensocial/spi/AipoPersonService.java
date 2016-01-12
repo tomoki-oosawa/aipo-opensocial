@@ -133,8 +133,7 @@ public class AipoPersonService extends AbstractService implements PersonService 
         totalResults = 1;
         break;
       default:
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     List<ALPerson> result = new ArrayList<ALPerson>(list.size());

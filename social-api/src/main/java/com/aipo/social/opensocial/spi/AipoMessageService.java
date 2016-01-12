@@ -139,7 +139,7 @@ public class AipoMessageService extends AbstractService implements
 
     list = messageDbService.findRoom(roomIdInt, username, null, options);
     if (roomIdInt > 0 && list.size() == 0) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     List<ALMessageRoom> result = new ArrayList<ALMessageRoom>(list.size());
@@ -339,7 +339,7 @@ public class AipoMessageService extends AbstractService implements
       room = messageDbService.findRoom(username, targetUsername);
     }
     if (room == null) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     // /messages/rooms/\(userId)/\(groupId)
@@ -464,8 +464,7 @@ public class AipoMessageService extends AbstractService implements
     if (roomId != null) {
       room = messageDbService.findRoom(roomId, username);
       if (room == null) {
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       }
     } else {
       room = messageDbService.findRoom(username, targetUsername);
@@ -551,7 +550,7 @@ public class AipoMessageService extends AbstractService implements
       room = messageDbService.findRoom(username, targetUsername);
     }
     if (room == null) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     if (messageDbService.isOwnMessage(messageId, username)) {
@@ -560,7 +559,7 @@ public class AipoMessageService extends AbstractService implements
       storageService.deleteFiles(messageCategoryKey, files, token);
       messageDbService.deleteMessage(messageId);
     } else {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     if (room != null) {
@@ -603,8 +602,7 @@ public class AipoMessageService extends AbstractService implements
     if (roomId != null) {
       room = messageDbService.findRoom(roomId, username);
       if (room == null) {
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       }
       updated = messageDbService.read(username, roomId, messageId);
     } else {
@@ -666,7 +664,7 @@ public class AipoMessageService extends AbstractService implements
       room = messageDbService.findRoom(roomIdInt, username);
     }
     if (room == null) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     EipTMessageRoom model = null;
@@ -767,7 +765,7 @@ public class AipoMessageService extends AbstractService implements
 
     }
     if (roomIdInt == null) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
     setUp(token);
@@ -943,8 +941,7 @@ public class AipoMessageService extends AbstractService implements
     if (username != null && !"".equals(username)) {
       boolean isJoinRoom = messageDbService.isJoinRoom(roomId, username);
       if (!isJoinRoom) {
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       }
     }
   }

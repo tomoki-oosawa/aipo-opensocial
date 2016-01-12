@@ -145,8 +145,7 @@ public class AipoPreconditions {
         }
       }
       if (result) {
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_NOT_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       }
     }
     // JavaScript API の場合は Scope を検証しない

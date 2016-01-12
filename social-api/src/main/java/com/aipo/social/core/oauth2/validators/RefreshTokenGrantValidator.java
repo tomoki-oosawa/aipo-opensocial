@@ -34,7 +34,7 @@ import org.apache.shindig.social.core.oauth2.validators.OAuth2GrantValidator;
  */
 public class RefreshTokenGrantValidator implements OAuth2GrantValidator {
 
-  private final OAuth2DataService store;
+  protected final OAuth2DataService store;
 
   public RefreshTokenGrantValidator(OAuth2DataService store) {
     this.store = store;
@@ -93,7 +93,7 @@ public class RefreshTokenGrantValidator implements OAuth2GrantValidator {
     return "refresh_token";
   }
 
-  private void throwError(ErrorType errorType, String msg)
+  protected final void throwError(ErrorType errorType, String msg)
       throws OAuth2Exception {
     OAuth2NormalizedResponse response = new OAuth2NormalizedResponse();
     response.setError(errorType.toString());
