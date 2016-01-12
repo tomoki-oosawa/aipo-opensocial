@@ -271,7 +271,7 @@ public enum AipoErrorCode {
 
     @Override
     protected String getDefaultMessage() {
-      return "Access dennied.";
+      return "Access denied.";
     }
 
     @Override
