@@ -48,6 +48,8 @@ public class ALMessageRoomImpl implements ALMessageRoom {
 
   private List<String> members;
 
+  private List<String> adminMembers;
+
   private Date updateDate;
 
   private boolean hasPhoto;
@@ -162,6 +164,22 @@ public class ALMessageRoomImpl implements ALMessageRoom {
   @Override
   public void setMembers(List<String> members) {
     this.members = members;
+  }
+
+  /**
+   * @return adminMembers
+   */
+  @Override
+  public List<String> getAdminMembers() {
+    return adminMembers;
+  }
+
+  /**
+   * @param adminMembers
+   */
+  @Override
+  public void setAdminMembers(List<String> adminMembers) {
+    this.adminMembers = adminMembers;
   }
 
   /**

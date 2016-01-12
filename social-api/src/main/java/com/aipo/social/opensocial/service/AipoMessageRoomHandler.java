@@ -106,6 +106,7 @@ public class AipoMessageRoomHandler {
       Set<UserId> userIds = request.getUsers();
       String name = request.getParameter("name");
       List<String> memberList = request.getListParameter("member_to");
+      List<String> memberAdminsList = request.getListParameter("member_admins");
 
       // Preconditions
       AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
@@ -120,6 +121,7 @@ public class AipoMessageRoomHandler {
         userIds.iterator().next(),
         name,
         memberList,
+        memberAdminsList,
         request.getToken());
     } catch (ProtocolException e) {
       throw e;
@@ -147,6 +149,7 @@ public class AipoMessageRoomHandler {
       String name = request.getParameter("name");
       List<String> memberList = request.getListParameter("member_to");
       String roomId = request.getParameter("roomId");
+      List<String> memberAdminsList = request.getListParameter("member_admins");
 
       // Preconditions
       AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
@@ -160,6 +163,7 @@ public class AipoMessageRoomHandler {
         userIds.iterator().next(),
         name,
         memberList,
+        memberAdminsList,
         roomId,
         request.getToken());
     } catch (ProtocolException e) {
