@@ -33,13 +33,21 @@ public class AipoHandler {
 
   private final String version;
 
+  private final String apiVersion;
+
   @Inject
-  public AipoHandler(@Named("aipo.version") String version) {
+  public AipoHandler(@Named("aipo.version") String version,@Named("aipo.apiVersion") String apiVersion) {
     this.version = version;
+    this.apiVersion = apiVersion;
   }
 
   @Operation(httpMethods = "GET", path = "/version")
   public String version(RequestItem request) {
     return version;
+  }
+
+  @Operation(httpMethods = "GET", path = "/apiVersion")
+  public String apiVersion(RequestItem request) {
+    return apiVersion;
   }
 }
