@@ -263,7 +263,7 @@ public enum AipoErrorCode {
     }
   },
 
-  VALIDATE_ACCESS_NOT_DENIED {
+  VALIDATE_ACCESS_DENIED {
     @Override
     int getCode() {
       return 1008;
@@ -271,7 +271,7 @@ public enum AipoErrorCode {
 
     @Override
     protected String getDefaultMessage() {
-      return "Access not dennied.";
+      return "Access denied.";
     }
 
     @Override
@@ -323,6 +323,40 @@ public enum AipoErrorCode {
     @Override
     protected String getDefaultMessage() {
       return "Over quota.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_FORBIDDEN;
+    }
+  },
+
+  IP_ACCESS_DENIED {
+    @Override
+    int getCode() {
+      return 1012;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Your ip address is denied.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_FORBIDDEN;
+    }
+  },
+
+  DEVICE_ACCESS_DENIED {
+    @Override
+    int getCode() {
+      return 1013;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "Your device is denied.";
     }
 
     @Override
