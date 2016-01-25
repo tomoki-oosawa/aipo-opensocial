@@ -73,5 +73,6 @@ public class AuthorizationCodeRequestValidator implements
         throw new OAuth2Exception(resp);
       }
     }
+    req.getHttpServletRequest().setAttribute("com.aipo.OAuth2Client", client);
   }
 }

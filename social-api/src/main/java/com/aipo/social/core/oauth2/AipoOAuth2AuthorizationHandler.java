@@ -49,6 +49,10 @@ public class AipoOAuth2AuthorizationHandler {
     this.accessTokenExpires = accessTokenExpires;
   }
 
+  public OAuth2Service getService() {
+    return service;
+  }
+
   /**
    * Handles an OAuth 2.0 authorization request.
    *

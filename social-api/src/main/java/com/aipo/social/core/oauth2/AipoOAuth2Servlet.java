@@ -33,6 +33,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.shindig.common.logging.i18n.MessageKeys;
 import org.apache.shindig.common.servlet.HttpUtil;
 import org.apache.shindig.common.servlet.InjectedServlet;
+import org.apache.shindig.social.core.oauth2.OAuth2Exception;
+import org.apache.shindig.social.core.oauth2.OAuth2NormalizedRequest;
 import org.apache.shindig.social.core.oauth2.OAuth2NormalizedResponse;
 import org.apache.shindig.social.core.oauth2.OAuth2Service;
 import org.apache.shindig.social.core.oauth2.OAuth2Servlet;
@@ -55,6 +57,8 @@ public class AipoOAuth2Servlet extends InjectedServlet {
   private static AipoOAuth2AuthorizationHandler authorizationHandler;
 
   private static AipoOAuth2TokenHandler tokenHandler;
+
+  private static AipoOAuth2Service service;
 
   // class name for logging purpose
   private static final String classname = OAuth2Servlet.class.getName();
@@ -82,9 +86,18 @@ public class AipoOAuth2Servlet extends InjectedServlet {
     HttpUtil.setNoCache(response);
     String path = request.getPathInfo();
     if (path.endsWith(AUTHORIZE)) {
-      sendOAuth2Response(response, authorizationHandler.handle(
-        request,
-        response));
+      try {
+        OAuth2NormalizedRequest normalizedReq =
+          new OAuth2NormalizedRequest(request);
+        authorizationHandler.getService().validateRequestForAuthCode(
+          normalizedReq);
+        request.setAttribute("com.aipo.OAuth2NormalizedRequest", normalizedReq);
+        request.getRequestDispatcher("/WEB-INF/authorize.jsp").forward(
+          request,
+          response);
+      } catch (OAuth2Exception e) {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+      }
     } else if (path.endsWith(TOKEN)) {
       // token endpoint must use POST method
       response.sendError(
@@ -100,7 +113,12 @@ public class AipoOAuth2Servlet extends InjectedServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String path = request.getPathInfo();
-    if (path.endsWith(TOKEN)) {
+    if (path.endsWith(AUTHORIZE)) {
+      HttpUtil.setNoCache(response);
+      sendOAuth2Response(response, authorizationHandler.handle(
+        request,
+        response));
+    } else if (path.endsWith(TOKEN)) {
       HttpUtil.setNoCache(response);
       sendOAuth2Response(response, tokenHandler.handle(request, response));
     } else {
