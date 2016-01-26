@@ -295,7 +295,7 @@ public class AipoMessageHandler {
       FormDataItem file = request.getFormMimePart("file");
 
       // Preconditions
-      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
