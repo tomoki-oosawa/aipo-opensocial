@@ -355,6 +355,7 @@
 		<db-attribute name="UPDATE_DATE" type="TIMESTAMP" length="8"/>
 	</db-entity>
 	<db-entity name="eip_t_message_room_member">
+		<db-attribute name="AUTHORITY" type="VARCHAR" isMandatory="true" length="1"/>
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
 		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
 		<db-attribute name="ROOM_ID" type="INTEGER" isMandatory="true" length="4"/>
@@ -838,6 +839,7 @@
 		<obj-attribute name="updateDate" type="java.util.Date" db-attribute-path="UPDATE_DATE"/>
 	</obj-entity>
 	<obj-entity name="EipTMessageRoomMember" className="com.aipo.orm.model.portlet.EipTMessageRoomMember" dbEntityName="eip_t_message_room_member">
+		<obj-attribute name="authority" type="java.lang.String" db-attribute-path="AUTHORITY"/>
 		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
 		<obj-attribute name="targetUserId" type="java.lang.Integer" db-attribute-path="TARGET_USER_ID"/>
 		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>

@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.cayenne.DataRow;
 
@@ -195,7 +196,7 @@ public class AipoMessageDbService implements MessageDbService {
         Database
           .sql(
             EipTMessageRoomMember.class,
-            "select login_name from eip_t_message_room_member where room_id=#bind($room_id)")
+            "select login_name, authority from eip_t_message_room_member where room_id=#bind($room_id)")
           .param("room_id", Integer.valueOf(roomId))
           .fetchList();
     }
@@ -228,10 +229,15 @@ public class AipoMessageDbService implements MessageDbService {
       object.setLastName(lastName);
       if (roomId > 0 && roomMembers != null) {
         List<String> roomMembersStr = new ArrayList<String>();
+        List<String> roomAdminMembersStr = new ArrayList<String>();
         for (EipTMessageRoomMember roomMember : roomMembers) {
           roomMembersStr.add(roomMember.getLoginName());
+          if ("A".equals(roomMember.getAuthority())) {
+            roomAdminMembersStr.add(roomMember.getLoginName());
+          }
         }
         object.setRoomMembers(roomMembersStr);
+        object.setRoomAdminMembers(roomAdminMembersStr);
       }
       if (lastMessageId != null && lastMessageId.longValue() > 0) {
         object.setLastMessageId(lastMessageId.intValue());
@@ -385,7 +391,7 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom createRoom(String username, String name,
-      List<String> memberNameList) {
+      List<String> memberNameList, Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
@@ -405,6 +411,7 @@ public class AipoMessageDbService implements MessageDbService {
         map.setTargetUserId(1);
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
+        map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
         if (!isFirst) {
           autoName.append(",");
         }
@@ -440,12 +447,17 @@ public class AipoMessageDbService implements MessageDbService {
       Database.commit();
 
       List<String> roomMembersStr = new ArrayList<String>();
+      List<String> roomAdminMembersStr = new ArrayList<String>();
       for (EipTMessageRoomMember roomMember : model.getEipTMessageRoomMember()) {
         if (!roomMembersStr.contains(roomMember.getLoginName())) {
           roomMembersStr.add(roomMember.getLoginName());
+          if ("A".equals(roomMember.getAuthority())) {
+            roomAdminMembersStr.add(roomMember.getLoginName());
+          }
         }
       }
       model.setRoomMembers(roomMembersStr);
+      model.setRoomAdminMembers(roomAdminMembersStr);
 
       return model;
 
@@ -484,6 +496,7 @@ public class AipoMessageDbService implements MessageDbService {
           map1.setUserId(userId);
           map1.setTargetUserId(targetUserId);
           map1.setLoginName(turbineUser.getLoginName());
+          map1.setAuthority("A");
 
           EipTMessageRoomMember map2 =
             Database.create(EipTMessageRoomMember.class);
@@ -491,6 +504,7 @@ public class AipoMessageDbService implements MessageDbService {
           map2.setTargetUserId(userId);
           map2.setUserId(targetUserId);
           map2.setLoginName(targetUser.getLoginName());
+          map2.setAuthority("A");
 
           room.setAutoName("T");
           room.setRoomType("O");
@@ -559,7 +573,8 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, List<String> memberNameList) {
+      String name, List<String> memberNameList,
+      Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
@@ -589,6 +604,7 @@ public class AipoMessageDbService implements MessageDbService {
         map.setTargetUserId(1);
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
+        map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
         if (!isFirst) {
           autoName.append(",");
         }
@@ -635,12 +651,17 @@ public class AipoMessageDbService implements MessageDbService {
       Database.commit();
 
       List<String> roomMembersStr = new ArrayList<String>();
+      List<String> roomAdminMembersStr = new ArrayList<String>();
       for (EipTMessageRoomMember roomMember : model.getEipTMessageRoomMember()) {
         if (!roomMembersStr.contains(roomMember.getLoginName())) {
           roomMembersStr.add(roomMember.getLoginName());
+          if ("A".equals(roomMember.getAuthority())) {
+            roomAdminMembersStr.add(roomMember.getLoginName());
+          }
         }
       }
       model.setRoomMembers(roomMembersStr);
+      model.setRoomAdminMembers(roomAdminMembersStr);
       return model;
 
     } catch (Throwable t) {
@@ -739,6 +760,18 @@ public class AipoMessageDbService implements MessageDbService {
     for (EipTMessageRoomMember member : list) {
       if (member.getUserId().intValue() == userId) {
         return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasAuthorityRoom(EipTMessageRoom room, int userId) {
+    List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
+    for (EipTMessageRoomMember member : list) {
+      if (member.getUserId().intValue() == userId) {
+        if (AUTHORITY_TYPE_ADMIN.equals(member.getAuthority())) {
+          return true;
+        }
       }
     }
     return false;
@@ -852,6 +885,20 @@ public class AipoMessageDbService implements MessageDbService {
     EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
     if (room != null) {
       return isJoinRoom(room, userId);
+    }
+    return false;
+  }
+
+  @Override
+  public boolean hasAuthorityRoom(int roomId, String username) {
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      return false;
+    }
+    Integer userId = turbineUser.getUserId();
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
+      return hasAuthorityRoom(room, userId);
     }
     return false;
   }
