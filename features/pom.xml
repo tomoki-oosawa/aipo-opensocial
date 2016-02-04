@@ -16,13 +16,6 @@
 
   <name>Aipo OpenSocial Container Original Features</name>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jsdoctk2</id>
-      <url>http://jsdoctk-plugin.googlecode.com/svn/repo</url>
-    </pluginRepository>
-  </pluginRepositories>
-
   <build>
     <resources>
       <resource>
