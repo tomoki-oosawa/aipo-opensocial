@@ -157,9 +157,9 @@
       <url>http://maven.seasar.org/maven2</url>
     </repository>
     <repository>
-      <id>aipo.googlecode.com</id>
+      <id>aipo.github.com</id>
       <name>The Aipo Project Maven2 Repository</name>
-      <url>http://aipo.googlecode.com/svn/repository</url>
+      <url>https://raw.githubusercontent.com/aipocom/mvn-repo/master</url>
     </repository>
     <repository>
       <id>caucho.com</id>
@@ -167,30 +167,6 @@
       <url>http://caucho.com/m2</url>
     </repository>
   </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>mc-release</id>
-      <name>Local Maven repository of releases</name>
-      <url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </pluginRepository>
-    <pluginRepository>
-      <id>mc-snapshot</id>
-      <name>Local Maven repository of snapshots</name>
-      <url>http://mc-repo.googlecode.com/svn/maven2/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
 
   <build>
       <pluginManagement>
