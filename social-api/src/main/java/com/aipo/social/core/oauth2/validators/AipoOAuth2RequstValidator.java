@@ -40,7 +40,7 @@ import com.google.inject.Inject;
  */
 public class AipoOAuth2RequstValidator implements OAuth2RequestValidator {
 
-  private OAuth2DataService store = null;
+  protected final OAuth2DataService store;
 
   protected final List<OAuth2GrantValidator> grantValidators; // grant
                                                               // validators

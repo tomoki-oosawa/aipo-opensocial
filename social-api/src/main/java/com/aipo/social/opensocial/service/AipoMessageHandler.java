@@ -186,7 +186,6 @@ public class AipoMessageHandler {
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("roomId", roomId);
       AipoPreconditions.required("messageId", messageId);
-      int messageIdInt = AipoPreconditions.isInteger("messageId", messageId);
 
       throw new AipoProtocolException(AipoErrorCode.UNSUPPORTED_OPERATION);
     } catch (ProtocolException e) {

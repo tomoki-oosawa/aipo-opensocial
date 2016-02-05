@@ -240,7 +240,7 @@ public class AipoActivityDbService implements ActivityDbService {
 
     query.where(Operations.ne(Activity.LOGIN_NAME_PROPERTY, username));
 
-    if (priority.intValue() == 0) {
+    if (priority != null && priority.intValue() == 0) {
       // 更新情報
       query.where(Operations.in(Activity.ACTIVITY_MAPS_PROPERTY
         + "."
