@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.aipo.container</groupId>
     <artifactId>aipo-container</artifactId>
-    <version>8.1.0</version>
+    <version>8.1.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>com.aipo.container</groupId>
       <artifactId>aipo-container-core</artifactId>
-      <version>8.1.0</version>
+      <version>8.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.shindig</groupId>
@@ -174,7 +174,7 @@
     <dependency>
       <groupId>com.aipo</groupId>
       <artifactId>aipo-orm</artifactId>
-      <version>8.1.0</version>
+      <version>8.1.1</version>
     </dependency>
     <dependency>
       <groupId>com.drewnoakes</groupId>
