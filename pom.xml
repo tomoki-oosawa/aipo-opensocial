@@ -4,15 +4,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <aipo.version>8.1.0</aipo.version>
+    <aipo.version>8.1.1</aipo.version>
     <shindig.version>2.0.2</shindig.version>
-    <tomcat.version>7.0.67</tomcat.version>
+    <tomcat.version>7.0.68</tomcat.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <groupId>com.aipo.container</groupId>
   <artifactId>aipo-container</artifactId>
-  <version>8.1.0</version>
+  <version>8.1.1</version>
   <packaging>pom</packaging>
 
   <name>Aipo OpenSocial Container Project</name>
