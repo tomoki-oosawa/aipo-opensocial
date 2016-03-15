@@ -115,7 +115,7 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.required("member_to", memberList);
       AipoPreconditions.multiple("member_to", memberList);
       AipoPreconditions.maxLength("name", name, 50);
-      AipoPreconditions.maxMember("member", memberList.size(), 5);
+      AipoPreconditions.maxMember("member", memberList.size(), 300);
       AipoPreconditions.isUTF8("name", name);
 
       return service.postRoom(
