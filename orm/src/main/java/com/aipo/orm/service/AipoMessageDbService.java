@@ -265,7 +265,6 @@ public class AipoMessageDbService implements MessageDbService {
     int limit = options.getLimit();
     Integer untilId = options.getParameterInt("until_id");
     Integer sinceId = options.getParameterInt("since_id");
-    String keyword = options.getParameter("keyword");
     boolean isReverse = false;
     if (sinceId != null && sinceId > 0) {
       isReverse = true;
@@ -517,6 +516,10 @@ public class AipoMessageDbService implements MessageDbService {
 
         }
         roomId = room.getRoomId();
+      }
+
+      if (roomId == null) {
+        throw new Exception();
       }
 
       EipTMessageRoom room =
@@ -945,7 +948,7 @@ public class AipoMessageDbService implements MessageDbService {
       Integer userId = turbineUser.getUserId();
 
       // messageの投稿者だけが添付ファイルを追加できるようにValidate
-      if (message.getUserId() != userId) {
+      if (!message.getUserId().equals(userId)) {
         return null;
       }
 
@@ -993,17 +996,16 @@ public class AipoMessageDbService implements MessageDbService {
 
   @Override
   public List<EipTMessageRoomMember> getRoomMember(int roomId, String username) {
-    List<EipTMessageRoomMember> list = new ArrayList<EipTMessageRoomMember>();
     List<EipTMessageRoomMember> members =
       new ArrayList<EipTMessageRoomMember>();
     TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
     if (turbineUser == null) {
       return members;
     }
-    Integer userId = turbineUser.getUserId();
 
     EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
     if (room != null) {
+      List<EipTMessageRoomMember> list = new ArrayList<EipTMessageRoomMember>();
       list = room.getEipTMessageRoomMember();
       for (EipTMessageRoomMember member : list) {
 
@@ -1037,7 +1039,9 @@ public class AipoMessageDbService implements MessageDbService {
         int targetUserId = targetUser.getUserId().intValue();
         room = getRoom(userId, targetUserId);
       } else {
-        room = Database.get(EipTMessageRoom.class, roomId.longValue());
+        if (roomId != null) {
+          room = Database.get(EipTMessageRoom.class, roomId.longValue());
+        }
       }
       if (room == null) {
         return false;

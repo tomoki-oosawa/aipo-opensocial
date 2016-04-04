@@ -51,7 +51,7 @@ public class AipoPreconditions {
   public static void required(String name, FormDataItem value)
       throws AipoProtocolException {
     if (value == null || value.getSize() == 0) {
-      new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter " + name + " is required."));
     }
   }

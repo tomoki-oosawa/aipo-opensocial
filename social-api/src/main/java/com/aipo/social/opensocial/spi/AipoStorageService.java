@@ -321,6 +321,8 @@ public class AipoStorageService extends AbstractService implements
       srcChannel = new FileInputStream(from).getChannel();
       destChannel = new FileOutputStream(to).getChannel();
       destChannel.transferFrom(srcChannel, 0, srcChannel.size());
+    } catch (RuntimeException ex) {
+      throw ex;
     } catch (Exception ex) {
       res = false;
     } finally {

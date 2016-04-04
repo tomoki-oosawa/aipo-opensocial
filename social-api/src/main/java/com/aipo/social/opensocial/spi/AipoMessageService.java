@@ -292,7 +292,9 @@ public class AipoMessageService extends AbstractService implements
 
     ALMessageRoom result = new ALMessageRoomImpl();
     Set<String> dummy = new HashSet<String>();
-    result = assignMessageRoom(model, dummy, token, model.getRoomId());
+    if (model != null && model.getRoomId() != null) {
+      result = assignMessageRoom(model, dummy, token, model.getRoomId());
+    }
 
     return ImmediateFuture.newInstance(result);
 
@@ -609,8 +611,7 @@ public class AipoMessageService extends AbstractService implements
     } else {
       // 管理者権限を持つユーザーは削除可能（ダイレクトメッセージ以外）
       if ("O".equals(room.getRoomType())) {
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       } else {
         checkSameRoomAdmin(userId, token, roomId);
         List<EipTMessageFile> files =
@@ -701,6 +702,11 @@ public class AipoMessageService extends AbstractService implements
       //
     }
 
+    if (roomIdInt == null) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter roomId required."));
+    }
+
     List<String> memberNameList = new ArrayList<String>();
     Map<String, String> memberAuthorityMap = new HashMap<String, String>();
 
@@ -766,7 +772,9 @@ public class AipoMessageService extends AbstractService implements
 
     ALMessageRoom result = new ALMessageRoomImpl();
     Set<String> dummy = new HashSet<String>();
-    result = assignMessageRoom(model, dummy, token, roomIdInt);
+    if (roomIdInt != null) {
+      result = assignMessageRoom(model, dummy, token, roomIdInt);
+    }
 
     return ImmediateFuture.newInstance(result);
   }
@@ -924,8 +932,7 @@ public class AipoMessageService extends AbstractService implements
     }
     checkSameRoomMember(userId, token, model.getRoomId());
 
-    ALFile result = new ALFileImpl();
-    result = assignFile(model);
+    ALFile result = assignFile(model);
 
     return ImmediateFuture.newInstance(result);
   }
@@ -948,8 +955,7 @@ public class AipoMessageService extends AbstractService implements
         .getOwnerId()
         .intValue(), model.getFilePath(), token);
 
-    ALFile result = new ALFileImpl();
-    result = assignFileInfo(model, fileSize);
+    ALFile result = assignFileInfo(model, fileSize);
 
     return ImmediateFuture.newInstance(result);
   }
@@ -1048,8 +1054,7 @@ public class AipoMessageService extends AbstractService implements
       boolean hasAuthority =
         messageDbService.hasAuthorityRoom(roomId, username);
       if (!hasAuthority) {
-        throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ACCESS_DENIED);
+        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       }
     }
   }
