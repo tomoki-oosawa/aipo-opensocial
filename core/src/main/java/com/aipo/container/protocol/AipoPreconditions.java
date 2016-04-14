@@ -71,6 +71,18 @@ public class AipoPreconditions {
     }
   }
 
+  public static void maxMember(String name, int number, int maxNumber)
+      throws AipoProtocolException {
+    if (number > maxNumber) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter "
+          + name
+          + "'s maximum number is "
+          + maxNumber
+          + "."));
+    }
+  }
+
   public static int isIntegerOrNull(String name, String value)
       throws AipoProtocolException {
     if (value == null) {
