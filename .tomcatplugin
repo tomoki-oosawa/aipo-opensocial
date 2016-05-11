@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tomcatProjectProperties>
     <rootDir>/war/target/container</rootDir>
+    <workDir>/work</workDir>
     <exportSource>false</exportSource>
     <reloadable>false</reloadable>
     <redirectLogger>false</redirectLogger>
