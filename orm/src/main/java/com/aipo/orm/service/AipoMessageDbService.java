@@ -42,8 +42,11 @@ import com.aipo.orm.query.Operations;
 import com.aipo.orm.query.SQLTemplate;
 import com.aipo.orm.query.SelectQuery;
 import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.util.AipoToolkit;
+import com.aipo.util.AipoToolkit.SystemUser;
 import com.aipo.util.CommonUtils;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
  *
@@ -52,9 +55,13 @@ public class AipoMessageDbService implements MessageDbService {
 
   private final TurbineUserDbService turbineUserDbService;
 
+  private final String alias;
+
   @Inject
-  public AipoMessageDbService(TurbineUserDbService turbineUserDbService) {
+  public AipoMessageDbService(TurbineUserDbService turbineUserDbService,
+      @Named("aipo.alias") String alias) {
     this.turbineUserDbService = turbineUserDbService;
+    this.alias = alias;
   }
 
   @Override
@@ -93,18 +100,35 @@ public class AipoMessageDbService implements MessageDbService {
   @Override
   public List<EipTMessageRoom> findRoom(int roomId, String username,
       String targetUsername, SearchOptions options) {
+    Integer userId = null;
     TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
     if (turbineUser == null) {
+      SystemUser systemUser = AipoToolkit.getSystemUser(username);
+      if (systemUser != null) {
+        userId = systemUser.getUserId();
+      }
+    } else {
+      userId = turbineUser.getUserId();
+    }
+    if (userId == null) {
       return new ArrayList<EipTMessageRoom>();
     }
     if (targetUsername != null) {
+      Integer targetUserId = null;
       TurbineUser targetTurbineUser =
         turbineUserDbService.findByUsername(targetUsername);
       if (targetTurbineUser == null) {
+        SystemUser systemUser = AipoToolkit.getSystemUser(targetUsername);
+        if (systemUser != null) {
+          targetUserId = systemUser.getUserId();
+        }
+      } else {
+        targetUserId = targetTurbineUser.getUserId();
+      }
+      if (targetUserId == null) {
         return new ArrayList<EipTMessageRoom>();
       }
-      EipTMessageRoom room =
-        getRoom(turbineUser.getUserId(), targetTurbineUser.getUserId());
+      EipTMessageRoom room = getRoom(userId, targetUserId);
       if (room != null) {
         roomId = room.getRoomId();
       } else {
@@ -119,7 +143,6 @@ public class AipoMessageDbService implements MessageDbService {
     boolean isFilter = false;
 
     // MessageUtils.getRoomListと同等の処理（pageの制約はなし）に必要な変数を取得
-    Integer user_id = turbineUser.getUserId();
     // int limit = options.getLimit();
     boolean isMySQL = !Database.isJdbcPostgreSQL();
 
@@ -184,7 +207,7 @@ public class AipoMessageDbService implements MessageDbService {
         EipTMessageRoom.class,
         select.toString() + body.toString() + last.toString()).param(
         "user_id",
-        Integer.valueOf(user_id));
+        Integer.valueOf(userId));
     if (isFilter) {
       sql.param("keyword", "%" + filterValue + "%");
     }
@@ -484,7 +507,19 @@ public class AipoMessageDbService implements MessageDbService {
 
       if (roomId == null && targetUsername != null) {
         int userId = turbineUser.getUserId().intValue();
-        int targetUserId = targetUser.getUserId().intValue();
+        Integer targetUserId = null;
+        if (targetUser != null) {
+          targetUserId = targetUser.getUserId().intValue();
+        } else {
+          SystemUser systemUser = AipoToolkit.getSystemUser(targetUsername);
+          if (systemUser != null) {
+            targetUserId = systemUser.getUserId();
+          }
+        }
+        if (targetUserId == null) {
+          throw new Exception();
+        }
+
         EipTMessageRoom room = getRoom(userId, targetUserId);
         if (room == null) {
           room = Database.create(EipTMessageRoom.class);
@@ -502,7 +537,7 @@ public class AipoMessageDbService implements MessageDbService {
           map2.setEipTMessageRoom(room);
           map2.setTargetUserId(userId);
           map2.setUserId(targetUserId);
-          map2.setLoginName(targetUser.getLoginName());
+          map2.setLoginName(targetUsername);
           map2.setAuthority("A");
 
           room.setAutoName("T");
@@ -1036,7 +1071,18 @@ public class AipoMessageDbService implements MessageDbService {
       EipTMessageRoom room = null;
       int userId = turbineUser.getUserId().intValue();
       if (roomId == null && targetUsername != null) {
-        int targetUserId = targetUser.getUserId().intValue();
+        Integer targetUserId = null;
+        if (targetUser != null) {
+          targetUserId = targetUser.getUserId();
+        } else {
+          SystemUser systemUser = AipoToolkit.getSystemUser(targetUsername);
+          if (systemUser != null) {
+            targetUserId = systemUser.getUserId();
+          }
+        }
+        if (targetUserId == null) {
+          return false;
+        }
         room = getRoom(userId, targetUserId);
       } else {
         if (roomId != null) {
@@ -1096,4 +1142,5 @@ public class AipoMessageDbService implements MessageDbService {
       return null;
     }
   }
+
 }

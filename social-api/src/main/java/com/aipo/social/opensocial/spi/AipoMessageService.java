@@ -58,6 +58,8 @@ import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageFile;
 import com.aipo.social.opensocial.model.ALMessageRoom;
 import com.aipo.social.opensocial.spi.PushService.PushType;
+import com.aipo.util.AipoToolkit;
+import com.aipo.util.AipoToolkit.SystemUser;
 import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -73,17 +75,21 @@ public class AipoMessageService extends AbstractService implements
 
   private final PushService pushService;
 
+  private final String alias;
+
   /**
    *
    */
   @Inject
   public AipoMessageService(MessageDbService messageDbService,
       StorageService storageService, PushService pushService,
-      @Named("aipo.message.categorykey") String messageCategoryKey) {
+      @Named("aipo.message.categorykey") String messageCategoryKey,
+      @Named("aipo.alias") String alias) {
     this.messageDbService = messageDbService;
     this.storageService = storageService;
     this.pushService = pushService;
     this.messageCategoryKey = messageCategoryKey;
+    this.alias = alias;
   }
 
   /**
@@ -165,8 +171,13 @@ public class AipoMessageService extends AbstractService implements
 
     room.setRoomId(model.getRoomId());
     if ("O".equals(model.getRoomType())) {
+      SystemUser systemUser = AipoToolkit.getSystemUser(model.getLoginName());
+      if (systemUser != null) {
+        room.setName(alias);
+      } else {
+        room.setName(model.getLastName() + " " + model.getFirstName());
+      }
       room.setUserId(orgId + ":" + model.getLoginName());
-      room.setName(model.getLastName() + " " + model.getFirstName());
     } else {
       room.setName(model.getName());
     }
@@ -610,10 +621,12 @@ public class AipoMessageService extends AbstractService implements
       messageDbService.deleteMessage(messageId);
     } else {
       // 管理者権限を持つユーザーは削除可能（ダイレクトメッセージ以外）
-      if ("O".equals(room.getRoomType())) {
+      // 管理者権限があればシステム投稿を削除可能
+      if ("O".equals(room.getRoomType())
+        && AipoToolkit.getSystemUser(targetUsername) == null) {
         throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       } else {
-        checkSameRoomAdmin(userId, token, roomId);
+        checkSameRoomAdmin(userId, token, room.getRoomId());
         List<EipTMessageFile> files =
           messageDbService.getMessageFiles(Arrays.asList(messageId));
         storageService.deleteFiles(messageCategoryKey, files, token);
