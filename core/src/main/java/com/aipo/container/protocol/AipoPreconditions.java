@@ -121,7 +121,7 @@ public class AipoPreconditions {
 
   public static void multiple(String name, Collection<?> value)
       throws AipoProtocolException {
-    if (value == null || value.size() <= 1) {
+    if (value == null || value.size() < 1) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter " + name + " must specify multiple values."));
     }
