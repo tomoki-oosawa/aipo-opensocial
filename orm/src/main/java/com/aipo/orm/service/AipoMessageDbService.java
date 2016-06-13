@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -630,6 +631,20 @@ public class AipoMessageDbService implements MessageDbService {
         return null;
       }
 
+      // 更新時の
+      Map<String, String> memberDesktopNotificationMap =
+        new HashMap<String, String>();
+      Map<String, String> memberMobileNotificationMap =
+        new HashMap<String, String>();
+      List<EipTMessageRoomMember> tmpMemberList =
+        model.getEipTMessageRoomMember();
+      for (EipTMessageRoomMember tmpMember : tmpMemberList) {
+        memberDesktopNotificationMap.put(tmpMember.getLoginName(), tmpMember
+          .getDesktopNotification());
+        memberMobileNotificationMap.put(tmpMember.getLoginName(), tmpMember
+          .getMobileNotification());
+      }
+
       Database.deleteAll(model.getEipTMessageRoomMember());
 
       boolean isFirst = true;
@@ -643,6 +658,10 @@ public class AipoMessageDbService implements MessageDbService {
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
+        map.setDesktopNotification(memberDesktopNotificationMap.get(user
+          .getLoginName()));
+        map.setMobileNotification(memberMobileNotificationMap.get(user
+          .getLoginName()));
         if (!isFirst) {
           autoName.append(",");
         }
