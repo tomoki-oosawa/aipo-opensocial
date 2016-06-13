@@ -1,24 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-
-    Aipo is a groupware program developed by TOWN, Inc.
-    Copyright (C) 2004-2015 TOWN, Inc.
-    http://www.aipo.com
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
--->
 <data-map xmlns="http://cayenne.apache.org/schema/3.0/modelMap"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://cayenne.apache.org/schema/3.0/modelMap http://cayenne.apache.org/schema/3.0/modelMap.xsd"
@@ -356,8 +336,10 @@
 	</db-entity>
 	<db-entity name="eip_t_message_room_member">
 		<db-attribute name="AUTHORITY" type="VARCHAR" isMandatory="true" length="1"/>
+		<db-attribute name="DESKTOP_NOTIFICATION" type="VARCHAR" length="1"/>
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="4"/>
 		<db-attribute name="LOGIN_NAME" type="VARCHAR" isMandatory="true" length="32"/>
+		<db-attribute name="MOBILE_NOTIFICATION" type="VARCHAR" length="1"/>
 		<db-attribute name="ROOM_ID" type="INTEGER" isMandatory="true" length="4"/>
 		<db-attribute name="TARGET_USER_ID" type="INTEGER" isMandatory="true" length="4"/>
 		<db-attribute name="USER_ID" type="INTEGER" isMandatory="true" length="4"/>
@@ -840,7 +822,9 @@
 	</obj-entity>
 	<obj-entity name="EipTMessageRoomMember" className="com.aipo.orm.model.portlet.EipTMessageRoomMember" dbEntityName="eip_t_message_room_member">
 		<obj-attribute name="authority" type="java.lang.String" db-attribute-path="AUTHORITY"/>
+		<obj-attribute name="desktopNotification" type="java.lang.String" db-attribute-path="DESKTOP_NOTIFICATION"/>
 		<obj-attribute name="loginName" type="java.lang.String" db-attribute-path="LOGIN_NAME"/>
+		<obj-attribute name="mobileNotification" type="java.lang.String" db-attribute-path="MOBILE_NOTIFICATION"/>
 		<obj-attribute name="targetUserId" type="java.lang.Integer" db-attribute-path="TARGET_USER_ID"/>
 		<obj-attribute name="userId" type="java.lang.Integer" db-attribute-path="USER_ID"/>
 	</obj-entity>
