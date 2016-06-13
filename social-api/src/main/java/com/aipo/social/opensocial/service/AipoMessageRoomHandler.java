@@ -151,6 +151,8 @@ public class AipoMessageRoomHandler {
       List<String> memberList = request.getListParameter("member_to");
       String roomId = request.getParameter("roomId");
       List<String> memberAdminsList = request.getListParameter("member_admins");
+      String destopNotification = request.getParameter("desktopNotification");
+      String mobileNotification = request.getParameter("mobileNotification");
 
       // Preconditions
       AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
@@ -167,6 +169,8 @@ public class AipoMessageRoomHandler {
         memberList,
         memberAdminsList,
         roomId,
+        destopNotification,
+        mobileNotification,
         request.getToken());
     } catch (ProtocolException e) {
       throw e;
