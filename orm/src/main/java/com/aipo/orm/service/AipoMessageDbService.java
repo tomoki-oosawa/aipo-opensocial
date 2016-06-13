@@ -631,7 +631,6 @@ public class AipoMessageDbService implements MessageDbService {
         return null;
       }
 
-      // 更新時の
       Map<String, String> memberDesktopNotificationMap =
         new HashMap<String, String>();
       Map<String, String> memberMobileNotificationMap =
