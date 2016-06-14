@@ -435,6 +435,8 @@ public class AipoMessageDbService implements MessageDbService {
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
+        map.setDesktopNotification("A");
+        map.setMobileNotification("A");
         if (!isFirst) {
           autoName.append(",");
         }
@@ -532,6 +534,8 @@ public class AipoMessageDbService implements MessageDbService {
           map1.setTargetUserId(targetUserId);
           map1.setLoginName(turbineUser.getLoginName());
           map1.setAuthority("A");
+          map1.setDesktopNotification("A");
+          map1.setMobileNotification("A");
 
           EipTMessageRoomMember map2 =
             Database.create(EipTMessageRoomMember.class);
@@ -540,6 +544,8 @@ public class AipoMessageDbService implements MessageDbService {
           map2.setUserId(targetUserId);
           map2.setLoginName(targetUsername);
           map2.setAuthority("A");
+          map2.setDesktopNotification("A");
+          map2.setMobileNotification("A");
 
           room.setAutoName("T");
           room.setRoomType("O");
