@@ -56,7 +56,8 @@ public interface MessageService {
 
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, List<String> memberAdminsList, String roomId,
-      SecurityToken token) throws ProtocolException;
+      String destopNotification, String mobileNotification, SecurityToken token)
+      throws ProtocolException;
 
   public Future<ALMessage> postMessage(UserId userId, String roomIdOrUsername,
       String message, String transactionId, SecurityToken token,

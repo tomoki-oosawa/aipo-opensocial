@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -434,6 +435,8 @@ public class AipoMessageDbService implements MessageDbService {
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
+        map.setDesktopNotification("A");
+        map.setMobileNotification("A");
         if (!isFirst) {
           autoName.append(",");
         }
@@ -531,6 +534,8 @@ public class AipoMessageDbService implements MessageDbService {
           map1.setTargetUserId(targetUserId);
           map1.setLoginName(turbineUser.getLoginName());
           map1.setAuthority("A");
+          map1.setDesktopNotification("A");
+          map1.setMobileNotification("A");
 
           EipTMessageRoomMember map2 =
             Database.create(EipTMessageRoomMember.class);
@@ -539,6 +544,8 @@ public class AipoMessageDbService implements MessageDbService {
           map2.setUserId(targetUserId);
           map2.setLoginName(targetUsername);
           map2.setAuthority("A");
+          map2.setDesktopNotification("A");
+          map2.setMobileNotification("A");
 
           room.setAutoName("T");
           room.setRoomType("O");
@@ -611,8 +618,8 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, List<String> memberNameList,
-      Map<String, String> memberAuthorityMap) {
+      String name, String desktopNotification, String mobileNotification,
+      List<String> memberNameList, Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
@@ -630,6 +637,19 @@ public class AipoMessageDbService implements MessageDbService {
         return null;
       }
 
+      Map<String, String> memberDesktopNotificationMap =
+        new HashMap<String, String>();
+      Map<String, String> memberMobileNotificationMap =
+        new HashMap<String, String>();
+      List<EipTMessageRoomMember> tmpMemberList =
+        model.getEipTMessageRoomMember();
+      for (EipTMessageRoomMember tmpMember : tmpMemberList) {
+        memberDesktopNotificationMap.put(tmpMember.getLoginName(), tmpMember
+          .getDesktopNotification());
+        memberMobileNotificationMap.put(tmpMember.getLoginName(), tmpMember
+          .getMobileNotification());
+      }
+
       Database.deleteAll(model.getEipTMessageRoomMember());
 
       boolean isFirst = true;
@@ -643,6 +663,18 @@ public class AipoMessageDbService implements MessageDbService {
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
+        // アプリ側が通知設定に対応している場合、自分の通知設定を変更
+        if (desktopNotification != null
+          && mobileNotification != null
+          && user.getLoginName().equals(username)) {
+          map.setDesktopNotification(desktopNotification);
+          map.setMobileNotification(mobileNotification);
+        } else {
+          map.setDesktopNotification(memberDesktopNotificationMap.get(user
+            .getLoginName()));
+          map.setMobileNotification(memberMobileNotificationMap.get(user
+            .getLoginName()));
+        }
         if (!isFirst) {
           autoName.append(",");
         }

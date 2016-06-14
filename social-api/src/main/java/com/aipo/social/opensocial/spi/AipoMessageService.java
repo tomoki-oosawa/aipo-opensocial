@@ -702,7 +702,8 @@ public class AipoMessageService extends AbstractService implements
   @Override
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, List<String> memberAdminsList, String roomId,
-      SecurityToken token) throws ProtocolException {
+      String desktopNotification, String mobileNotification, SecurityToken token)
+      throws ProtocolException {
 
     setUp(token);
 
@@ -777,6 +778,8 @@ public class AipoMessageService extends AbstractService implements
           roomIdInt,
           username,
           name,
+          desktopNotification,
+          mobileNotification,
           memberNameList,
           memberAuthorityMap);
     } else {
