@@ -219,6 +219,13 @@ public class AipoMessageService extends AbstractService implements
     }
     room.setAdminMembers(adminMembers);
 
+    List<String> mobileNotificationMembers = new ArrayList<String>();
+    for (String mobileNotificationMember : model
+      .getRoomMobileNotificationMembers()) {
+      mobileNotificationMembers.add(orgId + ":" + mobileNotificationMember);
+    }
+    room.setMobileNotificationMembers(mobileNotificationMembers);
+
     // ルーム詳細の場合
     return room;
   }

@@ -220,7 +220,7 @@ public class AipoMessageDbService implements MessageDbService {
         Database
           .sql(
             EipTMessageRoomMember.class,
-            "select login_name, authority from eip_t_message_room_member where room_id=#bind($room_id)")
+            "select login_name, authority, mobile_notification from eip_t_message_room_member where room_id=#bind($room_id)")
           .param("room_id", Integer.valueOf(roomId))
           .fetchList();
     }
@@ -254,14 +254,20 @@ public class AipoMessageDbService implements MessageDbService {
       if (roomId > 0 && roomMembers != null) {
         List<String> roomMembersStr = new ArrayList<String>();
         List<String> roomAdminMembersStr = new ArrayList<String>();
+        List<String> roomMobileNotificationMembersStr = new ArrayList<String>();
         for (EipTMessageRoomMember roomMember : roomMembers) {
           roomMembersStr.add(roomMember.getLoginName());
           if ("A".equals(roomMember.getAuthority())) {
             roomAdminMembersStr.add(roomMember.getLoginName());
           }
+          if ("A".equals(roomMember.getMobileNotification())) {
+            roomMobileNotificationMembersStr.add(roomMember.getLoginName());
+          }
         }
         object.setRoomMembers(roomMembersStr);
         object.setRoomAdminMembers(roomAdminMembersStr);
+        object
+          .setRoomMobileNotificationMembers(roomMobileNotificationMembersStr);
       }
       if (lastMessageId != null && lastMessageId.longValue() > 0) {
         object.setLastMessageId(lastMessageId.intValue());

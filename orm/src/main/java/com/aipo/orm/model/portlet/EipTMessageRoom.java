@@ -45,6 +45,8 @@ public class EipTMessageRoom extends _EipTMessageRoom {
 
   private List<String> roomAdminMembers = null;
 
+  private List<String> roomMobileNotificationMembers = null;
+
   private Integer lastMessageId = null;
 
   public Integer getRoomId() {
@@ -195,6 +197,22 @@ public class EipTMessageRoom extends _EipTMessageRoom {
    */
   public List<String> getRoomAdminMembers() {
     return roomAdminMembers;
+  }
+
+  /**
+   * @param roomAdminMembers
+   *          セットする roomAdminMembers
+   */
+  public void setRoomMobileNotificationMembers(
+      List<String> roomMobileNotificationMembers) {
+    this.roomMobileNotificationMembers = roomMobileNotificationMembers;
+  }
+
+  /**
+   * @return roomAdminMember
+   */
+  public List<String> getRoomMobileNotificationMembers() {
+    return roomMobileNotificationMembers;
   }
 
   public void setLastMessageId(int lastMessageId) {

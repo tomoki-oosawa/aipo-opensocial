@@ -65,6 +65,11 @@ public interface ALMessageRoom {
 
   public void setAdminMembers(List<String> adminMembers);
 
+  public List<String> getMobileNotificationMembers();
+
+  public void setMobileNotificationMembers(
+      List<String> mobileNotificationMembers);
+
   public Date getUpdateDate();
 
   public void setUpdateDate(Date date);
@@ -82,7 +87,8 @@ public interface ALMessageRoom {
         "unreadCount"), IS_DIRECT("isDirect"), IS_AUTO_NAME("isAutoName"), PHOTO_MODIFIED(
         "photoModified"), LAST_MESSAGE("lastMessage"), LAST_MESSAGE_ID(
         "lastMessageId"), MEMBERS("members"), UPDATE_DATE("updateDate"), HAS_PHOTO(
-        "hasPhoto"), ADMINMEMBERS("adminMembers");
+        "hasPhoto"), ADMINMEMBERS("adminMembers"), MOBILENOTIFICATIONMEMBERS(
+        "mobileNotificationMembers");
 
     private final String jsonString;
 
