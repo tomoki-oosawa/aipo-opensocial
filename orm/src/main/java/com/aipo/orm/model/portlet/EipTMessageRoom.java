@@ -200,8 +200,8 @@ public class EipTMessageRoom extends _EipTMessageRoom {
   }
 
   /**
-   * @param roomAdminMembers
-   *          セットする roomAdminMembers
+   * @param roomMobileNotificationMembers
+   *          セットする roomMobileNotificationMembers
    */
   public void setRoomMobileNotificationMembers(
       List<String> roomMobileNotificationMembers) {
@@ -209,7 +209,7 @@ public class EipTMessageRoom extends _EipTMessageRoom {
   }
 
   /**
-   * @return roomAdminMember
+   * @return roomMobileNotificationMembers
    */
   public List<String> getRoomMobileNotificationMembers() {
     return roomMobileNotificationMembers;
