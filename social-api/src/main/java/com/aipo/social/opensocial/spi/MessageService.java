@@ -33,6 +33,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.social.opensocial.model.ALFile;
 import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageRoom;
+import com.aipo.social.opensocial.model.ALMessageRoomNotificationSettings;
 
 public interface MessageService {
 
@@ -86,5 +87,8 @@ public interface MessageService {
 
   public InputStream getMessageFilesThumbnail(UserId userId, int fileId,
       SecurityToken token);
+
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> getRoomNotificationSettings(
+      UserId userId, int roomId, SecurityToken token) throws ProtocolException;
 
 }

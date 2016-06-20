@@ -328,4 +328,40 @@ public class AipoMessageRoomHandler {
     }
   }
 
+  /**
+   * ルーム別通知設定 <br>
+   * <code>
+   * GET /rooms/:roomId/notification
+   * </code><br>
+   * <code>
+   * osapi.rooms.notification.get( { roomId: :roomId } )
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "GET", name = "notification.get", path = "/{roomId}/roomNotificationSettings")
+  public Future<?> getNotification(SocialRequestItem request) {
+    try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+
+      // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
+
+      return service.getRoomNotificationSettings(
+        userIds.iterator().next(),
+        roomIdInt,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
+
 }

@@ -831,6 +831,31 @@ public class AipoMessageDbService implements MessageDbService {
       Operations.eq(EipTMessageFile.ROOM_ID_PROPERTY, roomId)).fetchList();
   }
 
+  @Override
+  public String getRoomNotification(String username, int roomId) {
+    Integer userId = null;
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      SystemUser systemUser = AipoToolkit.getSystemUser(username);
+      if (systemUser != null) {
+        userId = systemUser.getUserId();
+      }
+    } else {
+      userId = turbineUser.getUserId();
+    }
+    if (userId == null) {
+      return null;
+    }
+    EipTMessageRoom room = new EipTMessageRoom();
+    room = findRoom(roomId, username);
+    if (room == null) {
+      return getRoomMobileNotification(room, userId);
+    } else {
+      return null;
+    }
+
+  }
+
   public boolean isJoinRoom(EipTMessageRoom room, int userId) {
     List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
     for (EipTMessageRoomMember member : list) {
@@ -851,6 +876,16 @@ public class AipoMessageDbService implements MessageDbService {
       }
     }
     return false;
+  }
+
+  public String getRoomMobileNotification(EipTMessageRoom room, int userId) {
+    List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
+    for (EipTMessageRoomMember member : list) {
+      if (member.getUserId().intValue() == userId) {
+        return member.getMobileNotification();
+      }
+    }
+    return null;
   }
 
   /**

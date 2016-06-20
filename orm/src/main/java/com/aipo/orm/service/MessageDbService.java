@@ -83,6 +83,8 @@ public interface MessageDbService {
 
   public List<EipTMessageFile> getMessageFilesByRoom(int roomId);
 
+  public String getRoomNotification(String username, int roomId);
+
   public enum IconSize {
     NORMAL, LARGE;
   }
