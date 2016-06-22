@@ -846,9 +846,8 @@ public class AipoMessageDbService implements MessageDbService {
     if (userId == null) {
       return null;
     }
-    EipTMessageRoom room = new EipTMessageRoom();
-    room = findRoom(roomId, username);
-    if (room == null) {
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
       return getRoomMobileNotification(room, userId);
     } else {
       return null;

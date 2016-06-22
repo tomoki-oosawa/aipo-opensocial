@@ -1035,7 +1035,7 @@ public class AipoMessageService extends AbstractService implements
       messageDbService.getRoomNotification(username, roomId);
 
     if (notification == null) {
-      throw new AipoProtocolException(AipoErrorCode.ICON_NOT_FOUND);
+      throw new AipoProtocolException(AipoErrorCode.NOTIFICATION_NOT_FOUND);
     }
 
     List<ALMessageRoomNotificationSettings> result =
