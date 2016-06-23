@@ -1162,12 +1162,19 @@ public class AipoMessageDbService implements MessageDbService {
   }
 
   private EipTMessageRoom getRoom(int userId, int targetUserId) {
+    int user1 = userId;
+    int user2 = targetUserId;
+    if (userId > targetUserId) {
+      user1 = targetUserId;
+      user2 = userId;
+    }
     EipTMessageRoomMember model =
-      Database.query(EipTMessageRoomMember.class).where(
-        Operations.eq(EipTMessageRoomMember.USER_ID_PROPERTY, userId)).where(
-        Operations.eq(
-          EipTMessageRoomMember.TARGET_USER_ID_PROPERTY,
-          targetUserId)).fetchSingle();
+      Database
+        .query(EipTMessageRoomMember.class)
+        .where(Operations.eq(EipTMessageRoomMember.USER_ID_PROPERTY, user1))
+        .where(
+          Operations.eq(EipTMessageRoomMember.TARGET_USER_ID_PROPERTY, user2))
+        .fetchSingle();
     if (model != null) {
       return model.getEipTMessageRoom();
     } else {
