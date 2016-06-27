@@ -40,6 +40,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
 import com.aipo.container.protocol.AipoProtocolException;
+import com.aipo.orm.Database;
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
@@ -1047,6 +1048,59 @@ public class AipoMessageService extends AbstractService implements
     setting.setRoomId(roomId);
     setting.setUserId(orgId + ":" + username);
     setting.setMobileNotification(notification);
+
+    result.add(setting);
+
+    RestfulCollection<ALMessageRoomNotificationSettings> restCollection =
+      new RestfulCollection<ALMessageRoomNotificationSettings>(result);
+    return ImmediateFuture.newInstance(restCollection);
+  }
+
+  /**
+   * @param userId
+   * @param roomId
+   * @param mobileNotification
+   * @param token
+   * @return
+   * @throws ProtocolException
+   */
+
+  @Override
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> putRoomNotificationSettings(
+      UserId userId, int roomId, String mobileNotification, SecurityToken token)
+      throws ProtocolException {
+
+    setUp(token);
+
+    checkSameViewer(userId, token);
+    checkSameRoomMember(userId, token, roomId);
+    String username = getUserId(userId, token);
+
+    if (!(mobileNotification.equals('A') || mobileNotification.equals('F'))) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter mobileNotification invalid."));
+    }
+
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
+
+    for (EipTMessageRoomMember member : members) {
+      if (member.getLoginName().equals(username)) {
+        member.setMobileNotification(mobileNotification);
+      }
+    }
+
+    Database.commit();
+
+    List<ALMessageRoomNotificationSettings> result =
+      new ArrayList<ALMessageRoomNotificationSettings>();
+
+    ALMessageRoomNotificationSettings setting =
+      new ALMessageRoomNotificationSettingsImpl();
+    String orgId = getOrgId(token);
+    setting.setRoomId(roomId);
+    setting.setUserId(orgId + ":" + username);
+    setting.setMobileNotification(mobileNotification);
 
     result.add(setting);
 

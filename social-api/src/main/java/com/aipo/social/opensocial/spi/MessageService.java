@@ -91,4 +91,8 @@ public interface MessageService {
   public Future<RestfulCollection<ALMessageRoomNotificationSettings>> getRoomNotificationSettings(
       UserId userId, int roomId, SecurityToken token) throws ProtocolException;
 
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> putRoomNotificationSettings(
+      UserId userId, int roomId, String mobileNotification, SecurityToken token)
+      throws ProtocolException;
+
 }
