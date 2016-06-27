@@ -363,23 +363,6 @@ public enum AipoErrorCode {
     int getStatus() {
       return HttpServletResponse.SC_FORBIDDEN;
     }
-  },
-
-  NOTIFICATION_NOT_FOUND {
-    @Override
-    int getCode() {
-      return 1014;
-    }
-
-    @Override
-    protected String getDefaultMessage() {
-      return "Notification not found.";
-    }
-
-    @Override
-    int getStatus() {
-      return HttpServletResponse.SC_NOT_FOUND;
-    }
   };
 
   private String message = null;
