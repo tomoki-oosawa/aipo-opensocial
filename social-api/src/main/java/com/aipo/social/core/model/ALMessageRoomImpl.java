@@ -50,8 +50,6 @@ public class ALMessageRoomImpl implements ALMessageRoom {
 
   private List<String> adminMembers;
 
-  private List<String> mobileNotificationMembers;
-
   private Date updateDate;
 
   private boolean hasPhoto;
@@ -182,23 +180,6 @@ public class ALMessageRoomImpl implements ALMessageRoom {
   @Override
   public void setAdminMembers(List<String> adminMembers) {
     this.adminMembers = adminMembers;
-  }
-
-  /**
-   * @return mobileNotificationMembers
-   */
-  @Override
-  public List<String> getMobileNotificationMembers() {
-    return mobileNotificationMembers;
-  }
-
-  /**
-   * @param mobileNotificationMembers
-   */
-  @Override
-  public void setMobileNotificationMembers(
-      List<String> mobileNotificationMembers) {
-    this.mobileNotificationMembers = mobileNotificationMembers;
   }
 
   /**

@@ -624,8 +624,8 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, String desktopNotification, String mobileNotification,
-      List<String> memberNameList, Map<String, String> memberAuthorityMap) {
+      String name, List<String> memberNameList,
+      Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
@@ -669,18 +669,11 @@ public class AipoMessageDbService implements MessageDbService {
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
-        // アプリ側が通知設定に対応している場合、自分の通知設定を変更
-        if (desktopNotification != null
-          && mobileNotification != null
-          && user.getLoginName().equals(username)) {
-          map.setDesktopNotification(desktopNotification);
-          map.setMobileNotification(mobileNotification);
-        } else {
-          map.setDesktopNotification(memberDesktopNotificationMap.get(user
-            .getLoginName()));
-          map.setMobileNotification(memberMobileNotificationMap.get(user
-            .getLoginName()));
-        }
+        map.setDesktopNotification(memberDesktopNotificationMap.get(user
+          .getLoginName()));
+        map.setMobileNotification(memberMobileNotificationMap.get(user
+          .getLoginName()));
+
         if (!isFirst) {
           autoName.append(",");
         }

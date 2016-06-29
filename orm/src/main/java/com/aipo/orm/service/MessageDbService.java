@@ -53,8 +53,8 @@ public interface MessageDbService {
       String targetUsername, String message);
 
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, String desktopNotification, String mobileNotification,
-      List<String> memberNameList, Map<String, String> memberAuthorityMap);
+      String name, List<String> memberNameList,
+      Map<String, String> memberAuthorityMap);
 
   public InputStream getPhoto(int roomId);
 

@@ -222,13 +222,6 @@ public class AipoMessageService extends AbstractService implements
     }
     room.setAdminMembers(adminMembers);
 
-    List<String> mobileNotificationMembers = new ArrayList<String>();
-    for (String mobileNotificationMember : model
-      .getRoomMobileNotificationMembers()) {
-      mobileNotificationMembers.add(orgId + ":" + mobileNotificationMember);
-    }
-    room.setMobileNotificationMembers(mobileNotificationMembers);
-
     // ルーム詳細の場合
     return room;
   }
@@ -712,8 +705,7 @@ public class AipoMessageService extends AbstractService implements
   @Override
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, List<String> memberAdminsList, String roomId,
-      String desktopNotification, String mobileNotification, SecurityToken token)
-      throws ProtocolException {
+      SecurityToken token) throws ProtocolException {
 
     setUp(token);
 
@@ -788,8 +780,6 @@ public class AipoMessageService extends AbstractService implements
           roomIdInt,
           username,
           name,
-          desktopNotification,
-          mobileNotification,
           memberNameList,
           memberAuthorityMap);
     } else {
@@ -1076,7 +1066,7 @@ public class AipoMessageService extends AbstractService implements
     checkSameRoomMember(userId, token, roomId);
     String username = getUserId(userId, token);
 
-    if (!(mobileNotification.equals('A') || mobileNotification.equals('F'))) {
+    if (!("A".equals(mobileNotification) || "F".equals(mobileNotification))) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
         .customMessage("Parameter mobileNotification invalid."));
     }
