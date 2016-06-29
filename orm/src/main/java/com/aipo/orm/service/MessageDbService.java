@@ -85,6 +85,9 @@ public interface MessageDbService {
 
   public String getRoomNotification(String username, int roomId);
 
+  public void setRoomNotification(String username, int roomId,
+      String mobileNotification);
+
   public enum IconSize {
     NORMAL, LARGE;
   }

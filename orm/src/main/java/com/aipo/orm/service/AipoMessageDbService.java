@@ -848,6 +848,26 @@ public class AipoMessageDbService implements MessageDbService {
 
   }
 
+  @Override
+  public void setRoomNotification(String username, int roomId,
+      String mobileNotification) {
+    try {
+      EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+      List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
+
+      for (EipTMessageRoomMember member : members) {
+        if (member.getLoginName().equals(username)) {
+          member.setMobileNotification(mobileNotification);
+        }
+      }
+
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
   public boolean isJoinRoom(EipTMessageRoom room, int userId) {
     List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
     for (EipTMessageRoomMember member : list) {

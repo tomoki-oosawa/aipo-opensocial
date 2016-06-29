@@ -40,7 +40,6 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
 import com.aipo.container.protocol.AipoProtocolException;
-import com.aipo.orm.Database;
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
@@ -1071,16 +1070,7 @@ public class AipoMessageService extends AbstractService implements
         .customMessage("Parameter mobileNotification invalid."));
     }
 
-    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
-    List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
-
-    for (EipTMessageRoomMember member : members) {
-      if (member.getLoginName().equals(username)) {
-        member.setMobileNotification(mobileNotification);
-      }
-    }
-
-    Database.commit();
+    messageDbService.setRoomNotification(username, roomId, mobileNotification);
 
     List<ALMessageRoomNotificationSettings> result =
       new ArrayList<ALMessageRoomNotificationSettings>();
