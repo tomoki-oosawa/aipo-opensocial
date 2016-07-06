@@ -613,6 +613,10 @@ public class AipoMessageService extends AbstractService implements
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
+    List<EipTMessage> list =
+      messageDbService.findMessage(room.getRoomId(), messageId, SearchOptions
+        .build());
+
     if (messageDbService.isOwnMessage(messageId, username)) {
       // 自分自身のメッセージは削除可能
       List<EipTMessageFile> files =
