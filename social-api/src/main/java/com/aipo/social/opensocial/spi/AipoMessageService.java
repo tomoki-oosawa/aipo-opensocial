@@ -22,8 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +40,6 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.aipo.container.protocol.AipoErrorCode;
 import com.aipo.container.protocol.AipoProtocolException;
-import com.aipo.orm.Database;
 import com.aipo.orm.model.portlet.EipTMessage;
 import com.aipo.orm.model.portlet.EipTMessageFile;
 import com.aipo.orm.model.portlet.EipTMessageRoom;
@@ -63,7 +60,6 @@ import com.aipo.social.opensocial.model.ALMessageRoom;
 import com.aipo.social.opensocial.spi.PushService.PushType;
 import com.aipo.util.AipoToolkit;
 import com.aipo.util.AipoToolkit.SystemUser;
-import com.aipo.util.CommonUtils;
 import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -617,30 +613,7 @@ public class AipoMessageService extends AbstractService implements
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
     }
 
-    List<EipTMessage> allMessages =
-      messageDbService.findMessage(room.getRoomId(), 0, SearchOptions.build());
-    Collections.sort(allMessages, (o1, o2) -> Integer.compare(
-      o2.getMessageId(),
-      o1.getMessageId()));
-    int lastMessageId = allMessages.get(0).getMessageId();
-    Date now = new Date();
-    if (messageId == lastMessageId) {
-      EipTMessageRoom updateRoom = Database.get(EipTMessageRoom.class, roomId);
-      if (updateRoom == null) {
-        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
-      }
-      if (allMessages.size() > 1) {
-        EipTMessage secondLastMessage = allMessages.get(1);
-        updateRoom.setLastMessage(CommonUtils.compressString(secondLastMessage
-          .getMessage(), 100));
-        updateRoom.setLastUpdateDate(now);
-      } else {
-        // メッセージが一つの場合lastMessageにnull
-        updateRoom.setLastMessage(CommonUtils.compressString(null, 100));
-        updateRoom.setLastUpdateDate(now);
-      }
-      Database.commit();
-    }
+    messageDbService.updateRoomLastMessage(roomId, messageId);
 
     if (messageDbService.isOwnMessage(messageId, username)) {
       // 自分自身のメッセージは削除可能

@@ -742,6 +742,41 @@ public class AipoMessageDbService implements MessageDbService {
 
   /**
    * @param roomId
+   * @param deleteMessageId
+   * @return
+   */
+  @Override
+  public EipTMessageRoom updateRoomLastMessage(Integer roomId,
+      Integer deleteMessageId) {
+    List<EipTMessage> allMessages =
+      findMessage(roomId, 0, SearchOptions.build());
+    Collections.sort(allMessages, (o1, o2) -> Integer.compare(
+      o2.getMessageId(),
+      o1.getMessageId()));
+    int lastMessageId = allMessages.get(0).getMessageId();
+    Date now = new Date();
+    EipTMessageRoom updateRoom = Database.get(EipTMessageRoom.class, roomId);
+    if (deleteMessageId == lastMessageId) {
+      if (updateRoom == null) {
+        return null;
+      }
+      if (allMessages.size() > 1) {
+        EipTMessage secondLastMessage = allMessages.get(1);
+        updateRoom.setLastMessage(CommonUtils.compressString(secondLastMessage
+          .getMessage(), 100));
+        updateRoom.setLastUpdateDate(now);
+      } else {
+        // メッセージが一つの場合lastMessageにnull
+        updateRoom.setLastMessage(CommonUtils.compressString(null, 100));
+        updateRoom.setLastUpdateDate(now);
+      }
+      Database.commit();
+    }
+    return updateRoom;
+  }
+
+  /**
+   * @param roomId
    */
   @Override
   public void deleteRoom(int roomId) {
