@@ -43,6 +43,7 @@ import com.aipo.orm.query.Operations;
 import com.aipo.orm.query.SQLTemplate;
 import com.aipo.orm.query.SelectQuery;
 import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.aipo.util.AipoToolkit;
 import com.aipo.util.AipoToolkit.SystemUser;
 import com.aipo.util.CommonUtils;
@@ -748,20 +749,21 @@ public class AipoMessageDbService implements MessageDbService {
   @Override
   public EipTMessageRoom updateRoomLastMessage(Integer roomId,
       Integer deleteMessageId) {
-    List<EipTMessage> allMessages =
-      findMessage(roomId, 0, SearchOptions.build());
-    Collections.sort(allMessages, (o1, o2) -> Integer.compare(
-      o2.getMessageId(),
-      o1.getMessageId()));
-    int lastMessageId = allMessages.get(0).getMessageId();
+    SearchOptions options =
+      SearchOptions.build().withSort(
+        EipTMessage.MESSAGE_ID_PK_COLUMN,
+        SortOrder.descending).withLimit(2);
+    List<EipTMessage> messages = findMessage(roomId, 0, options);
+
+    int lastMessageId = messages.get(0).getMessageId();
     Date now = new Date();
     EipTMessageRoom updateRoom = Database.get(EipTMessageRoom.class, roomId);
     if (deleteMessageId == lastMessageId) {
       if (updateRoom == null) {
         return null;
       }
-      if (allMessages.size() > 1) {
-        EipTMessage secondLastMessage = allMessages.get(1);
+      if (messages.size() > 1) {
+        EipTMessage secondLastMessage = messages.get(1);
         updateRoom.setLastMessage(CommonUtils.compressString(secondLastMessage
           .getMessage(), 100));
         updateRoom.setLastUpdateDate(now);
