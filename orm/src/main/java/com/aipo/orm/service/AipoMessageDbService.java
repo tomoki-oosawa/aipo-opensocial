@@ -755,26 +755,30 @@ public class AipoMessageDbService implements MessageDbService {
         SortOrder.descending).withLimit(2);
     List<EipTMessage> messages = findMessage(roomId, 0, options);
 
-    int lastMessageId = messages.get(0).getMessageId();
-    Date now = new Date();
-    EipTMessageRoom updateRoom = Database.get(EipTMessageRoom.class, roomId);
-    if (deleteMessageId == lastMessageId) {
-      if (updateRoom == null) {
-        return null;
+    if (messages != null && messages.size() > 0) {
+      int lastMessageId = messages.get(0).getMessageId();
+      Date now = new Date();
+      EipTMessageRoom updateRoom = Database.get(EipTMessageRoom.class, roomId);
+      if (deleteMessageId == lastMessageId) {
+        if (updateRoom == null) {
+          return null;
+        }
+        if (messages.size() > 1) {
+          EipTMessage secondLastMessage = messages.get(1);
+          updateRoom.setLastMessage(CommonUtils.compressString(
+            secondLastMessage.getMessage(),
+            100));
+          updateRoom.setLastUpdateDate(now);
+        } else {
+          // メッセージが一つの場合lastMessageにnull
+          updateRoom.setLastMessage(CommonUtils.compressString(null, 100));
+          updateRoom.setLastUpdateDate(now);
+        }
+        Database.commit();
       }
-      if (messages.size() > 1) {
-        EipTMessage secondLastMessage = messages.get(1);
-        updateRoom.setLastMessage(CommonUtils.compressString(secondLastMessage
-          .getMessage(), 100));
-        updateRoom.setLastUpdateDate(now);
-      } else {
-        // メッセージが一つの場合lastMessageにnull
-        updateRoom.setLastMessage(CommonUtils.compressString(null, 100));
-        updateRoom.setLastUpdateDate(now);
-      }
-      Database.commit();
+      return updateRoom;
     }
-    return updateRoom;
+    return null;
   }
 
   /**
