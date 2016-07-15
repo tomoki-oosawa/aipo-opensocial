@@ -56,6 +56,9 @@ public interface MessageDbService {
       String name, String desktopNotification, String mobileNotification,
       List<String> memberNameList, Map<String, String> memberAuthorityMap);
 
+  public EipTMessageRoom updateRoomLastMessage(Integer roomId,
+      Integer deleteMessageId);
+
   public InputStream getPhoto(int roomId);
 
   public InputStream getPhoto(int roomId, IconSize size);

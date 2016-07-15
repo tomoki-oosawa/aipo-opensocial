@@ -43,6 +43,7 @@ import com.aipo.orm.query.Operations;
 import com.aipo.orm.query.SQLTemplate;
 import com.aipo.orm.query.SelectQuery;
 import com.aipo.orm.service.request.SearchOptions;
+import com.aipo.orm.service.request.SearchOptions.SortOrder;
 import com.aipo.util.AipoToolkit;
 import com.aipo.util.AipoToolkit.SystemUser;
 import com.aipo.util.CommonUtils;
@@ -738,6 +739,46 @@ public class AipoMessageDbService implements MessageDbService {
       Database.rollback();
       throw new RuntimeException(t);
     }
+  }
+
+  /**
+   * @param roomId
+   * @param deleteMessageId
+   * @return
+   */
+  @Override
+  public EipTMessageRoom updateRoomLastMessage(Integer roomId,
+      Integer deleteMessageId) {
+    SearchOptions options =
+      SearchOptions.build().withSort(
+        EipTMessage.MESSAGE_ID_PK_COLUMN,
+        SortOrder.descending).withLimit(2);
+    List<EipTMessage> messages = findMessage(roomId, 0, options);
+
+    if (messages != null && messages.size() > 0) {
+      int lastMessageId = messages.get(0).getMessageId();
+      Date now = new Date();
+      EipTMessageRoom updateRoom = Database.get(EipTMessageRoom.class, roomId);
+      if (deleteMessageId == lastMessageId) {
+        if (updateRoom == null) {
+          return null;
+        }
+        if (messages.size() > 1) {
+          EipTMessage secondLastMessage = messages.get(1);
+          updateRoom.setLastMessage(CommonUtils.compressString(
+            secondLastMessage.getMessage(),
+            100));
+          updateRoom.setLastUpdateDate(now);
+        } else {
+          // メッセージが一つの場合lastMessageにnull
+          updateRoom.setLastMessage(CommonUtils.compressString(null, 100));
+          updateRoom.setLastUpdateDate(now);
+        }
+        Database.commit();
+      }
+      return updateRoom;
+    }
+    return null;
   }
 
   /**
