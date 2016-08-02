@@ -113,7 +113,6 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("member_to", memberList);
-      AipoPreconditions.multiple("member_to", memberList);
       AipoPreconditions.maxLength("name", name, 50);
       AipoPreconditions.maxMember("member", memberList.size(), 300);
       AipoPreconditions.isUTF8("name", name);
@@ -159,7 +158,6 @@ public class AipoMessageRoomHandler {
       AipoPreconditions.required("userId", userIds);
       AipoPreconditions.notMultiple("userId", userIds);
       AipoPreconditions.required("member_to", memberList);
-      AipoPreconditions.multiple("member_to", memberList);
       AipoPreconditions.maxMember("member", memberList.size(), 300);
       AipoPreconditions.required("roomId", roomId);
 
