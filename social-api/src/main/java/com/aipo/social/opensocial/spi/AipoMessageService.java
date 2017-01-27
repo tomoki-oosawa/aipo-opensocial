@@ -53,10 +53,12 @@ import com.aipo.social.core.model.ALFileImpl;
 import com.aipo.social.core.model.ALMessageFileImpl;
 import com.aipo.social.core.model.ALMessageImpl;
 import com.aipo.social.core.model.ALMessageRoomImpl;
+import com.aipo.social.core.model.ALMessageRoomNotificationSettingsImpl;
 import com.aipo.social.opensocial.model.ALFile;
 import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageFile;
 import com.aipo.social.opensocial.model.ALMessageRoom;
+import com.aipo.social.opensocial.model.ALMessageRoomNotificationSettings;
 import com.aipo.social.opensocial.spi.PushService.PushType;
 import com.aipo.util.AipoToolkit;
 import com.aipo.util.AipoToolkit.SystemUser;
@@ -704,8 +706,7 @@ public class AipoMessageService extends AbstractService implements
   @Override
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, List<String> memberAdminsList, String roomId,
-      String desktopNotification, String mobileNotification, SecurityToken token)
-      throws ProtocolException {
+      SecurityToken token) throws ProtocolException {
 
     setUp(token);
 
@@ -780,8 +781,6 @@ public class AipoMessageService extends AbstractService implements
           roomIdInt,
           username,
           name,
-          desktopNotification,
-          mobileNotification,
           memberNameList,
           memberAuthorityMap);
     } else {
@@ -1005,6 +1004,91 @@ public class AipoMessageService extends AbstractService implements
     }
 
     return new ByteArrayInputStream(thumbnail);
+  }
+
+  /**
+   * @param userId
+   * @param roomId
+   * @param token
+   * @return
+   * @throws ProtocolException
+   */
+  @Override
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> getRoomNotificationSettings(
+      UserId userId, int roomId, SecurityToken token) throws ProtocolException {
+
+    setUp(token);
+
+    checkSameViewer(userId, token);
+    checkSameRoomMember(userId, token, roomId);
+    String username = getUserId(userId, token);
+
+    String notification =
+      messageDbService.getRoomNotification(username, roomId);
+
+    if (notification == null) {
+      throw new AipoProtocolException(AipoErrorCode.NOT_FOUND);
+    }
+
+    List<ALMessageRoomNotificationSettings> result =
+      new ArrayList<ALMessageRoomNotificationSettings>();
+
+    ALMessageRoomNotificationSettings setting =
+      new ALMessageRoomNotificationSettingsImpl();
+    String orgId = getOrgId(token);
+    setting.setRoomId(roomId);
+    setting.setUserId(orgId + ":" + username);
+    setting.setMobileNotification(notification);
+
+    result.add(setting);
+
+    RestfulCollection<ALMessageRoomNotificationSettings> restCollection =
+      new RestfulCollection<ALMessageRoomNotificationSettings>(result);
+    return ImmediateFuture.newInstance(restCollection);
+  }
+
+  /**
+   * @param userId
+   * @param roomId
+   * @param mobileNotification
+   * @param token
+   * @return
+   * @throws ProtocolException
+   */
+
+  @Override
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> putRoomNotificationSettings(
+      UserId userId, int roomId, String mobileNotification, SecurityToken token)
+      throws ProtocolException {
+
+    setUp(token);
+
+    checkSameViewer(userId, token);
+    checkSameRoomMember(userId, token, roomId);
+    String username = getUserId(userId, token);
+
+    if (!("A".equals(mobileNotification) || "F".equals(mobileNotification))) {
+      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
+        .customMessage("Parameter mobileNotification invalid."));
+    }
+
+    messageDbService.setRoomNotification(username, roomId, mobileNotification);
+
+    List<ALMessageRoomNotificationSettings> result =
+      new ArrayList<ALMessageRoomNotificationSettings>();
+
+    ALMessageRoomNotificationSettings setting =
+      new ALMessageRoomNotificationSettingsImpl();
+    String orgId = getOrgId(token);
+    setting.setRoomId(roomId);
+    setting.setUserId(orgId + ":" + username);
+    setting.setMobileNotification(mobileNotification);
+
+    result.add(setting);
+
+    RestfulCollection<ALMessageRoomNotificationSettings> restCollection =
+      new RestfulCollection<ALMessageRoomNotificationSettings>(result);
+    return ImmediateFuture.newInstance(restCollection);
   }
 
   /**

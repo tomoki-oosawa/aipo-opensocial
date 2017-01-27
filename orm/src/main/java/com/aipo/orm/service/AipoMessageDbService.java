@@ -221,7 +221,7 @@ public class AipoMessageDbService implements MessageDbService {
         Database
           .sql(
             EipTMessageRoomMember.class,
-            "select login_name, authority from eip_t_message_room_member where room_id=#bind($room_id)")
+            "select login_name, authority, mobile_notification from eip_t_message_room_member where room_id=#bind($room_id)")
           .param("room_id", Integer.valueOf(roomId))
           .fetchList();
     }
@@ -255,14 +255,20 @@ public class AipoMessageDbService implements MessageDbService {
       if (roomId > 0 && roomMembers != null) {
         List<String> roomMembersStr = new ArrayList<String>();
         List<String> roomAdminMembersStr = new ArrayList<String>();
+        List<String> roomMobileNotificationMembersStr = new ArrayList<String>();
         for (EipTMessageRoomMember roomMember : roomMembers) {
           roomMembersStr.add(roomMember.getLoginName());
           if ("A".equals(roomMember.getAuthority())) {
             roomAdminMembersStr.add(roomMember.getLoginName());
           }
+          if ("A".equals(roomMember.getMobileNotification())) {
+            roomMobileNotificationMembersStr.add(roomMember.getLoginName());
+          }
         }
         object.setRoomMembers(roomMembersStr);
         object.setRoomAdminMembers(roomAdminMembersStr);
+        object
+          .setRoomMobileNotificationMembers(roomMobileNotificationMembersStr);
       }
       if (lastMessageId != null && lastMessageId.longValue() > 0) {
         object.setLastMessageId(lastMessageId.intValue());
@@ -619,8 +625,8 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, String desktopNotification, String mobileNotification,
-      List<String> memberNameList, Map<String, String> memberAuthorityMap) {
+      String name, List<String> memberNameList,
+      Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
       List<TurbineUser> memberList =
@@ -664,18 +670,11 @@ public class AipoMessageDbService implements MessageDbService {
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
-        // アプリ側が通知設定に対応している場合、自分の通知設定を変更
-        if (desktopNotification != null
-          && mobileNotification != null
-          && user.getLoginName().equals(username)) {
-          map.setDesktopNotification(desktopNotification);
-          map.setMobileNotification(mobileNotification);
-        } else {
-          map.setDesktopNotification(memberDesktopNotificationMap.get(user
-            .getLoginName()));
-          map.setMobileNotification(memberMobileNotificationMap.get(user
-            .getLoginName()));
-        }
+        map.setDesktopNotification(memberDesktopNotificationMap.get(user
+          .getLoginName()));
+        map.setMobileNotification(memberMobileNotificationMap.get(user
+          .getLoginName()));
+
         if (!isFirst) {
           autoName.append(",");
         }
@@ -866,6 +865,50 @@ public class AipoMessageDbService implements MessageDbService {
       Operations.eq(EipTMessageFile.ROOM_ID_PROPERTY, roomId)).fetchList();
   }
 
+  @Override
+  public String getRoomNotification(String username, int roomId) {
+    Integer userId = null;
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      SystemUser systemUser = AipoToolkit.getSystemUser(username);
+      if (systemUser != null) {
+        userId = systemUser.getUserId();
+      }
+    } else {
+      userId = turbineUser.getUserId();
+    }
+    if (userId == null) {
+      return null;
+    }
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
+      return getRoomMobileNotification(room, userId);
+    } else {
+      return null;
+    }
+
+  }
+
+  @Override
+  public void setRoomNotification(String username, int roomId,
+      String mobileNotification) {
+    try {
+      EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+      List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
+
+      for (EipTMessageRoomMember member : members) {
+        if (member.getLoginName().equals(username)) {
+          member.setMobileNotification(mobileNotification);
+        }
+      }
+
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
   public boolean isJoinRoom(EipTMessageRoom room, int userId) {
     List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
     for (EipTMessageRoomMember member : list) {
@@ -886,6 +929,16 @@ public class AipoMessageDbService implements MessageDbService {
       }
     }
     return false;
+  }
+
+  public String getRoomMobileNotification(EipTMessageRoom room, int userId) {
+    List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
+    for (EipTMessageRoomMember member : list) {
+      if (member.getUserId().intValue() == userId) {
+        return member.getMobileNotification();
+      }
+    }
+    return null;
   }
 
   /**
