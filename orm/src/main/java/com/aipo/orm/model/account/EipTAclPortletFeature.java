@@ -18,11 +18,32 @@
  */
 package com.aipo.orm.model.account;
 
+import org.apache.cayenne.ObjectId;
+
 import com.aipo.orm.model.account.auto._EipTAclPortletFeature;
 
 public class EipTAclPortletFeature extends _EipTAclPortletFeature {
 
+  public static final String FEATURE_NAME_COLUMN = "FEATURE_NAME";
+
+  public static final String ACL_TYPE_COLUMN = "ACL_TYPE";
+
+  public Integer getFeatureId() {
+    if (getObjectId() != null && !getObjectId().isTemporary()) {
+      Object obj = getObjectId().getIdSnapshot().get(FEATURE_ID_PK_COLUMN);
+      if (obj instanceof Long) {
+        Long value = (Long) obj;
+        return Integer.valueOf(value.intValue());
+      } else {
+        return (Integer) obj;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  public void setFeatureId(int id) {
+    setObjectId(new ObjectId("EipTAclPortletFeature", FEATURE_ID_PK_COLUMN, id));
+  }
+
 }
-
-
-
