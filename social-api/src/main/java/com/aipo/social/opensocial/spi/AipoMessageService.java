@@ -818,11 +818,6 @@ public class AipoMessageService extends AbstractService implements
     setUp(token);
 
     checkSameViewer(userId, token);
-    checkAclPermission(
-      userId,
-      token,
-      AccessControlConstants.POERTLET_FEATURE_ATTACHMENT,
-      AccessControlConstants.VALUE_ACL_EXPORT);
     checkSameRoomMember(userId, token, roomId);
 
     IconSize iconSize = IconSize.NORMAL;
@@ -850,11 +845,6 @@ public class AipoMessageService extends AbstractService implements
     setUp(token);
 
     checkSameViewer(userId, token);
-    checkAclPermission(
-      userId,
-      token,
-      AccessControlConstants.POERTLET_FEATURE_ATTACHMENT,
-      AccessControlConstants.VALUE_ACL_INSERT);
     checkSameRoomAdmin(userId, token, roomId);
 
     byte[] roomIcon = getBytesShrink(
