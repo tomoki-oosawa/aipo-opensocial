@@ -83,28 +83,24 @@ public class AipoDataServiceServlet extends ApiServlet {
   private static final Logger LOG = Logger
     .getLogger(AipoDataServiceServlet.class.getName());
 
-  public static final Set<String> ALLOWED_CONTENT_TYPES =
-    new ImmutableSet.Builder<String>().addAll(
-      ContentTypes.ALLOWED_MULTIPART_CONTENT_TYPES).addAll(
-      ContentTypes.ALLOWED_JSON_CONTENT_TYPES).addAll(
-      ContentTypes.ALLOWED_XML_CONTENT_TYPES).addAll(
-      ContentTypes.ALLOWED_ATOM_CONTENT_TYPES).addAll(
-      ImmutableSet.of("application/x-www-form-urlencoded")).build();
+  public static final Set<String> ALLOWED_CONTENT_TYPES = new ImmutableSet.Builder<String>()
+    .addAll(ContentTypes.ALLOWED_MULTIPART_CONTENT_TYPES)
+    .addAll(ContentTypes.ALLOWED_JSON_CONTENT_TYPES)
+    .addAll(ContentTypes.ALLOWED_XML_CONTENT_TYPES)
+    .addAll(ContentTypes.ALLOWED_ATOM_CONTENT_TYPES)
+    .addAll(ImmutableSet.of("application/x-www-form-urlencoded"))
+    .build();
 
-  protected static final String X_HTTP_METHOD_OVERRIDE =
-    "X-HTTP-Method-Override";
+  protected static final String X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
 
-  private MultipartFormParser formParser;
+  private final MultipartFormParser formParser;
 
-  protected TurbineUserDbService turbineUserDbService;
+  private final TurbineUserDbService turbineUserDbService;
 
   @Inject
-  void setMultipartFormParser(MultipartFormParser formParser) {
+  public AipoDataServiceServlet(MultipartFormParser formParser,
+      TurbineUserDbService turbineUserDbService) {
     this.formParser = formParser;
-  }
-
-  @Inject
-  void setTurbineUserDbService(TurbineUserDbService turbineUserDbService) {
     this.turbineUserDbService = turbineUserDbService;
   }
 
@@ -327,8 +323,8 @@ public class AipoDataServiceServlet extends ApiServlet {
     try {
       // TODO: First implementation causes bug when Content-Type is
       // application/atom+xml. Fix is applied.
-      contentType =
-        ContentTypes.extractMimePart(servletRequest.getContentType());
+      contentType = ContentTypes.extractMimePart(servletRequest
+        .getContentType());
     } catch (Throwable t) {
       // this happens while testing
       if (LOG.isLoggable(Level.FINE)) {
@@ -344,10 +340,14 @@ public class AipoDataServiceServlet extends ApiServlet {
 
     // Execute the request
     Map<String, FormDataItem> formItems = Maps.newHashMap();
-    Map<String, String[]> parameterMap =
-      loadParameters(servletRequest, formItems);
-    Future<?> future =
-      handler.execute(parameterMap, formItems, token, requestConverter);
+    Map<String, String[]> parameterMap = loadParameters(
+      servletRequest,
+      formItems);
+    Future<?> future = handler.execute(
+      parameterMap,
+      formItems,
+      token,
+      requestConverter);
     ResponseItem responseItem = getResponseItem(future);
 
     servletResponse.setContentType(responseConverter.getContentType());
@@ -390,16 +390,14 @@ public class AipoDataServiceServlet extends ApiServlet {
       }
 
       // TODO: ugliness resulting from not using RestfulItem
-      if (!(response instanceof DataCollection)
-        && !(response instanceof RestfulCollection)) {
+      if (!(response instanceof DataCollection) && !(response instanceof RestfulCollection)) {
         response = ImmutableMap.of("entry", response);
       }
 
       // JSONP style callbacks
-      String callback =
-        (HttpUtil.isJSONP(servletRequest) && ContentTypes.OUTPUT_JSON_CONTENT_TYPE
-          .equals(responseConverter.getContentType())) ? servletRequest
-          .getParameter("callback") : null;
+      String callback = (HttpUtil.isJSONP(servletRequest) && ContentTypes.OUTPUT_JSON_CONTENT_TYPE
+        .equals(responseConverter.getContentType())) ? servletRequest
+        .getParameter("callback") : null;
 
       PrintWriter writer = servletResponse.getWriter();
       if (callback != null) {
@@ -472,19 +470,17 @@ public class AipoDataServiceServlet extends ApiServlet {
       String contentType) throws ContentTypes.InvalidContentTypeException {
     if (StringUtils.isEmpty(contentType)) {
       throw new InvalidContentTypeException(
-        "No Content-Type specified. One of "
-          + StringUtils.join(allowedContentTypes, ", ")
-          + " is required");
+        "No Content-Type specified. One of " + StringUtils.join(
+          allowedContentTypes,
+          ", ") + " is required");
     }
     contentType = ContentTypes.extractMimePart(contentType);
     if (allowedContentTypes.contains(contentType)) {
       return;
     }
-    throw new InvalidContentTypeException("Unsupported Content-Type "
-      + contentType
-      + ". One of "
-      + StringUtils.join(allowedContentTypes, ", ")
-      + " is required");
+    throw new InvalidContentTypeException(
+      "Unsupported Content-Type " + contentType + ". One of " + StringUtils
+        .join(allowedContentTypes, ", ") + " is required");
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -548,9 +544,11 @@ public class AipoDataServiceServlet extends ApiServlet {
       if ("application/x-www-form-urlencoded".equals(ContentTypes
         .extractMimePart(servletRequest.getContentType()))) {
         try {
-          List<NameValuePair> params =
-            URLEncodedUtils.parse(new URI("http://localhost:8080?"
-              + getBodyAsString(servletRequest)), "UTF-8");
+          List<NameValuePair> params = URLEncodedUtils
+            .parse(
+              new URI(
+                "http://localhost:8080?" + getBodyAsString(servletRequest)),
+              "UTF-8");
           for (NameValuePair param : params) {
             String[] valueArray = { param.getValue() };
             if (parameterMap.containsKey(param.getName())) {
