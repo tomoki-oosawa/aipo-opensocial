@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  */
 public class BufferedServletFilter implements Filter {
-
+  @SuppressWarnings("unused")
   private FilterConfig filterConfig;
 
   /**
