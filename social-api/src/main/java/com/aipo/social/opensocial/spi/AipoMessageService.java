@@ -579,8 +579,12 @@ public class AipoMessageService extends AbstractService implements
       room = messageDbService.findRoom(username, targetUsername);
     }
 
-    ALMessage result = new ALMessageImpl();
-    result = assignMessage(model, room, token, model.getMessageId(), authority);
+    ALMessage result = assignMessage(
+      model,
+      room,
+      token,
+      model.getMessageId(),
+      authority);
     result.setTransactionId(transactionId);
 
     return ImmediateFuture.newInstance(result);
@@ -647,9 +651,7 @@ public class AipoMessageService extends AbstractService implements
       }
     }
 
-    if (room != null) {
-      push(PushType.MESSAGE_DELETE, username, room.getRoomId(), messageId);
-    }
+    push(PushType.MESSAGE_DELETE, username, room.getRoomId(), messageId);
 
     return Futures.immediateFuture(null);
   }
@@ -784,7 +786,7 @@ public class AipoMessageService extends AbstractService implements
     }
 
     EipTMessageRoom model = null;
-    if (roomIdInt != null && memberNameList.size() != 0) {
+    if (memberNameList.size() != 0) {
       // ルーム
       model = messageDbService.updateRoom(
         roomIdInt,
@@ -798,9 +800,7 @@ public class AipoMessageService extends AbstractService implements
 
     ALMessageRoom result = new ALMessageRoomImpl();
     Set<String> dummy = new HashSet<String>();
-    if (roomIdInt != null) {
-      result = assignMessageRoom(model, dummy, token, roomIdInt);
-    }
+    result = assignMessageRoom(model, dummy, token, roomIdInt);
 
     return ImmediateFuture.newInstance(result);
   }
