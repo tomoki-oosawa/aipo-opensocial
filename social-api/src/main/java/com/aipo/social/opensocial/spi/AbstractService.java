@@ -270,7 +270,8 @@ public abstract class AbstractService {
   }
 
   protected void checkInputByte(String input, int min, int max) {
-    if (input == null || (byteLength(input) < min) || (byteLength(input) > max)) {
+    if (input == null || (byteLength(input) < min) || (byteLength(
+      input) > max)) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR);
     }
   }
@@ -321,10 +322,10 @@ public abstract class AbstractService {
 
       byte[] imageInBytes = formDataItem.get();
 
-      BufferedImage bufferdImage = ImageIO.read(new ByteArrayInputStream(
-        imageInBytes));
-      ImageInformation readImageInformation = readImageInformation(new ByteArrayInputStream(
-        imageInBytes));
+      BufferedImage bufferdImage = ImageIO.read(
+        new ByteArrayInputStream(imageInBytes));
+      ImageInformation readImageInformation = readImageInformation(
+        new ByteArrayInputStream(imageInBytes));
       if (readImageInformation != null) {
         bufferdImage = transformImage(
           bufferdImage,
@@ -541,7 +542,7 @@ public abstract class AbstractService {
     return destinationImage;
   }
 
-  public class ImageInformation {
+  public static class ImageInformation {
 
     public final int orientation;
 
@@ -565,7 +566,7 @@ public abstract class AbstractService {
     }
   }
 
-  public class ShrinkImageSet {
+  public static class ShrinkImageSet {
 
     private byte[] shrinkImage = null;
 
