@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 /**
  *
  */
+@SuppressWarnings("unused")
 public class BufferedServletFilter implements Filter {
-  @SuppressWarnings("unused")
   private FilterConfig filterConfig;
 
   /**
@@ -55,8 +55,9 @@ public class BufferedServletFilter implements Filter {
   public void doFilter(ServletRequest request, ServletResponse response,
       FilterChain chain) throws IOException, ServletException {
     try {
-      chain.doFilter(new BufferedServletRequestWrapper(
-        (HttpServletRequest) request), response);
+      chain.doFilter(
+        new BufferedServletRequestWrapper((HttpServletRequest) request),
+        response);
     } finally {
 
     }
