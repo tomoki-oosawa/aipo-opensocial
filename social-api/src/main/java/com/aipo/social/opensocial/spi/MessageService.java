@@ -33,6 +33,7 @@ import org.apache.shindig.social.opensocial.spi.UserId;
 import com.aipo.social.opensocial.model.ALFile;
 import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageRoom;
+import com.aipo.social.opensocial.model.ALMessageRoomNotificationSettings;
 
 public interface MessageService {
 
@@ -56,8 +57,7 @@ public interface MessageService {
 
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, List<String> memberAdminsList, String roomId,
-      String destopNotification, String mobileNotification, SecurityToken token)
-      throws ProtocolException;
+      SecurityToken token) throws ProtocolException;
 
   public Future<ALMessage> postMessage(UserId userId, String roomIdOrUsername,
       String message, String transactionId, SecurityToken token,
@@ -86,5 +86,12 @@ public interface MessageService {
 
   public InputStream getMessageFilesThumbnail(UserId userId, int fileId,
       SecurityToken token);
+
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> getRoomNotificationSettings(
+      UserId userId, int roomId, SecurityToken token) throws ProtocolException;
+
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> putRoomNotificationSettings(
+      UserId userId, int roomId, String mobileNotification, SecurityToken token)
+      throws ProtocolException;
 
 }

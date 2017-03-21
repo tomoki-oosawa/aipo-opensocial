@@ -21,6 +21,7 @@ package com.aipo.social.core.oauth2;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,9 +53,9 @@ public class AipoOAuth2Servlet extends InjectedServlet {
 
   private static final long serialVersionUID = -4257719224664564922L;
 
-  private static AipoOAuth2AuthorizationHandler authorizationHandler;
+  private AipoOAuth2AuthorizationHandler authorizationHandler;
 
-  private static AipoOAuth2TokenHandler tokenHandler;
+  private AipoOAuth2TokenHandler tokenHandler;
 
   // class name for logging purpose
   private static final String classname = OAuth2Servlet.class.getName();
@@ -66,8 +67,9 @@ public class AipoOAuth2Servlet extends InjectedServlet {
   @Inject
   public void setOAuth2Service(OAuth2Service oauthService,
       @Named("shindig.oauth2.accessTokenExpiration") long accessTokenExpires) {
-    authorizationHandler =
-      new AipoOAuth2AuthorizationHandler(oauthService, accessTokenExpires);
+    authorizationHandler = new AipoOAuth2AuthorizationHandler(
+      oauthService,
+      accessTokenExpires);
     tokenHandler = new AipoOAuth2TokenHandler(oauthService, accessTokenExpires);
   }
 
@@ -82,23 +84,22 @@ public class AipoOAuth2Servlet extends InjectedServlet {
     HttpUtil.setNoCache(response);
     String path = request.getPathInfo();
     if (path.endsWith(AUTHORIZE)) {
-      sendOAuth2Response(response, authorizationHandler.handle(
-        request,
-        response));
+      sendOAuth2Response(
+        response,
+        authorizationHandler.handle(request, response));
     } else if (path.endsWith(TOKEN)) {
       // token endpoint must use POST method
       response.sendError(
         HttpServletResponse.SC_METHOD_NOT_ALLOWED,
-        "The client MUST use the HTTP \"POST\" method "
-          + "when making access token requests.");
+        "The client MUST use the HTTP \"POST\" method " + "when making access token requests.");
     } else {
       response.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown URL");
     }
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request,
+      HttpServletResponse response) throws ServletException, IOException {
     String path = request.getPathInfo();
     if (path.endsWith(TOKEN)) {
       HttpUtil.setNoCache(response);
@@ -148,8 +149,8 @@ public class AipoOAuth2Servlet extends InjectedServlet {
     // set headers
     Map<String, String> headers = normalizedResp.getHeaders();
     if (headers != null) {
-      for (String key : headers.keySet()) {
-        servletResp.setHeader(key, headers.get(key));
+      for (Entry<String, String> entry : headers.entrySet()) {
+        servletResp.setHeader(entry.getKey(), entry.getValue());
       }
     }
   }

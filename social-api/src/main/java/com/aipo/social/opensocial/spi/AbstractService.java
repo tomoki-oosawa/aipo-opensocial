@@ -45,6 +45,7 @@ import com.aipo.container.protocol.AipoErrorCode;
 import com.aipo.container.protocol.AipoProtocolException;
 import com.aipo.orm.Database;
 import com.aipo.orm.model.security.TurbineUser;
+import com.aipo.orm.service.RoleDbService;
 import com.aipo.orm.service.TurbineUserDbService;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
@@ -60,6 +61,9 @@ public abstract class AbstractService {
 
   @Inject
   private TurbineUserDbService turbineUserDbService;
+
+  @Inject
+  private RoleDbService roleDbService;
 
   private String orgId;
 
@@ -235,6 +239,30 @@ public abstract class AbstractService {
     throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
   }
 
+  /**
+   * アクセス権限 が存在するかどうかチェックします。
+   *
+   * @param userId
+   *
+   * @param token
+   * @throws ProtocolException
+   */
+  protected void checkAclPermission(UserId userId, SecurityToken token,
+      String featureName, int aclType) throws ProtocolException {
+    boolean result = false;
+    try {
+      result = roleDbService.hasAuthority(
+        getUserId(userId, token),
+        featureName,
+        aclType);
+    } catch (Throwable t) {
+      result = false;
+    }
+    if (!result) {
+      throw new AipoProtocolException(AipoErrorCode.ACL_PERMISSION_DENIED);
+    }
+  }
+
   protected void checkInputRange(String input, int min, int max) {
     if (input == null || (input.length() < min) || (input.length() > max)) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR);
@@ -242,7 +270,8 @@ public abstract class AbstractService {
   }
 
   protected void checkInputByte(String input, int min, int max) {
-    if (input == null || (byteLength(input) < min) || (byteLength(input) > max)) {
+    if (input == null || (byteLength(input) < min) || (byteLength(
+      input) > max)) {
       throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR);
     }
   }
@@ -293,29 +322,32 @@ public abstract class AbstractService {
 
       byte[] imageInBytes = formDataItem.get();
 
-      BufferedImage bufferdImage =
-        ImageIO.read(new ByteArrayInputStream(imageInBytes));
-      ImageInformation readImageInformation =
-        readImageInformation(new ByteArrayInputStream(imageInBytes));
+      BufferedImage bufferdImage = ImageIO.read(
+        new ByteArrayInputStream(imageInBytes));
+      ImageInformation readImageInformation = readImageInformation(
+        new ByteArrayInputStream(imageInBytes));
       if (readImageInformation != null) {
-        bufferdImage =
-          transformImage(
-            bufferdImage,
-            getExifTransformation(readImageInformation),
-            readImageInformation.orientation >= 5
-              ? bufferdImage.getHeight()
-              : bufferdImage.getWidth(),
-            readImageInformation.orientation >= 5
-              ? bufferdImage.getWidth()
-              : bufferdImage.getHeight());
+        bufferdImage = transformImage(
+          bufferdImage,
+          getExifTransformation(readImageInformation),
+          readImageInformation.orientation >= 5
+            ? bufferdImage.getHeight()
+            : bufferdImage.getWidth(),
+          readImageInformation.orientation >= 5
+            ? bufferdImage.getWidth()
+            : bufferdImage.getHeight());
         fixed = isFixOrgImage;
       }
       if (bufferdImage == null) {
         throw new AipoProtocolException(AipoErrorCode.VALIDATE_IMAGE_FORMAT);
       }
 
-      BufferedImage shrinkImage =
-        shrinkAndTrimImage(bufferdImage, width, height, minWidth, maxHeight);
+      BufferedImage shrinkImage = shrinkAndTrimImage(
+        bufferdImage,
+        width,
+        height,
+        minWidth,
+        maxHeight);
       Iterator<ImageWriter> writers = ImageIO.getImageWritersBySuffix("jpeg");
       ImageWriter writer = writers.next();
 
@@ -356,9 +388,9 @@ public abstract class AbstractService {
       }
     }
 
-    double ratio =
-      Math.max((double) width / (double) iwidth, (double) height
-        / (double) iheight);
+    double ratio = Math.max(
+      (double) width / (double) iwidth,
+      (double) height / (double) iheight);
 
     int shrinkedWidth;
     int shrinkedHeight;
@@ -372,11 +404,10 @@ public abstract class AbstractService {
     }
 
     // イメージデータを縮小する
-    Image targetImage =
-      imgfile.getScaledInstance(
-        shrinkedWidth,
-        shrinkedHeight,
-        Image.SCALE_AREA_AVERAGING);
+    Image targetImage = imgfile.getScaledInstance(
+      shrinkedWidth,
+      shrinkedHeight,
+      Image.SCALE_AREA_AVERAGING);
 
     int w_size = targetImage.getWidth(null);
     int h_size = targetImage.getHeight(null);
@@ -386,8 +417,10 @@ public abstract class AbstractService {
     if (targetImage.getHeight(null) < height) {
       h_size = height;
     }
-    BufferedImage tmpImage =
-      new BufferedImage(w_size, h_size, BufferedImage.TYPE_INT_RGB);
+    BufferedImage tmpImage = new BufferedImage(
+      w_size,
+      h_size,
+      BufferedImage.TYPE_INT_RGB);
     Graphics2D g = tmpImage.createGraphics();
     g.setBackground(Color.WHITE);
     g.setColor(Color.WHITE);
@@ -418,8 +451,9 @@ public abstract class AbstractService {
 
   private ImageInformation readImageInformation(InputStream in) {
     try {
-      Metadata metadata =
-        ImageMetadataReader.readMetadata(new BufferedInputStream(in), true);
+      Metadata metadata = ImageMetadataReader.readMetadata(
+        new BufferedInputStream(in),
+        true);
       Directory directory = metadata.getDirectory(ExifIFD0Directory.class);
       JpegDirectory jpegDirectory = metadata.getDirectory(JpegDirectory.class);
 
@@ -492,11 +526,14 @@ public abstract class AbstractService {
   private BufferedImage transformImage(BufferedImage image,
       AffineTransform transform, int newWidth, int newHeight) throws Exception {
 
-    AffineTransformOp op =
-      new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
+    AffineTransformOp op = new AffineTransformOp(
+      transform,
+      AffineTransformOp.TYPE_BICUBIC);
 
-    BufferedImage destinationImage =
-      new BufferedImage(newWidth, newHeight, image.getType());
+    BufferedImage destinationImage = new BufferedImage(
+      newWidth,
+      newHeight,
+      image.getType());
     Graphics2D g = destinationImage.createGraphics();
     g.setColor(Color.WHITE);
 
@@ -505,7 +542,7 @@ public abstract class AbstractService {
     return destinationImage;
   }
 
-  public class ImageInformation {
+  public static class ImageInformation {
 
     public final int orientation;
 
@@ -529,7 +566,7 @@ public abstract class AbstractService {
     }
   }
 
-  public class ShrinkImageSet {
+  public static class ShrinkImageSet {
 
     private byte[] shrinkImage = null;
 

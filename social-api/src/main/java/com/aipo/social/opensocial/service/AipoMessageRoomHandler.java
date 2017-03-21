@@ -150,8 +150,6 @@ public class AipoMessageRoomHandler {
       List<String> memberList = request.getListParameter("member_to");
       String roomId = request.getParameter("roomId");
       List<String> memberAdminsList = request.getListParameter("member_admins");
-      String destopNotification = request.getParameter("desktopNotification");
-      String mobileNotification = request.getParameter("mobileNotification");
 
       // Preconditions
       AipoPreconditions.validateScope(request.getToken(), AipoScope.W_ALL);
@@ -167,8 +165,6 @@ public class AipoMessageRoomHandler {
         memberList,
         memberAdminsList,
         roomId,
-        destopNotification,
-        mobileNotification,
         request.getToken());
     } catch (ProtocolException e) {
       throw e;
@@ -326,4 +322,77 @@ public class AipoMessageRoomHandler {
     }
   }
 
+  /**
+   * ルーム別通知設定 <br>
+   * <code>
+   * GET /rooms/:roomId/notification
+   * </code><br>
+   * <code>
+   * osapi.rooms.notification.get( { roomId: :roomId } )
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "GET", name = "notification.get", path = "/{roomId}/roomNotificationSettings")
+  public Future<?> getNotification(SocialRequestItem request) {
+    try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+
+      // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
+
+      return service.getRoomNotificationSettings(
+        userIds.iterator().next(),
+        roomIdInt,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
+
+  /**
+   * ルーム別通知設定更新 <br>
+   * <code>
+   * PUT /rooms/:roomId/roomNotificationSettings/
+   * </code><br>
+   * <code>
+   * osapi.rooms.notification.put( { roomId: :roomId } )
+   * </code>
+   *
+   * @param request
+   * @return
+   */
+  @Operation(httpMethods = "PUT", name = "notification.put", path = "/{roomId}/roomNotificationSettings")
+  public Future<?> putNotification(SocialRequestItem request) {
+    try {
+      Set<UserId> userIds = request.getUsers();
+      String roomId = request.getParameter("roomId");
+      String mobileNotification = request.getParameter("mobileNotification");
+
+      // Preconditions
+      AipoPreconditions.validateScope(request.getToken(), AipoScope.R_ALL);
+      AipoPreconditions.required("userId", userIds);
+      AipoPreconditions.notMultiple("userId", userIds);
+      AipoPreconditions.required("roomId", roomId);
+      int roomIdInt = AipoPreconditions.isInteger("roomId", roomId);
+
+      return service.putRoomNotificationSettings(
+        userIds.iterator().next(),
+        roomIdInt,
+        mobileNotification,
+        request.getToken());
+    } catch (ProtocolException e) {
+      throw e;
+    } catch (Throwable t) {
+      throw new AipoProtocolException(AipoErrorCode.INTERNAL_ERROR);
+    }
+  }
 }

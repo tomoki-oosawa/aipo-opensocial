@@ -68,8 +68,11 @@ public class AipoMessageDbService implements MessageDbService {
 
   @Override
   public EipTMessageRoom findRoom(String username, String targetUsername) {
-    List<EipTMessageRoom> rooms =
-      findRoom(0, username, targetUsername, SearchOptions.build());
+    List<EipTMessageRoom> rooms = findRoom(
+      0,
+      username,
+      targetUsername,
+      SearchOptions.build());
     if (rooms != null && rooms.size() > 0) {
       return rooms.get(0);
     }
@@ -78,8 +81,11 @@ public class AipoMessageDbService implements MessageDbService {
 
   @Override
   public EipTMessageRoom findRoom(int roomId, String username) {
-    List<EipTMessageRoom> rooms =
-      findRoom(roomId, username, null, SearchOptions.build());
+    List<EipTMessageRoom> rooms = findRoom(
+      roomId,
+      username,
+      null,
+      SearchOptions.build());
     if (rooms != null && rooms.size() > 0) {
       return rooms.get(0);
     }
@@ -117,8 +123,8 @@ public class AipoMessageDbService implements MessageDbService {
     }
     if (targetUsername != null) {
       Integer targetUserId = null;
-      TurbineUser targetTurbineUser =
-        turbineUserDbService.findByUsername(targetUsername);
+      TurbineUser targetTurbineUser = turbineUserDbService
+        .findByUsername(targetUsername);
       if (targetTurbineUser == null) {
         SystemUser systemUser = AipoToolkit.getSystemUser(targetUsername);
         if (systemUser != null) {
@@ -204,12 +210,11 @@ public class AipoMessageDbService implements MessageDbService {
     }
      */
 
-    SQLTemplate<EipTMessageRoom> sql =
-      Database.sql(
-        EipTMessageRoom.class,
-        select.toString() + body.toString() + last.toString()).param(
-        "user_id",
-        Integer.valueOf(userId));
+    SQLTemplate<EipTMessageRoom> sql = Database.sql(
+      EipTMessageRoom.class,
+      select.toString() + body.toString() + last.toString()).param(
+      "user_id",
+      Integer.valueOf(userId));
     if (isFilter) {
       sql.param("keyword", "%" + filterValue + "%");
     }
@@ -217,13 +222,12 @@ public class AipoMessageDbService implements MessageDbService {
 
     List<EipTMessageRoomMember> roomMembers = null;
     if (roomId > 0) {
-      roomMembers =
-        Database
-          .sql(
-            EipTMessageRoomMember.class,
-            "select login_name, authority from eip_t_message_room_member where room_id=#bind($room_id)")
-          .param("room_id", Integer.valueOf(roomId))
-          .fetchList();
+      roomMembers = Database
+        .sql(
+          EipTMessageRoomMember.class,
+          "select login_name, authority, mobile_notification from eip_t_message_room_member where room_id=#bind($room_id)")
+        .param("room_id", Integer.valueOf(roomId))
+        .fetchList();
     }
 
     List<EipTMessageRoom> list = new ArrayList<EipTMessageRoom>();
@@ -245,8 +249,9 @@ public class AipoMessageDbService implements MessageDbService {
         }
       }
 
-      EipTMessageRoom object =
-        Database.objectFromRowData(row, EipTMessageRoom.class);
+      EipTMessageRoom object = Database.objectFromRowData(
+        row,
+        EipTMessageRoom.class);
       object.setUnreadCount(unread.intValue());
       object.setUserId(tUserId);
       object.setLoginName(loginName);
@@ -255,14 +260,20 @@ public class AipoMessageDbService implements MessageDbService {
       if (roomId > 0 && roomMembers != null) {
         List<String> roomMembersStr = new ArrayList<String>();
         List<String> roomAdminMembersStr = new ArrayList<String>();
+        List<String> roomMobileNotificationMembersStr = new ArrayList<String>();
         for (EipTMessageRoomMember roomMember : roomMembers) {
           roomMembersStr.add(roomMember.getLoginName());
           if ("A".equals(roomMember.getAuthority())) {
             roomAdminMembersStr.add(roomMember.getLoginName());
           }
+          if ("A".equals(roomMember.getMobileNotification())) {
+            roomMobileNotificationMembersStr.add(roomMember.getLoginName());
+          }
         }
         object.setRoomMembers(roomMembersStr);
         object.setRoomAdminMembers(roomAdminMembersStr);
+        object
+          .setRoomMobileNotificationMembers(roomMobileNotificationMembersStr);
       }
       if (lastMessageId != null && lastMessageId.longValue() > 0) {
         object.setLastMessageId(lastMessageId.intValue());
@@ -345,12 +356,11 @@ public class AipoMessageDbService implements MessageDbService {
       last.append(limit);
     }
 
-    List<DataRow> fetchList =
-      Database.sql(
-        EipTMessage.class,
-        select.toString() + body.toString() + last.toString()).param(
-        "room_id",
-        Integer.valueOf(roomId)).fetchListAsDataRow();
+    List<DataRow> fetchList = Database.sql(
+      EipTMessage.class,
+      select.toString() + body.toString() + last.toString()).param(
+      "room_id",
+      Integer.valueOf(roomId)).fetchListAsDataRow();
 
     List<Integer> messageIds = new ArrayList<Integer>();
     List<EipTMessage> list = new ArrayList<EipTMessage>();
@@ -418,9 +428,8 @@ public class AipoMessageDbService implements MessageDbService {
       List<String> memberNameList, Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
-      List<TurbineUser> memberList =
-        turbineUserDbService
-          .findByUsername(new HashSet<String>(memberNameList));
+      List<TurbineUser> memberList = turbineUserDbService
+        .findByUsername(new HashSet<String>(memberNameList));
       Date now = new Date();
 
       EipTMessageRoom model = Database.create(EipTMessageRoom.class);
@@ -428,8 +437,8 @@ public class AipoMessageDbService implements MessageDbService {
       boolean isFirst = true;
       StringBuilder autoName = new StringBuilder();
       for (TurbineUser user : memberList) {
-        EipTMessageRoomMember map =
-          Database.create(EipTMessageRoomMember.class);
+        EipTMessageRoomMember map = Database
+          .create(EipTMessageRoomMember.class);
         int userid = user.getUserId();
         map.setEipTMessageRoom(model);
         map.setTargetUserId(1);
@@ -505,8 +514,8 @@ public class AipoMessageDbService implements MessageDbService {
       String targetUsername, String message) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
-      TurbineUser targetUser =
-        turbineUserDbService.findByUsername(targetUsername);
+      TurbineUser targetUser = turbineUserDbService
+        .findByUsername(targetUsername);
       Date now = new Date();
 
       if (roomId == null && targetUsername != null) {
@@ -528,8 +537,8 @@ public class AipoMessageDbService implements MessageDbService {
         if (room == null) {
           room = Database.create(EipTMessageRoom.class);
 
-          EipTMessageRoomMember map1 =
-            Database.create(EipTMessageRoomMember.class);
+          EipTMessageRoomMember map1 = Database
+            .create(EipTMessageRoomMember.class);
           map1.setEipTMessageRoom(room);
           map1.setUserId(userId);
           map1.setTargetUserId(targetUserId);
@@ -538,8 +547,8 @@ public class AipoMessageDbService implements MessageDbService {
           map1.setDesktopNotification("A");
           map1.setMobileNotification("A");
 
-          EipTMessageRoomMember map2 =
-            Database.create(EipTMessageRoomMember.class);
+          EipTMessageRoomMember map2 = Database
+            .create(EipTMessageRoomMember.class);
           map2.setEipTMessageRoom(room);
           map2.setTargetUserId(userId);
           map2.setUserId(targetUserId);
@@ -565,8 +574,8 @@ public class AipoMessageDbService implements MessageDbService {
         throw new Exception();
       }
 
-      EipTMessageRoom room =
-        Database.get(EipTMessageRoom.class, roomId.longValue());
+      EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId
+        .longValue());
       List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
 
       EipTMessage model = Database.create(EipTMessage.class);
@@ -635,13 +644,12 @@ public class AipoMessageDbService implements MessageDbService {
    */
   @Override
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, String desktopNotification, String mobileNotification,
-      List<String> memberNameList, Map<String, String> memberAuthorityMap) {
+      String name, List<String> memberNameList,
+      Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
-      List<TurbineUser> memberList =
-        turbineUserDbService
-          .findByUsername(new HashSet<String>(memberNameList));
+      List<TurbineUser> memberList = turbineUserDbService
+        .findByUsername(new HashSet<String>(memberNameList));
       Date now = new Date();
 
       EipTMessageRoom model = Database.get(EipTMessageRoom.class, roomId);
@@ -654,12 +662,10 @@ public class AipoMessageDbService implements MessageDbService {
         return null;
       }
 
-      Map<String, String> memberDesktopNotificationMap =
-        new HashMap<String, String>();
-      Map<String, String> memberMobileNotificationMap =
-        new HashMap<String, String>();
-      List<EipTMessageRoomMember> tmpMemberList =
-        model.getEipTMessageRoomMember();
+      Map<String, String> memberDesktopNotificationMap = new HashMap<String, String>();
+      Map<String, String> memberMobileNotificationMap = new HashMap<String, String>();
+      List<EipTMessageRoomMember> tmpMemberList = model
+        .getEipTMessageRoomMember();
       for (EipTMessageRoomMember tmpMember : tmpMemberList) {
         memberDesktopNotificationMap.put(tmpMember.getLoginName(), tmpMember
           .getDesktopNotification());
@@ -672,26 +678,19 @@ public class AipoMessageDbService implements MessageDbService {
       boolean isFirst = true;
       StringBuilder autoName = new StringBuilder();
       for (TurbineUser user : memberList) {
-        EipTMessageRoomMember map =
-          Database.create(EipTMessageRoomMember.class);
+        EipTMessageRoomMember map = Database
+          .create(EipTMessageRoomMember.class);
         int userid = user.getUserId();
         map.setEipTMessageRoom(model);
         map.setTargetUserId(1);
         map.setUserId(Integer.valueOf(userid));
         map.setLoginName(user.getLoginName());
         map.setAuthority(memberAuthorityMap.get(user.getLoginName()));
-        // アプリ側が通知設定に対応している場合、自分の通知設定を変更
-        if (desktopNotification != null
-          && mobileNotification != null
-          && user.getLoginName().equals(username)) {
-          map.setDesktopNotification(desktopNotification);
-          map.setMobileNotification(mobileNotification);
-        } else {
-          map.setDesktopNotification(memberDesktopNotificationMap.get(user
-            .getLoginName()));
-          map.setMobileNotification(memberMobileNotificationMap.get(user
-            .getLoginName()));
-        }
+        map.setDesktopNotification(memberDesktopNotificationMap.get(user
+          .getLoginName()));
+        map.setMobileNotification(memberMobileNotificationMap.get(user
+          .getLoginName()));
+
         if (!isFirst) {
           autoName.append(",");
         }
@@ -765,10 +764,9 @@ public class AipoMessageDbService implements MessageDbService {
   @Override
   public EipTMessageRoom updateRoomLastMessage(Integer roomId,
       Integer deleteMessageId) {
-    SearchOptions options =
-      SearchOptions.build().withSort(
-        EipTMessage.MESSAGE_ID_PK_COLUMN,
-        SortOrder.descending).withLimit(2);
+    SearchOptions options = SearchOptions.build().withSort(
+      EipTMessage.MESSAGE_ID_PK_COLUMN,
+      SortOrder.descending).withLimit(2);
     List<EipTMessage> messages = findMessage(roomId, 0, options);
 
     if (messages != null && messages.size() > 0) {
@@ -856,10 +854,9 @@ public class AipoMessageDbService implements MessageDbService {
     sql
       .append("select t1.user_id, t1.login_name, t1.last_name, t1.first_name, t1.has_photo, t1.photo_modified from turbine_user t1, eip_t_message_read t2 where t1.user_id = t2.user_id and t2.message_id = #bind($message_id) and t2.is_read = 'T';");
 
-    SQLTemplate<TurbineUser> query =
-      Database.sql(TurbineUser.class, sql.toString()).param(
-        "message_id",
-        messageId);
+    SQLTemplate<TurbineUser> query = Database.sql(
+      TurbineUser.class,
+      sql.toString()).param("message_id", messageId);
 
     return query.fetchList();
   }
@@ -882,6 +879,50 @@ public class AipoMessageDbService implements MessageDbService {
       Operations.eq(EipTMessageFile.ROOM_ID_PROPERTY, roomId)).fetchList();
   }
 
+  @Override
+  public String getRoomNotification(String username, int roomId) {
+    Integer userId = null;
+    TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+    if (turbineUser == null) {
+      SystemUser systemUser = AipoToolkit.getSystemUser(username);
+      if (systemUser != null) {
+        userId = systemUser.getUserId();
+      }
+    } else {
+      userId = turbineUser.getUserId();
+    }
+    if (userId == null) {
+      return null;
+    }
+    EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+    if (room != null) {
+      return getRoomMobileNotification(room, userId);
+    } else {
+      return null;
+    }
+
+  }
+
+  @Override
+  public void setRoomNotification(String username, int roomId,
+      String mobileNotification) {
+    try {
+      EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
+      List<EipTMessageRoomMember> members = room.getEipTMessageRoomMember();
+
+      for (EipTMessageRoomMember member : members) {
+        if (member.getLoginName().equals(username)) {
+          member.setMobileNotification(mobileNotification);
+        }
+      }
+
+      Database.commit();
+    } catch (Throwable t) {
+      Database.rollback();
+      throw new RuntimeException(t);
+    }
+  }
+
   public boolean isJoinRoom(EipTMessageRoom room, int userId) {
     List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
     for (EipTMessageRoomMember member : list) {
@@ -902,6 +943,16 @@ public class AipoMessageDbService implements MessageDbService {
       }
     }
     return false;
+  }
+
+  public String getRoomMobileNotification(EipTMessageRoom room, int userId) {
+    List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
+    for (EipTMessageRoomMember member : list) {
+      if (member.getUserId().intValue() == userId) {
+        return member.getMobileNotification();
+      }
+    }
+    return null;
   }
 
   /**
@@ -964,11 +1015,9 @@ public class AipoMessageDbService implements MessageDbService {
 
     String query = select.toString();
 
-    EipTMessageRoom room =
-      Database
-        .sql(EipTMessageRoom.class, query)
-        .param("roomId", roomId)
-        .fetchSingle();
+    EipTMessageRoom room = Database.sql(EipTMessageRoom.class, query).param(
+      "roomId",
+      roomId).fetchSingle();
 
     if (room == null) {
       return null;
@@ -1120,8 +1169,7 @@ public class AipoMessageDbService implements MessageDbService {
 
   @Override
   public List<EipTMessageRoomMember> getRoomMember(int roomId, String username) {
-    List<EipTMessageRoomMember> members =
-      new ArrayList<EipTMessageRoomMember>();
+    List<EipTMessageRoomMember> members = new ArrayList<EipTMessageRoomMember>();
     TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
     if (turbineUser == null) {
       return members;
@@ -1129,8 +1177,7 @@ public class AipoMessageDbService implements MessageDbService {
 
     EipTMessageRoom room = Database.get(EipTMessageRoom.class, roomId);
     if (room != null) {
-      List<EipTMessageRoomMember> list = new ArrayList<EipTMessageRoomMember>();
-      list = room.getEipTMessageRoomMember();
+      List<EipTMessageRoomMember> list = room.getEipTMessageRoomMember();
       for (EipTMessageRoomMember member : list) {
 
         members.add(member);
@@ -1154,8 +1201,8 @@ public class AipoMessageDbService implements MessageDbService {
       String targetUsername, int lastMessageId) {
     try {
       TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
-      TurbineUser targetUser =
-        turbineUserDbService.findByUsername(targetUsername);
+      TurbineUser targetUser = turbineUserDbService
+        .findByUsername(targetUsername);
 
       EipTMessageRoom room = null;
       int userId = turbineUser.getUserId().intValue();
@@ -1182,14 +1229,13 @@ public class AipoMessageDbService implements MessageDbService {
         return false;
       }
 
-      SQLTemplate<EipTMessageRead> countQuery =
-        Database
-          .sql(
-            EipTMessageRead.class,
-            "select count(*) as c from eip_t_message_read where room_id = #bind($room_id) and user_id = #bind($user_id) and is_read = 'F' and message_id <= #bind($message_id)")
-          .param("room_id", Integer.valueOf(room.getRoomId()))
-          .param("user_id", Integer.valueOf(userId))
-          .param("message_id", Integer.valueOf(lastMessageId));
+      SQLTemplate<EipTMessageRead> countQuery = Database
+        .sql(
+          EipTMessageRead.class,
+          "select count(*) as c from eip_t_message_read where room_id = #bind($room_id) and user_id = #bind($user_id) and is_read = 'F' and message_id <= #bind($message_id)")
+        .param("room_id", Integer.valueOf(room.getRoomId()))
+        .param("user_id", Integer.valueOf(userId))
+        .param("message_id", Integer.valueOf(lastMessageId));
 
       int countValue = 0;
       List<DataRow> fetchCount = countQuery.fetchListAsDataRow();
@@ -1198,8 +1244,7 @@ public class AipoMessageDbService implements MessageDbService {
         countValue = ((Long) row.get("c")).intValue();
       }
       if (countValue > 0) {
-        String sql =
-          "update eip_t_message_read set is_read = 'T' where room_id = #bind($room_id) and user_id = #bind($user_id) and is_read = 'F' and message_id <= #bind($message_id)";
+        String sql = "update eip_t_message_read set is_read = 'T' where room_id = #bind($room_id) and user_id = #bind($user_id) and is_read = 'F' and message_id <= #bind($message_id)";
         Database.sql(EipTMessageRead.class, sql).param(
           "room_id",
           Integer.valueOf(room.getRoomId())).param(
@@ -1225,13 +1270,12 @@ public class AipoMessageDbService implements MessageDbService {
       user1 = targetUserId;
       user2 = userId;
     }
-    EipTMessageRoomMember model =
-      Database
-        .query(EipTMessageRoomMember.class)
-        .where(Operations.eq(EipTMessageRoomMember.USER_ID_PROPERTY, user1))
-        .where(
-          Operations.eq(EipTMessageRoomMember.TARGET_USER_ID_PROPERTY, user2))
-        .fetchSingle();
+    EipTMessageRoomMember model = Database
+      .query(EipTMessageRoomMember.class)
+      .where(Operations.eq(EipTMessageRoomMember.USER_ID_PROPERTY, user1))
+      .where(
+        Operations.eq(EipTMessageRoomMember.TARGET_USER_ID_PROPERTY, user2))
+      .fetchSingle();
     if (model != null) {
       return model.getEipTMessageRoom();
     } else {

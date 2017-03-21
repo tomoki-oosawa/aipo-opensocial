@@ -53,11 +53,14 @@ import com.aipo.social.core.model.ALFileImpl;
 import com.aipo.social.core.model.ALMessageFileImpl;
 import com.aipo.social.core.model.ALMessageImpl;
 import com.aipo.social.core.model.ALMessageRoomImpl;
+import com.aipo.social.core.model.ALMessageRoomNotificationSettingsImpl;
 import com.aipo.social.opensocial.model.ALFile;
 import com.aipo.social.opensocial.model.ALMessage;
 import com.aipo.social.opensocial.model.ALMessageFile;
 import com.aipo.social.opensocial.model.ALMessageRoom;
+import com.aipo.social.opensocial.model.ALMessageRoomNotificationSettings;
 import com.aipo.social.opensocial.spi.PushService.PushType;
+import com.aipo.util.AccessControlConstants;
 import com.aipo.util.AipoToolkit;
 import com.aipo.util.AipoToolkit.SystemUser;
 import com.google.common.util.concurrent.Futures;
@@ -125,17 +128,17 @@ public class AipoMessageService extends AbstractService implements
     String username = getUserId(userId, token);
 
     // Search
-    SearchOptions options =
-      SearchOptions.build().withRange(
-        collectionOptions.getMax(),
-        collectionOptions.getFirst()).withFilter(
+    SearchOptions options = SearchOptions
+      .build()
+      .withRange(collectionOptions.getMax(), collectionOptions.getFirst())
+      .withFilter(
         collectionOptions.getFilter(),
         collectionOptions.getFilterOperation() == null
           ? FilterOperation.equals
-          : FilterOperation.valueOf(collectionOptions
-            .getFilterOperation()
-            .toString()),
-        collectionOptions.getFilterValue()).withSort(
+          : FilterOperation.valueOf(
+            collectionOptions.getFilterOperation().toString()),
+        collectionOptions.getFilterValue())
+      .withSort(
         collectionOptions.getSortBy(),
         collectionOptions.getSortOrder() == null
           ? SortOrder.ascending
@@ -155,12 +158,11 @@ public class AipoMessageService extends AbstractService implements
 
     int totalResults = result.size();
 
-    RestfulCollection<ALMessageRoom> restCollection =
-      new RestfulCollection<ALMessageRoom>(
-        result,
-        collectionOptions.getFirst(),
-        totalResults,
-        collectionOptions.getMax());
+    RestfulCollection<ALMessageRoom> restCollection = new RestfulCollection<ALMessageRoom>(
+      result,
+      collectionOptions.getFirst(),
+      totalResults,
+      collectionOptions.getMax());
     return ImmediateFuture.newInstance(restCollection);
   }
 
@@ -183,10 +185,11 @@ public class AipoMessageService extends AbstractService implements
     }
     room.setUnreadCount(model.getUnreadCount());
     room.setIsDirect("O".equals(model.getRoomType()));
-    room.setHasPhoto(room.getIsDirect()
-      ? ("T".equals(model.getUserHasPhoto()) || "N".equals(model
-        .getUserHasPhoto()))
-      : ("T".equals(model.getHasPhoto()) || "N".equals(model.getHasPhoto())));
+    room.setHasPhoto(
+      room.getIsDirect()
+        ? ("T".equals(model.getUserHasPhoto()) || "N".equals(
+          model.getUserHasPhoto()))
+        : ("T".equals(model.getHasPhoto()) || "N".equals(model.getHasPhoto())));
     room.setLastMessage(model.getLastMessage());
     if (room.getIsDirect()) {
       if (model.getUserPhotoModified() != null) {
@@ -270,33 +273,34 @@ public class AipoMessageService extends AbstractService implements
     // 管理者のユーザーIDはルームメンバーに指定したユーザーIDの中から指定
     for (String admin : memberAdminsList) {
       if (!memberList.contains(admin)) {
-        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
-          .customMessage("Parameter member_to should contain member_admins."));
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ERROR.customMessage(
+            "Parameter member_to should contain member_admins."));
       }
     }
 
     // 自分(Viewer)を含むルームのみ作成可能
     if (!memberNameList.contains(username)) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
-        .customMessage("Parameter member_to should contain userId."));
+      throw new AipoProtocolException(
+        AipoErrorCode.VALIDATE_ERROR.customMessage(
+          "Parameter member_to should contain userId."));
     } else {
       // 作成者は当初は「管理者」である必要がある
       if (memberAuthorityMap.get(username) != "A") {
         throw new AipoProtocolException(
-          AipoErrorCode.VALIDATE_ERROR
-            .customMessage("People who create a room must be Administrator of the room at first."));
+          AipoErrorCode.VALIDATE_ERROR.customMessage(
+            "People who create a room must be Administrator of the room at first."));
       }
     }
 
     EipTMessageRoom model = null;
     if (memberNameList.size() != 0) {
       // ルーム
-      model =
-        messageDbService.createRoom(
-          username,
-          name,
-          memberNameList,
-          memberAuthorityMap);
+      model = messageDbService.createRoom(
+        username,
+        name,
+        memberNameList,
+        memberAuthorityMap);
     } else {
       // ダイレクトメッセージ
     }
@@ -327,8 +331,8 @@ public class AipoMessageService extends AbstractService implements
     checkSameViewer(userId, token);
     checkSameRoomAdmin(userId, token, roomId);
 
-    List<EipTMessageFile> files =
-      messageDbService.getMessageFilesByRoom(roomId);
+    List<EipTMessageFile> files = messageDbService.getMessageFilesByRoom(
+      roomId);
     if (files != null && files.size() > 0) {
       storageService.deleteFiles(messageCategoryKey, files, token);
     }
@@ -369,27 +373,26 @@ public class AipoMessageService extends AbstractService implements
     }
 
     // Search
-    SearchOptions options =
-      SearchOptions
-        .build()
-        .withRange(collectionOptions.getMax(), collectionOptions.getFirst())
-        .withFilter(
-          collectionOptions.getFilter(),
-          collectionOptions.getFilterOperation() == null
-            ? FilterOperation.equals
-            : FilterOperation.valueOf(collectionOptions
-              .getFilterOperation()
-              .toString()),
-          collectionOptions.getFilterValue())
-        .withSort(
-          collectionOptions.getSortBy(),
-          collectionOptions.getSortOrder() == null
-            ? SortOrder.ascending
-            : SortOrder.valueOf(collectionOptions.getSortOrder().toString()))
-        .withParameters(collectionOptions.getParameters());
+    SearchOptions options = SearchOptions
+      .build()
+      .withRange(collectionOptions.getMax(), collectionOptions.getFirst())
+      .withFilter(
+        collectionOptions.getFilter(),
+        collectionOptions.getFilterOperation() == null
+          ? FilterOperation.equals
+          : FilterOperation.valueOf(
+            collectionOptions.getFilterOperation().toString()),
+        collectionOptions.getFilterValue())
+      .withSort(
+        collectionOptions.getSortBy(),
+        collectionOptions.getSortOrder() == null
+          ? SortOrder.ascending
+          : SortOrder.valueOf(collectionOptions.getSortOrder().toString()))
+      .withParameters(collectionOptions.getParameters());
 
     // 自分(Viewer)のルームのみ取得可能
     checkSameViewer(userId, token);
+    boolean authority = hasAttachmentExportAuthority(userId, token);
     String username = getUserId(userId, token);
 
     EipTMessageRoom room = null;
@@ -406,22 +409,23 @@ public class AipoMessageService extends AbstractService implements
     // {userId} が所属しているルームを取得
 
     // ルーム
-    List<EipTMessage> list =
-      messageDbService.findMessage(room.getRoomId(), messageId, options);
+    List<EipTMessage> list = messageDbService.findMessage(
+      room.getRoomId(),
+      messageId,
+      options);
 
     List<ALMessage> result = new ArrayList<ALMessage>(list.size());
     for (EipTMessage message : list) {
-      result.add(assignMessage(message, room, token, messageId));
+      result.add(assignMessage(message, room, token, messageId, authority));
     }
 
     int totalResults = result.size();
 
-    RestfulCollection<ALMessage> restCollection =
-      new RestfulCollection<ALMessage>(
-        result,
-        collectionOptions.getFirst(),
-        totalResults,
-        collectionOptions.getMax());
+    RestfulCollection<ALMessage> restCollection = new RestfulCollection<ALMessage>(
+      result,
+      collectionOptions.getFirst(),
+      totalResults,
+      collectionOptions.getMax());
     return ImmediateFuture.newInstance(restCollection);
   }
 
@@ -432,7 +436,8 @@ public class AipoMessageService extends AbstractService implements
    * @return
    */
   private ALMessage assignMessage(EipTMessage model, EipTMessageRoom room,
-      SecurityToken token, int messageId) {
+      SecurityToken token, int messageId,
+      boolean hasAttachmentExportAuthority) {
     ALMessage message = new ALMessageImpl();
     String orgId = getOrgId(token);
 
@@ -448,7 +453,7 @@ public class AipoMessageService extends AbstractService implements
       message.setTargetUserId(orgId + ":" + room.getLoginName());
     }
 
-    if (model.getMessageFiles() != null) {
+    if (model.getMessageFiles() != null && hasAttachmentExportAuthority) {
       List<ALMessageFile> files = new ArrayList<ALMessageFile>();
       for (EipTMessageFile file : model.getMessageFiles()) {
         ALMessageFile messageFile = assignMessageFile(file);
@@ -516,8 +521,17 @@ public class AipoMessageService extends AbstractService implements
       targetUsername = getUserId(roomIdOrUsername, token);
     }
 
+    if (file != null) {
+      checkAclPermission(
+        userId,
+        token,
+        AccessControlConstants.POERTLET_FEATURE_ATTACHMENT,
+        AccessControlConstants.VALUE_ACL_INSERT);
+    }
+
     // 自分(Viewer)のルームのみ取得可能
     checkSameViewer(userId, token);
+    boolean authority = hasAttachmentExportAuthority(userId, token);
     String username = getUserId(userId, token);
 
     EipTMessageRoom room = null;
@@ -530,25 +544,26 @@ public class AipoMessageService extends AbstractService implements
       room = messageDbService.findRoom(username, targetUsername);
     }
 
-    EipTMessage model =
-      messageDbService.createMessage(username, roomId, targetUsername, message);
+    EipTMessage model = messageDbService.createMessage(
+      username,
+      roomId,
+      targetUsername,
+      message);
 
     if (file != null) {
-      byte[] shrinkImage =
-        getBytesShrink(
-          file,
-          DEF_THUMBNAIL_WIDTH,
-          DEF_THUMBNAIL_HEIGHT,
-          true,
-          0,
-          0).getShrinkImage();
+      byte[] shrinkImage = getBytesShrink(
+        file,
+        DEF_THUMBNAIL_WIDTH,
+        DEF_THUMBNAIL_HEIGHT,
+        true,
+        0,
+        0).getShrinkImage();
 
-      EipTMessageFile messageFile =
-        messageDbService.insertMessageFiles(
-          username,
-          model.getMessageId(),
-          file.getName(),
-          shrinkImage);
+      EipTMessageFile messageFile = messageDbService.insertMessageFiles(
+        username,
+        model.getMessageId(),
+        file.getName(),
+        shrinkImage);
 
       storageService.createNewFile(
         new ByteArrayInputStream(file.get()),
@@ -568,8 +583,12 @@ public class AipoMessageService extends AbstractService implements
       room = messageDbService.findRoom(username, targetUsername);
     }
 
-    ALMessage result = new ALMessageImpl();
-    result = assignMessage(model, room, token, model.getMessageId());
+    ALMessage result = assignMessage(
+      model,
+      room,
+      token,
+      model.getMessageId(),
+      authority);
     result.setTransactionId(transactionId);
 
     return ImmediateFuture.newInstance(result);
@@ -617,28 +636,26 @@ public class AipoMessageService extends AbstractService implements
 
     if (messageDbService.isOwnMessage(messageId, username)) {
       // 自分自身のメッセージは削除可能
-      List<EipTMessageFile> files =
-        messageDbService.getMessageFiles(Arrays.asList(messageId));
+      List<EipTMessageFile> files = messageDbService.getMessageFiles(
+        Arrays.asList(messageId));
       storageService.deleteFiles(messageCategoryKey, files, token);
       messageDbService.deleteMessage(messageId);
     } else {
       // 管理者権限を持つユーザーは削除可能（ダイレクトメッセージ以外）
       // 管理者権限があればシステム投稿を削除可能
-      if ("O".equals(room.getRoomType())
-        && AipoToolkit.getSystemUser(targetUsername) == null) {
+      if ("O".equals(room.getRoomType()) && AipoToolkit.getSystemUser(
+        targetUsername) == null) {
         throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       } else {
         checkSameRoomAdmin(userId, token, room.getRoomId());
-        List<EipTMessageFile> files =
-          messageDbService.getMessageFiles(Arrays.asList(messageId));
+        List<EipTMessageFile> files = messageDbService.getMessageFiles(
+          Arrays.asList(messageId));
         storageService.deleteFiles(messageCategoryKey, files, token);
         messageDbService.deleteMessage(messageId);
       }
     }
 
-    if (room != null) {
-      push(PushType.MESSAGE_DELETE, username, room.getRoomId(), messageId);
-    }
+    push(PushType.MESSAGE_DELETE, username, room.getRoomId(), messageId);
 
     return Futures.immediateFuture(null);
   }
@@ -704,8 +721,7 @@ public class AipoMessageService extends AbstractService implements
   @Override
   public Future<ALMessageRoom> putRoom(UserId userId, String name,
       List<String> memberList, List<String> memberAdminsList, String roomId,
-      String desktopNotification, String mobileNotification, SecurityToken token)
-      throws ProtocolException {
+      SecurityToken token) throws ProtocolException {
 
     setUp(token);
 
@@ -719,8 +735,9 @@ public class AipoMessageService extends AbstractService implements
     }
 
     if (roomIdInt == null) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
-        .customMessage("Parameter roomId required."));
+      throw new AipoProtocolException(
+        AipoErrorCode.VALIDATE_ERROR.customMessage(
+          "Parameter roomId required."));
     }
 
     List<String> memberNameList = new ArrayList<String>();
@@ -753,44 +770,44 @@ public class AipoMessageService extends AbstractService implements
     // 管理者のユーザーIDはルームメンバーに指定したユーザーIDの中から指定
     for (String admin : memberAdminsList) {
       if (!memberList.contains(admin)) {
-        throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
-          .customMessage("Parameter member_to should contain member_admins."));
+        throw new AipoProtocolException(
+          AipoErrorCode.VALIDATE_ERROR.customMessage(
+            "Parameter member_to should contain member_admins."));
       }
     }
 
     // 管理者のユーザーIDの一覧(member_admins)を省略した場合は、元々いるユーザーの管理者権限を変更しない
     if (memberAdminsList.size() == 0) {
-      List<EipTMessageRoomMember> members =
-        messageDbService.getRoomMember(roomIdInt, username);
+      List<EipTMessageRoomMember> members = messageDbService.getRoomMember(
+        roomIdInt,
+        username);
       for (EipTMessageRoomMember member : members) {
         memberAuthorityMap.put(member.getLoginName(), member.getAuthority());
       }
     }
     // 自分(Viewer)を含むルームのみ作成可能
     if (!memberNameList.contains(username)) {
-      throw new AipoProtocolException(AipoErrorCode.VALIDATE_ERROR
-        .customMessage("Parameter member_to should contain userId."));
+      throw new AipoProtocolException(
+        AipoErrorCode.VALIDATE_ERROR.customMessage(
+          "Parameter member_to should contain userId."));
     }
 
     EipTMessageRoom model = null;
-    if (roomIdInt != null && memberNameList.size() != 0) {
+    if (memberNameList.size() != 0) {
       // ルーム
-      model =
-        messageDbService.updateRoom(
-          roomIdInt,
-          username,
-          name,
-          desktopNotification,
-          mobileNotification,
-          memberNameList,
-          memberAuthorityMap);
+      model = messageDbService.updateRoom(
+        roomIdInt,
+        username,
+        name,
+        memberNameList,
+        memberAuthorityMap);
     } else {
       // ダイレクトメッセージ
     }
 
     ALMessageRoom result = new ALMessageRoomImpl();
     Set<String> dummy = new HashSet<String>();
-    if (roomIdInt != null) {
+    if (model != null) {
       result = assignMessageRoom(model, dummy, token, roomIdInt);
     }
 
@@ -839,23 +856,21 @@ public class AipoMessageService extends AbstractService implements
     checkSameViewer(userId, token);
     checkSameRoomAdmin(userId, token, roomId);
 
-    byte[] roomIcon =
-      getBytesShrink(
-        roomIconItem,
-        DEF_LARGE_THUMBNAIL_WIDTH,
-        DEF_LARGE_THUMBNAIL_HEIGHT,
-        false,
-        DEF_VALIDATE_WIDTH,
-        DEF_VALIDATE_HEIGHT).getShrinkImage();
+    byte[] roomIcon = getBytesShrink(
+      roomIconItem,
+      DEF_LARGE_THUMBNAIL_WIDTH,
+      DEF_LARGE_THUMBNAIL_HEIGHT,
+      false,
+      DEF_VALIDATE_WIDTH,
+      DEF_VALIDATE_HEIGHT).getShrinkImage();
 
-    byte[] roomIconSmartPhone =
-      getBytesShrink(
-        roomIconItem,
-        DEF_NORMAL_THUMBNAIL_WIDTH,
-        DEF_NORMAL_THUMBNAIL_HEIGHT,
-        false,
-        DEF_VALIDATE_WIDTH,
-        DEF_VALIDATE_HEIGHT).getShrinkImage();
+    byte[] roomIconSmartPhone = getBytesShrink(
+      roomIconItem,
+      DEF_NORMAL_THUMBNAIL_WIDTH,
+      DEF_NORMAL_THUMBNAIL_HEIGHT,
+      false,
+      DEF_VALIDATE_WIDTH,
+      DEF_VALIDATE_HEIGHT).getShrinkImage();
 
     messageDbService.setPhoto(roomId, roomIcon, roomIconSmartPhone);
 
@@ -903,21 +918,27 @@ public class AipoMessageService extends AbstractService implements
     setUp(token);
 
     checkSameViewer(userId, token);
+    checkAclPermission(
+      userId,
+      token,
+      AccessControlConstants.POERTLET_FEATURE_ATTACHMENT,
+      AccessControlConstants.VALUE_ACL_INSERT);
 
     String username = getUserId(userId, token);
 
-    byte[] shrinkImage =
-      getBytesShrink(
-        file,
-        DEF_THUMBNAIL_WIDTH,
-        DEF_THUMBNAIL_HEIGHT,
-        true,
-        0,
-        0).getShrinkImage();
+    byte[] shrinkImage = getBytesShrink(
+      file,
+      DEF_THUMBNAIL_WIDTH,
+      DEF_THUMBNAIL_HEIGHT,
+      true,
+      0,
+      0).getShrinkImage();
 
-    EipTMessageFile messageFile =
-      messageDbService.insertMessageFiles(username, messageIdInt, file
-        .getName(), shrinkImage);
+    EipTMessageFile messageFile = messageDbService.insertMessageFiles(
+      username,
+      messageIdInt,
+      file.getName(),
+      shrinkImage);
 
     storageService.createNewFile(
       new ByteArrayInputStream(file.get()),
@@ -944,6 +965,11 @@ public class AipoMessageService extends AbstractService implements
     setUp(token);
 
     checkSameViewer(userId, token);
+    checkAclPermission(
+      userId,
+      token,
+      AccessControlConstants.POERTLET_FEATURE_ATTACHMENT,
+      AccessControlConstants.VALUE_ACL_EXPORT);
     EipTMessageFile model = messageDbService.findMessageFile(fileId);
     if (model == null) {
       throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
@@ -962,16 +988,22 @@ public class AipoMessageService extends AbstractService implements
     setUp(token);
 
     checkSameViewer(userId, token);
+    checkAclPermission(
+      userId,
+      token,
+      AccessControlConstants.POERTLET_FEATURE_ATTACHMENT,
+      AccessControlConstants.VALUE_ACL_EXPORT);
     EipTMessageFile model = messageDbService.findMessageFile(fileId);
     if (model == null) {
       throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
     }
     checkSameRoomMember(userId, token, model.getRoomId());
 
-    long fileSize =
-      storageService.getFileSize(messageCategoryKey, model
-        .getOwnerId()
-        .intValue(), model.getFilePath(), token);
+    long fileSize = storageService.getFileSize(
+      messageCategoryKey,
+      model.getOwnerId().intValue(),
+      model.getFilePath(),
+      token);
 
     ALFile result = assignFileInfo(model, fileSize);
 
@@ -992,6 +1024,11 @@ public class AipoMessageService extends AbstractService implements
     setUp(token);
 
     checkSameViewer(userId, token);
+    checkAclPermission(
+      userId,
+      token,
+      AccessControlConstants.POERTLET_FEATURE_ATTACHMENT,
+      AccessControlConstants.VALUE_ACL_EXPORT);
     EipTMessageFile model = messageDbService.findMessageFile(fileId);
     if (model == null) {
       throw new AipoProtocolException(AipoErrorCode.FILE_NOT_FOUND);
@@ -1005,6 +1042,89 @@ public class AipoMessageService extends AbstractService implements
     }
 
     return new ByteArrayInputStream(thumbnail);
+  }
+
+  /**
+   * @param userId
+   * @param roomId
+   * @param token
+   * @return
+   * @throws ProtocolException
+   */
+  @Override
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> getRoomNotificationSettings(
+      UserId userId, int roomId, SecurityToken token) throws ProtocolException {
+
+    setUp(token);
+
+    checkSameViewer(userId, token);
+    checkSameRoomMember(userId, token, roomId);
+    String username = getUserId(userId, token);
+
+    String notification = messageDbService.getRoomNotification(
+      username,
+      roomId);
+
+    if (notification == null) {
+      throw new AipoProtocolException(AipoErrorCode.NOT_FOUND);
+    }
+
+    List<ALMessageRoomNotificationSettings> result = new ArrayList<ALMessageRoomNotificationSettings>();
+
+    ALMessageRoomNotificationSettings setting = new ALMessageRoomNotificationSettingsImpl();
+    String orgId = getOrgId(token);
+    setting.setRoomId(roomId);
+    setting.setUserId(orgId + ":" + username);
+    setting.setMobileNotification(notification);
+
+    result.add(setting);
+
+    RestfulCollection<ALMessageRoomNotificationSettings> restCollection = new RestfulCollection<ALMessageRoomNotificationSettings>(
+      result);
+    return ImmediateFuture.newInstance(restCollection);
+  }
+
+  /**
+   * @param userId
+   * @param roomId
+   * @param mobileNotification
+   * @param token
+   * @return
+   * @throws ProtocolException
+   */
+
+  @Override
+  public Future<RestfulCollection<ALMessageRoomNotificationSettings>> putRoomNotificationSettings(
+      UserId userId, int roomId, String mobileNotification, SecurityToken token)
+      throws ProtocolException {
+
+    setUp(token);
+
+    checkSameViewer(userId, token);
+    checkSameRoomMember(userId, token, roomId);
+    String username = getUserId(userId, token);
+
+    if (!("A".equals(mobileNotification) || "F".equals(mobileNotification))) {
+      throw new AipoProtocolException(
+        AipoErrorCode.VALIDATE_ERROR.customMessage(
+          "Parameter mobileNotification invalid."));
+    }
+
+    messageDbService.setRoomNotification(username, roomId, mobileNotification);
+
+    List<ALMessageRoomNotificationSettings> result = new ArrayList<ALMessageRoomNotificationSettings>();
+
+    ALMessageRoomNotificationSettings setting = new ALMessageRoomNotificationSettingsImpl();
+    String orgId = getOrgId(token);
+    setting.setRoomId(roomId);
+    setting.setUserId(orgId + ":" + username);
+    setting.setMobileNotification(mobileNotification);
+
+    result.add(setting);
+
+    RestfulCollection<ALMessageRoomNotificationSettings> restCollection = new RestfulCollection<ALMessageRoomNotificationSettings>(
+      result);
+    return ImmediateFuture.newInstance(restCollection);
   }
 
   /**
@@ -1069,8 +1189,9 @@ public class AipoMessageService extends AbstractService implements
 
     String username = getUserId(userId, token);
     if (username != null && !"".equals(username)) {
-      boolean hasAuthority =
-        messageDbService.hasAuthorityRoom(roomId, username);
+      boolean hasAuthority = messageDbService.hasAuthorityRoom(
+        roomId,
+        username);
       if (!hasAuthority) {
         throw new AipoProtocolException(AipoErrorCode.VALIDATE_ACCESS_DENIED);
       }
@@ -1095,11 +1216,12 @@ public class AipoMessageService extends AbstractService implements
    * @param messageId
    * @throws ProtocolException
    */
-  protected void push(PushType type, String username, int roomId,
-      int messageId, String transactionId) throws ProtocolException {
+  protected void push(PushType type, String username, int roomId, int messageId,
+      String transactionId) throws ProtocolException {
 
-    List<EipTMessageRoomMember> members =
-      messageDbService.getRoomMember(roomId, username);
+    List<EipTMessageRoomMember> members = messageDbService.getRoomMember(
+      roomId,
+      username);
 
     List<String> recipients = new ArrayList<String>();
     for (EipTMessageRoomMember member : members) {
@@ -1119,6 +1241,20 @@ public class AipoMessageService extends AbstractService implements
     if (recipients.size() > 0) {
       pushService.pushAsync(type, params, recipients);
     }
+  }
+
+  protected boolean hasAttachmentExportAuthority(UserId userId,
+      SecurityToken token) {
+    try {
+      checkAclPermission(
+        userId,
+        token,
+        AccessControlConstants.POERTLET_FEATURE_ATTACHMENT,
+        AccessControlConstants.VALUE_ACL_EXPORT);
+    } catch (ProtocolException e) {
+      return false;
+    }
+    return true;
   }
 
 }

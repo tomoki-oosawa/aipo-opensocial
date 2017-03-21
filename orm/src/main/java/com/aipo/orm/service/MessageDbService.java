@@ -53,8 +53,8 @@ public interface MessageDbService {
       String targetUsername, String message);
 
   public EipTMessageRoom updateRoom(Integer roomId, String username,
-      String name, String desktopNotification, String mobileNotification,
-      List<String> memberNameList, Map<String, String> memberAuthorityMap);
+      String name, List<String> memberNameList,
+      Map<String, String> memberAuthorityMap);
 
   public EipTMessageRoom updateRoomLastMessage(Integer roomId,
       Integer deleteMessageId);
@@ -85,6 +85,11 @@ public interface MessageDbService {
   public List<EipTMessageFile> getMessageFiles(List<Integer> messageIds);
 
   public List<EipTMessageFile> getMessageFilesByRoom(int roomId);
+
+  public String getRoomNotification(String username, int roomId);
+
+  public void setRoomNotification(String username, int roomId,
+      String mobileNotification);
 
   public enum IconSize {
     NORMAL, LARGE;

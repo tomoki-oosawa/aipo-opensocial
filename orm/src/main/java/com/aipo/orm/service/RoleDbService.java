@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aipo.orm.model.account;
+package com.aipo.orm.service;
 
-import com.aipo.orm.model.account.auto._EipTAclUserRoleMap;
+/**
+ *
+ */
+public interface RoleDbService {
 
-public class EipTAclUserRoleMap extends _EipTAclUserRoleMap {
-
-  public static final String ROLE_ID_COLUMN = "ROLE_ID";
-
+  public boolean hasAuthority(String username, String featureName, int aclType);
 }

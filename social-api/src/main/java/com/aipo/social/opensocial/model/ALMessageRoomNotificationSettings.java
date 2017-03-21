@@ -16,12 +16,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aipo.orm.model.account;
+package com.aipo.social.opensocial.model;
 
-import com.aipo.orm.model.account.auto._EipTAclUserRoleMap;
+import org.apache.shindig.protocol.model.Exportablebean;
 
-public class EipTAclUserRoleMap extends _EipTAclUserRoleMap {
+@Exportablebean
+public interface ALMessageRoomNotificationSettings {
+  public long getRoomId();
 
-  public static final String ROLE_ID_COLUMN = "ROLE_ID";
+  public void setRoomId(long roomId);
 
+  public String getUserId();
+
+  public void setUserId(String paramString);
+
+  public String getMobileNotification();
+
+  public void setMobileNotification(String mobileNotification);
+
+  public static enum Field {
+    ROOM_ID("roomId"), USER_ID("userId"), MOBILENOTIFICATION(
+        "mobileNotification");
+
+    private final String jsonString;
+
+    private Field(String jsonString) {
+      this.jsonString = jsonString;
+    }
+
+    @Override
+    public String toString() {
+      return this.jsonString;
+    }
+  }
 }

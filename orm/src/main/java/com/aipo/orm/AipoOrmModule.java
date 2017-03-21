@@ -30,6 +30,7 @@ import com.aipo.orm.service.AipoOAuth2TokenDbService;
 import com.aipo.orm.service.AipoOAuthConsumerDbService;
 import com.aipo.orm.service.AipoOAuthEntryDbService;
 import com.aipo.orm.service.AipoOAuthTokenDbService;
+import com.aipo.orm.service.AipoRoleDbService;
 import com.aipo.orm.service.AipoTurbineGroupDbService;
 import com.aipo.orm.service.AipoTurbineUserDbService;
 import com.aipo.orm.service.AppDataDbService;
@@ -42,6 +43,7 @@ import com.aipo.orm.service.OAuth2TokenDbService;
 import com.aipo.orm.service.OAuthConsumerDbService;
 import com.aipo.orm.service.OAuthEntryDbService;
 import com.aipo.orm.service.OAuthTokenDbService;
+import com.aipo.orm.service.RoleDbService;
 import com.aipo.orm.service.TurbineGroupDbService;
 import com.aipo.orm.service.TurbineUserDbService;
 import com.google.inject.AbstractModule;
@@ -85,6 +87,7 @@ public class AipoOrmModule extends AbstractModule {
       Scopes.SINGLETON);
     bind(MessageDbService.class).to(AipoMessageDbService.class).in(
       Scopes.SINGLETON);
+    bind(RoleDbService.class).to(AipoRoleDbService.class).in(Scopes.SINGLETON);
   }
 
 }

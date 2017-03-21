@@ -363,6 +363,23 @@ public enum AipoErrorCode {
     int getStatus() {
       return HttpServletResponse.SC_FORBIDDEN;
     }
+  },
+
+  ACL_PERMISSION_DENIED {
+    @Override
+    int getCode() {
+      return 1014;
+    }
+
+    @Override
+    protected String getDefaultMessage() {
+      return "AclPermission denied.";
+    }
+
+    @Override
+    int getStatus() {
+      return HttpServletResponse.SC_BAD_REQUEST;
+    }
   };
 
   private String message = null;
@@ -403,13 +420,7 @@ public enum AipoErrorCode {
   }
 
   public String responseHTML() {
-    return "<!DOCTYPE html><html><title>"
-      + getStatus()
-      + " Error</title><body><p>"
-      + getCode()
-      + ": "
-      + getMessage()
-      + "</p></body></html>";
+    return "<!DOCTYPE html><html><title>" + getStatus() + " Error</title><body><p>" + getCode() + ": " + getMessage() + "</p></body></html>";
   }
 
 }

@@ -114,6 +114,9 @@ public class AipoCollectionOptions extends CollectionOptions {
     if (o == this) {
       return true;
     }
+    if (!(o instanceof AipoCollectionOptions)) {
+      return false;
+    }
     AipoCollectionOptions actual = (AipoCollectionOptions) o;
     return super.equals(o) && (this.map.equals(actual.map));
   }
