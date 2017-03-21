@@ -54,4 +54,7 @@
     <Match class="com.aipo.social.core.oauth2.AipoOAuth2Servlet">
         <Bug pattern="SE_BAD_FIELD" />
     </Match>
+    <Match class="com.aipo.container.http.BufferedServletFilter">
+        <Bug pattern="URF_UNREAD_FIELD" />
+    </Match>
 </FindBugsFilter>
