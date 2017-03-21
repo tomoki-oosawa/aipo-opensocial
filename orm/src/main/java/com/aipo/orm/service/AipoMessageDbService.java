@@ -584,8 +584,9 @@ public class AipoMessageDbService implements MessageDbService {
       model.setCreateDate(now);
       model.setUpdateDate(now);
       model.setRoomId(roomId);
-
-      model.setMemberCount(members.size());
+      model.setMemberCount(containsAdmin(members)
+        ? members.size() - 1
+        : members.size());
       model.setUnreadCount(members.size() - 1);
       model.setUserId((int) turbineUser.getUserId());
       model.setLoginName(turbineUser.getLoginName());
@@ -618,6 +619,21 @@ public class AipoMessageDbService implements MessageDbService {
       Database.rollback();
       throw new RuntimeException(t);
     }
+  }
+
+  /**
+   * @param members
+   * @return
+   */
+  private static boolean containsAdmin(List<EipTMessageRoomMember> members) {
+    boolean containsAdmin = false;
+    for (EipTMessageRoomMember member : members) {
+      if (member.getUserId() == 1) {
+        containsAdmin = true;
+        break;
+      }
+    }
+    return containsAdmin;
   }
 
   /**
