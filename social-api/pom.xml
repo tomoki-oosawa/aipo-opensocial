@@ -55,6 +55,12 @@
       <groupId>org.apache.shindig</groupId>
       <artifactId>shindig-common</artifactId>
       <version>${shindig.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>joda-time</groupId>
+          <artifactId>joda-time</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.shindig</groupId>

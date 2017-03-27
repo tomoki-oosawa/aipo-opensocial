@@ -37,7 +37,7 @@
 	<classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.8/icu4j-3.8.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/tomcat/jasper-el/6.0.29/jasper-el-6.0.29.jar"/>
 	<classpathentry kind="var" path="M2_REPO/jdom/jdom/1.0/jdom-1.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/joda-time/joda-time/1.6/joda-time-1.6.jar"/>
+	<classpathentry kind="var" path="M2_REPO/joda-time/joda-time/2.8.1/joda-time-2.8.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/json/json/20070829/json-20070829.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/googlecode/json-simple/json-simple/1.1/json-simple-1.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/de/odysseus/juel/juel-impl/2.1.3/juel-impl-2.1.3.jar"/>
