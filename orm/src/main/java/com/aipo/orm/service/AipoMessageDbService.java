@@ -454,10 +454,14 @@ public class AipoMessageDbService implements MessageDbService {
 
       if (name == null || "".equals(name)) {
         model.setAutoName("T");
-        if (autoName.length() > 255) {
-          autoName.delete(255, autoName.length());
+        if (autoName.length() > 252) {
+          String subject;
+          subject = autoName.toString().substring(0, 252);
+          subject += "・・・";
+          model.setName(subject);
+        } else {
+          model.setName(autoName.toString());
         }
-        model.setName(autoName.toString());
       } else {
         model.setAutoName("F");
         model.setName(CommonUtils.removeSpace(name));
@@ -704,10 +708,14 @@ public class AipoMessageDbService implements MessageDbService {
 
       if (name == null || "".equals(name)) {
         model.setAutoName("T");
-        if (autoName.length() > 255) {
-          autoName.delete(255, autoName.length());
+        if (autoName.length() > 252) {
+          String subject;
+          subject = autoName.toString().substring(0, 252);
+          subject += "・・・";
+          model.setName(subject);
+        } else {
+          model.setName(autoName.toString());
         }
-        model.setName(autoName.toString());
       } else {
         model.setAutoName("F");
         model.setName(CommonUtils.removeSpace(name));
