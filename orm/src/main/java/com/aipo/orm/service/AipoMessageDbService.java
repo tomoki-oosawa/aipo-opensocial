@@ -651,10 +651,11 @@ public class AipoMessageDbService implements MessageDbService {
       String name, List<String> memberNameList,
       Map<String, String> memberAuthorityMap) {
     try {
-      TurbineUser turbineUser = turbineUserDbService.findByUsername(username);
+      TurbineUser turbineUser =
+        AipoTurbineUserDbService.findByUsernameInMessage(username);// turbineUserDbService.findByUsername
       List<TurbineUser> memberList =
-        turbineUserDbService
-          .findByUsername(new HashSet<String>(memberNameList));
+        AipoTurbineUserDbService.findByUsernameInMessage(new HashSet<String>(//
+          memberNameList));
       Date now = new Date();
 
       EipTMessageRoom model = Database.get(EipTMessageRoom.class, roomId);

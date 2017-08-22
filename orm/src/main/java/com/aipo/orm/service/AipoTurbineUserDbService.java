@@ -115,6 +115,49 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchList();
   }
 
+  // add
+  public static TurbineUser findByUsernameInMessage(String username) {
+    if (username == null) {
+      return null;
+    }
+
+    StringBuilder b = new StringBuilder();
+    b
+      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.FIRST_NAME_KANA, B.LAST_NAME_KANA, B.PHOTO_MODIFIED, B.PASSWORD_VALUE, B.HAS_PHOTO ");
+    b.append(" FROM turbine_user AS B ");
+    b.append(" WHERE B.USER_ID > 3 ");
+    b.append(" AND B.LOGIN_NAME = #bind($username) ");
+
+    String query = b.toString();
+
+    return Database
+      .sql(TurbineUser.class, query)
+      .param("username", username)
+      .fetchSingle();
+  }
+
+  public static List<TurbineUser> findByUsernameInMessage(Set<String> username) {
+    if (username == null || username.size() == 0) {
+      return null;
+    }
+
+    StringBuilder b = new StringBuilder();
+    b
+      .append(" SELECT B.USER_ID, B.LOGIN_NAME, B.FIRST_NAME, B.LAST_NAME, B.PHOTO_MODIFIED, B.HAS_PHOTO");
+    b.append(" FROM turbine_user AS B ");
+    b.append(" WHERE B.USER_ID > 3 ");
+    b.append(" AND B.LOGIN_NAME IN(#bind($username)) ");
+
+    String query = b.toString();
+
+    return Database
+      .sql(TurbineUser.class, query)
+      .param("username", username)
+      .fetchList();
+  }
+
+  //
+
   @Override
   public List<TurbineUser> find(SearchOptions options) {
     return buildQuery(
