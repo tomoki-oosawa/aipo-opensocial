@@ -34,7 +34,11 @@ public interface TurbineUserDbService {
 
   public TurbineUser findByUsername(String username);
 
+  public TurbineUser findByUsernameWithDisabled(String username);
+
   public List<TurbineUser> findByUsername(Set<String> username);
+
+  public List<TurbineUser> findByUsernameWithDisabled(Set<String> username);
 
   public List<TurbineUser> find(SearchOptions options);
 

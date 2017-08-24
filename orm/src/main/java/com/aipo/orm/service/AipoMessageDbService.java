@@ -652,9 +652,9 @@ public class AipoMessageDbService implements MessageDbService {
       Map<String, String> memberAuthorityMap) {
     try {
       TurbineUser turbineUser =
-        AipoTurbineUserDbService.findByUsernameInMessage(username);// turbineUserDbService.findByUsername
+        turbineUserDbService.findByUsernameWithDisabled(username);
       List<TurbineUser> memberList =
-        AipoTurbineUserDbService.findByUsernameInMessage(new HashSet<String>(//
+        turbineUserDbService.findByUsernameWithDisabled(new HashSet<String>(
           memberNameList));
       Date now = new Date();
 

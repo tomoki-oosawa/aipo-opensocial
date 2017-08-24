@@ -115,8 +115,8 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchList();
   }
 
-  // add
-  public static TurbineUser findByUsernameInMessage(String username) {
+  @Override
+  public TurbineUser findByUsernameWithDisabled(String username) {
     if (username == null) {
       return null;
     }
@@ -136,7 +136,8 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .fetchSingle();
   }
 
-  public static List<TurbineUser> findByUsernameInMessage(Set<String> username) {
+  @Override
+  public List<TurbineUser> findByUsernameWithDisabled(Set<String> username) {
     if (username == null || username.size() == 0) {
       return null;
     }
@@ -155,8 +156,6 @@ public class AipoTurbineUserDbService implements TurbineUserDbService {
       .param("username", username)
       .fetchList();
   }
-
-  //
 
   @Override
   public List<TurbineUser> find(SearchOptions options) {
